@@ -185,16 +185,18 @@ public class MARSPhysicsWorld {
 
     // 3) Neutral Zone (120 Fuel compacted sequentially on the midline)
     double midX = FieldConstants.FIELD_LENGTH_METERS / 2.0;
+    double midY = FieldConstants.FIELD_WIDTH_METERS / 2.0;
     // Distribute 120 pieces in a tightly compacted 10 cols x 12 rows stagger grid
     int neutralIndex = 0;
     for (int col = 0; col < 10; col++) {
       for (int row = 0; row < 12; row++) {
         // Hexagonal compact staggering
         double offsetX = (col * spacing) - (5 * spacing) + ((row % 2 == 0) ? (spacing / 2.0) : 0.0);
-        double offsetY = (row * spacing * 0.866); // sin(60) for tight hexagon packing
+        double offsetY =
+            (row * spacing * 0.866) - (5.5 * spacing * 0.866); // sin(60) & center the 12 rows
         new GamePieceSim(
             "neutral_fuel_" + neutralIndex++,
-            new edu.wpi.first.math.geometry.Translation2d(midX + offsetX, 1.0 + offsetY));
+            new edu.wpi.first.math.geometry.Translation2d(midX + offsetX, midY + offsetY));
       }
     }
   }
