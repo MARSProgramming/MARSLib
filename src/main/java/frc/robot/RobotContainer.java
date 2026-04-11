@@ -355,6 +355,8 @@ public class RobotContainer {
         "Offload Logs to USB", com.marslib.util.LogUploader.getUsbOffloadCommand());
 
     configureCompetitionDashboard();
+    configurePracticeDashboard();
+    com.marslib.util.LoggedTunableNumber.buildTuningDashboard();
 
     RobotBindings.configureBindings(
         operatorInterface,
@@ -416,6 +418,35 @@ public class RobotContainer {
     matchTab.add("Emergency USB Offload", com.marslib.util.LogUploader.getUsbOffloadCommand())
         .withSize(2, 1)
         .withPosition(5, 1);
+  }
+
+  /**
+   * Extends the UI for practice matches and un-tethered development where manual sequence triggering,
+   * module zeroing, and detailed odometry overrides sit alongside the generic Match widgets.
+   */
+  private void configurePracticeDashboard() {
+    edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab practiceTab =
+        edu.wpi.first.wpilibj.shuffleboard.Shuffleboard.getTab("Practice");
+
+    practiceTab.add("Auto Routine Override", autoChooser.getSendableChooser())
+        .withWidget(edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets.kComboBoxChooser)
+        .withSize(3, 1)
+        .withPosition(0, 0);
+
+    practiceTab.add("System Diagnostics", new frc.robot.commands.SystemCheckCommand(superstructure, swerveDrive))
+        .withSize(2, 1)
+        .withPosition(3, 0);
+
+    practiceTab.addString("FMS Alliance", () -> 
+          edu.wpi.first.wpilibj.DriverStation.getAlliance().isPresent() 
+              ? edu.wpi.first.wpilibj.DriverStation.getAlliance().get().toString() 
+              : "UNCALIBRATED")
+        .withSize(2, 1)
+        .withPosition(5, 0);
+        
+    practiceTab.addBoolean("Swerve Odometry Synchronized", () -> swerveDrive != null)
+        .withSize(2, 1)
+        .withPosition(3, 1);
   }
 
   public MARSVision getVision() {
