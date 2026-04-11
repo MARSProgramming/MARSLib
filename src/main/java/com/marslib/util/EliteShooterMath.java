@@ -15,6 +15,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
  */
 public class EliteShooterMath {
 
+  private static final double QUADRATIC_EPSILON = 1e-6;
+  private static final double VELOCITY_SAFE_BUMP = 1.01;
+
   /**
    * Data class for holding calculated Elite Shooter parameters. Fully compatible with AdvantageKit
    * logging.
@@ -69,9 +72,9 @@ public class EliteShooterMath {
     // c = tx^2 + ty^2 + tz^2
     double a = vx * vx + vy * vy - vShot * vShot;
 
-    if (Math.abs(a) < 1e-6) {
+    if (Math.abs(a) < QUADRATIC_EPSILON) {
       // Cheat slightly to avoid division by zero / non-quadratic states
-      vShot = 1.01 * vShot;
+      vShot = VELOCITY_SAFE_BUMP * vShot;
       a = vx * vx + vy * vy - vShot * vShot;
     }
 

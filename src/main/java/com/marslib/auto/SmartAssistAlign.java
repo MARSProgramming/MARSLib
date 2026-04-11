@@ -5,6 +5,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.AutoConstants;
 import java.util.function.DoubleSupplier;
 
 /**
@@ -35,12 +36,12 @@ public class SmartAssistAlign extends Command {
     this.targetNode = targetNode;
 
     // These controllers compare the Robot's true position to the Node's true position
-    this.yAlignController =
-        new PIDController(frc.robot.constants.AutoConstants.ALIGN_TRANSLATION_KP, 0, 0);
-    this.yAlignController.setIZone(0.2); // Task 3
-    this.thetaAlignController =
-        new PIDController(frc.robot.constants.AutoConstants.ALIGN_THETA_KP, 0, 0);
-    this.thetaAlignController.setIZone(Math.toRadians(5.0)); // Task 3
+    this.yAlignController = new PIDController(AutoConstants.ALIGN_TRANSLATION_KP, 0, 0);
+    this.yAlignController.setIZone(AutoConstants.ALIGN_TRANSLATION_IZONE_METERS);
+
+    this.thetaAlignController = new PIDController(AutoConstants.ALIGN_THETA_KP, 0, 0);
+    this.thetaAlignController.setIZone(AutoConstants.ALIGN_THETA_IZONE_RAD);
+
     this.thetaAlignController.enableContinuousInput(-Math.PI, Math.PI);
 
     addRequirements(swerveDrive);

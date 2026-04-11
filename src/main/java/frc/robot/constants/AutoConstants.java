@@ -11,6 +11,9 @@ public final class AutoConstants {
   public static final double ALIGN_TRANSLATION_KP = 5.0;
   public static final double ALIGN_THETA_KP = 5.0;
 
+  public static final double ALIGN_TRANSLATION_IZONE_METERS = 0.2;
+  public static final double ALIGN_THETA_IZONE_RAD = Math.toRadians(5.0);
+
   public static final double ALIGN_TRANSLATION_MAX_VELOCITY_MPS = 3.0;
   public static final double ALIGN_TRANSLATION_MAX_ACCEL_MPS2 = 3.0;
   public static final double ALIGN_ROTATION_MAX_VELOCITY_RAD_PER_SEC = Math.PI * 2;
