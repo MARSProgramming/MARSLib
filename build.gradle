@@ -365,7 +365,8 @@ task generateControllerMappings {
             def target = matcher.group(1)
             def trigger = matcher.group(2)
             def action = matcher.group(3)
-            def row = "| **${trigger}** | ${action} |"
+            // Use <kbd> to render formatted inputs!
+            def row = "| <kbd>${trigger}</kbd> | **${action}** |"
             if (target == "controller") {
                 pilotBindings.add(row)
             } else if (target == "coPilot") {
@@ -374,17 +375,19 @@ task generateControllerMappings {
         }
 
         md.append("## 🎮 Pilot (Driver) - Controller 0\n\n")
-        md.append("| Input | Action |\n| :--- | :--- |\n")
-        md.append("| **Left Joystick** | Translation (X/Y) |\n")
-        md.append("| **Right Joystick** | Rotation |\n")
+        md.append("> **Primary drive controls and high-level macro sequences.**\n\n")
+        md.append("| Controller Input | Mapped Action |\n| :--- | :--- |\n")
+        md.append("| <kbd>Left Joystick</kbd> | **Holonomic Translation (X/Y)** |\n")
+        md.append("| <kbd>Right Joystick</kbd> | **Holonomic Rotation** |\n")
         pilotBindings.each { md.append(it).append('\n') }
         md.append("\n---\n\n")
 
         md.append("## 🕹️ CoPilot (Operator) - Controller 1\n\n")
-        md.append("| Input | Action |\n| :--- | :--- |\n")
+        md.append("> **Manual overrides, sub-mechanism control, and fault resets.**\n\n")
+        md.append("| Controller Input | Mapped Action |\n| :--- | :--- |\n")
         copilotBindings.each { md.append(it).append('\n') }
         
-        md.append("\n---\n> [!NOTE]\n> All automated scoring sequences (Triggers/Bumpers) automatically revert to the safe `STOWED` superstructure state immediately upon release.\n")
+        md.append("\n---\n> [!NOTE]\n> All automated scoring sequences natively return the superstructure to the \n> safe `STOWED` state immediately upon release of the binding.\n")
 
         outputFile.text = md.toString()
         println "Successfully generated CONTROLLER_MAPPINGS.md from RobotBindings.java"
