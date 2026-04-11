@@ -15,8 +15,6 @@ import org.ironmaple.simulation.motorsims.SimulatedMotorController.GenericMotorC
  * SwerveModuleSimulation}.
  */
 public class SwerveModuleIOSim implements SwerveModuleIO {
-  private final int moduleIndex;
-
   private SwerveModuleSimulation simModule;
   private GenericMotorController driveCont;
   private GenericMotorController steerCont;
@@ -25,9 +23,8 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
   private double turnAppliedVolts = 0.0;
   private double lastCurrentLimitAmps = 0.0;
 
-  public SwerveModuleIOSim(int moduleIndex) {
-    this.moduleIndex = moduleIndex;
-  }
+  @SuppressWarnings("PMD.UnusedFormalParameter")
+  public SwerveModuleIOSim(int moduleIndex) {}
 
   public void setModuleSimulation(SwerveModuleSimulation sim) {
     this.simModule = sim;

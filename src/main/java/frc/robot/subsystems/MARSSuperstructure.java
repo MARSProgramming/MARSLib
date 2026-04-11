@@ -213,22 +213,6 @@ public class MARSSuperstructure extends SubsystemBase {
   @SuppressWarnings("deprecation")
   private void handleIntakeLogic(SuperstructureState currentState) {
     // Physics collision check for game piece swallowing
-    if (currentState == SuperstructureState.INTAKE_RUNNING && gamePieceCount < 40) {
-      if (intakePivot.isAtTolerance()) {
-        try {
-          int swallowed =
-              com.marslib.simulation.MARSPhysicsWorld.getInstance()
-                  .checkIntake(
-                      poseSupplier.get(),
-                      FieldConstants.INTAKE_COLLECTION_RADIUS_METERS,
-                      40 - gamePieceCount);
-          gamePieceCount += swallowed;
-        } catch (Exception e) {
-          Logger.recordOutput(
-              "Superstructure/IntakeError", e.getClass().getSimpleName() + ": " + e.getMessage());
-        }
-      }
-    }
 
     // Run intake motors
     if (currentState == SuperstructureState.INTAKE_RUNNING && gamePieceCount < 40) {
@@ -307,29 +291,6 @@ public class MARSSuperstructure extends SubsystemBase {
   /** Launches a game piece from the robot in simulation, validating scoring zone compliance. */
   private void launchGamePiece() {
     if (gamePieceCount > 0) {
-      Pose2d robotPose = poseSupplier.get();
-      boolean isBlue = AllianceUtil.isBlue();
-
-      // Ensure on the correct side (182.11 inches or 4.625594 m from end of field)
-      double allowedDistance = 4.625594;
-      boolean correctSide =
-          isBlue
-              ? (robotPose.getX() <= allowedDistance)
-              : (robotPose.getX() >= FieldConstants.FIELD_LENGTH_METERS - allowedDistance);
-
-      // Shoot the piece in whatever direction the robot is facing
-      double vx = 15.0 * Math.cos(robotPose.getRotation().getRadians());
-      double vy = 15.0 * Math.sin(robotPose.getRotation().getRadians());
-      double vz = 5.0;
-
-      com.marslib.simulation.MARSPhysicsWorld.getInstance()
-          .launchGamePiece(
-              robotPose.getTranslation(),
-              vx,
-              vy,
-              vz,
-              SuperstructureConstants.SHOOTER_EXIT_HEIGHT_METERS,
-              correctSide);
       gamePieceCount--;
     }
   }

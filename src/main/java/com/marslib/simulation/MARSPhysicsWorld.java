@@ -1,15 +1,11 @@
 package com.marslib.simulation;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import frc.robot.constants.FieldConstants;
-import frc.robot.simulation.GamePieceSim;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.world.World;
@@ -87,7 +83,6 @@ public class MARSPhysicsWorld {
 
   private final ArenaWrapper arena;
   private final Map<String, Body> mechanismBodies;
-  private final List<GamePieceSim> gamePieces;
 
   private double frameCurrentDrawAmps = 0.0;
   private double simulatedVoltage = 12.0;
@@ -100,54 +95,11 @@ public class MARSPhysicsWorld {
     arena.setEfficiencyMode(FieldConstants.MAPLE_SIM_EFFICIENCY_MODE);
 
     mechanismBodies = new HashMap<>();
-    gamePieces = new ArrayList<>();
   }
 
   /** Return the underlying maple-sim Arena2026Rebuilt instance. */
   public Arena2026Rebuilt getArena() {
     return arena;
-  }
-
-  /**
-   * Registers a dynamic game piece in the physics world.
-   *
-   * @deprecated To be removed once GamePieceSim is fully migrated to maple-sim GamePieceProjectile.
-   */
-  @Deprecated
-  public void registerDynamicGamePiece(GamePieceSim gamePiece) {
-    gamePieces.add(gamePiece);
-    arena.getDyn4jWorld().addBody(gamePiece.getBody());
-  }
-
-  /**
-   * @deprecated Use Arena2026Rebuilt game pieces instead.
-   */
-  @Deprecated
-  public List<GamePieceSim> getGamePieces() {
-    return gamePieces;
-  }
-
-  /**
-   * Checks if any active game pieces are within collection range.
-   *
-   * @deprecated Intake behavior should now be handled by IntakeSimulation.
-   */
-  @Deprecated
-  public int checkIntake(Pose2d currentRobotPose, double collectionRadiusMeters, int maxToIntake) {
-    int swallowed = 0;
-    for (GamePieceSim piece : gamePieces) {
-      if (!piece.isIntaked()) {
-        double dist = piece.getPosition().getDistance(currentRobotPose.getTranslation());
-        if (dist <= collectionRadiusMeters) {
-          piece.setIntaked();
-          swallowed++;
-          if (swallowed >= maxToIntake) {
-            break;
-          }
-        }
-      }
-    }
-    return swallowed;
   }
 
   public World<Body> getWorld() {
@@ -170,12 +122,6 @@ public class MARSPhysicsWorld {
   public void update(double dtSeconds) {
     // Delegate to maple-sim's simulation step
     arena.simulationPeriodic();
-
-    for (GamePieceSim piece : gamePieces) {
-      if (!piece.isIntaked()) {
-        piece.update(dtSeconds);
-      }
-    }
 
     // Compute battery voltage sag
     Logger.recordOutput("PhysicsWorld/FrameCurrentDraw_A", frameCurrentDrawAmps);
@@ -206,33 +152,6 @@ public class MARSPhysicsWorld {
 
       Pose3d pose3d = new Pose3d(xMeters, yMeters, 0.0, new Rotation3d(0.0, 0.0, yawRads));
       Logger.recordOutput("PhysicsWorld/" + mechanismName, pose3d);
-    }
-
-    // Export active game pieces
-    Pose3d[] piecePoses =
-        gamePieces.stream()
-            .filter(piece -> !piece.isIntaked())
-            .map(GamePieceSim::getPose3d)
-            .toArray(Pose3d[]::new);
-    Logger.recordOutput("PhysicsWorld/GamePieces", piecePoses);
-  }
-
-  /**
-   * @deprecated Map to Arena2026Rebuilt.addGamePieceProjectile() instead.
-   */
-  @Deprecated
-  public void launchGamePiece(
-      edu.wpi.first.math.geometry.Translation2d origin,
-      double vx,
-      double vy,
-      double vz,
-      double initialZHeight,
-      boolean isLegalShot) {
-    for (GamePieceSim piece : gamePieces) {
-      if (piece.isIntaked()) {
-        piece.launch(origin, vx, vy, vz, initialZHeight, isLegalShot);
-        return;
-      }
     }
   }
 }

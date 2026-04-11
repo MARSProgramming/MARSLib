@@ -53,7 +53,10 @@ public class FrustumVisualizer {
     // The exact origin of the lens
     Pose3d p0 = cameraPose;
 
-    // Structured sequentially so AdvantageScope 'Component' drawer draws connected lines.
-    return new Pose3d[] {p0, p1, p2, p0, p3, p4, p0, p1, p3, p2, p4};
+    // Structured sequentially to trace the 3D wireframe without diagonal face crosses.
+    // 1: Origin -> TL ray. 2: Top edge. 3: Right edge. 4: Bottom edge. 5: Left edge (Face closed).
+    // 6: TL -> Origin (reverse). 7: Origin -> TR ray. 8: TR -> BR (retrace edge).
+    // 9: BR -> Origin (reverse ray). 10: Origin -> BL ray.
+    return new Pose3d[] {p0, p1, p2, p4, p3, p1, p0, p2, p4, p0, p3};
   }
 }

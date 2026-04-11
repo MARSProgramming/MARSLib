@@ -150,8 +150,6 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   // Reusable GC-free arrays for periodic loop to prevent massive RoboRIO heap churn
-  private final double[] simVolts = new double[4];
-  private final Rotation2d[] simAngles = new Rotation2d[4];
   private final SwerveModulePosition[] positionsForFrame =
       new SwerveModulePosition[] {
         new SwerveModulePosition(),
@@ -159,7 +157,6 @@ public class SwerveDrive extends SubsystemBase {
         new SwerveModulePosition(),
         new SwerveModulePosition()
       };
-  private final SwerveModulePosition[] currentPositions = new SwerveModulePosition[4];
   private final SwerveModulePosition[] scaledPositions =
       new SwerveModulePosition[] {
         new SwerveModulePosition(),
