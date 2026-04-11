@@ -200,6 +200,14 @@
               "controllerUUID": "bsq9932h1q41p04rat0gzp",
               "renderer": null,
               "controlsHeight": 0
+            },
+            {
+              "type": 4,
+              "title": "Tuning Table",
+              "controller": [],
+              "controllerUUID": "tunetab12345aaddvance",
+              "renderer": null,
+              "controlsHeight": 0
             }
           ]
         }
