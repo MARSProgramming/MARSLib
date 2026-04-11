@@ -374,77 +374,99 @@ public class RobotContainer {
   }
 
   /**
-   * Scaffolds an explicitly lightweight WPILib Native Dashboard (Shuffleboard/Glass)
-   * specifically designed for FMS-tethered matches where 3D 60FPS renders drop DriveStation CPU bandwidth.
+   * Scaffolds an explicitly lightweight WPILib Native Dashboard (Shuffleboard/Glass) specifically
+   * designed for FMS-tethered matches where 3D 60FPS renders drop DriveStation CPU bandwidth.
    */
   private void configureCompetitionDashboard() {
     edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab matchTab =
         edu.wpi.first.wpilibj.shuffleboard.Shuffleboard.getTab("Match");
 
     // 1. Prominent Auto Chooser
-    matchTab.add("Auto Routine", autoChooser.getSendableChooser())
+    matchTab
+        .add("Auto Routine", autoChooser.getSendableChooser())
         .withWidget(edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets.kComboBoxChooser)
         .withSize(3, 1)
         .withPosition(0, 0);
 
     // 2. Match Info & System Telemetry
-    matchTab.addString("Match Time", () -> {
-          int remaining = (int) edu.wpi.first.wpilibj.Timer.getMatchTime();
-          return (remaining < 0 || !edu.wpi.first.wpilibj.DriverStation.isFMSAttached())
-              ? "N/A"
-              : remaining + " s";
-        })
+    matchTab
+        .addString(
+            "Match Time",
+            () -> {
+              int remaining = (int) edu.wpi.first.wpilibj.Timer.getMatchTime();
+              return (remaining < 0 || !edu.wpi.first.wpilibj.DriverStation.isFMSAttached())
+                  ? "N/A"
+                  : remaining + " s";
+            })
         .withSize(2, 2)
         .withPosition(0, 1);
 
-    matchTab.addString("FMS Alliance", () -> 
-          edu.wpi.first.wpilibj.DriverStation.getAlliance().isPresent() 
-              ? edu.wpi.first.wpilibj.DriverStation.getAlliance().get().toString() 
-              : "UNCALIBRATED")
+    matchTab
+        .addString(
+            "FMS Alliance",
+            () ->
+                edu.wpi.first.wpilibj.DriverStation.getAlliance().isPresent()
+                    ? edu.wpi.first.wpilibj.DriverStation.getAlliance().get().toString()
+                    : "UNCALIBRATED")
         .withSize(2, 1)
         .withPosition(3, 0);
 
-    matchTab.addBoolean("Vision Connected", () -> vision != null)
+    matchTab
+        .addBoolean("Vision Connected", () -> vision != null)
         .withWidget(edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets.kBooleanBox)
         .withSize(1, 1)
         .withPosition(3, 1);
-        
+
     // 3. Superstructure Faults or Status
-    matchTab.addString("Superstructure State", () -> superstructure != null ? superstructure.getCurrentState().toString() : "BOOTING")
+    matchTab
+        .addString(
+            "Superstructure State",
+            () -> superstructure != null ? superstructure.getCurrentState().toString() : "BOOTING")
         .withSize(3, 1)
         .withPosition(5, 0);
 
     // 4. Utility Actions
-    matchTab.add("Emergency USB Offload", com.marslib.util.LogUploader.getUsbOffloadCommand())
+    matchTab
+        .add("Emergency USB Offload", com.marslib.util.LogUploader.getUsbOffloadCommand())
         .withSize(2, 1)
         .withPosition(5, 1);
   }
 
   /**
-   * Extends the UI for practice matches and un-tethered development where manual sequence triggering,
-   * module zeroing, and detailed odometry overrides sit alongside the generic Match widgets.
+   * Extends the UI for practice matches and un-tethered development where manual sequence
+   * triggering, module zeroing, and detailed odometry overrides sit alongside the generic Match
+   * widgets.
    */
   private void configurePracticeDashboard() {
     edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab practiceTab =
         edu.wpi.first.wpilibj.shuffleboard.Shuffleboard.getTab("Practice");
 
-    practiceTab.add("Auto Routine Override", autoChooser.getSendableChooser())
+    practiceTab
+        .add("Auto Routine Override", autoChooser.getSendableChooser())
         .withWidget(edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets.kComboBoxChooser)
         .withSize(3, 1)
         .withPosition(0, 0);
 
-    practiceTab.add("System Diagnostics", new frc.robot.commands.SystemCheckCommand(superstructure, swerveDrive))
+    practiceTab
+        .add(
+            "System Diagnostics",
+            new frc.robot.commands.SystemCheckCommand(
+                swerveDrive, climber, cowl, floorIntake, shooter))
         .withSize(2, 1)
         .withPosition(3, 0);
 
-    practiceTab.addString("FMS Alliance", () -> 
-          edu.wpi.first.wpilibj.DriverStation.getAlliance().isPresent() 
-              ? edu.wpi.first.wpilibj.DriverStation.getAlliance().get().toString() 
-              : "UNCALIBRATED")
+    practiceTab
+        .addString(
+            "FMS Alliance",
+            () ->
+                edu.wpi.first.wpilibj.DriverStation.getAlliance().isPresent()
+                    ? edu.wpi.first.wpilibj.DriverStation.getAlliance().get().toString()
+                    : "UNCALIBRATED")
         .withSize(2, 1)
         .withPosition(5, 0);
-        
-    practiceTab.addBoolean("Swerve Odometry Synchronized", () -> swerveDrive != null)
+
+    practiceTab
+        .addBoolean("Swerve Odometry Synchronized", () -> swerveDrive != null)
         .withSize(2, 1)
         .withPosition(3, 1);
   }

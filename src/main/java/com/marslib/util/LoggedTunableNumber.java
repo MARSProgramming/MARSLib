@@ -3,7 +3,13 @@ package com.marslib.util;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import java.nio.file.Files;
@@ -14,12 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 /**
  * A tunable number that can be modified at runtime via NetworkTables for live PID tuning.
@@ -147,16 +147,17 @@ public class LoggedTunableNumber implements Sendable {
   }
 
   /**
-   * Automates the visual construction of the native WPILib Tuning dashboard.
-   * Dynamically iterates over every registered tunable globally, parses its subsystem path prefix,
-   * and buckets it into beautifully sorted List layouts seamlessly for 0-friction calibration logging.
+   * Automates the visual construction of the native WPILib Tuning dashboard. Dynamically iterates
+   * over every registered tunable globally, parses its subsystem path prefix, and buckets it into
+   * beautifully sorted List layouts seamlessly for 0-friction calibration logging.
    */
   public static void buildTuningDashboard() {
     ShuffleboardTab tuningTab = Shuffleboard.getTab("Tuning");
 
     // Utilities
     tuningTab.add("Dump Live Tunables", getDumpCommand()).withSize(2, 1).withPosition(0, 0);
-    tuningTab.add("Emergency USB Offload", com.marslib.util.LogUploader.getUsbOffloadCommand())
+    tuningTab
+        .add("Emergency USB Offload", com.marslib.util.LogUploader.getUsbOffloadCommand())
         .withSize(2, 1)
         .withPosition(2, 0);
 
@@ -176,9 +177,11 @@ public class LoggedTunableNumber implements Sendable {
     final int columnLimit = 8;
 
     for (Map.Entry<String, List<LoggedTunableNumber>> entry : sortedGroups.entrySet()) {
-      ShuffleboardLayout layout = tuningTab.getLayout(entry.getKey(), BuiltInLayouts.kList)
-          .withSize(2, Math.min(5, entry.getValue().size() + 1)) 
-          .withPosition(currentX, currentY);
+      ShuffleboardLayout layout =
+          tuningTab
+              .getLayout(entry.getKey(), BuiltInLayouts.kList)
+              .withSize(2, Math.min(5, entry.getValue().size() + 1))
+              .withPosition(currentX, currentY);
 
       for (LoggedTunableNumber tunable : entry.getValue()) {
         String[] paths = tunable.key.split("/");

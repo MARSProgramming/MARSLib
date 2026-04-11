@@ -135,19 +135,26 @@ public final class LogUploader {
               uploadedSet.add(originalName);
               saveUploadedManifest(uploadedSet);
               DriverStation.reportWarning("Successfully uploaded log: " + uploadName, false);
-              
+
               try {
-                // Task 2: Physically delete log file from RoboRIO flash after successful cloud backup
-                // CRITICAL SAFETY: Only erase logs originating from the internal volume. If the driver
-                // has a massive USB thumb drive plugged in, mathematically it won't fill up, and they 
+                // Task 2: Physically delete log file from RoboRIO flash after successful cloud
+                // backup
+                // CRITICAL SAFETY: Only erase logs originating from the internal volume. If the
+                // driver
+                // has a massive USB thumb drive plugged in, mathematically it won't fill up, and
+                // they
                 // might want the physical copies off to hand over to a stat-tracking laptop.
                 if (!logFile.toString().replace('\\', '/').startsWith("/U")) {
                   Files.deleteIfExists(logFile);
-                  DriverStation.reportWarning("Purged uploaded log from RIO storage: " + originalName, false);
+                  DriverStation.reportWarning(
+                      "Purged uploaded log from RIO storage: " + originalName, false);
                 }
               } catch (IOException e) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
-                  LOGGER.log(Level.WARNING, "Failed to purge log file after successful upload: " + logFile, e);
+                  LOGGER.log(
+                      Level.WARNING,
+                      "Failed to purge log file after successful upload: " + logFile,
+                      e);
                 }
               }
             }
@@ -348,46 +355,49 @@ public final class LogUploader {
   }
 
   /**
-   * Generates a structural Command to physically copy any FRC internal match logs directly onto
-   * the tethered USB stick, subsequently purging the RIO to guarantee high storage overhead. 
-   * Useful for offline competition events where Wi-Fi upload drops entirely.
+   * Generates a structural Command to physically copy any FRC internal match logs directly onto the
+   * tethered USB stick, subsequently purging the RIO to guarantee high storage overhead. Useful for
+   * offline competition events where Wi-Fi upload drops entirely.
    */
   public static Command getUsbOffloadCommand() {
     return Commands.runOnce(
-        () -> {
-          Path internalDir = Path.of("/home/lvuser/logs");
-          Path usbDir = Path.of("/U/logs");
+            () -> {
+              Path internalDir = Path.of("/home/lvuser/logs");
+              Path usbDir = Path.of("/U/logs");
 
-          if (!Files.exists(usbDir) || !Files.isDirectory(usbDir)) {
-            DriverStation.reportError(
-                "USB Offload Failed: No valid flash drive found on /U/logs", false);
-            return;
-          }
+              if (!Files.exists(usbDir) || !Files.isDirectory(usbDir)) {
+                DriverStation.reportError(
+                    "USB Offload Failed: No valid flash drive found on /U/logs", false);
+                return;
+              }
 
-          if (Files.exists(internalDir)) {
-            try (Stream<Path> files = Files.list(internalDir)) {
-              files
-                  .filter(p -> p.getFileName().toString().endsWith(".wpilog"))
-                  .forEach(
-                      p -> {
-                        try {
-                          Path destination = usbDir.resolve(p.getFileName());
-                          Files.copy(
-                              p, destination, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-                          Files.deleteIfExists(p);
-                          DriverStation.reportWarning(
-                              "Successfully offloaded " + p.getFileName() + " to USB.", false);
-                        } catch (IOException ex) {
-                          DriverStation.reportError(
-                              "Failed to offload log: " + p.getFileName(), false);
-                        }
-                      });
-            } catch (IOException e) {
-              DriverStation.reportError("Failed to scan internal logs for USB offload.", false);
-            }
-          } else {
-             DriverStation.reportWarning("No internal RoboRIO logs found to offload.", false);
-          }
-        }).ignoringDisable(true); // Extremely important to let Drive Team run this while Disabled
+              if (Files.exists(internalDir)) {
+                try (Stream<Path> files = Files.list(internalDir)) {
+                  files
+                      .filter(p -> p.getFileName().toString().endsWith(".wpilog"))
+                      .forEach(
+                          p -> {
+                            try {
+                              Path destination = usbDir.resolve(p.getFileName());
+                              Files.copy(
+                                  p,
+                                  destination,
+                                  java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                              Files.deleteIfExists(p);
+                              DriverStation.reportWarning(
+                                  "Successfully offloaded " + p.getFileName() + " to USB.", false);
+                            } catch (IOException ex) {
+                              DriverStation.reportError(
+                                  "Failed to offload log: " + p.getFileName(), false);
+                            }
+                          });
+                } catch (IOException e) {
+                  DriverStation.reportError("Failed to scan internal logs for USB offload.", false);
+                }
+              } else {
+                DriverStation.reportWarning("No internal RoboRIO logs found to offload.", false);
+              }
+            })
+        .ignoringDisable(true); // Extremely important to let Drive Team run this while Disabled
   }
 }

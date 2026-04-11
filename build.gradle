@@ -92,6 +92,15 @@ task(replayWatch, type: JavaExec) {
 
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 4.
+
+configurations.all {
+    resolutionStrategy {
+        force 'com.fasterxml.jackson.core:jackson-annotations:2.15.2'
+        force 'com.fasterxml.jackson.core:jackson-core:2.15.2'
+        force 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+    }
+}
+
 dependencies {
     annotationProcessor wpi.java.deps.wpilibAnnotations()
     implementation wpi.java.deps.wpilib()
@@ -120,7 +129,7 @@ dependencies {
     def akitJson = new groovy.json.JsonSlurper().parseText(new File(projectDir.getAbsolutePath() + "/vendordeps/AdvantageKit.json").text)
     annotationProcessor "org.littletonrobotics.akit:akit-autolog:$akitJson.version"
 
-    errorprone "com.google.errorprone:error_prone_core:2.49.0"
+    errorprone "com.google.errorprone:error_prone_core:2.26.1"
 }
 
 test {
