@@ -11,14 +11,14 @@
           "expanded": []
         },
         "tabs": {
-          "selected": 0,
+          "selected": 1,
           "tabs": [
             {
               "type": 0,
               "title": "",
               "controller": null,
               "controllerUUID": "mpi9i7opnky08a0oevbde1go4rx6dvuk",
-              "renderer": null,
+              "renderer": "",
               "controlsHeight": 0
             },
             {
@@ -43,11 +43,23 @@
                     "options": {}
                   }
                 ],
-                "discreteSources": []
+                "discreteSources": [],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
               },
               "controllerUUID": "f02vpl0118drklm3pmdw3284j2m8dt5k",
               "renderer": null,
-              "controlsHeight": 0
+              "controlsHeight": 200
             },
             {
               "type": 3,
@@ -97,10 +109,6 @@
               "type": 9,
               "title": "Swerve Modules",
               "controller": {
-                "maxSpeed": 4.5,
-                "orientation": 0,
-                "sizeX": 0.6,
-                "sizeY": 0.6,
                 "sources": [
                   {
                     "type": "states",
