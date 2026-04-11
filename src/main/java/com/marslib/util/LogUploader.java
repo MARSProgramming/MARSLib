@@ -30,7 +30,7 @@ public final class LogUploader {
   private static final Logger LOGGER = Logger.getLogger(LogUploader.class.getName());
 
   // Configuration
-  private static final String GITHUB_OWNER = "thehomelessguy";
+  private static final String GITHUB_OWNER = "MARSProgramming";
   private static final String GITHUB_REPO = "MARSLib-Logs";
   private static final int COOLDOWN_SECONDS = 10;
 
