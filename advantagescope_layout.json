@@ -17,7 +17,7 @@
               "type": 0,
               "title": "",
               "controller": null,
-              "controllerUUID": "vgk3rxvfa1w4lw9urqrwx6x6qcsukur3",
+              "controllerUUID": "mpi9i7opnky08a0oevbde1go4rx6dvuk",
               "renderer": null,
               "controlsHeight": 0
             },
@@ -42,10 +42,9 @@
                     "visible": true,
                     "options": {}
                   }
-                ],
-                "discreteSources": []
+                ]
               },
-              "controllerUUID": "2xxqvdl924hoa4rag7j4zgh4s0qhmt8s",
+              "controllerUUID": "f02vpl0118drklm3pmdw3284j2m8dt5k",
               "renderer": null,
               "controlsHeight": 0
             },
@@ -89,7 +88,7 @@
                   }
                 ]
               },
-              "controllerUUID": "gb25scl9ck134wnjt0knqugz7tbiyvxl",
+              "controllerUUID": "dskzkrcyw7tnza6fna0oqo1026vveqyg",
               "renderer": null,
               "controlsHeight": 0
             },
@@ -98,9 +97,9 @@
               "title": "Swerve Modules",
               "controller": {
                 "maxSpeed": 4.5,
+                "orientation": 0,
                 "sizeX": 0.6,
                 "sizeY": 0.6,
-                "orientation": 0,
                 "sources": [
                   {
                     "type": "states",
@@ -118,7 +117,7 @@
                   }
                 ]
               },
-              "controllerUUID": "dmhf4mnry6hjlh992n8hjaws2lnxen6a",
+              "controllerUUID": "rikw7gl8pu1o6vw6yevc56sk50em3qtb",
               "renderer": null,
               "controlsHeight": 0
             }
@@ -127,6 +126,5 @@
       }
     }
   ],
-  "satellites": [],
-  "version": "26.0.0"
+  "satellites": []
 }
