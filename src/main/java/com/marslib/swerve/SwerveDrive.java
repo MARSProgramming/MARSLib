@@ -347,8 +347,7 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
     Logger.recordOutput("SwerveDrive/Pose", currentPose);
     Logger.recordOutput("Odometry/RobotPose", currentPose);
     Logger.recordOutput("Robot/Pose", currentPose);
-    Logger.recordOutput(
-        "Robot/Pose3d", new Pose3d(currentPose.getX(), currentPose.getY(), 0.0, new Rotation3d()));
+    Logger.recordOutput("Robot/Pose3d", getPose3d());
 
     // GC-free: reuse pre-allocated states array for logging
     measuredStatesCache[0] = modules[0].getLatestState();
@@ -444,6 +443,31 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
    */
   public Pose2d getPose() {
     return poseEstimator.getEstimatedPosition();
+  }
+
+  /**
+   * Returns the current 3D pose of the chassis, incorporating complete 3D gyro tilt for accurate
+   * physics and camera FOV rendering.
+   */
+  public Pose3d getPose3d() {
+    Pose2d pose2d = getPose();
+    return new Pose3d(
+        pose2d.getX(),
+        pose2d.getY(),
+        0.0,
+        new Rotation3d(
+            gyroInputs.rollPositionRad, gyroInputs.pitchPositionRad, gyroInputs.yawPositionRad));
+  }
+
+  /** Specifically returns the ground-truth 3D pose during simulation. */
+  public Pose3d getSimPose3d() {
+    Pose2d pose2d = simDrive != null ? simDrive.getSimulatedDriveTrainPose() : getPose();
+    return new Pose3d(
+        pose2d.getX(),
+        pose2d.getY(),
+        0.0,
+        new Rotation3d(
+            gyroInputs.rollPositionRad, gyroInputs.pitchPositionRad, gyroInputs.yawPositionRad));
   }
 
   /**

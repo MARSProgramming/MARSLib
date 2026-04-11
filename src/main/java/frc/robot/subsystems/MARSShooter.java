@@ -37,9 +37,10 @@ public class MARSShooter extends SubsystemBase implements SystemTestable {
   private final FlywheelIO io;
   private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
 
-  private final LoggedTunableNumber kS = new LoggedTunableNumber("Shooter/kS", 0.0);
-  private final LoggedTunableNumber kV = new LoggedTunableNumber("Shooter/kV", 0.0);
-  private final LoggedTunableNumber kA = new LoggedTunableNumber("Shooter/kA", 0.0);
+  private final String name;
+  private final LoggedTunableNumber kS;
+  private final LoggedTunableNumber kV;
+  private final LoggedTunableNumber kA;
 
   private SimpleMotorFeedforward feedforward;
   private final SysIdRoutine sysIdRoutine;
@@ -54,10 +55,16 @@ public class MARSShooter extends SubsystemBase implements SystemTestable {
   /**
    * Constructs the shooter subsystem.
    *
+   * @param name The unique identifier for this flywheel instance (e.g., Shooter, FloorIntake,
+   *     Feeder)
    * @param io The hardware abstraction layer for the shooter flywheel motor.
    * @param powerManager The active power manager for load-shedding voltage queries.
    */
-  public MARSShooter(FlywheelIO io, MARSPowerManager powerManager) {
+  public MARSShooter(String name, FlywheelIO io, MARSPowerManager powerManager) {
+    this.name = name;
+    this.kS = new LoggedTunableNumber(name + "/kS", 0.0);
+    this.kV = new LoggedTunableNumber(name + "/kV", 0.0);
+    this.kA = new LoggedTunableNumber(name + "/kA", 0.0);
     this.io = io;
     this.powerManager = powerManager;
     feedforward = new SimpleMotorFeedforward(kS.get(), kV.get(), kA.get());
@@ -76,13 +83,13 @@ public class MARSShooter extends SubsystemBase implements SystemTestable {
                 null,
                 this));
 
-    this.estimator = new OnlineFeedforwardEstimator("Shooter", 500, 0.0);
+    this.estimator = new OnlineFeedforwardEstimator(name, 500, 0.0);
   }
 
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.processInputs("Shooter", inputs);
+    Logger.processInputs(name, inputs);
 
     int id = this.hashCode();
     boolean sChanged = kS.hasChanged(id);

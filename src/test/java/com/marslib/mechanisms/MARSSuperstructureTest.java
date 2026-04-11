@@ -48,15 +48,15 @@ public class MARSSuperstructureTest {
 
     FlywheelIOSim physicalShooterSim =
         new FlywheelIOSim(edu.wpi.first.math.system.plant.DCMotor.getKrakenX60Foc(1), 1.0, 0.002);
-    shooter = new MARSShooter(physicalShooterSim, powerManager);
+    shooter = new MARSShooter("Shooter", physicalShooterSim, powerManager);
 
     FlywheelIOSim physicalFloorSim =
         new FlywheelIOSim(edu.wpi.first.math.system.plant.DCMotor.getKrakenX60Foc(1), 1.0, 0.002);
-    floorIntake = new MARSShooter(physicalFloorSim, powerManager);
+    floorIntake = new MARSShooter("FloorIntake", physicalFloorSim, powerManager);
 
     FlywheelIOSim physicalFeederSim =
         new FlywheelIOSim(edu.wpi.first.math.system.plant.DCMotor.getKrakenX60Foc(1), 1.0, 0.002);
-    feeder = new MARSShooter(physicalFeederSim, powerManager);
+    feeder = new MARSShooter("Feeder", physicalFeederSim, powerManager);
 
     Supplier<Pose2d> poseSupplier = () -> new Pose2d();
 

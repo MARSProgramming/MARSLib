@@ -22,7 +22,7 @@ public class MARSShooterTest {
     // Shooter uses standard flywheel simulation dynamics (Kraken X60, 1:1 reduction, 0.002 KgM^2)
     io = new FlywheelIOSim(DCMotor.getKrakenX60Foc(1), 1.0, 0.002);
     MARSPowerManager powerManager = new MARSPowerManager(new PowerIOSim());
-    shooter = new MARSShooter(io, powerManager);
+    shooter = new MARSShooter("TestShooter", io, powerManager);
   }
 
   @Test

@@ -75,7 +75,7 @@ public class VisionFusionTest {
 
     // Construct vision with a single sim camera
     AprilTagVisionIOSim cameraIO =
-        new AprilTagVisionIOSim("TestCam", CAMERA_TRANSFORM, swerveDrive::getPose);
+        new AprilTagVisionIOSim("TestCam", CAMERA_TRANSFORM, swerveDrive::getSimPose3d);
 
     vision = new MARSVision(swerveDrive, List.of(cameraIO), List.of());
   }

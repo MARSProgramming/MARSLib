@@ -2,7 +2,6 @@ package com.marslib.vision;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import java.util.Optional;
@@ -45,7 +44,7 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
   private final PhotonCamera camera;
   private final PhotonCameraSim cameraSim;
   private final PhotonPoseEstimator poseEstimator;
-  private final Supplier<Pose2d> poseSupplier;
+  private final Supplier<Pose3d> poseSupplier;
   private final Transform3d robotToCamera;
 
   private static final int MAX_RESULTS = 8;
@@ -60,7 +59,7 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
 
   @SuppressWarnings({"PMD.AssignmentToNonFinalStatic", "StaticAssignmentInConstructor"})
   public AprilTagVisionIOSim(
-      String cameraName, Transform3d robotToCamera, Supplier<Pose2d> poseSupplier) {
+      String cameraName, Transform3d robotToCamera, Supplier<Pose3d> poseSupplier) {
     this.poseSupplier = poseSupplier;
     this.robotToCamera = robotToCamera;
 
@@ -111,13 +110,12 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
     // Update simulation view from current true pose only once per physical loop
     double currentTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
     if (currentTime > lastVisionSimUpdate) {
-      visionSim.update(poseSupplier.get());
+      visionSim.update(poseSupplier.get().toPose2d());
       lastVisionSimUpdate = currentTime;
     }
 
     // Generate FOV visualizer based on true physical position + mounting location
-    inputs.cameraFrustum =
-        frustumVisualizer.update(new Pose3d(poseSupplier.get()).plus(robotToCamera));
+    inputs.cameraFrustum = frustumVisualizer.update(poseSupplier.get().plus(robotToCamera));
 
     var results = camera.getAllUnreadResults();
 

@@ -57,6 +57,7 @@ public class ShootOnTheMoveCommandTest {
             new com.marslib.mechanisms.RotaryMechanismIOSim("Cowl", 50.0, 0.5, 0.5), powerManager);
     shooter =
         new MARSShooter(
+            "TestShooter",
             new com.marslib.mechanisms.FlywheelIOSim(
                 edu.wpi.first.math.system.plant.DCMotor.getKrakenX60Foc(1), 1.0, 0.05),
             powerManager);

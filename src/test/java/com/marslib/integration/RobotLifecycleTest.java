@@ -57,16 +57,19 @@ public class RobotLifecycleTest {
         new MARSIntakePivot(new RotaryMechanismIOSim("IntakePivot", 50.0, 0.5, 0.5), powerManager);
     floorIntake =
         new MARSShooter(
+            "FloorIntake",
             new FlywheelIOSim(
                 edu.wpi.first.math.system.plant.DCMotor.getKrakenX60Foc(1), 1.0, 0.05),
             powerManager);
     shooter =
         new MARSShooter(
+            "Shooter",
             new FlywheelIOSim(
                 edu.wpi.first.math.system.plant.DCMotor.getKrakenX60Foc(1), 1.0, 0.05),
             powerManager);
     feeder =
         new MARSShooter(
+            "Feeder",
             new FlywheelIOSim(
                 edu.wpi.first.math.system.plant.DCMotor.getKrakenX60Foc(1), 1.0, 0.05),
             powerManager);

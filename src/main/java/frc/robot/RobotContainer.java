@@ -107,16 +107,19 @@ public class RobotContainer {
 
           floorIntake =
               new MARSShooter(
+                  "FloorIntake",
                   new FlywheelIOSim(
                       edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1), 1.0, 0.025),
                   powerManager);
           shooter =
               new MARSShooter(
+                  "Shooter",
                   new FlywheelIOSim(
                       edu.wpi.first.math.system.plant.DCMotor.getFalcon500(4), 1.0, 0.05),
                   powerManager);
           feeder =
               new MARSShooter(
+                  "Feeder",
                   new FlywheelIOSim(
                       edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1),
                       ShooterConstants.FEEDER_GEAR_RATIO,
@@ -137,12 +140,12 @@ public class RobotContainer {
                           "limelight-front",
                           new Transform3d(
                               new Translation3d(0.3, 0.0, 0.5), new Rotation3d(0, 0, 0)),
-                          () -> swerveDrive.getPose()),
+                          swerveDrive::getSimPose3d),
                       new AprilTagVisionIOSim(
                           "limelight-back",
                           new Transform3d(
                               new Translation3d(-0.3, 0.0, 0.5), new Rotation3d(0, 0, Math.PI)),
-                          () -> swerveDrive.getPose())),
+                          swerveDrive::getSimPose3d)),
                   java.util.List.of());
           break;
         }
@@ -210,12 +213,14 @@ public class RobotContainer {
 
           floorIntake =
               new MARSShooter(
+                  "FloorIntake",
                   new FlywheelIOTalonFX(
                       IntakeConstants.FLOOR_MOTOR_ID, IntakeConstants.CANBUS, false),
                   powerManager);
 
           shooter =
               new MARSShooter(
+                  "Shooter",
                   new FlywheelIOTalonFX(
                       ShooterConstants.LM_MOTOR_ID,
                       new int[] {
@@ -229,6 +234,7 @@ public class RobotContainer {
                   powerManager);
           feeder =
               new MARSShooter(
+                  "Feeder",
                   new FlywheelIOTalonFX(
                       ShooterConstants.FEEDER_MOTOR_ID, ShooterConstants.CANBUS, false),
                   powerManager);
@@ -284,13 +290,19 @@ public class RobotContainer {
                   powerManager);
           floorIntake =
               new MARSShooter(
-                  com.marslib.util.ReplayIOFactory.createProxy(FlywheelIO.class), powerManager);
+                  "FloorIntake",
+                  com.marslib.util.ReplayIOFactory.createProxy(FlywheelIO.class),
+                  powerManager);
           shooter =
               new MARSShooter(
-                  com.marslib.util.ReplayIOFactory.createProxy(FlywheelIO.class), powerManager);
+                  "Shooter",
+                  com.marslib.util.ReplayIOFactory.createProxy(FlywheelIO.class),
+                  powerManager);
           feeder =
               new MARSShooter(
-                  com.marslib.util.ReplayIOFactory.createProxy(FlywheelIO.class), powerManager);
+                  "Feeder",
+                  com.marslib.util.ReplayIOFactory.createProxy(FlywheelIO.class),
+                  powerManager);
           ledManager = new LEDManager(new LEDIOAddressable(0, LEDConstants.LENGTH), powerManager);
 
           vision = new MARSVision(swerveDrive, java.util.List.of(), java.util.List.of());
