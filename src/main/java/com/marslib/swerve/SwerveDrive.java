@@ -64,6 +64,12 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
   private final SysIdRoutine sysIdRoutine;
   private final OnlineFeedforwardEstimator driveFeedforwardEstimator;
 
+  private final com.marslib.faults.Alert gyroAlert =
+      new com.marslib.faults.Alert(
+          "SwerveDrive",
+          "Gyro Disconnected. Odometry Trust Lost.",
+          com.marslib.faults.Alert.AlertType.CRITICAL);
+
   private double lastDriveVelocityForSysId = 0.0;
 
   private final SwerveDriveSimulation simDrive;
@@ -255,6 +261,9 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
     // Update gyro inputs
     gyroIO.updateInputs(gyroInputs);
     Logger.processInputs("SwerveDrive/Gyro", gyroInputs);
+
+    // Evaluate Hardware Constraints via FaultManager
+    gyroAlert.set(!gyroInputs.connected);
 
     for (SwerveModule module : modules) {
       module.periodic();

@@ -23,6 +23,12 @@ public class GyroIOSim implements GyroIO {
   public void updateInputs(GyroIOInputs inputs) {
     inputs.connected = true;
 
+    if (frc.robot.constants.SimulationConstants.ENABLE_CAN_STARVATION) {
+      if (Math.random() < frc.robot.constants.SimulationConstants.CAN_STARVATION_PROBABILITY) {
+        inputs.connected = false;
+      }
+    }
+
     if (gyroSim != null) {
       inputs.yawPositionRad = gyroSim.getGyroReading().getRadians();
       inputs.yawVelocityRadPerSec = gyroSim.getMeasuredAngularVelocity().in(RadiansPerSecond);
