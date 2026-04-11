@@ -41,6 +41,7 @@ These rules are **non-negotiable** across all MARSLib code:
 
 | Domain | Skill | Covers |
 |---|---|---|
+| Core Standards | `marslib-core-standards` | Formatting, Never Nester rules, specific unit naming, mathematics formatting |
 | Drivetrain | `marslib-swerve` | SwerveDrive, odometry, PathPlanner, modules |
 | Mechanisms | `marslib-mechanisms` | Elevator, arm, intake, shooter IO patterns |
 | Superstructure | `marslib-superstructure` | Collision safety, state machine coordination |
