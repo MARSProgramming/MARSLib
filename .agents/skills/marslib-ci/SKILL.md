@@ -51,6 +51,7 @@ All public classes and methods MUST have Javadoc comments. The `javadoc` task ca
 - **Spotless failures** — Run `.\gradlew.bat spotlessApply` locally.
 - **vendordep conflicts** — Delete `build/` directory and re-run `.\gradlew.bat build`.
 - **Javadoc HTML errors** — Use `{@code text}` not `<code>text</code>` for inline code in doc comments.
+- **"cannot serialize object of type 'org.gradle.api.internal.project.DefaultProject'"** — Do NOT enable `org.gradle.configuration-cache=true`. FRC WPILib's `simulateJava` and `deploy` tasks are fundamentally incompatible with Gradle Configuration Caching and will throw unrecoverable cache serialization errors. Keep it disabled.
 
 ## 5. Telemetry
 CI is not a runtime system, so no AdvantageKit telemetry. Build metadata is logged via:
