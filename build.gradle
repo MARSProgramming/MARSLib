@@ -267,6 +267,9 @@ abstract class GenerateVersionFile extends DefaultTask {
     @Input
     abstract Property<String> getProjectName()
 
+    @javax.inject.Inject
+    abstract org.gradle.process.ExecOperations getExecOperations()
+
     @TaskAction
     void generate() {
 
@@ -306,9 +309,19 @@ public final class BuildConstants {
 
     private String execute(String cmd) {
         try {
-            def process = cmd.execute()
-            process.waitFor()
-            return process.exitValue() == 0 ? process.text.trim() : "unknown"
+            def out = new java.io.ByteArrayOutputStream()
+            // For Windows/Linux split commands
+            def argsList = cmd.tokenize(' ') as List
+            // Handle quoted arguments gracefully for git date formats
+            if (cmd.contains("format:'")) {
+               argsList = ["git", "log", "-1", "--format=%cd", "--date=format:%Y-%m-%d %H:%M:%S %Z"]
+            }
+            getExecOperations().exec {
+                commandLine argsList
+                standardOutput = out
+                ignoreExitValue = true
+            }
+            return out.toString().trim()
         } catch (Exception e) {
             return "unknown"
         }
@@ -316,7 +329,6 @@ public final class BuildConstants {
 }
 
 def generateVersionFile = tasks.register("generateVersionFile", GenerateVersionFile) {
-    notCompatibleWithConfigurationCache("Executes external Git commands")
     outputDir = layout.buildDirectory.dir("generated/source/version/main/java")
     projectName = project.name
 }
@@ -364,7 +376,6 @@ generateVersionFile.configure {
 }
 
 // Spotless formatting
-project.compileJava.dependsOn(spotlessApply)
 spotless {
     java {
         target fileTree(".") {
