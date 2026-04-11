@@ -69,10 +69,10 @@ public class Arena2026Rebuilt extends SimulatedArena {
     private static final double UPRIGHT_OFFSET_FROM_SIDE_WALL = 3.31524;
     private static final double UPRIGHT_Y_SPACING = Inches.of(33.75).in(Meters);
 
-    private static final double TRENCH_WALL_Y_LEN = Inches.of(12.0).in(Meters);
-    private static final double TRENCH_WALL_X_LEN = Inches.of(47.0).in(Meters);
-    private static final double TRENCH_WALL_OFFSET_FROM_END_WALL = 4.61769;
-    private static final double TRENCH_WALL_OFFSET_FROM_SIDE_WALL = 1.43113;
+    // private static final double TRENCH_WALL_Y_LEN = Inches.of(12.0).in(Meters);
+    // private static final double TRENCH_WALL_X_LEN = Inches.of(47.0).in(Meters);
+    // private static final double TRENCH_WALL_OFFSET_FROM_END_WALL = 4.61769;
+    // private static final double TRENCH_WALL_OFFSET_FROM_SIDE_WALL = 1.43113;
 
     public RebuiltFieldObstaclesMap(boolean AddRampCollider) {
 

@@ -13,6 +13,7 @@ public interface AprilTagVisionIO {
     public int[] tagCounts = new int[0];
     public double[] averageDistancesMeters = new double[0];
     public double[] ambiguities = new double[0];
+    public Pose3d[] cameraFrustum = new Pose3d[0];
   }
 
   public default void updateInputs(AprilTagVisionIOInputs inputs) {}

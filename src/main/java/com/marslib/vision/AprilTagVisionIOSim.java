@@ -45,11 +45,15 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
   private final PhotonCameraSim cameraSim;
   private final PhotonPoseEstimator poseEstimator;
   private final Supplier<Pose2d> poseSupplier;
+  private final Transform3d robotToCamera;
+
+  private static double lastVisionSimUpdate = -1.0;
 
   @SuppressWarnings({"PMD.AssignmentToNonFinalStatic", "StaticAssignmentInConstructor"})
   public AprilTagVisionIOSim(
       String cameraName, Transform3d robotToCamera, Supplier<Pose2d> poseSupplier) {
     this.poseSupplier = poseSupplier;
+    this.robotToCamera = robotToCamera;
 
     // Initialize global vision sim once
     if (visionSim == null) {
@@ -87,8 +91,20 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
   @SuppressWarnings("removal")
   @Override
   public void updateInputs(AprilTagVisionIOInputs inputs) {
-    // Update simulation view from current true pose so cameras can 'see' the field
-    visionSim.update(poseSupplier.get());
+    // Update simulation view from current true pose only once per physical loop
+    double currentTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+    if (currentTime > lastVisionSimUpdate) {
+      visionSim.update(poseSupplier.get());
+      lastVisionSimUpdate = currentTime;
+    }
+
+    // Generate FOV visualizer based on true physical position + mounting location
+    inputs.cameraFrustum =
+        FrustumVisualizer.generateFrustum(
+            new Pose3d(poseSupplier.get()).plus(robotToCamera),
+            70.0, // Horiz FOV
+            50.0, // Vert FOV
+            4.0); // Clip distance
 
     var results = camera.getAllUnreadResults();
 

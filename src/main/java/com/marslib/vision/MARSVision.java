@@ -65,6 +65,7 @@ public class MARSVision extends SubsystemBase {
     latestTargetTranslation = Optional.empty(); // Reset each loop unless a target is found
 
     GyroIOInputsAutoLogged gyro = swerveDrive.getGyroInputs();
+    java.util.List<Pose3d> allCameraFrustums = new java.util.ArrayList<>();
 
     // Process AprilTags
     for (int i = 0; i < aprilTagIOs.size(); i++) {
@@ -159,7 +160,13 @@ public class MARSVision extends SubsystemBase {
       Logger.recordOutput("Vision/Rejected/ZHeight/" + i, rejectedZHeight);
       Logger.recordOutput("Vision/Rejected/Ambiguity/" + i, rejectedAmbiguity);
       Logger.recordOutput("Vision/AcceptedCount/" + i, acceptedCount);
+
+      for (Pose3d p : aprilTagInputs[i].cameraFrustum) {
+        allCameraFrustums.add(p);
+      }
     }
+
+    Logger.recordOutput("Vision/CameraFrustums", allCameraFrustums.toArray(new Pose3d[0]));
 
     // Process SLAM
     for (int i = 0; i < slamIOs.size(); i++) {

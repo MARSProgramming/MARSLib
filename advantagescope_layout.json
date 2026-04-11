@@ -75,6 +75,15 @@
                     "options": {
                       "color": "#ff0000"
                     }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "/RealOutputs/Vision/CameraFrustums",
+                    "logType": "Pose3d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ffff00"
+                    }
                   }
                 ]
               },
