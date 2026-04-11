@@ -69,6 +69,7 @@ public class ShootOnTheMoveCommand extends Command {
 
     this.thetaAlignController =
         new PIDController(frc.robot.constants.AutoConstants.ALIGN_THETA_KP, 0, 0);
+    this.thetaAlignController.setIZone(Math.toRadians(5.0)); // Task 3
     this.thetaAlignController.enableContinuousInput(-Math.PI, Math.PI);
 
     addRequirements(swerveDrive, cowl, shooter);

@@ -37,8 +37,10 @@ public class SmartAssistAlign extends Command {
     // These controllers compare the Robot's true position to the Node's true position
     this.yAlignController =
         new PIDController(frc.robot.constants.AutoConstants.ALIGN_TRANSLATION_KP, 0, 0);
+    this.yAlignController.setIZone(0.2); // Task 3
     this.thetaAlignController =
         new PIDController(frc.robot.constants.AutoConstants.ALIGN_THETA_KP, 0, 0);
+    this.thetaAlignController.setIZone(Math.toRadians(5.0)); // Task 3
     this.thetaAlignController.enableContinuousInput(-Math.PI, Math.PI);
 
     addRequirements(swerveDrive);

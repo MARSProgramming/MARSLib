@@ -32,6 +32,12 @@ public class TeleopDriveCommand extends Command {
       new SlewRateLimiter(DriveConstants.TELEOP_OMEGA_ACCEL_LIMIT);
   private final PIDController headingController =
       new PIDController(DriveConstants.HEADING_KP, 0, 0);
+  {
+    // Task 3: Cap integral windup safely (max ~5 degrees tolerance)
+    headingController.setIZone(Math.toRadians(5.0));
+    // Also protect against 360-degree wrapping
+    headingController.enableContinuousInput(-Math.PI, Math.PI);
+  }
 
   private Rotation2d targetHeading = new Rotation2d();
   private final ChassisSpeeds targetSpeeds = new ChassisSpeeds();
