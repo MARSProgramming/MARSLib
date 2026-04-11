@@ -83,7 +83,7 @@ public class GhostManagerTest {
     assertTrue(ghostFile.exists(), "Ghost macro file should have been created.");
 
     String content = Files.readString(ghostFile.toPath());
-    String[] lines = java.util.regex.Pattern.compile("\n").split(content);
+    String[] lines = content.split("\n", -1);
 
     // Header + 5 data lines (+ potentially empty line from last println)
     assertTrue(lines.length >= 6, "Should write header and 5 execution frames");

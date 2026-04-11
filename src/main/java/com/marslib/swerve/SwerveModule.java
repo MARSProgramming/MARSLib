@@ -64,7 +64,7 @@ public class SwerveModule {
   /**
    * Returns the hardware timestamps of the high-frequency positional records.
    *
-   * @return Array of FPGA/Hardware timestamps tightly synced with {@link #getPositionDeltas()}.
+   * @return Array of FPGA/Hardware timestamps tightly synced with {@link #getCachedDelta(int)}.
    */
   public double[] getOdometryTimestamps() {
     return inputs.odometryTimestamps;

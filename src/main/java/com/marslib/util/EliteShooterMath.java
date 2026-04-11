@@ -1,8 +1,6 @@
 package com.marslib.util;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
@@ -50,39 +48,29 @@ public class EliteShooterMath {
 
     EliteShooterSetpoint setpoint = new EliteShooterSetpoint();
 
-    Translation3d robotToTarget =
-        targetTranslation.minus(
-            new Translation3d(robotPose.getX(), robotPose.getY(), releaseHeightZ));
+    double tx = targetTranslation.getX() - robotPose.getX();
+    double ty = targetTranslation.getY() - robotPose.getY();
+    double tz = targetTranslation.getZ() - releaseHeightZ;
+
+    double vx = fieldRelativeSpeeds.vxMetersPerSecond;
+    double vy = fieldRelativeSpeeds.vyMetersPerSecond;
 
     double vShot = nominalShotSpeedMetersPerSec;
 
     // Solve quadratic equation to obtain time of flight of game piece.
     // a = vx^2 + vy^2 - vShot^2
-    // b = -2 * ((tx - rx) * vx + (ty - ry) * vy)
-    // c = (tx - rx)^2 + (ty - ry)^2 + dz^2
-    double a =
-        fieldRelativeSpeeds.vxMetersPerSecond * fieldRelativeSpeeds.vxMetersPerSecond
-            + fieldRelativeSpeeds.vyMetersPerSecond * fieldRelativeSpeeds.vyMetersPerSecond
-            - vShot * vShot;
+    // b = -2 * (tx * vx + ty * vy)
+    // c = tx^2 + ty^2 + tz^2
+    double a = vx * vx + vy * vy - vShot * vShot;
 
     if (Math.abs(a) < 1e-6) {
       // Cheat slightly to avoid division by zero / non-quadratic states
       vShot = 1.01 * vShot;
-      a =
-          fieldRelativeSpeeds.vxMetersPerSecond * fieldRelativeSpeeds.vxMetersPerSecond
-              + fieldRelativeSpeeds.vyMetersPerSecond * fieldRelativeSpeeds.vyMetersPerSecond
-              - vShot * vShot;
+      a = vx * vx + vy * vy - vShot * vShot;
     }
 
-    double b =
-        -2.0
-            * (robotToTarget.getX() * fieldRelativeSpeeds.vxMetersPerSecond
-                + robotToTarget.getY() * fieldRelativeSpeeds.vyMetersPerSecond);
-
-    double c =
-        robotToTarget.getX() * robotToTarget.getX()
-            + robotToTarget.getY() * robotToTarget.getY()
-            + robotToTarget.getZ() * robotToTarget.getZ();
+    double b = -2.0 * (tx * vx + ty * vy);
+    double c = tx * tx + ty * ty + tz * tz;
 
     double discriminant = b * b - 4.0 * a * c;
     if (discriminant < 0.0) {
@@ -97,49 +85,33 @@ public class EliteShooterMath {
       return setpoint;
     }
 
-    Translation3d virtualShot =
-        new Translation3d(
-            (robotToTarget.getX() - fieldRelativeSpeeds.vxMetersPerSecond * t) / t,
-            (robotToTarget.getY() - fieldRelativeSpeeds.vyMetersPerSecond * t) / t,
-            (robotToTarget.getZ() / t));
+    double virtualShotX = (tx - vx * t) / t;
+    double virtualShotY = (ty - vy * t) / t;
 
-    Rotation2d virtualTargetRotation = new Rotation2d(virtualShot.getX(), virtualShot.getY());
-    double xyVel =
-        Math.sqrt(
-            virtualShot.getX() * virtualShot.getX() + virtualShot.getY() * virtualShot.getY());
+    double virtualTargetYawRad = Math.atan2(virtualShotY, virtualShotX);
+    double xyVel = Math.sqrt(virtualShotX * virtualShotX + virtualShotY * virtualShotY);
 
     // Apply gravity and lift compensation
     double drop = 0.5 * t * t * gravity;
     drop += 0.5 * liftCoefficient * c;
 
-    double pitchAngleRads = Math.atan2((robotToTarget.getZ() - drop) / t, xyVel);
-    double adjustedVShot =
-        Math.sqrt(
-            (robotToTarget.getZ() - drop) * (robotToTarget.getZ() - drop) / (t * t)
-                + xyVel * xyVel);
+    double virtualDeltaZ = tz - drop;
+    double pitchAngleRads = Math.atan2(virtualDeltaZ / t, xyVel);
+    double adjustedVShot = Math.sqrt((virtualDeltaZ * virtualDeltaZ) / (t * t) + xyVel * xyVel);
 
     // Compute Chassis Aim and Feedforward
-    double distanceToTarget =
-        Math.sqrt(
-            robotToTarget.getX() * robotToTarget.getX()
-                + robotToTarget.getY() * robotToTarget.getY());
+    double distanceToTargetSq = tx * tx + ty * ty;
 
-    double chassisAngularFF =
-        (robotToTarget.getY() * fieldRelativeSpeeds.vxMetersPerSecond
-                - robotToTarget.getX() * fieldRelativeSpeeds.vyMetersPerSecond)
-            / (distanceToTarget * distanceToTarget);
+    double chassisAngularFF = (ty * vx - tx * vy) / distanceToTargetSq;
 
-    Translation2d targetToRobotFrame =
-        new Translation2d(
-                fieldRelativeSpeeds.vxMetersPerSecond, fieldRelativeSpeeds.vyMetersPerSecond)
-            .rotateBy(virtualTargetRotation);
+    // Rotate field speeds to target frame natively: cos * vx + sin * vy
+    double cosYaw = Math.cos(virtualTargetYawRad);
+    double sinYaw = Math.sin(virtualTargetYawRad);
+    double targetFrameVx = vx * cosYaw + vy * sinYaw;
 
-    double hoodFF =
-        targetToRobotFrame.getX()
-            * -robotToTarget.getZ()
-            / (distanceToTarget * distanceToTarget + robotToTarget.getZ() * robotToTarget.getZ());
+    double hoodFF = targetFrameVx * -tz / (distanceToTargetSq + tz * tz);
 
-    setpoint.robotAimYawRadians = virtualTargetRotation.getRadians();
+    setpoint.robotAimYawRadians = virtualTargetYawRad;
     setpoint.chassisAngularFeedforward = chassisAngularFF;
     setpoint.hoodRadians = pitchAngleRads;
     setpoint.hoodFeedforward = hoodFF;

@@ -41,6 +41,18 @@ public class ShootOnTheMoveCommand extends Command {
   // (Tune this parameter based on wheel radius and surface slip!)
   private static final double VELOCITY_TO_RAD_PER_SEC = 30.0;
 
+  private static final Translation3d BLUE_HUB_3D =
+      new Translation3d(
+          frc.robot.constants.FieldConstants.BLUE_HUB_POS.getX(),
+          frc.robot.constants.FieldConstants.BLUE_HUB_POS.getY(),
+          frc.robot.constants.FieldConstants.HUB_SIZE_METERS);
+
+  private static final Translation3d RED_HUB_3D =
+      new Translation3d(
+          frc.robot.constants.FieldConstants.RED_HUB_POS.getX(),
+          frc.robot.constants.FieldConstants.RED_HUB_POS.getY(),
+          frc.robot.constants.FieldConstants.HUB_SIZE_METERS);
+
   public ShootOnTheMoveCommand(
       SwerveDrive swerveDrive,
       MARSCowl cowl,
@@ -73,18 +85,12 @@ public class ShootOnTheMoveCommand extends Command {
     ChassisSpeeds currentFieldSpeeds =
         ChassisSpeeds.fromRobotRelativeSpeeds(currentSpeeds, currentPose.getRotation());
 
-    // 3. Determine dynamic target based on alliance
-    Translation2d targetNode2d = frc.robot.constants.FieldConstants.BLUE_HUB_POS;
+    // 3. Determine dynamic target based on alliance natively without GC allocation
+    Translation3d targetNode = BLUE_HUB_3D;
     if (DriverStation.getAlliance().isPresent()
         && DriverStation.getAlliance().get() == Alliance.Red) {
-      targetNode2d = frc.robot.constants.FieldConstants.RED_HUB_POS;
+      targetNode = RED_HUB_3D;
     }
-
-    Translation3d targetNode =
-        new Translation3d(
-            targetNode2d.getX(),
-            targetNode2d.getY(),
-            frc.robot.constants.FieldConstants.HUB_SIZE_METERS);
 
     // 4. Exact True-Vector Quadratic Time-Of-Flight Intersection Solver
     EliteShooterSetpoint setpoint =
@@ -113,6 +119,8 @@ public class ShootOnTheMoveCommand extends Command {
     double finalOmega = pidOmega + feedforwardOmega;
 
     // 6. Package field-centric commands into kinematics
+    // Note: Translation2d does not have setters, so we simply construct one or bypass if possible.
+    // Given tractionLimiter requires Translation2d, we must allocate it unless modified.
     Translation2d limitedTrans = tractionLimiter.calculate(new Translation2d(fieldVx, fieldVy));
 
     ChassisSpeeds robotSpeeds =

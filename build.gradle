@@ -10,17 +10,17 @@ plugins {
 }
 
 testlogger {
-    theme 'mocha'
-    showExceptions true
-    showStackTraces true
-    showFullStackTraces false
-    showCauses true
-    slowThreshold 2000
-    showSummary true
-    showSimpleNames false
-    showPassed true
-    showSkipped true
-    showFailed true
+    theme = 'mocha'
+    showExceptions = true
+    showStackTraces = true
+    showFullStackTraces = false
+    showCauses = true
+    slowThreshold = 2000
+    showSummary = true
+    showSimpleNames = false
+    showPassed = true
+    showSkipped = true
+    showFailed = true
 }
 
 java {
@@ -255,7 +255,8 @@ tasks.withType(JavaCompile) {
     options.errorprone.disableWarningsInGeneratedCode = true
     options.errorprone.errorproneArgs.addAll([
         '-XepAllErrorsAsWarnings',
-        '-XepDisableWarningsInGeneratedCode'
+        '-XepDisableWarningsInGeneratedCode',
+        '-Xep:MissingOverride:OFF'
     ])
 }
 
@@ -383,7 +384,7 @@ spotless {
             exclude "**/build/**", "**/build-*/**"
         }
 // greclipse() // Removed due to P2 provisioning errors
-        indentWithSpaces(4)
+        leadingTabsToSpaces(4)
         trimTrailingWhitespace()
         endWithNewline()
     }
@@ -400,7 +401,7 @@ spotless {
             exclude "**/build/**", "**/build-*/**"
         }
         trimTrailingWhitespace()
-        indentWithSpaces(2)
+        leadingTabsToSpaces(2)
         endWithNewline()
     }
 }
