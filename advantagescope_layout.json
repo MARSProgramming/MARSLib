@@ -72,7 +72,7 @@
                     "logType": "Pose2d",
                     "visible": true,
                     "options": {
-                      "model": "Robot"
+                      "bumpers": ""
                     }
                   },
                   {
@@ -81,7 +81,6 @@
                     "logType": "Pose2d",
                     "visible": true,
                     "options": {
-                      "model": "Robot",
                       "color": "#ff0000"
                     }
                   }
