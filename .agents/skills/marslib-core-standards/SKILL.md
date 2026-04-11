@@ -55,3 +55,8 @@ Disallow single-character or massively abbreviated variable names outside of sta
 
 ## 6. File Limits
 - Restrict logic class lengths strictly to functional encapsulation. Refactor large loops into bounded helper libraries if a subsystem natively exceeds ~600 lines.
+
+## 7. Zero-Allocation & Mutable Proxy References (State Leakage)
+When optimizing hot-loops (like 250Hz odometry or 50Hz teleop sequences) by using pre-allocated mutable proxy references (e.g. `private final ChassisSpeeds targetSpeeds = new ChassisSpeeds();`) instead of continuously allocating new objects with `new` or `fromFieldRelative()`, you MUST strictly enforce Ephemeral Struct rules:
+- **Total Overwrite:** The proxy object's internal properties (vx, vy, omega, etc.) must be completely re-calculated and explicitly assigned via `=` (never `+=` or `*=`) upon every 20ms execution using raw incoming data. You cannot safely read the previous tick's data from the proxy if it was potentially mutated downstream.
+- **Reference Passing:** If you pass the proxy reference into a downstream FRC kinematics or telemetry function block, assume the object is mathematically poisoned by the time it returns. If downstream classes require persistent snapshots of the data between ticks, you must explicitly clone the proxy (`new ChassisSpeeds(speeds...)`) or leverage native FRC math (e.g. `ChassisSpeeds.discretize`) that safely delegates new pointer construction.
