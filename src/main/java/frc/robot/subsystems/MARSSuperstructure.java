@@ -210,7 +210,6 @@ public class MARSSuperstructure extends SubsystemBase {
   }
 
   /** Handles intake roller activation and physics-based game piece collection. */
-  @SuppressWarnings("deprecation")
   private void handleIntakeLogic(SuperstructureState currentState) {
     // Physics collision check for game piece swallowing
 
@@ -224,7 +223,6 @@ public class MARSSuperstructure extends SubsystemBase {
   }
 
   /** Handles shooter spin-up, flywheel readiness checks, feeding, and game piece launching. */
-  @SuppressWarnings("deprecation")
   private void handleScoringLogic(SuperstructureState currentState) {
     if (currentState == SuperstructureState.SCORE) {
       EliteShooterMath.EliteShooterSetpoint shot = calculateStaticShot();

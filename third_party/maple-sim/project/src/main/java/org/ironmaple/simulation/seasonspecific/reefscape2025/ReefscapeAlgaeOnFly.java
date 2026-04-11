@@ -17,30 +17,30 @@ import org.ironmaple.simulation.gamepieces.GamePieceProjectile;
  *
  * <p>The simulation will determine if the ALGAE hits its target—the NET.
  *
- * <p>The user can specify a callback using {@link #setHitNetCallBack(Runnable)}, which will be triggered when the ALGAE
- * hits the NET.
+ * <p>The user can specify a callback using {@link #setHitNetCallBack(Runnable)}, which will be
+ * triggered when the ALGAE hits the NET.
  */
 public class ReefscapeAlgaeOnFly extends GamePieceProjectile {
 
-    public ReefscapeAlgaeOnFly(
-            Translation2d robotPosition,
-            Translation2d shooterPositionOnRobot,
-            ChassisSpeeds chassisSpeeds,
-            Rotation2d shooterFacing,
-            Distance initialHeight,
-            LinearVelocity launchingSpeed,
-            Angle shooterAngle) {
-        super(
-                ReefscapeAlgaeOnField.REEFSCAPE_ALGAE_INFO,
-                robotPosition,
-                shooterPositionOnRobot,
-                chassisSpeeds,
-                shooterFacing,
-                initialHeight,
-                launchingSpeed,
-                shooterAngle);
+  public ReefscapeAlgaeOnFly(
+      Translation2d robotPosition,
+      Translation2d shooterPositionOnRobot,
+      ChassisSpeeds chassisSpeeds,
+      Rotation2d shooterFacing,
+      Distance initialHeight,
+      LinearVelocity launchingSpeed,
+      Angle shooterAngle) {
+    super(
+        ReefscapeAlgaeOnField.REEFSCAPE_ALGAE_INFO,
+        robotPosition,
+        shooterPositionOnRobot,
+        chassisSpeeds,
+        shooterFacing,
+        initialHeight,
+        launchingSpeed,
+        shooterAngle);
 
-        super.withTouchGroundHeight(0.8);
-        super.enableBecomesGamePieceOnFieldAfterTouchGround();
-    }
+    super.withTouchGroundHeight(0.8);
+    super.enableBecomesGamePieceOnFieldAfterTouchGround();
+  }
 }

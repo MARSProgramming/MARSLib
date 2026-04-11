@@ -138,21 +138,17 @@ public class VisionFusionTest {
             drift, initialPose, finalPose));
   }
 
-  /**
-   * Tests that the physics world singleton was properly reset and is not carrying stale state.
-   * Verifies the stale-state detection guard we added.
-   */
   @Test
   public void testPhysicsWorldResetVerification() {
     // After setUp(), the physics world should have a known set of bodies:
-    // ~7 field boundaries + ~168 game pieces = ~175 total for a fresh world.
-    // A stale world (unreset between tests) would have 350+ from doubled chassis/modules.
+    // ~7 field boundaries + ~408 game pieces = ~415 total for a fresh, realistic field.
+    // A stale world (unreset between tests) would have 800+ from doubled game pieces/chassis.
     int bodyCount = MARSPhysicsWorld.getInstance().getBodyCount();
     assertTrue(
-        bodyCount < 250,
+        bodyCount < 500,
         "Physics world has "
             + bodyCount
-            + " bodies — expected <250 for a fresh world."
-            + " A count well above ~175 indicates resetInstance() is not working.");
+            + " bodies — expected <500 for a fresh world."
+            + " A count well above ~423 indicates resetInstance() is not working.");
   }
 }

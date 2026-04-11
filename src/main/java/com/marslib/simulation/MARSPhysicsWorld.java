@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import frc.robot.constants.FieldConstants;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.world.World;
@@ -95,6 +96,9 @@ public class MARSPhysicsWorld {
     arena.setEfficiencyMode(FieldConstants.MAPLE_SIM_EFFICIENCY_MODE);
 
     mechanismBodies = new HashMap<>();
+
+    // Populate the field with game pieces immediately upon initialization
+    arena.resetFieldForAuto();
   }
 
   /** Return the underlying maple-sim Arena2026Rebuilt instance. */
@@ -130,6 +134,7 @@ public class MARSPhysicsWorld {
     simulatedVoltage = loadedVoltage;
     RoboRioSim.setVInVoltage(loadedVoltage);
     Logger.recordOutput("PhysicsWorld/ComputedVoltage", loadedVoltage);
+    Logger.recordOutput("PhysicsWorld/Heartbeat", edu.wpi.first.wpilibj.Timer.getFPGATimestamp());
 
     frameCurrentDrawAmps = 0.0;
 
@@ -153,5 +158,11 @@ public class MARSPhysicsWorld {
       Pose3d pose3d = new Pose3d(xMeters, yMeters, 0.0, new Rotation3d(0.0, 0.0, yawRads));
       Logger.recordOutput("PhysicsWorld/" + mechanismName, pose3d);
     }
+
+    // Export field game pieces
+    List<Pose3d> fuelPoses = arena.getGamePiecesPosesByType("Fuel");
+    Logger.recordOutput("PhysicsWorld/FuelCount", fuelPoses.size());
+    Logger.recordOutput("Simulation/GamePieces", fuelPoses.toArray(new Pose3d[0]));
+    Logger.recordOutput("PhysicsWorld/Fuel", fuelPoses.toArray(new Pose3d[0]));
   }
 }

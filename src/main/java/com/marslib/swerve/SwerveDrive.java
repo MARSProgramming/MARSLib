@@ -12,7 +12,9 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -327,6 +329,10 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     Logger.recordOutput("SwerveDrive/Pose", currentPose);
+    Logger.recordOutput("Odometry/RobotPose", currentPose);
+    Logger.recordOutput("Robot/Pose", currentPose);
+    Logger.recordOutput(
+        "Robot/Pose3d", new Pose3d(currentPose.getX(), currentPose.getY(), 0.0, new Rotation3d()));
 
     // GC-free: reuse pre-allocated states array for logging
     measuredStatesCache[0] = modules[0].getLatestState();
