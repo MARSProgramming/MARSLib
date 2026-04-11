@@ -1,24 +1,24 @@
 {
   "hubs": [
     {
-      "x": 0,
-      "y": 0,
-      "width": 1280,
-      "height": 720,
+      "x": -8,
+      "y": -8,
+      "width": 1936,
+      "height": 1048,
       "state": {
         "sidebar": {
           "width": 160,
           "expanded": []
         },
         "tabs": {
-          "selected": 0,
+          "selected": 4,
           "tabs": [
             {
               "type": 0,
               "title": "Documentation",
               "controller": null,
               "controllerUUID": "givqfu7830effbmzqmmgos",
-              "renderer": null,
+              "renderer": "#/",
               "controlsHeight": 0
             },
             {
@@ -55,7 +55,20 @@
                       "color": "#00ff00"
                     }
                   }
-                ]
+                ],
+                "discreteSources": [],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
               },
               "controllerUUID": "t8h1ecr3xyq7gq44dqt93",
               "renderer": null,
@@ -84,7 +97,10 @@
                       "color": "#ff0000"
                     }
                   }
-                ]
+                ],
+                "field": "FRC:2026 Field",
+                "orientation": 0,
+                "size": "large"
               },
               "controllerUUID": "ygcth53sbualnbqmssr2jg",
               "renderer": null,
@@ -101,7 +117,7 @@
                     "logType": "Pose2d",
                     "visible": true,
                     "options": {
-                      "model": "Robot"
+                      "model": "2026 KitBot"
                     }
                   },
                   {
@@ -110,7 +126,7 @@
                     "logType": "Pose2d",
                     "visible": true,
                     "options": {
-                      "model": "Robot",
+                      "model": "2026 KitBot",
                       "color": "#00ff00"
                     }
                   },
@@ -124,10 +140,24 @@
                       "size": "normal"
                     }
                   }
-                ]
+                ],
+                "game": "FRC:2026 Field"
               },
               "controllerUUID": "ghxd6gyfyiqfnpxnv66s8",
-              "renderer": null,
+              "renderer": {
+                "cameraIndex": -1,
+                "orbitFov": 50,
+                "cameraPosition": [
+                  1.4695761589768238e-15,
+                  5.999999999999999,
+                  -12
+                ],
+                "cameraTarget": [
+                  0,
+                  0.5,
+                  0
+                ]
+              },
               "controlsHeight": 0
             },
             {
@@ -141,34 +171,37 @@
                     "logType": "Pose2d",
                     "visible": true,
                     "options": {
-                      "model": "Robot"
+                      "model": "2026 KitBot"
                     }
                   },
                   {
-                    "type": "ghost",
-                    "logKey": "/RealOutputs/PathPlanner/TargetPose",
-                    "logType": "Pose2d",
-                    "visible": true,
-                    "options": {
-                      "model": "Robot",
-                      "color": "#ffaa00"
-                    }
-                  },
-                  {
-                    "type": "ghost",
+                    "type": "gamePiece",
                     "logKey": "/RealOutputs/PhysicsWorld/GamePieces",
                     "logType": "Pose3d[]",
                     "visible": true,
                     "options": {
-                      "model": "Robot",
-                      "color": "#ffff00"
+                      "variant": "Fuel"
                     }
                   }
-                ]
+                ],
+                "game": "FRC:2026 Field"
               },
               "controllerUUID": "xckrcet114ioqhc1bpg9js",
-              "renderer": null,
-              "controlsHeight": 0
+              "renderer": {
+                "cameraIndex": -1,
+                "orbitFov": 50,
+                "cameraPosition": [
+                  1.4695761589768238e-15,
+                  5.999999999999999,
+                  -12
+                ],
+                "cameraTarget": [
+                  0,
+                  0.5,
+                  0
+                ]
+              },
+              "controlsHeight": 200
             },
             {
               "type": 9,
@@ -195,7 +228,11 @@
                       "arrangement": "0,1,2,3"
                     }
                   }
-                ]
+                ],
+                "maxSpeed": 5,
+                "sizeX": 0.65,
+                "sizeY": 0.65,
+                "orientation": 1
               },
               "controllerUUID": "bsq9932h1q41p04rat0gzp",
               "renderer": null,
@@ -205,31 +242,31 @@
               "type": 4,
               "title": "Tuning Table",
               "controller": [
-                "NT:/TunableNumbers/Shooter/kS",
-                "NT:/TunableNumbers/Shooter/kV",
-                "NT:/TunableNumbers/Shooter/kA",
-                "NT:/TunableNumbers/IntakePivot/kS",
-                "NT:/TunableNumbers/IntakePivot/kG",
-                "NT:/TunableNumbers/IntakePivot/kV",
-                "NT:/TunableNumbers/IntakePivot/kA",
-                "NT:/TunableNumbers/Cowl/kS",
-                "NT:/TunableNumbers/Cowl/kG",
-                "NT:/TunableNumbers/Cowl/kV",
-                "NT:/TunableNumbers/Cowl/kA",
-                "NT:/TunableNumbers/Climber/kS",
-                "NT:/TunableNumbers/Climber/kG",
-                "NT:/TunableNumbers/Climber/kV",
-                "NT:/TunableNumbers/Climber/kA",
-                "NT:/TunableNumbers/Vision/TAG_STD_BASE",
-                "NT:/TunableNumbers/Vision/MAX_AMBIGUITY",
-                "NT:/TunableNumbers/Vision/MAX_Z_HEIGHT",
-                "NT:/TunableNumbers/Vision/MAX_YAW_RATE_DEG_PER_SEC",
-                "NT:/TunableNumbers/Vision/MAX_TILT_DEG",
-                "NT:/TunableNumbers/Vision/FIELD_MARGIN_METERS",
-                "NT:/TunableNumbers/Vision/MULTI_TAG_STD_MULTIPLIER",
-                "NT:/TunableNumbers/Vision/ANGULAR_STD_MULTIPLIER",
-                "NT:/TunableNumbers/Vision/SLAM_STD_DEV",
-                "NT:/TunableNumbers/Vision/SLAM_ANGULAR_STD_DEV"
+                "/TunableNumbers/Shooter/kS",
+                "/TunableNumbers/Shooter/kV",
+                "/TunableNumbers/Shooter/kA",
+                "/TunableNumbers/IntakePivot/kS",
+                "/TunableNumbers/IntakePivot/kG",
+                "/TunableNumbers/IntakePivot/kV",
+                "/TunableNumbers/IntakePivot/kA",
+                "/TunableNumbers/Cowl/kS",
+                "/TunableNumbers/Cowl/kG",
+                "/TunableNumbers/Cowl/kV",
+                "/TunableNumbers/Cowl/kA",
+                "/TunableNumbers/Climber/kS",
+                "/TunableNumbers/Climber/kG",
+                "/TunableNumbers/Climber/kV",
+                "/TunableNumbers/Climber/kA",
+                "/TunableNumbers/Vision/TAG_STD_BASE",
+                "/TunableNumbers/Vision/MAX_AMBIGUITY",
+                "/TunableNumbers/Vision/MAX_Z_HEIGHT",
+                "/TunableNumbers/Vision/MAX_YAW_RATE_DEG_PER_SEC",
+                "/TunableNumbers/Vision/MAX_TILT_DEG",
+                "/TunableNumbers/Vision/FIELD_MARGIN_METERS",
+                "/TunableNumbers/Vision/MULTI_TAG_STD_MULTIPLIER",
+                "/TunableNumbers/Vision/ANGULAR_STD_MULTIPLIER",
+                "/TunableNumbers/Vision/SLAM_STD_DEV",
+                "/TunableNumbers/Vision/SLAM_ANGULAR_STD_DEV"
               ],
               "controllerUUID": "tunetab12345aaddvance",
               "renderer": null,
