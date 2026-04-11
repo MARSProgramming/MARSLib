@@ -42,7 +42,8 @@
                     "visible": true,
                     "options": {}
                   }
-                ]
+                ],
+                "discreteSources": []
               },
               "controllerUUID": "f02vpl0118drklm3pmdw3284j2m8dt5k",
               "renderer": null,
