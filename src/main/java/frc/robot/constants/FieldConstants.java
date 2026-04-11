@@ -119,7 +119,7 @@ public final class FieldConstants {
    * depot. Useful for faster iteration during mechanism development when full field population is
    * unnecessary.
    */
-  public static final boolean MAPLE_SIM_EFFICIENCY_MODE = false;
+  public static final boolean MAPLE_SIM_EFFICIENCY_MODE = true;
 
   private FieldConstants() {}
 }
