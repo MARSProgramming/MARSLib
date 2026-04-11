@@ -5,6 +5,12 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 10
+    ignore:
+      - dependency-name: "com.diffplug.spotless"
+      - dependency-name: "com.gradle.develocity"
+      - dependency-name: "net.ltgt.errorprone"
+      - dependency-name: "gradle"
+      - dependency-name: "org.junit.jupiter:junit-jupiter"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
