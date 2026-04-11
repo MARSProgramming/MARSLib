@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Volts;
 
+import com.marslib.diagnostics.SystemTestable;
 import com.marslib.mechanisms.*;
 import com.marslib.power.MARSPowerManager;
 import com.marslib.util.LoggedTunableNumber;
@@ -19,7 +20,7 @@ import org.littletonrobotics.junction.Logger;
  * <p>Handles physics simulation, angular position tracking, and dynamic load shedding to prevent
  * battery brownouts using MARSPowerManager data.
  */
-public class MARSIntakePivot extends SubsystemBase {
+public class MARSIntakePivot extends SubsystemBase implements SystemTestable {
 
   private final RotaryMechanismIO io;
   private final RotaryMechanismIOInputsAutoLogged inputs = new RotaryMechanismIOInputsAutoLogged();
@@ -138,5 +139,39 @@ public class MARSIntakePivot extends SubsystemBase {
 
   public Command home() {
     return homeWithCurrent(-2.0, 15.0);
+  }
+
+  @Override
+  public Command getSystemCheckCommand() {
+    return edu.wpi.first.wpilibj2.command.Commands.defer(
+            () -> {
+              double initial = getPositionRads();
+              return edu.wpi.first.wpilibj2.command.Commands.sequence(
+                  edu.wpi.first.wpilibj2.command.Commands.runOnce(
+                      () -> setTargetPosition(initial + 0.15)),
+                  edu.wpi.first.wpilibj2.command.Commands.waitSeconds(1.5),
+                  edu.wpi.first.wpilibj2.command.Commands.runOnce(
+                      () -> {
+                        if (Math.abs(getPositionRads() - (initial + 0.15)) > 0.08) {
+                          new com.marslib.faults.Alert(
+                                  "SystemCheck: IntakePivot did not rotate. Check CAN/gearbox.",
+                                  com.marslib.faults.Alert.AlertType.CRITICAL)
+                              .set(true);
+                        }
+                        setTargetPosition(initial);
+                      }),
+                  edu.wpi.first.wpilibj2.command.Commands.waitSeconds(1.0),
+                  edu.wpi.first.wpilibj2.command.Commands.runOnce(
+                      () -> {
+                        if (Math.abs(getPositionRads() - initial) > 0.08) {
+                          new com.marslib.faults.Alert(
+                                  "SystemCheck: IntakePivot did not return to start.",
+                                  com.marslib.faults.Alert.AlertType.CRITICAL)
+                              .set(true);
+                        }
+                      }));
+            },
+            java.util.Set.of(this))
+        .withName("IntakePivotSystemTest");
   }
 }

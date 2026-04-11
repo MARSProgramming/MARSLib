@@ -449,11 +449,11 @@ public class RobotContainer {
 
     practiceTab
         .add(
-            "System Diagnostics",
-            new frc.robot.commands.SystemCheckCommand(
-                swerveDrive, climber, cowl, floorIntake, shooter))
-        .withSize(2, 1)
-        .withPosition(3, 0);
+            "Full System Check",
+            new com.marslib.diagnostics.SystemCheckCommand(
+                climber, cowl, shooter, intakePivot, swerveDrive))
+        .withPosition(3, 0)
+        .withSize(2, 1);
 
     practiceTab
         .addString(

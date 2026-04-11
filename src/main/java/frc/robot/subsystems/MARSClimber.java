@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Volts;
 
+import com.marslib.diagnostics.SystemTestable;
 import com.marslib.mechanisms.*;
 import com.marslib.power.MARSPowerManager;
 import com.marslib.util.LoggedTunableNumber;
@@ -19,7 +20,7 @@ import org.littletonrobotics.junction.Logger;
  * <p>Handles physics simulation, linear position tracking, and dynamic load shedding to prevent
  * battery brownouts using MARSPowerManager data.
  */
-public class MARSClimber extends SubsystemBase {
+public class MARSClimber extends SubsystemBase implements SystemTestable {
 
   private final LinearMechanismIO io;
   private final LinearMechanismIOInputsAutoLogged inputs = new LinearMechanismIOInputsAutoLogged();
@@ -116,5 +117,39 @@ public class MARSClimber extends SubsystemBase {
 
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
     return sysIdRoutine.dynamic(direction);
+  }
+
+  @Override
+  public Command getSystemCheckCommand() {
+    return edu.wpi.first.wpilibj2.command.Commands.defer(
+            () -> {
+              double initial = getPositionMeters();
+              return edu.wpi.first.wpilibj2.command.Commands.sequence(
+                  edu.wpi.first.wpilibj2.command.Commands.runOnce(
+                      () -> setTargetPosition(initial + 0.1)),
+                  edu.wpi.first.wpilibj2.command.Commands.waitSeconds(1.5),
+                  edu.wpi.first.wpilibj2.command.Commands.runOnce(
+                      () -> {
+                        if (Math.abs(getPositionMeters() - (initial + 0.1)) > 0.05) {
+                          new com.marslib.faults.Alert(
+                                  "SystemCheck: Climber did not move upward. Check belt/CAN.",
+                                  com.marslib.faults.Alert.AlertType.CRITICAL)
+                              .set(true);
+                        }
+                        setTargetPosition(initial);
+                      }),
+                  edu.wpi.first.wpilibj2.command.Commands.waitSeconds(1.0),
+                  edu.wpi.first.wpilibj2.command.Commands.runOnce(
+                      () -> {
+                        if (Math.abs(getPositionMeters() - initial) > 0.05) {
+                          new com.marslib.faults.Alert(
+                                  "SystemCheck: Climber did not return to start.",
+                                  com.marslib.faults.Alert.AlertType.CRITICAL)
+                              .set(true);
+                        }
+                      }));
+            },
+            java.util.Set.of(this))
+        .withName("ClimberSystemTest");
   }
 }

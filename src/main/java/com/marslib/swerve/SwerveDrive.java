@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.Kilograms;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Volts;
 
+import com.marslib.diagnostics.SystemTestable;
 import com.marslib.power.MARSPowerManager;
 import com.marslib.util.OnlineFeedforwardEstimator;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -52,7 +53,7 @@ import org.littletonrobotics.junction.Logger;
  * logged to the network through the periodic loop. The Swerve modules themselves process inputs
  * through their respective hardware IO interfaces (e.g. TalonFX layers).
  */
-public class SwerveDrive extends SubsystemBase {
+public class SwerveDrive extends SubsystemBase implements SystemTestable {
   private final SwerveModule[] modules;
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
@@ -537,5 +538,49 @@ public class SwerveDrive extends SubsystemBase {
                     () -> runVelocity(new ChassisSpeeds(0.5, 0.0, 0.0)), this)
                 .withTimeout(0.5))
         .finallyDo(() -> runVelocity(new ChassisSpeeds()));
+  }
+
+  @Override
+  public Command getSystemCheckCommand() {
+    return edu.wpi.first.wpilibj2.command.Commands.sequence(
+            edu.wpi.first.wpilibj2.command.Commands.runOnce(
+                () -> {
+                  SwerveModuleState[] steerStates = new SwerveModuleState[4];
+                  for (int i = 0; i < 4; i++)
+                    steerStates[i] =
+                        new SwerveModuleState(
+                            0, edu.wpi.first.math.geometry.Rotation2d.fromDegrees(90));
+                  setModuleStates(steerStates);
+                }),
+            edu.wpi.first.wpilibj2.command.Commands.waitSeconds(1.5),
+            edu.wpi.first.wpilibj2.command.Commands.runOnce(
+                () -> {
+                  if (com.marslib.faults.MARSFaultManager.hasActiveCriticalFaults()) {
+                    new com.marslib.faults.Alert(
+                            "SystemCheck: Swerve module(s) failed to reach 90°.",
+                            com.marslib.faults.Alert.AlertType.CRITICAL)
+                        .set(true);
+                  }
+                }),
+            edu.wpi.first.wpilibj2.command.Commands.runOnce(
+                () -> {
+                  SwerveModuleState[] zeroStates = new SwerveModuleState[4];
+                  for (int i = 0; i < 4; i++)
+                    zeroStates[i] =
+                        new SwerveModuleState(
+                            0, edu.wpi.first.math.geometry.Rotation2d.fromDegrees(0));
+                  setModuleStates(zeroStates);
+                }),
+            edu.wpi.first.wpilibj2.command.Commands.waitSeconds(1.5),
+            edu.wpi.first.wpilibj2.command.Commands.runOnce(
+                () -> {
+                  if (com.marslib.faults.MARSFaultManager.hasActiveCriticalFaults()) {
+                    new com.marslib.faults.Alert(
+                            "SystemCheck: Swerve module(s) failed to return to 0°.",
+                            com.marslib.faults.Alert.AlertType.CRITICAL)
+                        .set(true);
+                  }
+                }))
+        .withName("SwerveSystemTest");
   }
 }

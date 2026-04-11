@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Volts;
 
+import com.marslib.diagnostics.SystemTestable;
 import com.marslib.mechanisms.FlywheelIO;
 import com.marslib.mechanisms.FlywheelIOInputsAutoLogged;
 import com.marslib.mechanisms.FlywheelIOSim;
@@ -32,7 +33,7 @@ import org.littletonrobotics.junction.Logger;
  * seamless switching between real hardware ({@link FlywheelIOTalonFX}) and physics simulation
  * ({@link FlywheelIOSim}).
  */
-public class MARSShooter extends SubsystemBase {
+public class MARSShooter extends SubsystemBase implements SystemTestable {
   private final FlywheelIO io;
   private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
 
@@ -168,5 +169,24 @@ public class MARSShooter extends SubsystemBase {
    */
   public double getVelocityRadPerSec() {
     return inputs.velocityRadPerSec;
+  }
+
+  @Override
+  public Command getSystemCheckCommand() {
+    return edu.wpi.first.wpilibj2.command.Commands.sequence(
+            edu.wpi.first.wpilibj2.command.Commands.runOnce(() -> setVoltage(6.0)),
+            edu.wpi.first.wpilibj2.command.Commands.waitSeconds(0.75),
+            edu.wpi.first.wpilibj2.command.Commands.runOnce(
+                () -> {
+                  double vel = getVelocityRadPerSec();
+                  setVoltage(0.0);
+                  if (Math.abs(vel) < 5.0) {
+                    new com.marslib.faults.Alert(
+                            "SystemCheck: Flywheel not spinning. Check wiring.",
+                            com.marslib.faults.Alert.AlertType.CRITICAL)
+                        .set(true);
+                  }
+                }))
+        .withName("FlywheelSystemTest");
   }
 }

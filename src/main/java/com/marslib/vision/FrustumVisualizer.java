@@ -47,6 +47,7 @@ public class FrustumVisualizer {
             new Translation3d(rangeMeters, rightPlaneY, bottomPlaneZ), new Rotation3d());
   }
 
+  @SuppressWarnings("PMD.MethodReturnsInternalArray")
   public Pose3d[] update(Pose3d cameraPose) {
     Pose3d p0 = cameraPose;
     Pose3d p1 = cameraPose.plus(tTopLeft);

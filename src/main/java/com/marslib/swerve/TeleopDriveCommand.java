@@ -33,13 +33,6 @@ public class TeleopDriveCommand extends Command {
   private final PIDController headingController =
       new PIDController(DriveConstants.HEADING_KP, 0, 0);
 
-  {
-    // Task 3: Cap integral windup safely (max ~5 degrees tolerance)
-    headingController.setIZone(Math.toRadians(5.0));
-    // Also protect against 360-degree wrapping
-    headingController.enableContinuousInput(-Math.PI, Math.PI);
-  }
-
   private Rotation2d targetHeading = new Rotation2d();
   private final ChassisSpeeds targetSpeeds = new ChassisSpeeds();
 
@@ -53,6 +46,8 @@ public class TeleopDriveCommand extends Command {
     this.ySupplier = ySupplier;
     this.omegaSupplier = omegaSupplier;
 
+    // Task 3: Cap integral windup safely (max ~5 degrees tolerance)
+    headingController.setIZone(Math.toRadians(5.0));
     headingController.enableContinuousInput(-Math.PI, Math.PI);
     addRequirements(swerveDrive);
   }
