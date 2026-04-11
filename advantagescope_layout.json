@@ -15,9 +15,9 @@
           "tabs": [
             {
               "type": 0,
-              "title": "",
+              "title": "Documentation",
               "controller": null,
-              "controllerUUID": "vgk3rxvfa1w4lw9urqrwx6x6qcsukur3",
+              "controllerUUID": "givqfu7830effbmzqmmgos",
               "renderer": null,
               "controlsHeight": 0
             },
@@ -32,11 +32,20 @@
                     "logType": "Number",
                     "visible": true,
                     "options": {
-                      "color": "#ff0000"
+                      "color": "#ff00ff"
                     }
                   }
                 ],
                 "rightSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/PhysicsWorld/FrameCurrentDraw_A",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff0000"
+                    }
+                  },
                   {
                     "type": "stepped",
                     "logKey": "/RealOutputs/SwerveDrive/LoadShedLimitAmps",
@@ -48,13 +57,13 @@
                   }
                 ]
               },
-              "controllerUUID": "2xxqvdl924hoa4rag7j4zgh4s0qhmt8s",
+              "controllerUUID": "t8h1ecr3xyq7gq44dqt93",
               "renderer": null,
               "controlsHeight": 0
             },
             {
-              "type": 3,
-              "title": "3D Tracker",
+              "type": 2,
+              "title": "Odometry Fusion 2D",
               "controller": {
                 "sources": [
                   {
@@ -68,8 +77,8 @@
                   },
                   {
                     "type": "ghost",
-                    "logKey": "/RealOutputs/PhysicsWorld/GamePieces",
-                    "logType": "Pose3d[]",
+                    "logKey": "/RealOutputs/Vision/ValidPoses/0",
+                    "logType": "Pose2d",
                     "visible": true,
                     "options": {
                       "model": "Robot",
@@ -78,13 +87,93 @@
                   }
                 ]
               },
-              "controllerUUID": "gb25scl9ck134wnjt0knqugz7tbiyvxl",
+              "controllerUUID": "ygcth53sbualnbqmssr2jg",
+              "renderer": null,
+              "controlsHeight": 0
+            },
+            {
+              "type": 3,
+              "title": "Playback 3D",
+              "controller": {
+                "sources": [
+                  {
+                    "type": "robot",
+                    "logKey": "/RealOutputs/SwerveDrive/Pose",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "model": "Robot"
+                    }
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "/RealOutputs/Vision/SlamPoses/0",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "model": "Robot",
+                      "color": "#00ff00"
+                    }
+                  },
+                  {
+                    "type": "vision",
+                    "logKey": "/RealOutputs/Vision/CameraFrustums",
+                    "logType": "Pose3d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ffff",
+                      "size": "normal"
+                    }
+                  }
+                ]
+              },
+              "controllerUUID": "ghxd6gyfyiqfnpxnv66s8",
+              "renderer": null,
+              "controlsHeight": 0
+            },
+            {
+              "type": 3,
+              "title": "Simulation 3D",
+              "controller": {
+                "sources": [
+                  {
+                    "type": "robot",
+                    "logKey": "/RealOutputs/SwerveDrive/Pose",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "model": "Robot"
+                    }
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "/RealOutputs/PathPlanner/TargetPose",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "model": "Robot",
+                      "color": "#ffaa00"
+                    }
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "/RealOutputs/PhysicsWorld/GamePieces",
+                    "logType": "Pose3d[]",
+                    "visible": true,
+                    "options": {
+                      "model": "Robot",
+                      "color": "#ffff00"
+                    }
+                  }
+                ]
+              },
+              "controllerUUID": "xckrcet114ioqhc1bpg9js",
               "renderer": null,
               "controlsHeight": 0
             },
             {
               "type": 9,
-              "title": "Swerve Modules",
+              "title": "Swerve Diagnostics",
               "controller": {
                 "sources": [
                   {
@@ -109,7 +198,7 @@
                   }
                 ]
               },
-              "controllerUUID": "dmhf4mnry6hjlh992n8hjaws2lnxen6a",
+              "controllerUUID": "bsq9932h1q41p04rat0gzp",
               "renderer": null,
               "controlsHeight": 0
             }
