@@ -374,7 +374,7 @@ task generateControllerMappings {
             }
         }
 
-        md.append("## 🎮 Pilot (Driver) - Controller 0\n\n")
+        md.append("## \uD83C\uDFAE Pilot (Driver) - Controller 0\n\n")
         md.append("> **Primary drive controls and high-level macro sequences.**\n\n")
         md.append("| Controller Input | Mapped Action |\n| :--- | :--- |\n")
         md.append("| <kbd>Left Joystick</kbd> | **Holonomic Translation (X/Y)** |\n")
@@ -382,14 +382,14 @@ task generateControllerMappings {
         pilotBindings.each { md.append(it).append('\n') }
         md.append("\n---\n\n")
 
-        md.append("## 🕹️ CoPilot (Operator) - Controller 1\n\n")
+        md.append("## \uD83D\uDD79\uFE0F CoPilot (Operator) - Controller 1\n\n")
         md.append("> **Manual overrides, sub-mechanism control, and fault resets.**\n\n")
         md.append("| Controller Input | Mapped Action |\n| :--- | :--- |\n")
         copilotBindings.each { md.append(it).append('\n') }
         
         md.append("\n---\n> [!NOTE]\n> All automated scoring sequences natively return the superstructure to the \n> safe `STOWED` state immediately upon release of the binding.\n")
 
-        outputFile.text = md.toString()
+        outputFile.setText(md.toString(), 'UTF-8')
         println "Successfully generated CONTROLLER_MAPPINGS.md from RobotBindings.java"
     }
 }
