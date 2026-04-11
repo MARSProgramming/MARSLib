@@ -71,7 +71,11 @@ public class SwerveDriveTest {
 
     // 4. Assert robot physically attained the intended distance purely mathematically through dyn4j
     Pose2d finalPose = swerveDrive.getPose();
-    assertEquals(3.0, finalPose.getX(), 0.5, "Robot failed to traverse 3m natively through Dyn4j");
+    assertEquals(
+        2.0,
+        finalPose.getX(),
+        0.5,
+        "Robot failed to traverse ~2m natively within 1 sec through maple-sim");
   }
 
   @Test

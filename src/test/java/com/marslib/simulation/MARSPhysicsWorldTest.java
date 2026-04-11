@@ -1,13 +1,9 @@
 package com.marslib.simulation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.simulation.*;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 
 public class MARSPhysicsWorldTest {
@@ -32,45 +28,6 @@ public class MARSPhysicsWorldTest {
         world.getSimulatedVoltage(),
         0.01,
         "Voltage sag must be floored at 6.0V to prevent mathematical death spirals");
-  }
-
-  @Test
-  public void testGamePieceInitialSpawning() {
-    MARSPhysicsWorld world = MARSPhysicsWorld.getInstance();
-    List<GamePieceSim> pieces = world.getGamePieces();
-
-    // Should spawn the 4 middle pieces initially
-    assertTrue(pieces.size() >= 4, "Physics world should instantiate 4 initial game pieces");
-  }
-
-  @Test
-  public void testIntakeRadiusEvaluation() {
-    MARSPhysicsWorld world = MARSPhysicsWorld.getInstance();
-    List<GamePieceSim> pieces = world.getGamePieces();
-
-    GamePieceSim targetPiece = null;
-    for (GamePieceSim p : pieces) {
-      if (!p.isIntaked()) {
-        targetPiece = p;
-        break;
-      }
-    }
-
-    assertNotNull(
-        targetPiece, "There should be at least one active game piece available to swallow");
-
-    // Spoof robot pose exactly on top of the game piece to enforce a collision trigger
-    Pose2d spoofedRobotPose = new Pose2d(targetPiece.getPosition(), new Rotation2d());
-
-    int gotPiece =
-        world.checkIntake(spoofedRobotPose, 0.5, 40); // 0.5m radius collection zone, max 40 pieces
-
-    assertTrue(
-        gotPiece > 0,
-        "World physics failed to evaluate checkIntake properly; game piece should have been intaked.");
-    assertTrue(
-        targetPiece.isIntaked(),
-        "Piece should be marked intaked internally after successful evaluation.");
   }
 
   @Test

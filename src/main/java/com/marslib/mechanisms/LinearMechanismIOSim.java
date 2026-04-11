@@ -29,6 +29,7 @@ public class LinearMechanismIOSim implements LinearMechanismIO {
   private double appliedVolts = 0.0;
   private boolean closedLoop = false;
   private double currentFeedforward = 0.0;
+  private Vector2 simulatedForce = new Vector2(0.0, 0.0);
 
   /**
    * Constructs a physical simulation instance for a 1D linear elevator mechanism.
@@ -52,7 +53,7 @@ public class LinearMechanismIOSim implements LinearMechanismIO {
     anchorBody = new Body();
     anchorBody.addFixture(Geometry.createRectangle(0.5, 0.1));
     anchorBody.setMass(MassType.INFINITE);
-    anchorBody.translate(0.0, 5.0);
+    anchorBody.translate(1000.0, 1000.0);
 
     // Carriage body (Dynamic)
     carriageBody = new Body();
@@ -63,17 +64,21 @@ public class LinearMechanismIOSim implements LinearMechanismIO {
     carriageBody.addFixture(
         Geometry.createRectangle(carriageWidth, carriageHeight), massKg / area, 0.2, 0.0);
     carriageBody.setMass(MassType.NORMAL);
-    carriageBody.translate(0.0, 5.0);
+    carriageBody.translate(1000.0, 1000.0);
 
     // Joint allows only vertical translation
     joint =
         new PrismaticJoint<Body>(
-            anchorBody, carriageBody, new Vector2(0.0, 5.0), new Vector2(0.0, 1.0));
+            anchorBody, carriageBody, new Vector2(1000.0, 1000.0), new Vector2(0.0, 1.0));
     joint.setCollisionAllowed(false);
 
     MARSPhysicsWorld.getInstance().getWorld().addBody(anchorBody);
     MARSPhysicsWorld.getInstance().registerMechanismBody(mechanismName, carriageBody);
     MARSPhysicsWorld.getInstance().getWorld().addJoint(joint);
+
+    // Apply force constantly across all sub-ticks to prevent dyn4j wiping it after 1 step
+    MARSPhysicsWorld.getInstance()
+        .addCustomSimulation((int subtick) -> carriageBody.applyForce(simulatedForce));
 
     // Internal profiled PID mimics the TalonFX Motion Magic controller in sim.
     // kP=500.0 provides stiff tracking without ff; constraints model FRC elevator profile:
@@ -84,8 +89,8 @@ public class LinearMechanismIOSim implements LinearMechanismIO {
 
   @Override
   public void updateInputs(LinearMechanismIOInputs inputs) {
-    // Current state mappings. Elevator only moves in Y axis perfectly. Offset anchor height 5.0m
-    double currentPosMeters = carriageBody.getTransform().getTranslationY() - 5.0;
+    // Current state mappings. Elevator only moves in Y axis perfectly. Offset anchor height 1000.0
+    double currentPosMeters = carriageBody.getTransform().getTranslationY() - 1000.0;
     double currentVelocityMetersPerSec = carriageBody.getLinearVelocity().y;
 
     if (closedLoop) {
@@ -105,8 +110,8 @@ public class LinearMechanismIOSim implements LinearMechanismIO {
     // Torque / radius = Linear Force
     double linearForceNewtons = (motorTorque * gearRatio) / spoolRadiusMeters;
 
-    // Apply linear force directly to the body upwards
-    carriageBody.applyForce(new Vector2(0.0, linearForceNewtons));
+    // Store linear force to be applied by custom simulation callback on every sub-tick
+    simulatedForce = new Vector2(0.0, linearForceNewtons);
 
     // Compute effective motor terminal voltage after current limiting
     // V_effective = I·R + ω/Kv (what the motor controller actually applies)

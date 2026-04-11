@@ -1,9 +1,10 @@
 package com.marslib.swerve;
 
+import static edu.wpi.first.units.Units.Kilograms;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.marslib.power.MARSPowerManager;
-import com.marslib.simulation.SwerveChassisPhysics;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -24,6 +25,9 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.SwerveConstants;
 import frc.robot.constants.ModeConstants;
 import frc.robot.constants.PowerConstants;
+import org.ironmaple.simulation.drivesims.COTS;
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -56,7 +60,7 @@ public class SwerveDrive extends SubsystemBase {
   private final MARSPowerManager powerManager;
   private final SysIdRoutine sysIdRoutine;
 
-  private final SwerveChassisPhysics simPhysics;
+  private final SwerveDriveSimulation simDrive;
   private final com.marslib.simulation.LidarIOSim lidarSim;
 
   private double lastLoadShedLimit = SwerveConstants.DRIVE_STATOR_CURRENT_LIMIT;
@@ -89,16 +93,39 @@ public class SwerveDrive extends SubsystemBase {
         new SwerveDrivePoseEstimator(kinematics, new Rotation2d(), initialPositions, new Pose2d());
 
     if (frc.robot.Robot.isSimulation()) {
-      simPhysics = new SwerveChassisPhysics(poseEstimator.getEstimatedPosition());
+      DriveTrainSimulationConfig driveSimConfig =
+          DriveTrainSimulationConfig.Default()
+              .withRobotMass(Kilograms.of(SwerveConstants.ROBOT_MASS_KG))
+              .withBumperSize(
+                  Meters.of(SwerveConstants.BUMPER_LENGTH_METERS),
+                  Meters.of(SwerveConstants.BUMPER_WIDTH_METERS))
+              .withTrackLengthTrackWidth(
+                  Meters.of(SwerveConstants.WHEELBASE_METERS),
+                  Meters.of(SwerveConstants.TRACK_WIDTH_METERS))
+              .withSwerveModule(
+                  COTS.ofMark4(
+                      edu.wpi.first.math.system.plant.DCMotor.getKrakenX60Foc(1),
+                      edu.wpi.first.math.system.plant.DCMotor.getKrakenX60Foc(1),
+                      SwerveConstants.WHEEL_COF_STATIC,
+                      2));
+
+      simDrive = new SwerveDriveSimulation(driveSimConfig, poseEstimator.getEstimatedPosition());
+      com.marslib.simulation.MARSPhysicsWorld.getInstance()
+          .getArena()
+          .addDriveTrainSimulation(simDrive);
+
       lidarSim = new com.marslib.simulation.LidarIOSim();
 
-      // Inject the centralized physics reference into each SwerveModuleIOSim so they
-      // read wheel omegas from the single source of truth instead of local DCMotorSims.
-      for (SwerveModule mod : modules) {
-        mod.injectChassisPhysics(simPhysics);
+      // Inject the individual module simulations into the IO layers.
+      for (int i = 0; i < modules.length; i++) {
+        modules[i].injectModuleSimulation(simDrive.getModules()[i]);
+      }
+
+      if (gyroIOSim != null) {
+        gyroIOSim.setGyroSimulation(simDrive.getGyroSimulation());
       }
     } else {
-      simPhysics = null;
+      simDrive = null;
       lidarSim = null;
     }
 
@@ -233,33 +260,6 @@ public class SwerveDrive extends SubsystemBase {
     }
     Logger.recordOutput("SwerveDrive/LoadShedLimitAmps", currentLimit);
 
-    // Update simulated gyro from measured kinematics (BUG-01 fix)
-    if (gyroIOSim != null) {
-      ChassisSpeeds measuredSpeeds = getChassisSpeeds();
-
-      // Inject into generic physics boundary solver
-      if (simPhysics != null) {
-        simVolts[0] = modules[0].getSimDriveVoltage();
-        simVolts[1] = modules[1].getSimDriveVoltage();
-        simVolts[2] = modules[2].getSimDriveVoltage();
-        simVolts[3] = modules[3].getSimDriveVoltage();
-
-        simAngles[0] = modules[0].getLatestState().angle;
-        simAngles[1] = modules[1].getLatestState().angle;
-        simAngles[2] = modules[2].getLatestState().angle;
-        simAngles[3] = modules[3].getLatestState().angle;
-
-        simPhysics.applyModuleForces(
-            simVolts, simAngles, powerManager.getVoltage(), ModeConstants.LOOP_PERIOD_SECS);
-
-        // We override the "measured speeds" with what the physics world says is actually happening
-        measuredSpeeds = simPhysics.getConstrainedSpeeds();
-      }
-
-      gyroIOSim.updateYawVelocity(
-          measuredSpeeds.omegaRadiansPerSecond, ModeConstants.LOOP_PERIOD_SECS);
-    }
-
     // Use real gyro yaw for pose estimation
     // Rotation2d yaw = ... (moved into the drain loop for high frequency accuracy)
 
@@ -323,27 +323,10 @@ public class SwerveDrive extends SubsystemBase {
     // Log final Pose
     Pose2d currentPose = poseEstimator.getEstimatedPosition();
 
-    // Hard-override Simulation Pose to match the 2D bounding boxes in case odometry diverges
-    // heavily
-    if (simPhysics != null && frc.robot.Robot.isSimulation()) {
-      Pose2d simBoundedPose = simPhysics.getPose();
-      currentPositions[0] = modules[0].getLatestPosition();
-      currentPositions[1] = modules[1].getLatestPosition();
-      currentPositions[2] = modules[2].getLatestPosition();
-      currentPositions[3] = modules[3].getLatestPosition();
-
-      poseEstimator.resetPosition(
-          gyroInputs.connected
-              ? Rotation2d.fromRadians(gyroInputs.yawPositionRad)
-              : simBoundedPose.getRotation(),
-          currentPositions,
-          simBoundedPose); // Force odometry matching
-      currentPose = simBoundedPose;
-
-      // Update our LiDAR point cloud based on our collision frame constraints
-      if (lidarSim != null) {
-        lidarSim.updateInputs(currentPose);
-      }
+    // Update our LiDAR point cloud based on true simulation bounding frames
+    if (simDrive != null && lidarSim != null) {
+      Pose2d simBoundedPose = simDrive.getSimulatedDriveTrainPose();
+      lidarSim.updateInputs(simBoundedPose);
     }
 
     Logger.recordOutput("SwerveDrive/Pose", currentPose);
@@ -424,8 +407,8 @@ public class SwerveDrive extends SubsystemBase {
    * @param pose The new Pose2d coordinate mapped in standard WPILib field units.
    */
   public void resetPose(Pose2d pose) {
-    if (simPhysics != null) {
-      simPhysics.setPose(pose);
+    if (simDrive != null) {
+      simDrive.setSimulationWorldPose(pose);
     }
 
     for (int i = 0; i < 4; i++) {

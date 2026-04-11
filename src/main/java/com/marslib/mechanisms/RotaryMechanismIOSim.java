@@ -29,6 +29,7 @@ public class RotaryMechanismIOSim implements RotaryMechanismIO {
   private double appliedVolts = 0.0;
   private boolean closedLoop = false;
   private double currentFeedforward = 0.0;
+  private double simulatedTorque = 0.0;
 
   /**
    * Constructs a physical simulation instance for a 1D rotary arm mechanism.
@@ -51,7 +52,7 @@ public class RotaryMechanismIOSim implements RotaryMechanismIO {
     anchorBody = new Body();
     anchorBody.addFixture(Geometry.createRectangle(0.1, 0.1));
     anchorBody.setMass(MassType.INFINITE);
-    anchorBody.translate(0.0, 0.0);
+    anchorBody.translate(1000.0, 1000.0);
 
     // Arm body (Dynamic)
     armBody = new Body();
@@ -65,10 +66,10 @@ public class RotaryMechanismIOSim implements RotaryMechanismIO {
         Geometry.createRectangle(lengthMeters, thickness), density, 0.2, 0.0); // Simple rod
     armBody.setMass(MassType.NORMAL);
     // Center mass roughly half way
-    armBody.translate(lengthMeters / 2.0, 0.0);
+    armBody.translate(1000.0 + lengthMeters / 2.0, 1000.0);
 
     // Joint binds at origin
-    joint = new RevoluteJoint<Body>(anchorBody, armBody, new Vector2(0.0, 0.0));
+    joint = new RevoluteJoint<Body>(anchorBody, armBody, new Vector2(1000.0, 1000.0));
 
     // Collision filtering to prevent the arm colliding with abstract simulation bounds (e.g. floor)
     anchorBody.getFixture(0).setFilter(new CategoryFilter(4, 4));
@@ -79,11 +80,15 @@ public class RotaryMechanismIOSim implements RotaryMechanismIO {
     MARSPhysicsWorld.getInstance().registerMechanismBody(mechanismName, armBody);
     MARSPhysicsWorld.getInstance().getWorld().addJoint(joint);
 
+    // Apply torque constantly across all sub-ticks to prevent dyn4j wiping it after 1 step
+    MARSPhysicsWorld.getInstance()
+        .addCustomSimulation((int subtick) -> armBody.applyTorque(simulatedTorque));
+
     // Internal profiled PID mimics the TalonFX Motion Magic controller in sim.
     // kP=5.0 provides stiff tracking; constraints model a typical FRC arm profile:
     //   maxVelocity = 10.0 rad/s, maxAcceleration = 20.0 rad/s²
     internalController =
-        new ProfiledPIDController(5.0, 0.0, 0.0, new TrapezoidProfile.Constraints(10.0, 20.0));
+        new ProfiledPIDController(50.0, 0.0, 2.0, new TrapezoidProfile.Constraints(10.0, 20.0));
   }
 
   @Override
@@ -105,8 +110,8 @@ public class RotaryMechanismIOSim implements RotaryMechanismIO {
     double motorTorque = gearbox.getTorque(currentDrawAmps);
     double mechanismTorque = motorTorque * gearRatio;
 
-    // Apply strictly to Dyn4j body
-    armBody.applyTorque(mechanismTorque);
+    // Store torque to be applied by custom simulation callback on every sub-tick
+    simulatedTorque = mechanismTorque;
 
     // Compute effective motor terminal voltage after current limiting
     double motorSpeedRadPerSec = currentVelocityRadPerSec * gearRatio;

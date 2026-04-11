@@ -1,114 +1,103 @@
 package com.marslib.swerve;
 
-import com.marslib.simulation.SwerveChassisPhysics;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.system.plant.LinearSystemId;
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import frc.robot.SwerveConstants;
-import frc.robot.constants.ModeConstants;
+import org.ironmaple.simulation.drivesims.SwerveModuleSimulation;
+import org.ironmaple.simulation.motorsims.SimulatedMotorController.GenericMotorController;
 
 /**
  * Simulation IO layer for a single swerve module.
  *
- * <p>The <b>drive</b> motor physics are handled entirely by the centralized {@link
- * SwerveChassisPhysics} engine (which models wheel slip, friction, and battery sag). This class
- * reads wheel angular velocity back from that engine via {@link
- * SwerveChassisPhysics#getWheelOmegaRadPerSec(int)} to ensure a single source of truth for drive
- * dynamics.
- *
- * <p>The <b>turn</b> motor remains a local {@link DCMotorSim} since steering dynamics are
- * independent of chassis-level traction physics.
+ * <p>Both the drive and turn motor physics are handled by the maple-sim {@link
+ * SwerveModuleSimulation}.
  */
 public class SwerveModuleIOSim implements SwerveModuleIO {
   private final int moduleIndex;
 
-  /** Reference to the centralized chassis physics engine. May be null before physics init. */
-  private SwerveChassisPhysics chassisPhysics;
-
-  /** Local sim for the turn motor (steering is independent of chassis traction physics). */
-  private final DCMotorSim turnSim =
-      new DCMotorSim(
-          LinearSystemId.createDCMotorSystem(
-              DCMotor.getKrakenX60Foc(1), 0.004, SwerveConstants.TURN_GEAR_RATIO),
-          DCMotor.getKrakenX60Foc(1));
-
-  /** Accumulated drive position from the physics engine (radians at the wheel output shaft). */
-  private double drivePositionRad = 0.0;
+  private SwerveModuleSimulation simModule;
+  private GenericMotorController driveCont;
+  private GenericMotorController steerCont;
 
   private double driveAppliedVolts = 0.0;
   private double turnAppliedVolts = 0.0;
+  private double lastCurrentLimitAmps = 0.0;
 
-  /**
-   * Constructs a simulated swerve module IO.
-   *
-   * @param moduleIndex The module index (0=FL, 1=FR, 2=BL, 3=BR), used to query the correct wheel
-   *     omega from the physics engine.
-   */
   public SwerveModuleIOSim(int moduleIndex) {
     this.moduleIndex = moduleIndex;
   }
 
-  /**
-   * Injects the centralized chassis physics reference after it has been constructed.
-   *
-   * <p>This setter exists because the physics engine and the IO layers have a circular
-   * initialization dependency: SwerveDrive creates modules first, then the physics engine.
-   *
-   * @param physics The {@link SwerveChassisPhysics} instance to read wheel omegas from.
-   */
-  public void setChassisPhysics(SwerveChassisPhysics physics) {
-    this.chassisPhysics = physics;
+  public void setModuleSimulation(SwerveModuleSimulation sim) {
+    this.simModule = sim;
+    this.driveCont = sim.useGenericMotorControllerForDrive();
+    this.steerCont = sim.useGenericControllerForSteer();
   }
 
   @Override
   public void updateInputs(SwerveModuleIOInputs inputs) {
-    turnSim.update(ModeConstants.LOOP_PERIOD_SECS);
-
     inputs.hasHardwareConnected = true;
 
-    // Drive state comes from the centralized physics engine (single source of truth)
-    double wheelOmega = 0.0;
-    if (chassisPhysics != null) {
-      wheelOmega = chassisPhysics.getWheelOmegaRadPerSec(moduleIndex);
-    }
-    drivePositionRad += wheelOmega * ModeConstants.LOOP_PERIOD_SECS;
+    if (simModule != null) {
+      inputs.driveVelocityRadPerSec = simModule.getDriveWheelFinalSpeed().in(RadiansPerSecond);
+      inputs.turnVelocityRadPerSec = simModule.getSteerAbsoluteEncoderSpeed().in(RadiansPerSecond);
 
-    inputs.driveVelocityRadPerSec = wheelOmega;
-    inputs.turnVelocityRadPerSec = turnSim.getAngularVelocityRadPerSec();
+      inputs.drivePositionsRad = new double[] {simModule.getDriveWheelFinalPosition().in(Radians)};
+      inputs.turnPositionsRad = new double[] {simModule.getSteerAbsoluteFacing().getRadians()};
+
+      inputs.driveCurrentAmps =
+          simModule.getDriveMotorSupplyCurrent().in(edu.wpi.first.units.Units.Amps);
+      inputs.turnCurrentAmps =
+          simModule.getSteerMotorSupplyCurrent().in(edu.wpi.first.units.Units.Amps);
+    } else {
+      inputs.driveVelocityRadPerSec = 0.0;
+      inputs.turnVelocityRadPerSec = 0.0;
+      inputs.drivePositionsRad = new double[] {0.0};
+      inputs.turnPositionsRad = new double[] {0.0};
+      inputs.driveCurrentAmps = 0.0;
+      inputs.turnCurrentAmps = 0.0;
+    }
 
     inputs.driveAppliedVolts = driveAppliedVolts;
     inputs.turnAppliedVolts = turnAppliedVolts;
-
-    inputs.driveCurrentAmps = 0.0; // Current is tracked globally in SwerveChassisPhysics
-    inputs.turnCurrentAmps = turnSim.getCurrentDrawAmps();
-
-    inputs.drivePositionsRad = new double[] {drivePositionRad};
-    inputs.turnPositionsRad = new double[] {turnSim.getAngularPositionRad()};
     inputs.odometryTimestamps = new double[] {Timer.getFPGATimestamp()};
   }
 
   @Override
   public void setDriveVoltage(double volts) {
     driveAppliedVolts = volts;
-    // Drive voltage is consumed by SwerveChassisPhysics, not a local DCMotorSim
+    if (driveCont != null) {
+      driveCont.requestVoltage(Volts.of(volts));
+    }
   }
 
   @Override
   public void setTurnVoltage(double volts) {
     turnAppliedVolts = volts;
-    turnSim.setInputVoltage(volts);
+    if (steerCont != null) {
+      steerCont.requestVoltage(Volts.of(volts));
+    }
   }
-
-  private double lastCurrentLimitAmps = 0.0;
 
   @Override
   public void setCurrentLimit(double amps) {
-    // Current limiting is enforced at the physics engine level via battery voltage clamping
     lastCurrentLimitAmps = amps;
+    // maple-sim can enforce at controller level, but we manage it dynamically
+    if (driveCont != null) {
+      driveCont.withCurrentLimit(edu.wpi.first.units.Units.Amps.of(amps));
+    }
   }
 
   public double getCurrentLimitAmps() {
     return lastCurrentLimitAmps;
+  }
+
+  public double getSimDriveVoltage() {
+    return driveAppliedVolts;
+  }
+
+  public double getSimTurnVoltage() {
+    return turnAppliedVolts;
   }
 }

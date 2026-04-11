@@ -37,3 +37,9 @@ develocity {
 
 Properties props = System.getProperties();
 props.setProperty("org.gradle.internal.native.headers.unresolved.dependencies.ignore", "true");
+
+includeBuild('../cache/maple-sim/project') {
+    dependencySubstitution {
+        substitute module('org.ironmaple:maplesim-java') using project(':')
+    }
+}

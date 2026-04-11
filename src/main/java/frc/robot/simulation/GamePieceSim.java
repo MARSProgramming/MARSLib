@@ -34,6 +34,7 @@ public class GamePieceSim {
    * @param id A unique string identifier for this piece (used in the log key).
    * @param initialPosition The starting field-relative position of the piece center.
    */
+  @SuppressWarnings("deprecation")
   public GamePieceSim(String id, Translation2d initialPosition) {
     this.name = "GamePiece_" + id;
     this.gamePieceBody = new Body();

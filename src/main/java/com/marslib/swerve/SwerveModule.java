@@ -1,6 +1,5 @@
 package com.marslib.swerve;
 
-import com.marslib.simulation.SwerveChassisPhysics;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -172,17 +171,19 @@ public class SwerveModule {
   }
 
   /**
-   * Injects the centralized chassis physics reference into the underlying IO layer if it is a
-   * {@link SwerveModuleIOSim}. This ensures the sim IO reads wheel omegas from the single physics
-   * engine rather than running its own duplicate motor simulation.
+   * Injects the maple-sim module simulation reference into the underlying IO layer if it is a
+   * {@link SwerveModuleIOSim}. This ensures the sim IO reads encoder readings from the single
+   * physics engine rather than running its own duplicate motor simulation.
    *
    * <p>No-op if the IO layer is not a sim implementation.
    *
-   * @param physics The {@link SwerveChassisPhysics} instance to inject.
+   * @param simModule The {@link org.ironmaple.simulation.drivesims.SwerveModuleSimulation} instance
+   *     to inject.
    */
-  public void injectChassisPhysics(SwerveChassisPhysics physics) {
+  public void injectModuleSimulation(
+      org.ironmaple.simulation.drivesims.SwerveModuleSimulation simModule) {
     if (io instanceof SwerveModuleIOSim) {
-      ((SwerveModuleIOSim) io).setChassisPhysics(physics);
+      ((SwerveModuleIOSim) io).setModuleSimulation(simModule);
     }
   }
 }
