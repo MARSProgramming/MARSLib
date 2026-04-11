@@ -11,14 +11,14 @@
           "expanded": []
         },
         "tabs": {
-          "selected": 1,
+          "selected": 0,
           "tabs": [
             {
               "type": 0,
               "title": "",
               "controller": null,
-              "controllerUUID": "mpi9i7opnky08a0oevbde1go4rx6dvuk",
-              "renderer": "",
+              "controllerUUID": "vgk3rxvfa1w4lw9urqrwx6x6qcsukur3",
+              "renderer": null,
               "controlsHeight": 0
             },
             {
@@ -31,7 +31,9 @@
                     "logKey": "/RealOutputs/PhysicsWorld/ComputedVoltage",
                     "logType": "Number",
                     "visible": true,
-                    "options": {}
+                    "options": {
+                      "color": "#ff0000"
+                    }
                   }
                 ],
                 "rightSources": [
@@ -40,62 +42,74 @@
                     "logKey": "/RealOutputs/SwerveDrive/LoadShedLimitAmps",
                     "logType": "Number",
                     "visible": true,
-                    "options": {}
+                    "options": {
+                      "color": "#00ff00"
+                    }
                   }
-                ],
-                "discreteSources": [],
-                "leftLockedRange": null,
-                "rightLockedRange": null,
-                "leftUnitConversion": {
-                  "autoTarget": null,
-                  "preset": null
-                },
-                "rightUnitConversion": {
-                  "autoTarget": null,
-                  "preset": null
-                },
-                "leftFilter": 0,
-                "rightFilter": 0
+                ]
               },
-              "controllerUUID": "f02vpl0118drklm3pmdw3284j2m8dt5k",
+              "controllerUUID": "2xxqvdl924hoa4rag7j4zgh4s0qhmt8s",
               "renderer": null,
-              "controlsHeight": 200
+              "controlsHeight": 0
             },
             {
               "type": 3,
               "title": "3D Tracker",
               "controller": {
-                "sources": [],
-                "game": "FRC:2026 Field"
-              },
-              "controllerUUID": "9qjrdeatf8y3a71wbjoo1dxkjrpf5y9x",
-              "renderer": {
-                "cameraIndex": -1,
-                "orbitFov": 50,
-                "cameraPosition": [
-                  0,
-                  6,
-                  -12
-                ],
-                "cameraTarget": [
-                  0,
-                  0.5,
-                  0
+                "sources": [
+                  {
+                    "type": "robot",
+                    "logKey": "/RealOutputs/SwerveDrive/Pose",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "model": "Robot"
+                    }
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "/RealOutputs/PhysicsWorld/GamePieces",
+                    "logType": "Pose3d[]",
+                    "visible": true,
+                    "options": {
+                      "model": "Robot",
+                      "color": "#ff0000"
+                    }
+                  }
                 ]
               },
+              "controllerUUID": "gb25scl9ck134wnjt0knqugz7tbiyvxl",
+              "renderer": null,
               "controlsHeight": 0
             },
             {
               "type": 9,
               "title": "Swerve Modules",
               "controller": {
-                "sources": [],
-                "maxSpeed": 5,
-                "sizeX": 0.65,
-                "sizeY": 0.65,
-                "orientation": 1
+                "sources": [
+                  {
+                    "type": "states",
+                    "logKey": "/RealOutputs/SwerveDrive/MeasuredStates",
+                    "logType": "SwerveModuleState[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff0000",
+                      "arrangement": "0,1,2,3"
+                    }
+                  },
+                  {
+                    "type": "states",
+                    "logKey": "/RealOutputs/SwerveDrive/DesiredStates",
+                    "logType": "SwerveModuleState[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#0000ff",
+                      "arrangement": "0,1,2,3"
+                    }
+                  }
+                ]
               },
-              "controllerUUID": "ya1ibvc7folzt0g47a75ztqzcs8vbi45",
+              "controllerUUID": "dmhf4mnry6hjlh992n8hjaws2lnxen6a",
               "renderer": null,
               "controlsHeight": 0
             }
