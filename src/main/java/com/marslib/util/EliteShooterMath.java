@@ -115,7 +115,7 @@ public class EliteShooterMath {
     double sinYaw = Math.sin(virtualTargetYawRad);
     double targetFrameVx = vx * cosYaw + vy * sinYaw;
 
-    double hoodFF = targetFrameVx * -tz / (distanceToTargetSq + tz * tz);
+    double hoodFF = targetFrameVx * tz / (distanceToTargetSq + tz * tz);
 
     setpoint.robotAimYawRadians = virtualTargetYawRad;
     setpoint.chassisAngularFeedforward = chassisAngularFF;
