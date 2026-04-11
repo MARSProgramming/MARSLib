@@ -162,9 +162,9 @@ public class SystemCheckCommand extends Command {
 
     switch (currentStep) {
 
-        // ---------------------------------------------------------------
-        // STEP 0: Battery Voltage Gate
-        // ---------------------------------------------------------------
+      // ---------------------------------------------------------------
+      // STEP 0: Battery Voltage Gate
+      // ---------------------------------------------------------------
       case STEP_BATTERY:
         double voltage = RobotController.getBatteryVoltage();
         Logger.recordOutput("SystemCheck/BatteryVoltage", voltage);
@@ -178,9 +178,9 @@ public class SystemCheckCommand extends Command {
         }
         break;
 
-        // ---------------------------------------------------------------
-        // STEP 1: Command all swerve modules to 90 degrees
-        // ---------------------------------------------------------------
+      // ---------------------------------------------------------------
+      // STEP 1: Command all swerve modules to 90 degrees
+      // ---------------------------------------------------------------
       case STEP_SWERVE_STEER:
         {
           SwerveModuleState[] steerStates = new SwerveModuleState[4];
@@ -208,9 +208,9 @@ public class SystemCheckCommand extends Command {
           break;
         }
 
-        // ---------------------------------------------------------------
-        // STEP 2: Command all swerve modules back to 0 degrees
-        // ---------------------------------------------------------------
+      // ---------------------------------------------------------------
+      // STEP 2: Command all swerve modules back to 0 degrees
+      // ---------------------------------------------------------------
       case STEP_SWERVE_ZERO:
         {
           SwerveModuleState[] zeroStates = new SwerveModuleState[4];
@@ -231,9 +231,9 @@ public class SystemCheckCommand extends Command {
           break;
         }
 
-        // ---------------------------------------------------------------
-        // STEP 3: Raise the climber 0.1m
-        // ---------------------------------------------------------------
+      // ---------------------------------------------------------------
+      // STEP 3: Raise the climber 0.1m
+      // ---------------------------------------------------------------
       case STEP_CLIMBER_UP:
         climber.setTargetPosition(initialClimberMeters + 0.1);
 
@@ -250,9 +250,9 @@ public class SystemCheckCommand extends Command {
         }
         break;
 
-        // ---------------------------------------------------------------
-        // STEP 4: Return the climber to starting position
-        // ---------------------------------------------------------------
+      // ---------------------------------------------------------------
+      // STEP 4: Return the climber to starting position
+      // ---------------------------------------------------------------
       case STEP_CLIMBER_RETURN:
         climber.setTargetPosition(initialClimberMeters);
 
@@ -269,9 +269,9 @@ public class SystemCheckCommand extends Command {
         }
         break;
 
-        // ---------------------------------------------------------------
-        // STEP 5: Rotate cowl by 0.15 rad (~8.6 degrees)
-        // ---------------------------------------------------------------
+      // ---------------------------------------------------------------
+      // STEP 5: Rotate cowl by 0.15 rad (~8.6 degrees)
+      // ---------------------------------------------------------------
       case STEP_COWL_SWEEP:
         cowl.setTargetPosition(initialCowlRads + 0.15);
 
@@ -288,9 +288,9 @@ public class SystemCheckCommand extends Command {
         }
         break;
 
-        // ---------------------------------------------------------------
-        // STEP 6: Return cowl to starting position
-        // ---------------------------------------------------------------
+      // ---------------------------------------------------------------
+      // STEP 6: Return cowl to starting position
+      // ---------------------------------------------------------------
       case STEP_COWL_RETURN:
         cowl.setTargetPosition(initialCowlRads);
 
@@ -307,9 +307,9 @@ public class SystemCheckCommand extends Command {
         }
         break;
 
-        // ---------------------------------------------------------------
-        // STEP 7: Spin intake at half voltage, verify movement
-        // ---------------------------------------------------------------
+      // ---------------------------------------------------------------
+      // STEP 7: Spin intake at half voltage, verify movement
+      // ---------------------------------------------------------------
       case STEP_INTAKE:
         intake.setVoltage(6.0);
 
@@ -327,9 +327,9 @@ public class SystemCheckCommand extends Command {
         }
         break;
 
-        // ---------------------------------------------------------------
-        // STEP 8: Spin shooter at half voltage, verify velocity readback
-        // ---------------------------------------------------------------
+      // ---------------------------------------------------------------
+      // STEP 8: Spin shooter at half voltage, verify velocity readback
+      // ---------------------------------------------------------------
       case STEP_SHOOTER:
         shooter.setVoltage(6.0);
 
@@ -347,9 +347,9 @@ public class SystemCheckCommand extends Command {
         }
         break;
 
-        // ---------------------------------------------------------------
-        // STEP 9: Final Report
-        // ---------------------------------------------------------------
+      // ---------------------------------------------------------------
+      // STEP 9: Final Report
+      // ---------------------------------------------------------------
       case STEP_REPORT:
         Logger.recordOutput("SystemCheck/PassCount", passCount);
         Logger.recordOutput("SystemCheck/FailCount", failCount);

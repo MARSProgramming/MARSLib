@@ -56,11 +56,13 @@ public class GhostManager {
   private static class GhostFrame {
     /** The timestamp of this frame, in seconds from start. */
     double time;
+
     /** Joystick axis values. */
     double leftY;
 
     double leftX;
     double rightX;
+
     /** Button states. */
     boolean a;
 

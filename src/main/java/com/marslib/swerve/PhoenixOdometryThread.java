@@ -39,8 +39,10 @@ public class PhoenixOdometryThread extends Thread {
   public static class SyncData {
     /** Accumulated drive encoder positions (motor rotations) since the last drain. */
     public double[] drivePositions;
+
     /** Accumulated turn encoder positions (motor rotations) since the last drain. */
     public double[] turnPositions;
+
     /** FPGA timestamps corresponding to each position sample. */
     public double[] timestamps;
   }
