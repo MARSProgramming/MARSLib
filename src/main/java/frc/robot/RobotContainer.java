@@ -341,8 +341,10 @@ public class RobotContainer {
                 try {
                   new com.pathplanner.lib.commands.PathPlannerAuto(autoName);
                 } catch (Exception e) {
-                  org.littletonrobotics.junction.Logger.recordOutput(
-                      "Auto/CacheWarning", "Failed to cache trajectory: " + autoName);
+                  new com.marslib.faults.Alert(
+                          "RobotContainer: Failed to cache trajectory: " + autoName,
+                          com.marslib.faults.Alert.AlertType.WARNING)
+                      .set(true);
                 }
               }
             })

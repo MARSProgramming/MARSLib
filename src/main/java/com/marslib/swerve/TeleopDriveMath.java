@@ -42,8 +42,12 @@ public final class TeleopDriveMath {
    *     rightward stick (positive HID) produces negative (clockwise) rotation per WPILib
    *     ChassisSpeeds convention.
    */
-  public static ChassisSpeeds computeFieldRelativeSpeeds(
-      double rawLeftY, double rawLeftX, double rawOmega, boolean isRedAlliance) {
+  public static void computeFieldRelativeSpeeds(
+      double rawLeftY,
+      double rawLeftX,
+      double rawOmega,
+      boolean isRedAlliance,
+      ChassisSpeeds outSpeeds) {
     double xVal = MathUtil.applyDeadband(rawLeftY, DEADBAND);
     double yVal = MathUtil.applyDeadband(rawLeftX, DEADBAND);
     double omgVal = MathUtil.applyDeadband(rawOmega, DEADBAND);
@@ -63,6 +67,8 @@ public final class TeleopDriveMath {
       orientedY = -orientedY;
     }
 
-    return new ChassisSpeeds(orientedX, orientedY, -mappedOmg);
+    outSpeeds.vxMetersPerSecond = orientedX;
+    outSpeeds.vyMetersPerSecond = orientedY;
+    outSpeeds.omegaRadiansPerSecond = -mappedOmg;
   }
 }

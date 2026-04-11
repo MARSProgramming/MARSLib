@@ -4,7 +4,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.AutoConstants;
 
@@ -28,10 +27,11 @@ public class MARSAuto {
       PathPlannerPath path = PathPlannerPath.fromChoreoTrajectory(choreoTrajectoryName);
       return AutoBuilder.followPath(path);
     } catch (Exception e) {
-      DriverStation.reportError(
-          "Failed to load Choreo trajectory: " + choreoTrajectoryName + "\n" + e.getMessage(),
-          e.getStackTrace());
-      return new edu.wpi.first.wpilibj2.command.PrintCommand("Fallback: Trajectory failed to load");
+      new com.marslib.faults.Alert(
+              "MARSAuto: Failed to load Choreo trajectory: " + choreoTrajectoryName,
+              com.marslib.faults.Alert.AlertType.CRITICAL)
+          .set(true);
+      return edu.wpi.first.wpilibj2.command.Commands.none();
     }
   }
 
@@ -56,13 +56,11 @@ public class MARSAuto {
 
       return AutoBuilder.pathfindThenFollowPath(path, pathfindingConstraints);
     } catch (Exception e) {
-      DriverStation.reportError(
-          "Failed to load Choreo trajectory for pathfinding: "
-              + choreoTrajectoryName
-              + "\n"
-              + e.getMessage(),
-          e.getStackTrace());
-      return new edu.wpi.first.wpilibj2.command.PrintCommand("Fallback: Trajectory failed to load");
+      new com.marslib.faults.Alert(
+              "MARSAuto: Failed to load Choreo pathfinding: " + choreoTrajectoryName,
+              com.marslib.faults.Alert.AlertType.CRITICAL)
+          .set(true);
+      return edu.wpi.first.wpilibj2.command.Commands.none();
     }
   }
 

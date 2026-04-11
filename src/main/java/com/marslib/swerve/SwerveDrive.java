@@ -242,8 +242,10 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
           this // Subsystem requirement
           );
     } catch (Exception e) {
-      edu.wpi.first.wpilibj.DriverStation.reportError(
-          "Failed to configure AutoBuilder", e.getStackTrace());
+      new com.marslib.faults.Alert(
+              "SwerveDrive: Failed to configure AutoBuilder",
+              com.marslib.faults.Alert.AlertType.CRITICAL)
+          .set(true);
       throw new RuntimeException("Failed to configure AutoBuilder", e);
     }
   }
@@ -532,10 +534,18 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
   public Command finalClimbLineupCommand() {
     return edu.wpi.first.wpilibj2.command.Commands.sequence(
             edu.wpi.first.wpilibj2.command.Commands.run(
-                    () -> runVelocity(new ChassisSpeeds(0.0, -0.5, 0.0)), this)
+                    () -> {
+                      ChassisSpeeds x = new ChassisSpeeds(0.0, -0.5, 0.0);
+                      runVelocity(x);
+                    },
+                    this)
                 .withTimeout(0.5),
             edu.wpi.first.wpilibj2.command.Commands.run(
-                    () -> runVelocity(new ChassisSpeeds(0.5, 0.0, 0.0)), this)
+                    () -> {
+                      ChassisSpeeds y = new ChassisSpeeds(0.5, 0.0, 0.0);
+                      runVelocity(y);
+                    },
+                    this)
                 .withTimeout(0.5))
         .finallyDo(() -> runVelocity(new ChassisSpeeds()));
   }
