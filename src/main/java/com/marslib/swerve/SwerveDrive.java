@@ -27,7 +27,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.SwerveConstants;
 import frc.robot.constants.ModeConstants;
-import frc.robot.constants.PowerConstants;
 import org.ironmaple.simulation.drivesims.COTS;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
@@ -69,13 +68,9 @@ public class SwerveDrive extends SubsystemBase {
   private final SwerveDriveSimulation simDrive;
   private final com.marslib.simulation.LidarIOSim lidarSim;
 
-  private final double[] lastModuleLimits =
-      new double[] {
-        SwerveConstants.DRIVE_STATOR_CURRENT_LIMIT,
-        SwerveConstants.DRIVE_STATOR_CURRENT_LIMIT,
-        SwerveConstants.DRIVE_STATOR_CURRENT_LIMIT,
-        SwerveConstants.DRIVE_STATOR_CURRENT_LIMIT
-      };
+  private final SwerveSetpointGenerator setpointGenerator;
+  private SwerveSetpointGenerator.SwerveSetpoint prevSetpoint;
+  private final SwerveSetpointGenerator.KinematicLimits kinematicLimits;
 
   /**
    * Constructs a new SwerveDrive instance.
@@ -162,6 +157,23 @@ public class SwerveDrive extends SubsystemBase {
                 this));
 
     this.driveFeedforwardEstimator = new OnlineFeedforwardEstimator("SwerveDrive", 500, 0.0);
+
+    this.setpointGenerator = new SwerveSetpointGenerator(this.kinematics);
+    this.kinematicLimits = new SwerveSetpointGenerator.KinematicLimits();
+    this.kinematicLimits.maxDriveVelocity = SwerveConstants.MAX_LINEAR_SPEED_MPS;
+    // a = mu * g
+    this.kinematicLimits.maxDriveAcceleration = SwerveConstants.WHEEL_COF_STATIC * 9.81;
+    this.kinematicLimits.maxSteeringVelocity = SwerveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC;
+
+    this.prevSetpoint =
+        new SwerveSetpointGenerator.SwerveSetpoint(
+            new ChassisSpeeds(),
+            new SwerveModuleState[] {
+              new SwerveModuleState(),
+              new SwerveModuleState(),
+              new SwerveModuleState(),
+              new SwerveModuleState()
+            });
   }
 
   // Reusable GC-free arrays for periodic loop to prevent massive RoboRIO heap churn
@@ -245,62 +257,8 @@ public class SwerveDrive extends SubsystemBase {
       module.periodic();
     }
 
-    // Active Dynamic Load Shedding — only write to CAN when the limit actually changes
-    double baseCurrentLimit =
-        powerManager.calculateLoadSheddedLimit(
-            SwerveConstants.DRIVE_STATOR_CURRENT_LIMIT,
-            SwerveConstants.MIN_LOAD_SHED_CURRENT,
-            PowerConstants.NOMINAL_VOLTAGE,
-            PowerConstants.CRITICAL_VOLTAGE);
-
-    // Apply per-module slip ratio traction clamping (254 / 1690 style)
-    if (edu.wpi.first.wpilibj.RobotBase.isReal()) {
-      for (int i = 0; i < 4; i++) {
-        SwerveModule mod = modules[i];
-        double moduleLimit = baseCurrentLimit;
-
-        double desiredSpeed = Math.abs(mod.getDesiredState().speedMetersPerSecond);
-        double actualSpeed = Math.abs(mod.getLatestState().speedMetersPerSecond);
-        double currentAmps = mod.getDriveCurrentAmps();
-
-        // Slip detection: If wheel is pushing massive torque but not moving proportionally
-        if (desiredSpeed > 0.5 && currentAmps > 60.0 && actualSpeed < desiredSpeed * 0.5) {
-          moduleLimit =
-              Math.min(moduleLimit, 40.0); // Severely clamp torque to regain static friction
-        }
-
-        // Heading-Aware Traction Reduction (reduces torque if wheel normal force is light)
-        if (gyroInputs.connected) {
-          double pitch = gyroInputs.pitchPositionRad; // + is pitched back (front wheels light)
-          double roll = gyroInputs.rollPositionRad; // + is rolled right (left wheels light)
-
-          boolean isLight = false;
-          // 0=FL, 1=FR, 2=BL, 3=BR
-          if (i == 0 && (pitch > 0.15 || roll > 0.15)) isLight = true;
-          if (i == 1 && (pitch > 0.15 || roll < -0.15)) isLight = true;
-          if (i == 2 && (pitch < -0.15 || roll > 0.15)) isLight = true;
-          if (i == 3 && (pitch < -0.15 || roll < -0.15)) isLight = true;
-
-          if (isLight) {
-            moduleLimit = Math.min(moduleLimit, 30.0); // extreme limit if wheel has no traction
-          }
-        }
-
-        // Only push CAN writes when the limit changes by at least 1A (BUG-03 fix)
-        if (Math.abs(moduleLimit - lastModuleLimits[i]) >= 1.0) {
-          mod.setCurrentLimit(moduleLimit);
-          lastModuleLimits[i] = moduleLimit;
-        }
-      }
-    } else {
-      // In Simulation, just push the base load shed limit if it changes
-      if (Math.abs(baseCurrentLimit - lastModuleLimits[0]) >= 1.0) {
-        for (int i = 0; i < 4; i++) {
-          modules[i].setCurrentLimit(baseCurrentLimit);
-          lastModuleLimits[i] = baseCurrentLimit;
-        }
-      }
-    }
+    // Active Load Shedding is no longer executed over CAN; it's handled via static HW supply limits
+    // and scaled chassis velocity vectors natively.
     // Use real gyro yaw for pose estimation
     // Rotation2d yaw = ... (moved into the drain loop for high frequency accuracy)
 
@@ -407,10 +365,26 @@ public class SwerveDrive extends SubsystemBase {
    * @param speeds The requested translational and rotational velocities in m/s and rad/s.
    */
   public void runVelocity(ChassisSpeeds speeds) {
+    // Determine dynamic battery stability modifier
+    double voltageScale =
+        powerManager.calculateVoltageScaleFactor(
+            frc.robot.constants.PowerConstants.NOMINAL_VOLTAGE,
+            frc.robot.constants.PowerConstants.CRITICAL_VOLTAGE);
+
+    // Scale user requests to avoid pulling massive transients during brownouts
+    speeds.vxMetersPerSecond *= voltageScale;
+    speeds.vyMetersPerSecond *= voltageScale;
+    speeds.omegaRadiansPerSecond *= voltageScale;
+
     ChassisSpeeds discretizedSpeeds =
         ChassisSpeeds.discretize(speeds, ModeConstants.LOOP_PERIOD_SECS);
-    SwerveModuleState[] states = kinematics.toSwerveModuleStates(discretizedSpeeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(states, SwerveConstants.MAX_LINEAR_SPEED_MPS);
+
+    this.prevSetpoint =
+        setpointGenerator.generateSetpoint(
+            kinematicLimits, prevSetpoint, discretizedSpeeds, ModeConstants.LOOP_PERIOD_SECS);
+
+    SwerveModuleState[] states = prevSetpoint.moduleStates;
+
     for (int i = 0; i < 4; i++) {
       modules[i].setDesiredState(states[i]);
     }

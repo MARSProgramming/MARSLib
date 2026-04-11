@@ -4,7 +4,14 @@ import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,6 +27,7 @@ import java.util.Map;
  */
 public class LoggedTunableNumber {
   private static final String tableKey = "TunableNumbers";
+  private static final List<LoggedTunableNumber> registeredTunables = new ArrayList<>();
 
   private final String key;
   private boolean hasDefault = false;
@@ -32,6 +40,9 @@ public class LoggedTunableNumber {
 
   public LoggedTunableNumber(String dashboardKey) {
     this.key = dashboardKey;
+    synchronized (registeredTunables) {
+      registeredTunables.add(this);
+    }
   }
 
   public LoggedTunableNumber(String dashboardKey, double defaultValue) {
@@ -78,5 +89,36 @@ public class LoggedTunableNumber {
       return true;
     }
     return false;
+  }
+
+  /**
+   * Generates a structural Command that pulls the live value of all registered tunables and dumps
+   * them as a formatted JSON document on the RoboRIO deployment storage.
+   */
+  public static Command getDumpCommand() {
+    return Commands.runOnce(
+        () -> {
+          StringBuilder sb = new StringBuilder("{\n");
+          synchronized (registeredTunables) {
+            for (int i = 0; i < registeredTunables.size(); i++) {
+              LoggedTunableNumber p = registeredTunables.get(i);
+              sb.append("  \"").append(p.key).append("\": ").append(p.get());
+              if (i < registeredTunables.size() - 1) {
+                sb.append(",");
+              }
+              sb.append("\n");
+            }
+          }
+          sb.append("}\n");
+
+          try {
+            Path path = Paths.get("/home/lvuser/tunables_dump.json");
+            Files.writeString(path, sb.toString());
+            DriverStation.reportWarning("Successfully dumped tunables to " + path, false);
+          } catch (Exception e) {
+            DriverStation.reportError(
+                "Failed to dump tunables: " + e.getMessage(), e.getStackTrace());
+          }
+        });
   }
 }

@@ -41,6 +41,8 @@ public class ShootOnTheMoveCommand extends Command {
   // (Tune this parameter based on wheel radius and surface slip!)
   private static final double VELOCITY_TO_RAD_PER_SEC = 30.0;
 
+  private final EliteShooterSetpoint shotCache = new EliteShooterSetpoint();
+
   private static final Translation3d BLUE_HUB_3D =
       new Translation3d(
           frc.robot.constants.FieldConstants.BLUE_HUB_POS.getX(),
@@ -101,8 +103,8 @@ public class ShootOnTheMoveCommand extends Command {
             frc.robot.constants.FieldConstants.GAME_PIECE_REST_HEIGHT_METERS,
             frc.robot.constants.ShooterConstants.PROJECTILE_SPEED_MPS,
             -9.81,
-            0.1 // Fuel aerodynamic lift coefficient
-            );
+            0.1, // Fuel aerodynamic lift coefficient
+            shotCache);
 
     // 5. Calculate heading intercept (with feedforward)
     double aimTheta =

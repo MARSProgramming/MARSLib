@@ -92,8 +92,17 @@ public class Robot extends LoggedRobot {
     Logger.recordOutput(
         "System/BatteryVoltage", edu.wpi.first.wpilibj.RobotController.getBatteryVoltage());
     Logger.recordOutput(
+        "System/BrownoutVoltage", edu.wpi.first.wpilibj.RobotController.getBrownoutVoltage());
+    Logger.recordOutput(
+        "System/WatchdogActive", edu.wpi.first.wpilibj.RobotController.isSysActive());
+    Logger.recordOutput(
         "System/CANBusUtilization",
         edu.wpi.first.wpilibj.RobotController.getCANStatus().percentBusUtilization);
+
+    // Track CANivore separately because FRC swerve relies heavily on it
+    Logger.recordOutput(
+        "System/CANivoreUtilization",
+        new com.ctre.phoenix6.CANBus("CAN2").getStatus().BusUtilization);
   }
 
   /** This function is called once when the robot is disabled. */

@@ -2,7 +2,6 @@ package com.marslib.swerve;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -38,6 +37,8 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     driveConfig.CurrentLimits.StatorCurrentLimit =
         frc.robot.SwerveConstants.DRIVE_STATOR_CURRENT_LIMIT;
+    driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    driveConfig.CurrentLimits.SupplyCurrentLimit = 60.0;
     driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     driveMotor.getConfigurator().apply(driveConfig);
 
@@ -45,6 +46,8 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     turnConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     turnConfig.CurrentLimits.StatorCurrentLimit =
         frc.robot.SwerveConstants.TURN_STATOR_CURRENT_LIMIT;
+    turnConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    turnConfig.CurrentLimits.SupplyCurrentLimit = 40.0;
     turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     turnMotor.getConfigurator().apply(turnConfig);
 
@@ -143,9 +146,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
 
   @Override
   public void setCurrentLimit(double amps) {
-    CurrentLimitsConfigs limits = new CurrentLimitsConfigs();
-    driveMotor.getConfigurator().refresh(limits);
-    limits.StatorCurrentLimit = amps;
-    driveMotor.getConfigurator().apply(limits);
+    // Deprecated framework pattern. Motor controllers now self-regulate SupplyCurrent Limit via
+    // hardware init.
   }
 }

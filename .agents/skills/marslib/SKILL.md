@@ -46,8 +46,7 @@ These rules are **non-negotiable** across all MARSLib code:
 | Mechanisms | `marslib-mechanisms` | Elevator, arm, intake, shooter IO patterns |
 | Superstructure | `marslib-superstructure` | Collision safety, state machine coordination |
 | State Machines | `marslib-statemachine` | Generic FSM framework (`MARSStateMachine<S>`) |
-| Autonomous | `marslib-autonomous` | PathPlanner, GhostManager, Choreo, alignment |
-| Ghost Replay | `marslib-ghost` | GhostManager recording, playback, macro files |
+| Autonomous | `marslib-autonomous` | PathPlanner, Choreo, alignment |
 | Shot Setup | `marslib-shotsetup` | EliteShooterMath SOTM solver, time-of-flight |
 | Vision | `marslib-vision` | AprilTag fusion, VIO SLAM, camera simulation |
 | Simulation | `marslib-simulation` | dyn4j physics, field boundaries, game pieces |

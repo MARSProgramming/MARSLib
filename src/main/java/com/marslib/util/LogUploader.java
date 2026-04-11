@@ -10,6 +10,7 @@ import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.HashSet;
@@ -54,9 +55,11 @@ public final class LogUploader {
             return t;
           });
 
-  private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
+  private static final HttpClient HTTP_CLIENT =
+      HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
   private static final AtomicBoolean isUploading = new AtomicBoolean(false);
   private static long lastTriggerTime = 0;
+  private static final int MAX_MANIFEST_ENTRIES = 50;
 
   private LogUploader() {}
 
@@ -127,8 +130,8 @@ public final class LogUploader {
 
             boolean success = uploadAssetToGitHub(pat, logFile, uploadName);
             if (success) {
-              markAsUploaded(originalName);
               uploadedSet.add(originalName);
+              saveUploadedManifest(uploadedSet);
               DriverStation.reportWarning("Successfully uploaded log: " + uploadName, false);
             }
           }
@@ -170,13 +173,20 @@ public final class LogUploader {
     return set;
   }
 
-  private static void markAsUploaded(String filename) {
+  private static void saveUploadedManifest(Set<String> uploadedSet) {
     try {
+      String content =
+          uploadedSet.stream()
+              .limit(MAX_MANIFEST_ENTRIES)
+              .collect(Collectors.joining(System.lineSeparator()));
+      if (!content.isEmpty()) {
+        content += System.lineSeparator();
+      }
       Files.writeString(
           UPLOAD_MANIFEST,
-          filename + System.lineSeparator(),
+          content,
           StandardOpenOption.CREATE,
-          StandardOpenOption.APPEND);
+          StandardOpenOption.TRUNCATE_EXISTING);
     } catch (IOException e) {
       if (LOGGER.isLoggable(Level.WARNING)) {
         LOGGER.log(Level.WARNING, "Failed to write to upload manifest", e);
@@ -208,6 +218,7 @@ public final class LogUploader {
       HttpRequest request =
           HttpRequest.newBuilder()
               .uri(URI.create(uploadUrl))
+              .timeout(Duration.ofMinutes(15))
               .header("Authorization", "Bearer " + pat)
               .header("Content-Type", "application/octet-stream")
               .header("Accept", "application/vnd.github.v3+json")
@@ -247,6 +258,7 @@ public final class LogUploader {
     HttpRequest request =
         HttpRequest.newBuilder()
             .uri(URI.create(url))
+            .timeout(Duration.ofSeconds(10))
             .header("Authorization", "Bearer " + pat)
             .header("Accept", "application/vnd.github.v3+json")
             .GET()
@@ -271,6 +283,7 @@ public final class LogUploader {
     HttpRequest request =
         HttpRequest.newBuilder()
             .uri(URI.create(url))
+            .timeout(Duration.ofSeconds(10))
             .header("Authorization", "Bearer " + pat)
             .header("Accept", "application/vnd.github.v3+json")
             .header("Content-Type", "application/json")

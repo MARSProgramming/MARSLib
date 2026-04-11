@@ -1,6 +1,5 @@
 package frc.robot;
 
-import com.marslib.auto.GhostManager;
 import com.marslib.hmi.LEDIOAddressable;
 import com.marslib.hmi.LEDManager;
 import com.marslib.mechanisms.FlywheelIO;
@@ -64,7 +63,6 @@ public class RobotContainer {
   private final MARSShooter shooter;
   private final MARSShooter feeder;
   private final MARSSuperstructure superstructure;
-  private final GhostManager ghostManager = new GhostManager();
 
   @SuppressWarnings({"PMD.UnusedPrivateField", "unused"})
   private final LEDManager ledManager;
@@ -334,12 +332,29 @@ public class RobotContainer {
     autoChooser =
         new LoggedDashboardChooser<>(
             "Auto Chooser", com.pathplanner.lib.auto.AutoBuilder.buildAutoChooser());
-    autoChooser.addDefaultOption("Ghost Playback", ghostManager.getPlaybackCommand());
+
+    // Task 1: Asynchronously pre-load all PathPlanner trajectories to prevent match-start CPU
+    // stutter
+    new Thread(
+            () -> {
+              for (String autoName : com.pathplanner.lib.auto.AutoBuilder.getAllAutoNames()) {
+                try {
+                  new com.pathplanner.lib.commands.PathPlannerAuto(autoName);
+                } catch (Exception e) {
+                  org.littletonrobotics.junction.Logger.recordOutput(
+                      "Auto/CacheWarning", "Failed to cache trajectory: " + autoName);
+                }
+              }
+            })
+        .start();
+
+    // Task 4: Expose tunable variable serialization to DriverStation
+    edu.wpi.first.wpilibj.smartdashboard.SmartDashboard.putData(
+        "Dump Tunables", com.marslib.util.LoggedTunableNumber.getDumpCommand());
 
     RobotBindings.configureBindings(
         operatorInterface,
         swerveDrive,
-        ghostManager,
         superstructure,
         climber,
         cowl,

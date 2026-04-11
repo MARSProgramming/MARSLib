@@ -14,49 +14,58 @@ import edu.wpi.first.math.geometry.Translation3d;
  * where the camera can see.
  */
 public class FrustumVisualizer {
+  private final Transform3d tTopLeft;
+  private final Transform3d tTopRight;
+  private final Transform3d tBottomLeft;
+  private final Transform3d tBottomRight;
+  private final Pose3d[] cachedRenderBuffer = new Pose3d[11];
 
   /**
    * Generate an array of 5 3D poses representing a visual cone/frustum.
    *
-   * @param cameraPose The exact physical mounting pose of the camera on the field (Robot Pose +
-   *     Camera Transform).
-   * @param horizontalFOV The horizontal FOV in degrees (e.g. Limelight 3 = 63.3)
-   * @param verticalFOV The vertical FOV in degrees (e.g. Limelight 3 = 49.7)
-   * @param clipDistance How far out to draw the bounding rays in meters.
-   * @return Pose3d array for AdvantageScope 3D rendering.
+   * @param horizontalFovDeg The horizontal FOV in degrees (e.g. Limelight 3 = 63.3)
+   * @param verticalFovDeg The vertical FOV in degrees (e.g. Limelight 3 = 49.7)
+   * @param rangeMeters How far out to draw the bounding rays in meters.
    */
-  public static Pose3d[] generateFrustum(
-      Pose3d cameraPose, double horizontalFOV, double verticalFOV, double clipDistance) {
+  public FrustumVisualizer(double horizontalFovDeg, double verticalFovDeg, double rangeMeters) {
+    double hFovRads = Math.toRadians(horizontalFovDeg / 2.0);
+    double vFovRads = Math.toRadians(verticalFovDeg / 2.0);
 
-    double hFovRads = Math.toRadians(horizontalFOV / 2.0);
-    double vFovRads = Math.toRadians(verticalFOV / 2.0);
+    double leftPlaneY = rangeMeters * Math.tan(hFovRads);
+    double rightPlaneY = -rangeMeters * Math.tan(hFovRads);
+    double topPlaneZ = rangeMeters * Math.tan(vFovRads);
+    double bottomPlaneZ = -rangeMeters * Math.tan(vFovRads);
 
-    // Vector translations relative to the camera origin extending outward to the clip plane.
-    Translation3d topLeft =
-        new Translation3d(
-            clipDistance, clipDistance * Math.tan(hFovRads), clipDistance * Math.tan(vFovRads));
-    Translation3d topRight =
-        new Translation3d(
-            clipDistance, -clipDistance * Math.tan(hFovRads), clipDistance * Math.tan(vFovRads));
-    Translation3d bottomLeft =
-        new Translation3d(
-            clipDistance, clipDistance * Math.tan(hFovRads), -clipDistance * Math.tan(vFovRads));
-    Translation3d bottomRight =
-        new Translation3d(
-            clipDistance, -clipDistance * Math.tan(hFovRads), -clipDistance * Math.tan(vFovRads));
+    tTopLeft =
+        new Transform3d(new Translation3d(rangeMeters, leftPlaneY, topPlaneZ), new Rotation3d());
+    tTopRight =
+        new Transform3d(new Translation3d(rangeMeters, rightPlaneY, topPlaneZ), new Rotation3d());
+    tBottomLeft =
+        new Transform3d(new Translation3d(rangeMeters, leftPlaneY, bottomPlaneZ), new Rotation3d());
+    tBottomRight =
+        new Transform3d(
+            new Translation3d(rangeMeters, rightPlaneY, bottomPlaneZ), new Rotation3d());
+  }
 
-    Pose3d p1 = cameraPose.plus(new Transform3d(topLeft, new Rotation3d()));
-    Pose3d p2 = cameraPose.plus(new Transform3d(topRight, new Rotation3d()));
-    Pose3d p3 = cameraPose.plus(new Transform3d(bottomLeft, new Rotation3d()));
-    Pose3d p4 = cameraPose.plus(new Transform3d(bottomRight, new Rotation3d()));
-
-    // The exact origin of the lens
+  public Pose3d[] update(Pose3d cameraPose) {
     Pose3d p0 = cameraPose;
+    Pose3d p1 = cameraPose.plus(tTopLeft);
+    Pose3d p2 = cameraPose.plus(tTopRight);
+    Pose3d p3 = cameraPose.plus(tBottomLeft);
+    Pose3d p4 = cameraPose.plus(tBottomRight);
 
-    // Structured sequentially to trace the 3D wireframe without diagonal face crosses.
-    // 1: Origin -> TL ray. 2: Top edge. 3: Right edge. 4: Bottom edge. 5: Left edge (Face closed).
-    // 6: TL -> Origin (reverse). 7: Origin -> TR ray. 8: TR -> BR (retrace edge).
-    // 9: BR -> Origin (reverse ray). 10: Origin -> BL ray.
-    return new Pose3d[] {p0, p1, p2, p4, p3, p1, p0, p2, p4, p0, p3};
+    cachedRenderBuffer[0] = p0;
+    cachedRenderBuffer[1] = p1;
+    cachedRenderBuffer[2] = p2;
+    cachedRenderBuffer[3] = p4;
+    cachedRenderBuffer[4] = p3;
+    cachedRenderBuffer[5] = p1;
+    cachedRenderBuffer[6] = p0;
+    cachedRenderBuffer[7] = p2;
+    cachedRenderBuffer[8] = p4;
+    cachedRenderBuffer[9] = p0;
+    cachedRenderBuffer[10] = p3;
+
+    return cachedRenderBuffer;
   }
 }

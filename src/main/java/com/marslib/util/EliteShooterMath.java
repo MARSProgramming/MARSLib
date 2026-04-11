@@ -39,7 +39,8 @@ public class EliteShooterMath {
    * @param nominalShotSpeedMetersPerSec Base shot velocity output limit
    * @param gravity Gravity constant (typically -9.81)
    * @param liftCoefficient Aerodynamic lift coefficient of the game piece
-   * @return Computed EliteShooterSetpoint with exact angles and feedforwards
+   * @param setpoint Reference to a pre-allocated EliteShooterSetpoint to mutate and return
+   * @return The same setpoint instance populated with computed values
    */
   public static EliteShooterSetpoint calculateShotOnTheMove(
       Pose2d robotPose,
@@ -48,9 +49,8 @@ public class EliteShooterMath {
       double releaseHeightZ,
       double nominalShotSpeedMetersPerSec,
       double gravity,
-      double liftCoefficient) {
-
-    EliteShooterSetpoint setpoint = new EliteShooterSetpoint();
+      double liftCoefficient,
+      EliteShooterSetpoint setpoint) {
 
     double tx = targetTranslation.getX() - robotPose.getX();
     double ty = targetTranslation.getY() - robotPose.getY();

@@ -1,6 +1,5 @@
 package frc.robot;
 
-import com.marslib.auto.GhostManager;
 import com.marslib.hmi.TelemetryGamepad;
 import com.marslib.swerve.SwerveDrive;
 import com.marslib.swerve.TeleopDriveCommand;
@@ -20,7 +19,6 @@ public final class RobotBindings {
   public static void configureBindings(
       OperatorInterface operatorInterface,
       SwerveDrive swerveDrive,
-      GhostManager ghostManager,
       MARSSuperstructure superstructure,
       MARSClimber climber,
       MARSCowl cowl,
@@ -35,7 +33,6 @@ public final class RobotBindings {
     swerveDrive.setDefaultCommand(
         new TeleopDriveCommand(
             swerveDrive,
-            ghostManager,
             () -> controller.getLeftY(),
             () -> controller.getLeftX(),
             () -> controller.getRightX()));
@@ -154,25 +151,6 @@ public final class RobotBindings {
         "DPad_Down",
         "Manual Climber Down",
         Commands.startEnd(() -> climber.setVoltage(-12.0), () -> climber.setVoltage(0.0), climber));
-
-    controller.bindOnTrue(
-        controller.back().and(controller.start()),
-        "Back_And_Start",
-        "Ghost Record",
-        ghostManager.registerRecordCommand(
-            () -> controller.getLeftY(),
-            () -> controller.getLeftX(),
-            () -> controller.getRightX(),
-            controller.a(),
-            controller.b(),
-            controller.x(),
-            controller.y(),
-            controller.leftBumper(),
-            controller.rightBumper(),
-            controller.povUp(),
-            controller.povDown(),
-            controller.povLeft(),
-            controller.povRight()));
 
     controller.bindOnTrue(
         controller.start(),

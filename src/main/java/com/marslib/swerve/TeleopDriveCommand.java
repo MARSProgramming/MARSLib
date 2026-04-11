@@ -1,6 +1,5 @@
 package com.marslib.swerve;
 
-import com.marslib.auto.GhostManager;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -23,7 +22,6 @@ import org.littletonrobotics.junction.Logger;
  */
 public class TeleopDriveCommand extends Command {
   private final SwerveDrive swerveDrive;
-  private final GhostManager ghostManager;
   private final DoubleSupplier xSupplier;
   private final DoubleSupplier ySupplier;
   private final DoubleSupplier omegaSupplier;
@@ -40,12 +38,10 @@ public class TeleopDriveCommand extends Command {
 
   public TeleopDriveCommand(
       SwerveDrive swerveDrive,
-      GhostManager ghostManager,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier) {
     this.swerveDrive = swerveDrive;
-    this.ghostManager = ghostManager;
     this.xSupplier = xSupplier;
     this.ySupplier = ySupplier;
     this.omegaSupplier = omegaSupplier;
@@ -70,18 +66,11 @@ public class TeleopDriveCommand extends Command {
     double rawOmega = omegaSupplier.getAsDouble();
 
     ChassisSpeeds preSlewSpeeds =
-        TeleopDriveMath.computeFieldRelativeSpeeds(
-            ghostManager.getLeftY(() -> rawX),
-            ghostManager.getLeftX(() -> rawY),
-            ghostManager.getRightX(() -> rawOmega),
-            isRed);
+        TeleopDriveMath.computeFieldRelativeSpeeds(rawX, rawY, rawOmega, isRed);
 
-    double xVal =
-        MathUtil.applyDeadband(ghostManager.getLeftY(() -> rawX), TeleopDriveMath.DEADBAND);
-    double yVal =
-        MathUtil.applyDeadband(ghostManager.getLeftX(() -> rawY), TeleopDriveMath.DEADBAND);
-    double omgVal =
-        MathUtil.applyDeadband(ghostManager.getRightX(() -> rawOmega), TeleopDriveMath.DEADBAND);
+    double xVal = MathUtil.applyDeadband(rawX, TeleopDriveMath.DEADBAND);
+    double yVal = MathUtil.applyDeadband(rawY, TeleopDriveMath.DEADBAND);
+    double omgVal = MathUtil.applyDeadband(rawOmega, TeleopDriveMath.DEADBAND);
 
     Translation2d targetTrans =
         new Translation2d(preSlewSpeeds.vxMetersPerSecond, preSlewSpeeds.vyMetersPerSecond);

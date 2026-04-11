@@ -16,10 +16,23 @@ public class AprilTagVisionIOPhoton implements AprilTagVisionIO {
 
   private final PhotonCamera camera;
   private final PhotonPoseEstimator poseEstimator;
+  private static final int MAX_RESULTS = 8;
+  private final Pose3d[][] poseCaches = new Pose3d[MAX_RESULTS + 1][];
+  private final double[][] timestampCaches = new double[MAX_RESULTS + 1][];
+  private final int[][] tagCountCaches = new int[MAX_RESULTS + 1][];
+  private final double[][] distanceCaches = new double[MAX_RESULTS + 1][];
+  private final double[][] ambiguityCaches = new double[MAX_RESULTS + 1][];
 
   public AprilTagVisionIOPhoton(String cameraName, PhotonPoseEstimator poseEstimator) {
     this.camera = new PhotonCamera(cameraName);
     this.poseEstimator = poseEstimator;
+    for (int i = 0; i <= MAX_RESULTS; i++) {
+      poseCaches[i] = new Pose3d[i];
+      timestampCaches[i] = new double[i];
+      tagCountCaches[i] = new int[i];
+      distanceCaches[i] = new double[i];
+      ambiguityCaches[i] = new double[i];
+    }
   }
 
   @SuppressWarnings("removal")
@@ -27,29 +40,46 @@ public class AprilTagVisionIOPhoton implements AprilTagVisionIO {
   public void updateInputs(AprilTagVisionIOInputs inputs) {
     var results = camera.getAllUnreadResults();
 
-    if (!results.isEmpty()) {
-      var result = results.get(results.size() - 1);
-      if (result.hasTargets()) {
-        Optional<EstimatedRobotPose> estimatedPose = poseEstimator.update(result);
-        if (estimatedPose.isPresent()) {
-          EstimatedRobotPose pose = estimatedPose.get();
+    int validCount = 0;
+    int maxProcess = Math.min(results.size(), MAX_RESULTS);
 
-          inputs.estimatedPoses = new Pose3d[] {pose.estimatedPose};
-          inputs.timestamps = new double[] {pose.timestampSeconds};
-          inputs.tagCounts = new int[] {result.getTargets().size()};
+    if (maxProcess > 0) {
+      Pose3d[] pCache = poseCaches[maxProcess];
+      double[] tCache = timestampCaches[maxProcess];
+      int[] tcCache = tagCountCaches[maxProcess];
+      double[] dCache = distanceCaches[maxProcess];
+      double[] aCache = ambiguityCaches[maxProcess];
 
-          double avgDist = 0.0;
-          double avgAmbiguity = 0.0;
+      for (int i = 0; i < maxProcess; i++) {
+        var result = results.get(i);
+        if (result.hasTargets()) {
+          Optional<EstimatedRobotPose> estimatedPose = poseEstimator.update(result);
+          if (estimatedPose.isPresent()) {
+            EstimatedRobotPose pose = estimatedPose.get();
+            if (pose.targetsUsed.size() > 0) {
+              pCache[validCount] = pose.estimatedPose;
+              tCache[validCount] = pose.timestampSeconds;
+              tcCache[validCount] = pose.targetsUsed.size();
 
-          for (var target : result.getTargets()) {
-            avgDist += target.getBestCameraToTarget().getTranslation().getNorm();
-            avgAmbiguity += target.getPoseAmbiguity();
+              double totalDist = 0.0;
+              for (var t : pose.targetsUsed) {
+                totalDist += t.getBestCameraToTarget().getTranslation().getNorm();
+              }
+              dCache[validCount] = totalDist / pose.targetsUsed.size();
+              aCache[validCount] = pose.targetsUsed.get(0).getPoseAmbiguity();
+              validCount++;
+            }
           }
-
-          inputs.averageDistancesMeters = new double[] {avgDist / result.getTargets().size()};
-          inputs.ambiguities = new double[] {avgAmbiguity / result.getTargets().size()};
-          return;
         }
+      }
+
+      if (validCount > 0) {
+        inputs.estimatedPoses = poseCaches[validCount];
+        inputs.timestamps = timestampCaches[validCount];
+        inputs.tagCounts = tagCountCaches[validCount];
+        inputs.averageDistancesMeters = distanceCaches[validCount];
+        inputs.ambiguities = ambiguityCaches[validCount];
+        return;
       }
     }
 

@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.simulation.SimHooks;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.SwerveConstants;
 import frc.robot.constants.PowerConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -79,19 +78,29 @@ public class SwerveDriveTest {
   }
 
   @Test
-  public void testLoadSheddingRestrictsHardwareOutputs() {
+  public void testLoadSheddingRestrictsKinematicsOutputs() {
     // Drop voltage to trigger protective shutdown mode
     simulatedVoltageOverride = PowerConstants.CRITICAL_VOLTAGE - 0.5;
 
-    // Command drive
-    swerveDrive.runVelocity(new ChassisSpeeds(1.0, 0.0, 0.0));
+    // Command drive forward
+    ChassisSpeeds targetSpeeds = new ChassisSpeeds(3.0, 0.0, 0.0);
+    double initialX = swerveDrive.getPose().getX();
 
-    // Evaluate logic frame
-    edu.wpi.first.wpilibj2.command.CommandScheduler.getInstance().run();
-
-    // The modules should have physically attained the strict current ceiling
-    for (int i = 0; i < 4; i++) {
-      assertEquals(SwerveConstants.MIN_LOAD_SHED_CURRENT, simIOs[i].getCurrentLimitAmps(), 0.1);
+    for (int i = 0; i < 50; i++) {
+      swerveDrive.runVelocity(targetSpeeds);
+      CommandScheduler.getInstance().run();
+      swerveDrive.periodic(); // Polls the power manager
+      swerveDrive.simulationPeriodic();
+      MARSPhysicsWorld.getInstance().update(0.02);
+      SimHooks.stepTiming(0.02);
     }
+
+    // Because voltage scales to 0.0 in deep brownout, the kinematics should have completely
+    // halted and the robot shouldn't have moved.
+    assertEquals(
+        initialX,
+        swerveDrive.getPose().getX(),
+        0.05,
+        "Robot moved despite critical brownout voltage ceiling clamping.");
   }
 }

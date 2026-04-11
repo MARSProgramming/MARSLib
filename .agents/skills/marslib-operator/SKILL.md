@@ -41,7 +41,7 @@ When binding a controller button, the Command MUST `requires()` every subsystem 
 ### Rule B: Haptic Feedback for Invisible Events
 Drivers can't watch the screen during matches. Fire controller rumble for:
 - Game piece collected (intake sensor triggered)
-- `GhostManager` macro recording complete
+
 - Alignment locked on target (PID converged)
 
 ### Rule C: Use LoggedTunableNumber for Manual Overrides

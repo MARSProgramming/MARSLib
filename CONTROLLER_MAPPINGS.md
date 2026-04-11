@@ -22,7 +22,6 @@ This document is automatically generated during compilation from `RobotBindings.
 | <kbd>X</kbd> | **Final Climb Lineup** |
 | <kbd>DPad_Up</kbd> | **Manual Climber Up** |
 | <kbd>DPad_Down</kbd> | **Manual Climber Down** |
-| <kbd>Back_And_Start</kbd> | **Ghost Record** |
 | <kbd>Start</kbd> | **Diagnostic Check** |
 
 ---

@@ -43,14 +43,14 @@ BaseStatusSignal.setUpdateFrequencyForAll(4, // 4Hz for non-critical
 ```
 Only position, velocity, and stator current should run at full frequency (250Hz). Everything else should be 4-10Hz.
 
-### Rule C: Every Mechanism Must Implement Load Shedding
-Every subsystem accepting a `MARSPowerManager` MUST dynamically scale its current limit based on system voltage:
+### Rule C: Every Mechanism Must Implement Voltage Scaling
+Dynamic `setCurrentLimit` via CAN is actively **BANNED** in MARSLib because it floods the CAN bus and breaks elite-tier zero-allocation principles. Use immutable static `<SupplyCurrentLimit>` values in your `TalonFXConfiguration`.
+
+Instead, mechanisms scale output targets downward to prevent brownout sag:
 ```java
-double currentLimit = powerManager.calculateLoadSheddedLimit(
-    MAX_CURRENT_AMPS, MIN_CURRENT_AMPS, NOMINAL_VOLTAGE, CRITICAL_VOLTAGE);
-io.setCurrentLimit(currentLimit);
+double voltScale = powerManager.calculateVoltageScaleFactor(NOMINAL_VOLTAGE, CRITICAL_VOLTAGE);
+targetKinematics *= voltScale;
 ```
-This is non-negotiable — it's the difference between a working robot and a brownout during eliminations.
 
 ### Rule D: Power Constants Per Mechanism
 Each mechanism defines its own voltage thresholds in `Constants`:
@@ -63,12 +63,12 @@ Each mechanism defines its own voltage thresholds in `Constants`:
 
 1. Accept `MARSPowerManager` in the subsystem constructor.
 2. Define `NOMINAL_VOLTAGE`, `CRITICAL_VOLTAGE`, `MAX_CURRENT_AMPS`, `MIN_CURRENT_AMPS` in Constants.
-3. In `periodic()`, compute the interpolated current limit and call `io.setCurrentLimit()`.
+3. In `periodic()`, scale your closed loop targets (`runVelocity()`, `setVoltage()`, etc) by the `calculateVoltageScaleFactor`.
 4. In the IO layer's sim implementation, report current draw via `MARSPhysicsWorld.getInstance().addFrameCurrentDrawAmps()`.
 
 ## 4. Telemetry
 - `Power/BatteryVoltage` — Current battery voltage
 - `Power/IsBrownedOut` — Boolean: voltage below critical threshold
 - `Power/TotalCurrentDraw` — Aggregate current from all mechanisms (sim only)
-- `{Mechanism}/CurrentLimit` — Active current limit after load shedding
+
 - `{Mechanism}/StatorCurrent` — Actual stator current draw

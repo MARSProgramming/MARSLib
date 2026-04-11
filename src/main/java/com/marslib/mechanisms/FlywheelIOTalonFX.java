@@ -2,7 +2,6 @@ package com.marslib.mechanisms;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -27,7 +26,6 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   private final VelocityVoltage velocityRequest = new VelocityVoltage(0.0).withUpdateFreqHz(0);
 
   private double targetVelocityRadPerSec = 0.0;
-  private double lastAppliedCurrentLimit = 40.0;
 
   private final TalonFX[] followers;
 
@@ -60,6 +58,8 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     config.MotorOutput.Inverted =
         invert ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast; // defaults coast for shooters/intakes
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLimit = 60.0;
 
     // Default basic PID
     config.Slot0.kP = 0.1;
@@ -113,15 +113,8 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 
   @Override
   public void setCurrentLimit(double amps) {
-    if (Math.abs(amps - lastAppliedCurrentLimit) < 1.0) {
-      return;
-    }
-    lastAppliedCurrentLimit = amps;
-    CurrentLimitsConfigs config = new CurrentLimitsConfigs();
-    motor.getConfigurator().refresh(config);
-    config.StatorCurrentLimit = amps;
-    config.StatorCurrentLimitEnable = true;
-    motor.getConfigurator().apply(config);
+    // Deprecated framework pattern. Motor controllers now self-regulate SupplyCurrent Limit via
+    // hardware init.
   }
 
   @Override

@@ -31,12 +31,8 @@ public class MARSClimber extends SubsystemBase {
 
   private ElevatorFeedforward feedforward;
 
-  // Bounds for active load shedding
   private static final double NOMINAL_VOLTAGE = 12.0;
   private static final double CRITICAL_VOLTAGE = 9.0;
-
-  private static final double MAX_CURRENT_AMPS = 40.0;
-  private static final double MIN_CURRENT_AMPS = 20.0;
 
   private final MARSPowerManager powerManager;
   private final SysIdRoutine sysIdRoutine;
@@ -81,14 +77,6 @@ public class MARSClimber extends SubsystemBase {
       feedforward = new ElevatorFeedforward(kS.get(), kG.get(), kV.get(), kA.get());
     }
 
-    // Active Load Shedding via MARSPowerManager
-    double currentLimit =
-        powerManager.calculateLoadSheddedLimit(
-            MAX_CURRENT_AMPS, MIN_CURRENT_AMPS, NOMINAL_VOLTAGE, CRITICAL_VOLTAGE);
-
-    io.setCurrentLimit(currentLimit);
-    Logger.recordOutput("Climber/ActiveCurrentLimit", currentLimit);
-
     // Continuous TeleOp SysId Extraction
     double currentVelocity = inputs.velocityMetersPerSec;
     double currentAccel = (currentVelocity - lastVelocityForSysId) / ModeConstants.LOOP_PERIOD_SECS;
@@ -107,7 +95,8 @@ public class MARSClimber extends SubsystemBase {
    */
   public void setTargetPosition(double positionMeters) {
     // Dynamic FF using instantaneous profile target velocity from CTRE Motion Magic
-    double ffVolts = feedforward.calculate(inputs.targetVelocityMetersPerSec);
+    double scale = powerManager.calculateVoltageScaleFactor(NOMINAL_VOLTAGE, CRITICAL_VOLTAGE);
+    double ffVolts = feedforward.calculate(inputs.targetVelocityMetersPerSec) * scale;
     io.setClosedLoopPosition(positionMeters, ffVolts);
     Logger.recordOutput("Climber/TargetPositionMeters", positionMeters);
   }

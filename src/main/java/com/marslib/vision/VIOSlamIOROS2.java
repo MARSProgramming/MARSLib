@@ -15,12 +15,21 @@ public class VIOSlamIOROS2 implements VIOSlamIO {
 
   private final StructSubscriber<Pose3d> poseSub;
 
+  private static final int MAX_RESULTS = 8;
+  private final Pose3d[][] poseCaches = new Pose3d[MAX_RESULTS + 1][];
+  private final double[][] timestampCaches = new double[MAX_RESULTS + 1][];
+
   public VIOSlamIOROS2(String tableName, String topicName) {
     poseSub =
         NetworkTableInstance.getDefault()
             .getTable(tableName)
             .getStructTopic(topicName, Pose3d.struct)
             .subscribe(new Pose3d());
+
+    for (int i = 0; i <= MAX_RESULTS; i++) {
+      poseCaches[i] = new Pose3d[i];
+      timestampCaches[i] = new double[i];
+    }
   }
 
   @Override
@@ -28,13 +37,20 @@ public class VIOSlamIOROS2 implements VIOSlamIO {
     // NT4 Struct fetching guarantees no array mismatch issues
     TimestampedObject<Pose3d>[] updates = poseSub.readQueue();
 
-    if (updates.length > 0) {
-      // Return the most recent processed update in the queue.
-      TimestampedObject<Pose3d> latest = updates[updates.length - 1];
+    int validCount = Math.min(updates.length, MAX_RESULTS);
 
-      inputs.estimatedPoses = new Pose3d[] {latest.value};
-      // Convert microseconds to seconds
-      inputs.timestamps = new double[] {latest.timestamp / 1_000_000.0};
+    if (validCount > 0) {
+      Pose3d[] pCache = poseCaches[validCount];
+      double[] tCache = timestampCaches[validCount];
+
+      for (int i = 0; i < validCount; i++) {
+        TimestampedObject<Pose3d> update = updates[i];
+        pCache[i] = update.value;
+        tCache[i] = update.timestamp / 1_000_000.0;
+      }
+
+      inputs.estimatedPoses = pCache;
+      inputs.timestamps = tCache;
     } else {
       inputs.estimatedPoses = new Pose3d[0];
       inputs.timestamps = new double[0];

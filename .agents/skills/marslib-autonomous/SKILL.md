@@ -1,6 +1,6 @@
 ---
 name: marslib-autonomous
-description: Helps build autonomous code, PathPlanner macros, and GhostManager teleop replay commands in MARSLib. Use when creating paths, configuring AutoBuilder, adding named commands, or recording driver replays.
+description: Helps build autonomous code and PathPlanner macros in MARSLib. Use when creating paths, configuring AutoBuilder, or adding named commands.
 ---
 
 # MARSLib Autonomous Skill
@@ -14,7 +14,7 @@ The autonomous subsystem lives in `com.marslib.auto` with 6 core classes:
 | Class | Purpose |
 |---|---|
 | `MARSAuto` | Static factory for PathPlanner and Choreo trajectory commands with pathfinding |
-| `GhostManager` | Records/replays driver joystick inputs for teleop macro repeatability |
+| `GhostManager` | **DEPRECATED & DELETED**. Do NOT attempt to implement macro replays. Elite teams mandate pure PathPlanner determinism. |
 | `MARSAlignmentCommand` | ProfiledPID-driven alignment to field targets (Reef, Subwoofer) |
 | `ShootOnTheMoveCommand` | Newton-Raphson quadratic projectile solver for shooting while driving |
 | `SmartAssistAlign` | Lightweight auto-aim utility for teleop heading correction |
@@ -36,8 +36,6 @@ drive.configurePathPlanner();
 ### Rule B: Use 250Hz Odometry for Pathing
 PathPlanner must use the `PhoenixOdometryThread`'s high-frequency pose supplier, not the 50Hz periodic loop pose. This gives PathPlanner sub-tick precision for trajectory tracking.
 
-### Rule C: GhostManager File I/O is Off-Thread
-`GhostManager` uses a `ConcurrentLinkedQueue` daemon for joystick recording. File writes happen asynchronously. Never call `GhostManager.save()` on the main robot loop — it blocks.
 
 ### Rule D: Alignment Wraps Continuous Input
 `MARSAlignmentCommand` uses `PIDController` for rotation with `enableContinuousInput(-PI, PI)`. If you create a custom alignment command without this, the robot will spin 350° instead of rotating 10° across the ±π boundary.
@@ -67,8 +65,6 @@ controller.rightTrigger().whileTrue(new ShootOnTheMoveCommand(drive, vxSupplier,
 - `Auto/ActivePath` — Currently executing PathPlanner path name
 - `Auto/TargetPose` — PathPlanner's goal Pose2d
 - `Auto/TrajectoryPose` — Ideal position along the trajectory at current time
-- `GhostManager/RecordingActive` — Boolean: currently recording driver inputs
-- `GhostManager/ReplayActive` — Boolean: currently replaying a macro
 - `Alignment/AtGoal` — Boolean: alignment PID has converged
 - `Alignment/TranslationError` — Meters from target
 - `Alignment/RotationError` — Radians from target heading

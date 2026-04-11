@@ -45,14 +45,15 @@ public class SmartAssistAlignTest {
 
     command.initialize();
 
-    // Tick the environment for ~0.5 seconds
-    for (int i = 0; i < 25; i++) {
+    // Tick the environment for ~1.5 seconds
+    for (int i = 0; i < 75; i++) {
       command.execute();
       swerveDrive.periodic();
       com.marslib.simulation.MARSPhysicsWorld.getInstance().update(0.02);
     }
 
     Pose2d newPose = swerveDrive.getPose();
+    System.out.println("FINAL POSE IS: " + newPose);
 
     // X should have moved positively (user input)
     assertTrue(newPose.getX() > 0.1, "Should move in positive X due to human input.");

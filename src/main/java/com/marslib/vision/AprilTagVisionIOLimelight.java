@@ -14,6 +14,11 @@ import edu.wpi.first.math.geometry.Pose3d;
 public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
 
   private final String cameraName;
+  private final Pose3d[] singlePoseCache = new Pose3d[1];
+  private final double[] singleTimestampCache = new double[1];
+  private final int[] singleTagCountCache = new int[1];
+  private final double[] singleDistanceCache = new double[1];
+  private final double[] singleAmbiguityCache = new double[] {0.0};
 
   public AprilTagVisionIOLimelight(String cameraName) {
     this.cameraName = cameraName;
@@ -38,17 +43,19 @@ public class AprilTagVisionIOLimelight implements AprilTagVisionIO {
     PoseEstimate estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(cameraName);
 
     if (estimate != null && estimate.tagCount > 0) {
-      inputs.estimatedPoses = new Pose3d[] {estimate.pose};
-      // Standardize timestamp exactly as WPILib
-      inputs.timestamps = new double[] {estimate.timestampSeconds};
-      inputs.tagCounts = new int[] {estimate.tagCount};
-      inputs.averageDistancesMeters = new double[] {estimate.avgTagDist};
+      singlePoseCache[0] = estimate.pose;
+      inputs.estimatedPoses = singlePoseCache;
 
-      // Limelight MegaTag2 does not expose per-tag pose ambiguity natively.
-      // Default to 0.0 to avoid tripping the MAX_AMBIGUITY filter in MARSVision.
-      // Quality control for single-tag observations is handled by downstream
-      // distance-based standard deviation scaling instead.
-      inputs.ambiguities = new double[] {0.0};
+      singleTimestampCache[0] = estimate.timestampSeconds;
+      inputs.timestamps = singleTimestampCache;
+
+      singleTagCountCache[0] = estimate.tagCount;
+      inputs.tagCounts = singleTagCountCache;
+
+      singleDistanceCache[0] = estimate.avgTagDist;
+      inputs.averageDistancesMeters = singleDistanceCache;
+
+      inputs.ambiguities = singleAmbiguityCache;
     } else {
       inputs.estimatedPoses = new Pose3d[0];
       inputs.timestamps = new double[0];

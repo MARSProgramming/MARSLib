@@ -2,7 +2,6 @@ package com.marslib.mechanisms;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -42,8 +41,6 @@ public class RotaryMechanismIOTalonFX implements RotaryMechanismIO {
 
   private final double gearRatio;
 
-  private double lastAppliedCurrentLimit = 40.0;
-
   private final double[] currentAmpsCache = new double[1];
   private final String hardwareFaultName;
 
@@ -72,6 +69,8 @@ public class RotaryMechanismIOTalonFX implements RotaryMechanismIO {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.CurrentLimits.StatorCurrentLimitEnable = true;
     config.CurrentLimits.StatorCurrentLimit = 40.0;
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLimit = 60.0;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted =
         inverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
@@ -173,14 +172,8 @@ public class RotaryMechanismIOTalonFX implements RotaryMechanismIO {
 
   @Override
   public void setCurrentLimit(double amps) {
-    if (Math.abs(amps - lastAppliedCurrentLimit) < 1.0) {
-      return;
-    }
-    lastAppliedCurrentLimit = amps;
-    CurrentLimitsConfigs limit = new CurrentLimitsConfigs();
-    motor.getConfigurator().refresh(limit);
-    limit.StatorCurrentLimit = amps;
-    motor.getConfigurator().apply(limit);
+    // Deprecated framework pattern. Motor controllers now self-regulate SupplyCurrent Limit via
+    // hardware init.
   }
 
   @Override

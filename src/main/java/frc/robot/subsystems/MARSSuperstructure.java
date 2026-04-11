@@ -51,6 +51,21 @@ public class MARSSuperstructure extends SubsystemBase {
   private final MARSStateMachine<SuperstructureState> stateMachine;
   private int gamePieceCount = 0;
 
+  // Caches for zero-allocation performance in hot loop
+  private final EliteShooterMath.EliteShooterSetpoint shotCache =
+      new EliteShooterMath.EliteShooterSetpoint();
+  private final ChassisSpeeds zeroSpeedsCache = new ChassisSpeeds();
+  private final Translation3d redHub3dCache =
+      new Translation3d(
+          FieldConstants.RED_HUB_POS.getX(),
+          FieldConstants.RED_HUB_POS.getY(),
+          FieldConstants.HUB_SIZE_METERS);
+  private final Translation3d blueHub3dCache =
+      new Translation3d(
+          FieldConstants.BLUE_HUB_POS.getX(),
+          FieldConstants.BLUE_HUB_POS.getY(),
+          FieldConstants.HUB_SIZE_METERS);
+
   private double goalCowlAngle = 0.0;
   private double goalIntakeAngle = 0.0;
 
@@ -211,10 +226,7 @@ public class MARSSuperstructure extends SubsystemBase {
 
   /** Handles intake roller activation and physics-based game piece collection. */
   private void handleIntakeLogic(SuperstructureState currentState) {
-    // Physics collision check for game piece swallowing
-
-    // Run intake motors
-    if (currentState == SuperstructureState.INTAKE_RUNNING && gamePieceCount < 40) {
+    if (currentState == SuperstructureState.INTAKE_RUNNING) {
       floorIntake.setVoltage(12.0);
     } else if (currentState != SuperstructureState.SCORE
         && currentState != SuperstructureState.UNJAM) {
@@ -237,7 +249,6 @@ public class MARSSuperstructure extends SubsystemBase {
       if (shooter.isAtTolerance() && cowl.isAtTolerance()) {
         feeder.setVoltage(12.0);
         floorIntake.setVoltage(12.0);
-        launchGamePiece();
       } else {
         feeder.setVoltage(0.0);
         floorIntake.setVoltage(0.0);
@@ -273,29 +284,21 @@ public class MARSSuperstructure extends SubsystemBase {
    * EliteShooterMath}.
    */
   private EliteShooterMath.EliteShooterSetpoint calculateStaticShot() {
-    Translation2d hub =
-        AllianceUtil.isRed() ? FieldConstants.RED_HUB_POS : FieldConstants.BLUE_HUB_POS;
+    Translation3d targetHub = AllianceUtil.isRed() ? redHub3dCache : blueHub3dCache;
 
     return EliteShooterMath.calculateShotOnTheMove(
         poseSupplier.get(),
-        new ChassisSpeeds(),
-        new Translation3d(hub.getX(), hub.getY(), FieldConstants.HUB_SIZE_METERS),
+        zeroSpeedsCache,
+        targetHub,
         FieldConstants.GAME_PIECE_REST_HEIGHT_METERS,
         ShooterConstants.PROJECTILE_SPEED_MPS,
         -9.81,
-        0.1);
-  }
-
-  /** Launches a game piece from the robot in simulation, validating scoring zone compliance. */
-  private void launchGamePiece() {
-    if (gamePieceCount > 0) {
-      gamePieceCount--;
-    }
+        0.1,
+        shotCache);
   }
 
   /** Logs all superstructure telemetry outputs. */
   private void logOutputs(SuperstructureState currentState) {
-    Logger.recordOutput("Superstructure/GamePieceCount", gamePieceCount);
     Logger.recordOutput("Superstructure/GoalCowlAngle", goalCowlAngle);
     Logger.recordOutput("Superstructure/GoalIntakeAngle", goalIntakeAngle);
     Logger.recordOutput("Superstructure/CurrentState", currentState.name());

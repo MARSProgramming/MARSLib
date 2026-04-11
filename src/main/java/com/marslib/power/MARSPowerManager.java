@@ -17,16 +17,18 @@ import org.littletonrobotics.junction.Logger;
 public class MARSPowerManager extends SubsystemBase {
   private final PowerIO io;
   private final PowerIOInputsAutoLogged inputs = new PowerIOInputsAutoLogged();
+  private final edu.wpi.first.wpilibj.PowerDistribution pdh =
+      new edu.wpi.first.wpilibj.PowerDistribution();
 
   private final Alert warningAlert =
       new Alert(
           "Power",
-          "Load Shedding: Voltage below " + PowerConstants.WARNING_VOLTAGE + "V",
+          "Voltage Shedding: Voltage below " + PowerConstants.WARNING_VOLTAGE + "V",
           Alert.AlertType.WARNING);
   private final Alert criticalAlert =
       new Alert(
           "Power",
-          "Load Shedding: Voltage below " + PowerConstants.CRITICAL_VOLTAGE + "V",
+          "Voltage Shedding: Voltage below " + PowerConstants.CRITICAL_VOLTAGE + "V",
           Alert.AlertType.CRITICAL);
 
   /**
@@ -46,6 +48,9 @@ public class MARSPowerManager extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Power", inputs);
+
+    // Track total amperage to diagnose subsystem stalls and predict brownouts
+    Logger.recordOutput("Power/TotalCurrentDraw_A", pdh.getTotalCurrent());
 
     if (inputs.voltage > 0) {
       if (inputs.voltage < PowerConstants.CRITICAL_VOLTAGE) {
@@ -75,16 +80,17 @@ public class MARSPowerManager extends SubsystemBase {
   }
 
   /**
-   * Helper function for mechanisms to compute their dynamically shedded current limit based on bus
-   * voltage. Linearly scales current limits back when voltage sags between NOMINAL and CRITICAL.
+   * Helper function for mechanisms to compute dynamically shedded voltage scaling when battery sag
+   * impacts structural stability.
+   *
+   * @return A multiplier [0.0 - 1.0]. Returns 1.0 when nominal. Scales down towards 0.0 near
+   *     critical voltage bounds.
    */
-  public double calculateLoadSheddedLimit(
-      double maxCurrent, double minCurrent, double nominalVoltage, double criticalVoltage) {
+  public double calculateVoltageScaleFactor(double nominalVoltage, double criticalVoltage) {
     if (inputs.voltage >= nominalVoltage) {
-      return maxCurrent;
+      return 1.0;
     }
-    double slope = (maxCurrent - minCurrent) / (nominalVoltage - criticalVoltage);
-    double limit = minCurrent + slope * (inputs.voltage - criticalVoltage);
-    return MathUtil.clamp(limit, minCurrent, maxCurrent);
+    double scale = (inputs.voltage - criticalVoltage) / (nominalVoltage - criticalVoltage);
+    return MathUtil.clamp(scale, 0.0, 1.0);
   }
 }

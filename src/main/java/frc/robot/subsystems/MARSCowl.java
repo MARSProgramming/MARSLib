@@ -31,12 +31,8 @@ public class MARSCowl extends SubsystemBase {
 
   private ArmFeedforward feedforward;
 
-  // Bounds for active load shedding
   private static final double NOMINAL_VOLTAGE = 12.0;
   private static final double CRITICAL_VOLTAGE = 9.0;
-
-  private static final double MAX_CURRENT_AMPS = 40.0;
-  private static final double MIN_CURRENT_AMPS = 20.0;
 
   private final MARSPowerManager powerManager;
   private final SysIdRoutine sysIdRoutine;
@@ -81,14 +77,6 @@ public class MARSCowl extends SubsystemBase {
       feedforward = new ArmFeedforward(kS.get(), kG.get(), kV.get(), kA.get());
     }
 
-    // Active Load Shedding via MARSPowerManager
-    double currentLimit =
-        powerManager.calculateLoadSheddedLimit(
-            MAX_CURRENT_AMPS, MIN_CURRENT_AMPS, NOMINAL_VOLTAGE, CRITICAL_VOLTAGE);
-
-    io.setCurrentLimit(currentLimit);
-    Logger.recordOutput("Cowl/ActiveCurrentLimit", currentLimit);
-
     // Continuous TeleOp SysId Extraction
     double currentVelocity = inputs.velocityRadPerSec;
     double currentAccel = (currentVelocity - lastVelocityForSysId) / ModeConstants.LOOP_PERIOD_SECS;
@@ -111,7 +99,9 @@ public class MARSCowl extends SubsystemBase {
     // Dynamic FF using actual physical angle and instantaneous profile target velocity from
     // CTRE Motion Magic
     double currentAngleRads = inputs.positionRad;
-    double ffVolts = feedforward.calculate(currentAngleRads, inputs.targetVelocityRadPerSec);
+    double scale = powerManager.calculateVoltageScaleFactor(NOMINAL_VOLTAGE, CRITICAL_VOLTAGE);
+    double ffVolts =
+        feedforward.calculate(currentAngleRads, inputs.targetVelocityRadPerSec) * scale;
     io.setClosedLoopPosition(positionRads, ffVolts);
     Logger.recordOutput("Cowl/TargetPositionRads", positionRads);
   }

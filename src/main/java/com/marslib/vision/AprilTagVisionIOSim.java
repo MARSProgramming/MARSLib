@@ -48,11 +48,13 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
   private final Supplier<Pose2d> poseSupplier;
   private final Transform3d robotToCamera;
 
-  private final Pose3d[] singlePoseBuffer = new Pose3d[1];
-  private final double[] singleTimestampBuffer = new double[1];
-  private final int[] singleTagCountBuffer = new int[1];
-  private final double[] singleDistBuffer = new double[1];
-  private final double[] singleAmbiguityBuffer = new double[1];
+  private static final int MAX_RESULTS = 8;
+  private final Pose3d[][] poseCaches = new Pose3d[MAX_RESULTS + 1][];
+  private final double[][] timestampCaches = new double[MAX_RESULTS + 1][];
+  private final int[][] tagCountCaches = new int[MAX_RESULTS + 1][];
+  private final double[][] distanceCaches = new double[MAX_RESULTS + 1][];
+  private final double[][] ambiguityCaches = new double[MAX_RESULTS + 1][];
+  private final FrustumVisualizer frustumVisualizer = new FrustumVisualizer(70.0, 50.0, 4.0);
 
   private static double lastVisionSimUpdate = -1.0;
 
@@ -61,6 +63,14 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
       String cameraName, Transform3d robotToCamera, Supplier<Pose2d> poseSupplier) {
     this.poseSupplier = poseSupplier;
     this.robotToCamera = robotToCamera;
+
+    for (int i = 0; i <= MAX_RESULTS; i++) {
+      poseCaches[i] = new Pose3d[i];
+      timestampCaches[i] = new double[i];
+      tagCountCaches[i] = new int[i];
+      distanceCaches[i] = new double[i];
+      ambiguityCaches[i] = new double[i];
+    }
 
     // Initialize global vision sim once
     if (visionSim == null) {
@@ -107,11 +117,7 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
 
     // Generate FOV visualizer based on true physical position + mounting location
     inputs.cameraFrustum =
-        FrustumVisualizer.generateFrustum(
-            new Pose3d(poseSupplier.get()).plus(robotToCamera),
-            70.0, // Horiz FOV
-            50.0, // Vert FOV
-            4.0); // Clip distance
+        frustumVisualizer.update(new Pose3d(poseSupplier.get()).plus(robotToCamera));
 
     var results = camera.getAllUnreadResults();
 
@@ -122,39 +128,53 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
               < frc.robot.constants.SimulationConstants.VISION_OCCLUSION_DROP_PROBABILITY;
     }
 
-    if (!results.isEmpty() && !simulatedOcclusion) {
-      var result = results.get(results.size() - 1);
-      if (result.hasTargets()) {
-        Optional<EstimatedRobotPose> estimatedPose = poseEstimator.update(result);
-        if (estimatedPose.isPresent()) {
-          EstimatedRobotPose pose = estimatedPose.get();
+    int validCount = 0;
+    int maxProcess = Math.min(results.size(), MAX_RESULTS);
 
-          singlePoseBuffer[0] = pose.estimatedPose;
-          singleTimestampBuffer[0] = pose.timestampSeconds;
-          int size = result.getTargets().size();
-          singleTagCountBuffer[0] = size;
+    if (maxProcess > 0 && !simulatedOcclusion) {
+      Pose3d[] pCache = poseCaches[maxProcess];
+      double[] tCache = timestampCaches[maxProcess];
+      int[] tcCache = tagCountCaches[maxProcess];
+      double[] dCache = distanceCaches[maxProcess];
+      double[] aCache = ambiguityCaches[maxProcess];
 
-          inputs.estimatedPoses = singlePoseBuffer;
-          inputs.timestamps = singleTimestampBuffer;
-          inputs.tagCounts = singleTagCountBuffer;
+      for (int i = 0; i < maxProcess; i++) {
+        var result = results.get(i);
+        if (result.hasTargets()) {
+          Optional<EstimatedRobotPose> estimatedPose = poseEstimator.update(result);
+          if (estimatedPose.isPresent()) {
+            EstimatedRobotPose pose = estimatedPose.get();
+            int size = result.getTargets().size();
+            if (size > 0) {
+              pCache[validCount] = pose.estimatedPose;
+              tCache[validCount] = pose.timestampSeconds;
+              tcCache[validCount] = size;
 
-          double avgDist = 0.0;
-          double avgAmbiguity = 0.0;
+              double avgDist = 0.0;
+              double avgAmbiguity = 0.0;
 
-          // Prevent allocating iterator continuously
-          var targets = result.getTargets();
-          for (int i = 0; i < size; i++) {
-            var target = targets.get(i);
-            avgDist += target.getBestCameraToTarget().getTranslation().getNorm();
-            avgAmbiguity += target.getPoseAmbiguity();
+              var targets = result.getTargets();
+              for (int t = 0; t < size; t++) {
+                var target = targets.get(t);
+                avgDist += target.getBestCameraToTarget().getTranslation().getNorm();
+                avgAmbiguity += target.getPoseAmbiguity();
+              }
+
+              dCache[validCount] = avgDist / size;
+              aCache[validCount] = avgAmbiguity / size;
+              validCount++;
+            }
           }
-
-          singleDistBuffer[0] = avgDist / size;
-          singleAmbiguityBuffer[0] = avgAmbiguity / size;
-          inputs.averageDistancesMeters = singleDistBuffer;
-          inputs.ambiguities = singleAmbiguityBuffer;
-          return;
         }
+      }
+
+      if (validCount > 0) {
+        inputs.estimatedPoses = poseCaches[validCount];
+        inputs.timestamps = timestampCaches[validCount];
+        inputs.tagCounts = tagCountCaches[validCount];
+        inputs.averageDistancesMeters = distanceCaches[validCount];
+        inputs.ambiguities = ambiguityCaches[validCount];
+        return;
       }
     }
 

@@ -39,6 +39,13 @@ Wrap all teleop joystick inputs through `SlewRateLimiter` before passing to `Swe
 ### Rule D: Use LoggedTunableNumber for All Gains
 Never hardcode `kP = 5.0` in the constructor. Use `new LoggedTunableNumber("Elevator/kP", 5.0)`. This allows real-time tuning via AdvantageScope and ensures gains are logged for post-match analysis.
 
+### Rule E: Selecting the Right Phoenix 6 Control Mode
+When writing motor IO interfaces (`setVoltage`, `setVelocity`, etc.), strictly adhere to these mechanism mappings for Phoenix 6:
+* **Intakes / Conveyors / Feeders:** `VoltageOut` or `DutyCycleOut` (Open Loop).
+* **Swerve Drive Wheels / Flywheels:** `VelocityVoltage` (Closed Loop to maintain RPM).
+* **Swerve Steering / Azimuth:** `PositionVoltage` (Fast positional snapping without profiled limits).
+* **Elevators / Pivot Arms / Hoods:** `MotionMagicVoltage` or `MotionMagicExpo` (Closed Loop with Trap/S-Curve profiling to prevent destructive mechanical jerks).
+
 ## 3. Adding Control Loops to New Mechanisms
 
 1. **Run SysId** using the subsystem's built-in `sysIdQuasistatic()` and `sysIdDynamic()` commands.
