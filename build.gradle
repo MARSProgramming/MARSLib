@@ -338,6 +338,60 @@ sourceSets.main.java.srcDir(generateVersionFile.map { it.outputDir })
 project.compileJava.dependsOn(generateVersionFile)
 // project.compileJava.dependsOn(installGitHooks) // Removed to avoid configuration cache discard
 
+task generateControllerMappings {
+    description = "Automatically generates CONTROLLER_MAPPINGS.md from RobotBindings.java"
+    def inputFile = file("src/main/java/frc/robot/RobotBindings.java")
+    def outputFile = file("CONTROLLER_MAPPINGS.md")
+
+    inputs.file(inputFile)
+    outputs.file(outputFile)
+
+    doLast {
+        if (!inputFile.exists()) return
+
+        String content = inputFile.text
+        StringBuilder md = new StringBuilder()
+        
+        md.append("# MARSLib Controller Mappings\n\n")
+        md.append("This document is automatically generated during compilation from `RobotBindings.java`.\n\n")
+
+        def pattern = java.util.regex.Pattern.compile("(?s)(controller|coPilot)\\s*\\.bind(?:On|While)(?:True|False)\\(\\s*[^,]+,\\s*\"([^\"]+)\"\\s*,\\s*\"([^\"]+)\"")
+        def matcher = pattern.matcher(content)
+
+        def pilotBindings = []
+        def copilotBindings = []
+
+        while (matcher.find()) {
+            def target = matcher.group(1)
+            def trigger = matcher.group(2)
+            def action = matcher.group(3)
+            def row = "| **${trigger}** | ${action} |"
+            if (target == "controller") {
+                pilotBindings.add(row)
+            } else if (target == "coPilot") {
+                copilotBindings.add(row)
+            }
+        }
+
+        md.append("## 🎮 Pilot (Driver) - Controller 0\n\n")
+        md.append("| Input | Action |\n| :--- | :--- |\n")
+        md.append("| **Left Joystick** | Translation (X/Y) |\n")
+        md.append("| **Right Joystick** | Rotation |\n")
+        pilotBindings.each { md.append(it).append('\n') }
+        md.append("\n---\n\n")
+
+        md.append("## 🕹️ CoPilot (Operator) - Controller 1\n\n")
+        md.append("| Input | Action |\n| :--- | :--- |\n")
+        copilotBindings.each { md.append(it).append('\n') }
+        
+        md.append("\n---\n> [!NOTE]\n> All automated scoring sequences (Triggers/Bumpers) automatically revert to the safe `STOWED` superstructure state immediately upon release.\n")
+
+        outputFile.text = md.toString()
+        println "Successfully generated CONTROLLER_MAPPINGS.md from RobotBindings.java"
+    }
+}
+project.compileJava.dependsOn(generateControllerMappings)
+
 // Create commit with working changes on event branches
 def isDeployTask = gradle.startParameter.taskNames.any({ it.toLowerCase().contains("deploy") })
 def projectDirFile = projectDir
