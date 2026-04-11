@@ -3,13 +3,20 @@ package com.marslib.swerve;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import org.ironmaple.simulation.drivesims.GyroSimulation;
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 
 /** Simulated gyro IO layer that derives yaw from the maple-sim physics engine. */
 public class GyroIOSim implements GyroIO {
   private GyroSimulation gyroSim;
 
+  private SwerveDriveSimulation simDrive;
+
   public void setGyroSimulation(GyroSimulation gyroSim) {
     this.gyroSim = gyroSim;
+  }
+
+  public void setSwerveDriveSimulation(SwerveDriveSimulation simDrive) {
+    this.simDrive = simDrive;
   }
 
   @Override
@@ -26,6 +33,18 @@ public class GyroIOSim implements GyroIO {
       inputs.yawPositionRad = 0.0;
       inputs.yawVelocityRadPerSec = 0.0;
       inputs.odometryYawPositions = new double[] {0.0};
+    }
+
+    if (simDrive != null) {
+      edu.wpi.first.math.geometry.Pose2d simPose = simDrive.getSimulatedDriveTrainPose();
+      double[] tilt =
+          org.ironmaple.simulation.seasonspecific.rebuilt2026.Arena2026Rebuilt
+              .getSimulatedBumpTilt_rads(simPose);
+      inputs.pitchPositionRad = tilt[0];
+      inputs.rollPositionRad = tilt[1];
+    } else {
+      inputs.pitchPositionRad = 0.0;
+      inputs.rollPositionRad = 0.0;
     }
 
     inputs.pitchVelocityRadPerSec = 0.0;

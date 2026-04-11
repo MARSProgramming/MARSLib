@@ -123,36 +123,36 @@ public class Arena2026Rebuilt extends SimulatedArena {
               new Rotation2d()));
 
       // blue trench wall
-      addRectangularObstacle(
-          TRENCH_WALL_X_LEN,
-          TRENCH_WALL_Y_LEN,
-          new Pose2d(
-              TRENCH_WALL_OFFSET_FROM_END_WALL,
-              TRENCH_WALL_OFFSET_FROM_SIDE_WALL,
-              new Rotation2d()));
-      addRectangularObstacle(
-          TRENCH_WALL_X_LEN,
-          TRENCH_WALL_Y_LEN,
-          new Pose2d(
-              TRENCH_WALL_OFFSET_FROM_END_WALL,
-              FIELD_Y_MAX - TRENCH_WALL_OFFSET_FROM_SIDE_WALL,
-              new Rotation2d()));
+      // addRectangularObstacle(
+      //     TRENCH_WALL_X_LEN,
+      //     TRENCH_WALL_Y_LEN,
+      //     new Pose2d(
+      //         TRENCH_WALL_OFFSET_FROM_END_WALL,
+      //         TRENCH_WALL_OFFSET_FROM_SIDE_WALL,
+      //         new Rotation2d()));
+      // addRectangularObstacle(
+      //     TRENCH_WALL_X_LEN,
+      //     TRENCH_WALL_Y_LEN,
+      //     new Pose2d(
+      //         TRENCH_WALL_OFFSET_FROM_END_WALL,
+      //         FIELD_Y_MAX - TRENCH_WALL_OFFSET_FROM_SIDE_WALL,
+      //         new Rotation2d()));
 
       // red trench wall
-      addRectangularObstacle(
-          TRENCH_WALL_X_LEN,
-          TRENCH_WALL_Y_LEN,
-          new Pose2d(
-              FIELD_X_MAX - TRENCH_WALL_OFFSET_FROM_END_WALL,
-              TRENCH_WALL_OFFSET_FROM_SIDE_WALL,
-              new Rotation2d()));
-      addRectangularObstacle(
-          TRENCH_WALL_X_LEN,
-          TRENCH_WALL_Y_LEN,
-          new Pose2d(
-              FIELD_X_MAX - TRENCH_WALL_OFFSET_FROM_END_WALL,
-              FIELD_Y_MAX - TRENCH_WALL_OFFSET_FROM_SIDE_WALL,
-              new Rotation2d()));
+      // addRectangularObstacle(
+      //     TRENCH_WALL_X_LEN,
+      //     TRENCH_WALL_Y_LEN,
+      //     new Pose2d(
+      //         FIELD_X_MAX - TRENCH_WALL_OFFSET_FROM_END_WALL,
+      //         TRENCH_WALL_OFFSET_FROM_SIDE_WALL,
+      //         new Rotation2d()));
+      // addRectangularObstacle(
+      //     TRENCH_WALL_X_LEN,
+      //     TRENCH_WALL_Y_LEN,
+      //     new Pose2d(
+      //         FIELD_X_MAX - TRENCH_WALL_OFFSET_FROM_END_WALL,
+      //         FIELD_Y_MAX - TRENCH_WALL_OFFSET_FROM_SIDE_WALL,
+      //         new Rotation2d()));
 
       // Colliders to describe the hub plus ramps
       if (AddRampCollider) {
@@ -242,6 +242,22 @@ public class Arena2026Rebuilt extends SimulatedArena {
    */
   public static double randomInRange(double variance) {
     return (Math.random() - 0.5) * variance;
+  }
+
+  public static double[] getSimulatedBumpTilt_rads(Pose2d robotPose) {
+    double x = robotPose.getX();
+    double y = robotPose.getY();
+
+    boolean isOnBlueBumpX = x > 4.02 && x < 5.21;
+    boolean isOnRedBumpX = x > 11.32 && x < 12.52;
+
+    boolean isOnBottomBumpY = y > 1.27 && y < 1.58;
+    boolean isOnTopBumpY = y > 6.48 && y < 6.79;
+
+    if ((isOnBlueBumpX || isOnRedBumpX) && (isOnBottomBumpY || isOnTopBumpY)) {
+      return new double[] {Math.toRadians(12.0), 0.0};
+    }
+    return new double[] {0.0, 0.0};
   }
 
   /**

@@ -61,11 +61,20 @@
                     "options": {}
                   },
                   {
-                    "type": "ghost",
+                    "type": "gamePiece",
                     "logKey": "/RealOutputs/PhysicsWorld/GamePieces",
                     "logType": "Pose3d[]",
                     "visible": true,
                     "options": {}
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "/RealOutputs/PhysicsWorld/RobotPhysicalPose",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff0000"
+                    }
                   }
                 ]
               },

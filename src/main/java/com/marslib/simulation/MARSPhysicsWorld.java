@@ -158,11 +158,9 @@ public class MARSPhysicsWorld {
       Pose3d pose3d = new Pose3d(xMeters, yMeters, 0.0, new Rotation3d(0.0, 0.0, yawRads));
       Logger.recordOutput("PhysicsWorld/" + mechanismName, pose3d);
     }
-
     // Export field game pieces
     List<Pose3d> fuelPoses = arena.getGamePiecesPosesByType("Fuel");
     Logger.recordOutput("PhysicsWorld/FuelCount", fuelPoses.size());
-    Logger.recordOutput("Simulation/GamePieces", fuelPoses.toArray(new Pose3d[0]));
-    Logger.recordOutput("PhysicsWorld/Fuel", fuelPoses.toArray(new Pose3d[0]));
+    Logger.recordOutput("PhysicsWorld/GamePieces", fuelPoses.toArray(new Pose3d[0]));
   }
 }

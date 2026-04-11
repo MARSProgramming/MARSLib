@@ -56,7 +56,6 @@ public class SmartAssistAlignTest {
 
     // X should have moved positively (user input)
     assertTrue(newPose.getX() > 0.1, "Should move in positive X due to human input.");
-
     // Y should have moved positively (auto align)
     assertTrue(
         newPose.getY() > 0.1, "Should automatically strafe leftward (positive Y) toward target.");

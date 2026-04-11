@@ -125,6 +125,7 @@ public class SwerveDrive extends SubsystemBase {
 
       if (gyroIOSim != null) {
         gyroIOSim.setGyroSimulation(simDrive.getGyroSimulation());
+        gyroIOSim.setSwerveDriveSimulation(simDrive);
       }
     } else {
       simDrive = null;
