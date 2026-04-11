@@ -324,9 +324,13 @@ public class SwerveDrive extends SubsystemBase {
     Pose2d currentPose = poseEstimator.getEstimatedPosition();
 
     // Update our LiDAR point cloud based on true simulation bounding frames
-    if (simDrive != null && lidarSim != null) {
+    if (simDrive != null) {
       Pose2d simBoundedPose = simDrive.getSimulatedDriveTrainPose();
-      lidarSim.updateInputs(simBoundedPose);
+      Logger.recordOutput("DriveTrain/SimPose", simBoundedPose);
+
+      if (lidarSim != null) {
+        lidarSim.updateInputs(simBoundedPose);
+      }
     }
 
     Logger.recordOutput("SwerveDrive/Pose", currentPose);
