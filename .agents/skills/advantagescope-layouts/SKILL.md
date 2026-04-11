@@ -4,7 +4,7 @@ description: Exposes standardized execution rules for properly building and stru
 license: MIT
 compatibility: Claude Code, Codex CLI, VS Code Copilot, Cursor
 metadata:
-  author: areslib-agent
+  author: marslib-agent
   version: "1.0.0"
   category: tools
 ---
@@ -12,7 +12,7 @@ metadata:
 # AdvantageScope Automated Layout Structuring
 
 As the agent, you have direct programmatic access to the `advantagescope-mcp` architecture via attached specialized tools.
-Because AdvantageScope is heavily integrated into the debugging telemetry for `ARESLib`, and users often request advanced 3D visual abstractions (Lidars, Swerve wheels, AprilTags), you MUST correctly hook into the MCP.
+Because AdvantageScope is heavily integrated into the debugging telemetry for `MARSLib`, and users often request advanced 3D visual abstractions (Lidars, Swerve wheels, AprilTags), you MUST correctly hook into the MCP.
 
 ## Invocation Conventions
 When requested to create or update an AdvantageScope layout to visualize a new feature, follow this flow:
