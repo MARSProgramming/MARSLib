@@ -341,17 +341,21 @@ project.compileJava.dependsOn(generateVersionFile)
 task generateControllerMappings {
     description = "Automatically generates CONTROLLER_MAPPINGS.md from RobotBindings.java"
     def inputFile = file("src/main/java/frc/robot/RobotBindings.java")
-    def outputFile = file("CONTROLLER_MAPPINGS.html")
+    def outputFileHtml = file("CONTROLLER_MAPPINGS.html")
+    def outputFileMd = file("CONTROLLER_MAPPINGS.md")
 
     inputs.file(inputFile)
-    outputs.file(outputFile)
+    outputs.files(outputFileHtml, outputFileMd)
 
     doLast {
         if (!inputFile.exists()) return
-
         String content = inputFile.text
+
+        // Initialize both builders
         StringBuilder html = new StringBuilder()
+        StringBuilder md = new StringBuilder()
         
+        // HTML Header
         html.append("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\">")
         html.append("<title>MARSLib Controller Mappings</title>")
         html.append("<style>")
@@ -369,43 +373,70 @@ task generateControllerMappings {
         html.append("<h1>MARSLib Controller Mappings</h1>")
         html.append("<p class=\"subtitle\">This document is automatically generated during compilation from <code>RobotBindings.java</code>.</p>")
 
+        // MD Header
+        md.append("# MARSLib Controller Mappings\n\n")
+        md.append("This document is automatically generated during compilation from `RobotBindings.java`.\n\n")
+
         def pattern = java.util.regex.Pattern.compile("(?s)(controller|coPilot)\\s*\\.bind(?:On|While)(?:True|False)\\(\\s*[^,]+,\\s*\"([^\"]+)\"\\s*,\\s*\"([^\"]+)\"")
         def matcher = pattern.matcher(content)
 
-        def pilotBindings = []
-        def copilotBindings = []
+        def pilotHtml = []
+        def pilotMd = []
+        def copilotHtml = []
+        def copilotMd = []
 
         while (matcher.find()) {
             def target = matcher.group(1)
             def trigger = matcher.group(2)
             def action = matcher.group(3)
-            def row = "<tr><td><kbd>${trigger}</kbd></td><td><b>${action}</b></td></tr>"
+            
+            def rowHtml = "<tr><td><kbd>${trigger}</kbd></td><td><b>${action}</b></td></tr>"
+            def rowMd = "| <kbd>${trigger}</kbd> | **${action}** |"
+            
             if (target == "controller") {
-                pilotBindings.add(row)
+                pilotHtml.add(rowHtml)
+                pilotMd.add(rowMd)
             } else if (target == "coPilot") {
-                copilotBindings.add(row)
+                copilotHtml.add(rowHtml)
+                copilotMd.add(rowMd)
             }
         }
 
+        // HTML & MD Pilot Append
         html.append("<h2>\uD83C\uDFAE Pilot (Driver) - Controller 0</h2>")
         html.append("<p class=\"subtitle\">Primary drive controls and high-level macro sequences.</p>")
         html.append("<table><tr><th>Controller Input</th><th>Mapped Action</th></tr>")
         html.append("<tr><td><kbd>Left Joystick</kbd></td><td><b>Holonomic Translation (X/Y)</b></td></tr>")
         html.append("<tr><td><kbd>Right Joystick</kbd></td><td><b>Holonomic Rotation</b></td></tr>")
-        pilotBindings.each { html.append(it) }
+        pilotHtml.each { html.append(it) }
         html.append("</table>")
 
+        md.append("## \uD83C\uDFAE Pilot (Driver) - Controller 0\n\n")
+        md.append("> **Primary drive controls and high-level macro sequences.**\n\n")
+        md.append("| Controller Input | Mapped Action |\n| :--- | :--- |\n")
+        md.append("| <kbd>Left Joystick</kbd> | **Holonomic Translation (X/Y)** |\n")
+        md.append("| <kbd>Right Joystick</kbd> | **Holonomic Rotation** |\n")
+        pilotMd.each { md.append(it).append('\n') }
+        md.append("\n---\n\n")
+
+        // HTML & MD CoPilot Append
         html.append("<h2>\uD83D\uDD79\uFE0F CoPilot (Operator) - Controller 1</h2>")
         html.append("<p class=\"subtitle\">Manual overrides, sub-mechanism control, and fault resets.</p>")
         html.append("<table><tr><th>Controller Input</th><th>Mapped Action</th></tr>")
-        copilotBindings.each { html.append(it) }
+        copilotHtml.each { html.append(it) }
         html.append("</table>")
-        
         html.append("<div class=\"note\"><strong>Note:</strong> All automated scoring sequences natively return the superstructure to the safe <code>STOWED</code> state immediately upon release of the binding.</div>")
         html.append("</body></html>")
 
-        outputFile.setText(html.toString(), 'UTF-8')
-        println "Successfully generated CONTROLLER_MAPPINGS.html from RobotBindings.java"
+        md.append("## \uD83D\uDD79\uFE0F CoPilot (Operator) - Controller 1\n\n")
+        md.append("> **Manual overrides, sub-mechanism control, and fault resets.**\n\n")
+        md.append("| Controller Input | Mapped Action |\n| :--- | :--- |\n")
+        copilotMd.each { md.append(it).append('\n') }
+        md.append("\n---\n> [!NOTE]\n> All automated scoring sequences natively return the superstructure to the \n> safe `STOWED` state immediately upon release of the binding.\n")
+
+        outputFileHtml.setText(html.toString(), 'UTF-8')
+        outputFileMd.setText(md.toString(), 'UTF-8')
+        println "Successfully generated CONTROLLER_MAPPINGS documents."
     }
 }
 project.compileJava.dependsOn(generateControllerMappings)
