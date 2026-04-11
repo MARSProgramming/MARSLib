@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * A validated, enum-based Finite State Machine supporting guarded transitions, entry/exit actions,
@@ -33,6 +34,7 @@ public class MARSStateMachine<S extends Enum<S>> {
   private final String name;
   private int ticksInCurrentState;
   private int totalTransitionCount;
+  private boolean graphNeedsUpdate = true;
 
   /**
    * Constructs a new state machine.
@@ -146,6 +148,8 @@ public class MARSStateMachine<S extends Enum<S>> {
       if (entryActions.containsKey(nextState)) {
         entryActions.get(nextState).run();
       }
+
+      graphNeedsUpdate = true;
       return true;
     } else {
       DataLogManager.log(
@@ -232,5 +236,38 @@ public class MARSStateMachine<S extends Enum<S>> {
    */
   public void update() {
     ticksInCurrentState++;
+
+    // Push zero-allocation Mermaid graph update only when state fundamentally changes
+    if (graphNeedsUpdate) {
+      Logger.recordOutput(name + "/StateMachine/MermaidGraph", generateMermaidGraph());
+      graphNeedsUpdate = false;
+    }
+  }
+
+  /**
+   * Generates a Mermaid.js State Diagram representing all valid transitions and states. This logic
+   * dynamically tracks the active node, creating a live flowchart visualization of the Subsystem
+   * that can be viewed natively in AdvantageScope.
+   *
+   * @return A string formatted as a valid Mermaid stateDiagram-v2 markdown block.
+   */
+  public String generateMermaidGraph() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("```mermaid\n");
+    sb.append("stateDiagram-v2\n");
+    sb.append("    classDef active fill:#00d100,stroke:#222,stroke-width:2px,color:#fff;\n");
+
+    // Map all pre-registered legal transitions
+    for (S source : validTransitions.keySet()) {
+      for (S target : validTransitions.get(source)) {
+        sb.append("    ").append(source.name()).append(" --> ").append(target.name()).append("\n");
+      }
+    }
+
+    // Highlight the dynamically active state
+    sb.append("    class ").append(currentState.name()).append(" active\n");
+    sb.append("```");
+
+    return sb.toString();
   }
 }

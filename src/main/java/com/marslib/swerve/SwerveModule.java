@@ -151,6 +151,14 @@ public class SwerveModule {
   }
 
   /**
+   * Returns the actual applied voltage read from the motor controller or sim model. Useful for
+   * SysId extraction and telemetry.
+   */
+  public double getDriveAppliedVoltage() {
+    return inputs.driveAppliedVolts;
+  }
+
+  /**
    * Routes steer voltage demands safely down into the IO execution layer.
    *
    * @param volts Target requested feedforward / PID voltage calculated securely.

@@ -49,6 +49,9 @@ public class LinearMechanismIOTalonFX implements LinearMechanismIO {
   /** Tracks the last CAN-applied stator current limit to avoid redundant writes. */
   private double lastAppliedCurrentLimit = 40.0;
 
+  private final double[] currentAmpsCache = new double[1];
+  private final String hardwareFaultName;
+
   private final LoggedTunableNumber kP;
   private final LoggedTunableNumber kI;
   private final LoggedTunableNumber kD;
@@ -80,6 +83,7 @@ public class LinearMechanismIOTalonFX implements LinearMechanismIO {
     this.gearRatio = gearRatio;
     this.spoolDiameterMeters = spoolDiameterMeters;
     this.motor = new TalonFX(leaderId, canbus);
+    this.hardwareFaultName = "LinearMechanism_" + leaderId;
 
     kP = new LoggedTunableNumber("LinearMechanism_" + leaderId + "/kP", 2.0);
     kI = new LoggedTunableNumber("LinearMechanism_" + leaderId + "/kI", 0.0);
@@ -133,7 +137,7 @@ public class LinearMechanismIOTalonFX implements LinearMechanismIO {
 
     inputs.hasHardwareConnected = ok;
     if (!ok) {
-      MARSFaultManager.reportHardwareDisconnect("LinearMechanism_" + motor.getDeviceID());
+      MARSFaultManager.reportHardwareDisconnect(hardwareFaultName);
     }
 
     double metersPerMotorRotation = (spoolDiameterMeters * Math.PI) / gearRatio;
@@ -143,7 +147,8 @@ public class LinearMechanismIOTalonFX implements LinearMechanismIO {
     inputs.targetVelocityMetersPerSec =
         closedLoopReferenceSlope.getValueAsDouble() * metersPerMotorRotation;
     inputs.appliedVolts = appliedVolts.getValueAsDouble();
-    inputs.currentAmps = new double[] {statorCurrent.getValueAsDouble()};
+    currentAmpsCache[0] = statorCurrent.getValueAsDouble();
+    inputs.currentAmps = currentAmpsCache;
 
     // Live Auto-Tuning Check
     boolean pChanged = kP.hasChanged(motor.getDeviceID());

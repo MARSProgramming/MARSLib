@@ -4,6 +4,7 @@ plugins {
     id "com.diffplug.spotless" version "8.4.0"
     id "jacoco"
     id "pmd"
+    id "checkstyle"
     id "net.ltgt.errorprone" version "5.1.0"
     id "com.adarshr.test-logger" version "4.0.0"
     id "com.github.ben-manes.versions" version "0.53.0"
@@ -147,6 +148,13 @@ pmd {
     ignoreFailures = false
     ruleSets = []
     ruleSetFiles = files("config/pmd/ruleset.xml")
+}
+
+checkstyle {
+    toolVersion = "10.12.5"
+    configFile = file("config/checkstyle/checkstyle.xml")
+    ignoreFailures = false
+    showViolations = true
 }
 
 tasks.named("pmdTest").configure {
@@ -354,7 +362,7 @@ task generateControllerMappings {
         // Initialize both builders
         StringBuilder html = new StringBuilder()
         StringBuilder md = new StringBuilder()
-        
+
         // HTML Header
         html.append("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\">")
         html.append("<title>MARSLib Controller Mappings</title>")
@@ -389,10 +397,10 @@ task generateControllerMappings {
             def target = matcher.group(1)
             def trigger = matcher.group(2)
             def action = matcher.group(3)
-            
+
             def rowHtml = "<tr><td><kbd>${trigger}</kbd></td><td><b>${action}</b></td></tr>"
             def rowMd = "| <kbd>${trigger}</kbd> | **${action}** |"
-            
+
             if (target == "controller") {
                 pilotHtml.add(rowHtml)
                 pilotMd.add(rowMd)
@@ -483,7 +491,7 @@ spotless {
     java {
         target fileTree(".") {
             include "**/*.java"
-            exclude "**/build/**", "**/build-*/**"
+            exclude "**/build/**", "**/build-*/**", "third_party/**"
         }
         toggleOffOn()
         googleJavaFormat()
@@ -504,14 +512,14 @@ spotless {
     json {
         target fileTree(".") {
             include "**/*.json"
-            exclude "**/build/**", "**/build-*/**", ".wpilib/**"
+            exclude "**/build/**", "**/build-*/**", ".wpilib/**", "**/vendordeps/**", "third_party/**"
         }
         gson().indentWithSpaces(2)
     }
     format "misc", {
         target fileTree(".") {
             include "**/*.md", "**/.gitignore"
-            exclude "**/build/**", "**/build-*/**"
+            exclude "**/build/**", "**/build-*/**", "CONTROLLER_MAPPINGS.md"
         }
         trimTrailingWhitespace()
         leadingTabsToSpaces(2)
@@ -519,3 +527,4 @@ spotless {
     }
 }
 tasks.named('pmdTest') { enabled = false }
+tasks.named('checkstyleTest') { enabled = false }

@@ -112,11 +112,11 @@ public class SimSysIdTuner {
       LOGGER.info("Extracted " + matchedData.size() + " synchronized telemetry frames.");
       LOGGER.info("Solving OLS Regression Matrix (Y = X * Beta)...");
 
-      int N = matchedData.size() - 1;
-      SimpleMatrix Y = new SimpleMatrix(N, 1);
-      SimpleMatrix X = new SimpleMatrix(N, 3);
+      int numSamples = matchedData.size() - 1;
+      SimpleMatrix matY = new SimpleMatrix(numSamples, 1);
+      SimpleMatrix matX = new SimpleMatrix(numSamples, 3);
 
-      for (int i = 0; i < N; i++) {
+      for (int i = 0; i < numSamples; i++) {
         DataPoint p1 = matchedData.get(i);
         DataPoint p2 = matchedData.get(i + 1);
 
@@ -125,27 +125,27 @@ public class SimSysIdTuner {
 
         double accel = (p2.velocity - p1.velocity) / dt;
 
-        Y.set(i, 0, p1.voltage);
+        matY.set(i, 0, p1.voltage);
         // System Identification Model: V = kS*sign(vel) + kV*vel + kA*accel
-        X.set(i, 0, Math.signum(p1.velocity));
-        X.set(i, 1, p1.velocity);
-        X.set(i, 2, accel);
+        matX.set(i, 0, Math.signum(p1.velocity));
+        matX.set(i, 1, p1.velocity);
+        matX.set(i, 2, accel);
       }
 
-      SimpleMatrix Xt = X.transpose();
-      SimpleMatrix XtX = Xt.mult(X);
+      SimpleMatrix matXt = matX.transpose();
+      SimpleMatrix matXtX = matXt.mult(matX);
 
       // Protect against singular matrices
-      if (XtX.determinant() == 0) {
+      if (matXtX.determinant() == 0) {
         LOGGER.warning("[ERROR] Dataset mathematically singular. Cannot perform regression.");
         return;
       }
 
-      SimpleMatrix Beta = XtX.invert().mult(Xt).mult(Y);
+      SimpleMatrix matBeta = matXtX.invert().mult(matXt).mult(matY);
 
-      double kS = Beta.get(0, 0);
-      double kV = Beta.get(1, 0);
-      double kA = Beta.get(2, 0);
+      double kS = matBeta.get(0, 0);
+      double kV = matBeta.get(1, 0);
+      double kA = matBeta.get(2, 0);
 
       // True Moment of Inertia = (kA * Gearing * TorqueConstant) / Resistance
       double calcMOI = Math.abs((kA * gearing * torqueConstant) / resistance);

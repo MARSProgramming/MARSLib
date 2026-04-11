@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.marslib.power.MARSPowerManager;
+import com.marslib.util.OnlineFeedforwardEstimator;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -61,6 +62,9 @@ public class SwerveDrive extends SubsystemBase {
   private final SwerveDrivePoseEstimator poseEstimator;
   private final MARSPowerManager powerManager;
   private final SysIdRoutine sysIdRoutine;
+  private final OnlineFeedforwardEstimator driveFeedforwardEstimator;
+
+  private double lastDriveVelocityForSysId = 0.0;
 
   private final SwerveDriveSimulation simDrive;
   private final com.marslib.simulation.LidarIOSim lidarSim;
@@ -150,6 +154,8 @@ public class SwerveDrive extends SubsystemBase {
                 null, // Log is handled implicitly via AdvantageKit's @AutoLog IO capturing the
                 // voltages & velocities natively
                 this));
+
+    this.driveFeedforwardEstimator = new OnlineFeedforwardEstimator("SwerveDrive", 500, 0.0);
   }
 
   // Reusable GC-free arrays for periodic loop to prevent massive RoboRIO heap churn
@@ -234,22 +240,12 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     // Active Dynamic Load Shedding — only write to CAN when the limit actually changes
-    double voltage = powerManager.getVoltage();
-    double currentLimit;
-    if (voltage < PowerConstants.NOMINAL_VOLTAGE && voltage > 0.0) {
-      double slope =
-          (SwerveConstants.DRIVE_STATOR_CURRENT_LIMIT - SwerveConstants.MIN_LOAD_SHED_CURRENT)
-              / (PowerConstants.NOMINAL_VOLTAGE - PowerConstants.CRITICAL_VOLTAGE);
-      currentLimit =
-          SwerveConstants.MIN_LOAD_SHED_CURRENT
-              + (voltage - PowerConstants.CRITICAL_VOLTAGE) * slope;
-      currentLimit =
-          Math.max(
-              SwerveConstants.MIN_LOAD_SHED_CURRENT,
-              Math.min(SwerveConstants.DRIVE_STATOR_CURRENT_LIMIT, currentLimit));
-    } else {
-      currentLimit = SwerveConstants.DRIVE_STATOR_CURRENT_LIMIT;
-    }
+    double currentLimit =
+        powerManager.calculateLoadSheddedLimit(
+            SwerveConstants.DRIVE_STATOR_CURRENT_LIMIT,
+            SwerveConstants.MIN_LOAD_SHED_CURRENT,
+            PowerConstants.NOMINAL_VOLTAGE,
+            PowerConstants.CRITICAL_VOLTAGE);
 
     // Only push CAN writes when the limit changes by at least 1A (BUG-03 fix)
     if (Math.abs(currentLimit - lastLoadShedLimit) >= 1.0) {
@@ -345,6 +341,16 @@ public class SwerveDrive extends SubsystemBase {
     measuredStatesCache[2] = modules[2].getLatestState();
     measuredStatesCache[3] = modules[3].getLatestState();
     Logger.recordOutput("SwerveDrive/MeasuredStates", measuredStatesCache);
+
+    // Continuous TeleOp SysId Extraction
+    double currentVelocity = measuredStatesCache[0].speedMetersPerSecond;
+    double currentAccel =
+        (currentVelocity - lastDriveVelocityForSysId) / ModeConstants.LOOP_PERIOD_SECS;
+    lastDriveVelocityForSysId = currentVelocity;
+
+    // We analyze the front-left module as a representative sample
+    driveFeedforwardEstimator.addMeasurement(
+        modules[0].getDriveAppliedVoltage(), currentVelocity, currentAccel);
   }
 
   /**

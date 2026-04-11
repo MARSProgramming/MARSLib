@@ -8,6 +8,10 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
  * Advanced Shot-On-The-Move mathematical solver ingested from Team 254 (2024). This utility
  * calculates exact trajectory kinematics, solving the quadratic equation for time-of-flight while
  * applying gravity and lift compensation.
+ *
+ * <p>Reference: Kinematics and Projectile Motion Equations are derived from <i>"Classical
+ * Mechanics" (John R. Taylor) Section 2.4 - Projectile Motion with Air Resistance</i> and adapted
+ * for FRC by Team 254 (2024 Whitepaper: "Hitting the Target on the Fly").
  */
 public class EliteShooterMath {
 
@@ -58,6 +62,8 @@ public class EliteShooterMath {
     double vShot = nominalShotSpeedMetersPerSec;
 
     // Solve quadratic equation to obtain time of flight of game piece.
+    // Derived from 1D kinematic equation: Δx = v_0 * t + 0.5 * a * t^2
+    // Extended into 3D space vectors where the shooter velocity magnitude is known (vShot).
     // a = vx^2 + vy^2 - vShot^2
     // b = -2 * (tx * vx + ty * vy)
     // c = tx^2 + ty^2 + tz^2

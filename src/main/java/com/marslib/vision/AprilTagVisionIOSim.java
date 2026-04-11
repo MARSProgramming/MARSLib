@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -46,6 +47,12 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
   private final PhotonPoseEstimator poseEstimator;
   private final Supplier<Pose2d> poseSupplier;
   private final Transform3d robotToCamera;
+
+  private final Pose3d[] singlePoseBuffer = new Pose3d[1];
+  private final double[] singleTimestampBuffer = new double[1];
+  private final int[] singleTagCountBuffer = new int[1];
+  private final double[] singleDistBuffer = new double[1];
+  private final double[] singleAmbiguityBuffer = new double[1];
 
   private static double lastVisionSimUpdate = -1.0;
 
@@ -111,7 +118,8 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
     boolean simulatedOcclusion = false;
     if (frc.robot.constants.SimulationConstants.ENABLE_VISION_OCCLUSION) {
       simulatedOcclusion =
-          Math.random() < frc.robot.constants.SimulationConstants.VISION_OCCLUSION_DROP_PROBABILITY;
+          ThreadLocalRandom.current().nextDouble()
+              < frc.robot.constants.SimulationConstants.VISION_OCCLUSION_DROP_PROBABILITY;
     }
 
     if (!results.isEmpty() && !simulatedOcclusion) {
@@ -121,20 +129,30 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
         if (estimatedPose.isPresent()) {
           EstimatedRobotPose pose = estimatedPose.get();
 
-          inputs.estimatedPoses = new Pose3d[] {pose.estimatedPose};
-          inputs.timestamps = new double[] {pose.timestampSeconds};
-          inputs.tagCounts = new int[] {result.getTargets().size()};
+          singlePoseBuffer[0] = pose.estimatedPose;
+          singleTimestampBuffer[0] = pose.timestampSeconds;
+          int size = result.getTargets().size();
+          singleTagCountBuffer[0] = size;
+
+          inputs.estimatedPoses = singlePoseBuffer;
+          inputs.timestamps = singleTimestampBuffer;
+          inputs.tagCounts = singleTagCountBuffer;
 
           double avgDist = 0.0;
           double avgAmbiguity = 0.0;
 
-          for (var target : result.getTargets()) {
+          // Prevent allocating iterator continuously
+          var targets = result.getTargets();
+          for (int i = 0; i < size; i++) {
+            var target = targets.get(i);
             avgDist += target.getBestCameraToTarget().getTranslation().getNorm();
             avgAmbiguity += target.getPoseAmbiguity();
           }
 
-          inputs.averageDistancesMeters = new double[] {avgDist / result.getTargets().size()};
-          inputs.ambiguities = new double[] {avgAmbiguity / result.getTargets().size()};
+          singleDistBuffer[0] = avgDist / size;
+          singleAmbiguityBuffer[0] = avgAmbiguity / size;
+          inputs.averageDistancesMeters = singleDistBuffer;
+          inputs.ambiguities = singleAmbiguityBuffer;
           return;
         }
       }

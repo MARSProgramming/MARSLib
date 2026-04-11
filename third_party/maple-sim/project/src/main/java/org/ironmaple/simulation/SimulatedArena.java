@@ -668,7 +668,23 @@ public abstract class SimulatedArena {
      * @see #getGamePiecesPosesByType(String)
      */
     public synchronized Pose3d[] getGamePiecesArrayByType(String type) {
-        return getGamePiecesPosesByType(type).toArray(Pose3d[]::new);
+        int count = 0;
+        for (GamePiece gamePiece : gamePieces) {
+            if (Objects.equals(gamePiece.getType(), type)) {
+                count++;
+            }
+        }
+        if (count == 0) {
+            return new Pose3d[0];
+        }
+        Pose3d[] arr = new Pose3d[count];
+        int i = 0;
+        for (GamePiece gamePiece : gamePieces) {
+            if (Objects.equals(gamePiece.getType(), type)) {
+                arr[i++] = gamePiece.getPose3d();
+            }
+        }
+        return arr;
     }
 
     /**

@@ -42,8 +42,10 @@ public class RotaryMechanismIOTalonFX implements RotaryMechanismIO {
 
   private final double gearRatio;
 
-  /** Tracks the last CAN-applied stator current limit to avoid redundant writes. */
   private double lastAppliedCurrentLimit = 40.0;
+
+  private final double[] currentAmpsCache = new double[1];
+  private final String hardwareFaultName;
 
   private final LoggedTunableNumber kP;
   private final LoggedTunableNumber kI;
@@ -61,6 +63,7 @@ public class RotaryMechanismIOTalonFX implements RotaryMechanismIO {
   public RotaryMechanismIOTalonFX(int motorId, String canbus, double gearRatio, boolean inverted) {
     this.gearRatio = gearRatio;
     this.motor = new TalonFX(motorId, canbus);
+    this.hardwareFaultName = "RotaryMechanism_" + motorId;
 
     kP = new LoggedTunableNumber("RotaryMechanism_" + motorId + "/kP", 2.0);
     kI = new LoggedTunableNumber("RotaryMechanism_" + motorId + "/kI", 0.0);
@@ -109,7 +112,7 @@ public class RotaryMechanismIOTalonFX implements RotaryMechanismIO {
 
     inputs.hasHardwareConnected = ok;
     if (!ok) {
-      MARSFaultManager.reportHardwareDisconnect("RotaryMechanism_" + motor.getDeviceID());
+      MARSFaultManager.reportHardwareDisconnect(hardwareFaultName);
     }
 
     // Convert motor rotations -> mechanism rads
@@ -120,7 +123,8 @@ public class RotaryMechanismIOTalonFX implements RotaryMechanismIO {
     inputs.targetVelocityRadPerSec =
         closedLoopReferenceSlope.getValueAsDouble() * radsPerMotorRotation;
     inputs.appliedVolts = appliedVolts.getValueAsDouble();
-    inputs.currentAmps = new double[] {statorCurrent.getValueAsDouble()};
+    currentAmpsCache[0] = statorCurrent.getValueAsDouble();
+    inputs.currentAmps = currentAmpsCache;
 
     // Live Auto-Tuning Check
     boolean pChanged = kP.hasChanged(motor.getDeviceID());

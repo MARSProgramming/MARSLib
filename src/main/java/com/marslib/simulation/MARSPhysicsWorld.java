@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import frc.robot.constants.FieldConstants;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.world.World;
@@ -159,8 +158,8 @@ public class MARSPhysicsWorld {
       Logger.recordOutput("PhysicsWorld/" + mechanismName, pose3d);
     }
     // Export field game pieces
-    List<Pose3d> fuelPoses = arena.getGamePiecesPosesByType("Fuel");
-    Logger.recordOutput("PhysicsWorld/FuelCount", fuelPoses.size());
-    Logger.recordOutput("PhysicsWorld/GamePieces", fuelPoses.toArray(new Pose3d[0]));
+    Pose3d[] fuelPoses = arena.getGamePiecesArrayByType("Fuel");
+    Logger.recordOutput("PhysicsWorld/FuelCount", fuelPoses.length);
+    Logger.recordOutput("PhysicsWorld/GamePieces", fuelPoses);
   }
 }

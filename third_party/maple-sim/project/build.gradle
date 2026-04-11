@@ -2,7 +2,6 @@ plugins {
     id 'cpp'
     id 'java'
     id 'google-test'
-    id("com.diffplug.spotless") version "7.0.0.BETA4"
     id 'edu.wpi.first.wpilib.repositories.WPILibRepositoriesPlugin' version '2025.0'
     id 'edu.wpi.first.NativeUtils' version '2025.9.0'
     id 'edu.wpi.first.GradleJni' version '1.1.0'
@@ -72,41 +71,6 @@ javadoc {
     }
 }
 
-spotless {
-    java {
-        target fileTree('.') {
-            include '**/*.java'
-            exclude '**/build/**', '**/build-*/**'
-        }
-        toggleOffOn()
-        palantirJavaFormat('2.39.0').formatJavadoc(true)
-        removeUnusedImports()
-        trimTrailingWhitespace()
-        endWithNewline()
-    }
-
-    groovyGradle {
-        target fileTree('.') {
-            include '**/*.gradle'
-            exclude '**/build/**', '**/build-*/**'
-        }
-        greclipse()
-        indentWithSpaces(4)
-        trimTrailingWhitespace()
-        endWithNewline()
-    }
-    format 'misc', {
-        target fileTree('.') {
-            include '**/*.md', '**/.gitignore'
-            exclude '**/build/**', '**/build-*/**'
-        }
-        trimTrailingWhitespace()
-        indentWithSpaces(4)
-        endWithNewline()
-    }
-}
-
-compileJava.dependsOn 'spotlessApply'
 
 apply from: 'publish.gradle'
 

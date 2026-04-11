@@ -24,8 +24,8 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
  * project.
  */
 public class Robot extends LoggedRobot {
-  private RobotContainer m_robotContainer;
-  private Command m_autonomousCommand;
+  private RobotContainer robotContainer;
+  private Command autonomousCommand;
 
   public Robot() {
     super(ModeConstants.LOOP_PERIOD_SECS);
@@ -77,7 +77,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
-    m_robotContainer = new RobotContainer();
+    robotContainer = new RobotContainer();
   }
 
   /** This function is called periodically during all modes. */
@@ -108,10 +108,10 @@ public class Robot extends LoggedRobot {
   /** This autonomous runs the selected autonomous command. */
   @Override
   public void autonomousInit() {
-    if (m_robotContainer != null) {
-      m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-      if (m_autonomousCommand != null) {
-        CommandScheduler.getInstance().schedule(m_autonomousCommand);
+    if (robotContainer != null) {
+      autonomousCommand = robotContainer.getAutonomousCommand();
+      if (autonomousCommand != null) {
+        CommandScheduler.getInstance().schedule(autonomousCommand);
       }
     }
   }
@@ -123,8 +123,8 @@ public class Robot extends LoggedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+    if (autonomousCommand != null) {
+      autonomousCommand.cancel();
     }
   }
 
