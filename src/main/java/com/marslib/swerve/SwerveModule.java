@@ -93,6 +93,8 @@ public class SwerveModule {
                 : 0.0));
   }
 
+  private SwerveModuleState lastDesiredState = new SwerveModuleState();
+
   /**
    * Optimizes and applies a desired module state (drive speed + turn angle) with closed-loop turn
    * control and simple voltage feedforward for driving.
@@ -104,6 +106,7 @@ public class SwerveModule {
    * @param desiredState The target speed and angle for this module.
    */
   public void setDesiredState(SwerveModuleState desiredState) {
+    this.lastDesiredState = desiredState;
     // Get current module angle
     Rotation2d currentAngle =
         Rotation2d.fromRadians(
@@ -156,6 +159,16 @@ public class SwerveModule {
    */
   public double getDriveAppliedVoltage() {
     return inputs.driveAppliedVolts;
+  }
+
+  /** Gets the actual stator current flowing through the drive motor. */
+  public double getDriveCurrentAmps() {
+    return inputs.driveCurrentAmps;
+  }
+
+  /** Gets the previously cached desired state of the module for traction comparison. */
+  public SwerveModuleState getDesiredState() {
+    return lastDesiredState;
   }
 
   /**

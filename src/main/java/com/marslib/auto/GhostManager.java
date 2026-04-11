@@ -337,7 +337,53 @@ public class GhostManager {
         while (playIndex < frames.size() - 1 && frames.get(playIndex + 1).time <= t) {
           playIndex++;
         }
-        currentFrame = frames.get(playIndex);
+
+        if (playIndex >= frames.size() - 1) {
+          GhostFrame last = frames.get(frames.size() - 1);
+          currentFrame.time = last.time;
+          currentFrame.leftY = last.leftY;
+          currentFrame.leftX = last.leftX;
+          currentFrame.rightX = last.rightX;
+          currentFrame.a = last.a;
+          currentFrame.b = last.b;
+          currentFrame.x = last.x;
+          currentFrame.y = last.y;
+          currentFrame.lb = last.lb;
+          currentFrame.rb = last.rb;
+          currentFrame.up = last.up;
+          currentFrame.down = last.down;
+          currentFrame.left = last.left;
+          currentFrame.right = last.right;
+          return;
+        }
+
+        GhostFrame frame1 = frames.get(playIndex);
+        GhostFrame frame2 = frames.get(playIndex + 1);
+
+        double ratio = (t - frame1.time) / (frame2.time - frame1.time);
+        if (Double.isNaN(ratio) || Double.isInfinite(ratio)) {
+          ratio = 0.0;
+        }
+
+        // Mutate the pre-allocated frame to maintain zero-GC profile
+        currentFrame.time = t;
+        currentFrame.leftY =
+            edu.wpi.first.math.MathUtil.interpolate(frame1.leftY, frame2.leftY, ratio);
+        currentFrame.leftX =
+            edu.wpi.first.math.MathUtil.interpolate(frame1.leftX, frame2.leftX, ratio);
+        currentFrame.rightX =
+            edu.wpi.first.math.MathUtil.interpolate(frame1.rightX, frame2.rightX, ratio);
+
+        currentFrame.a = frame1.a;
+        currentFrame.b = frame1.b;
+        currentFrame.x = frame1.x;
+        currentFrame.y = frame1.y;
+        currentFrame.lb = frame1.lb;
+        currentFrame.rb = frame1.rb;
+        currentFrame.up = frame1.up;
+        currentFrame.down = frame1.down;
+        currentFrame.left = frame1.left;
+        currentFrame.right = frame1.right;
       }
 
       @Override

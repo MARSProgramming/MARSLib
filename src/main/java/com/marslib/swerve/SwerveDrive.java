@@ -69,7 +69,13 @@ public class SwerveDrive extends SubsystemBase {
   private final SwerveDriveSimulation simDrive;
   private final com.marslib.simulation.LidarIOSim lidarSim;
 
-  private double lastLoadShedLimit = SwerveConstants.DRIVE_STATOR_CURRENT_LIMIT;
+  private final double[] lastModuleLimits =
+      new double[] {
+        SwerveConstants.DRIVE_STATOR_CURRENT_LIMIT,
+        SwerveConstants.DRIVE_STATOR_CURRENT_LIMIT,
+        SwerveConstants.DRIVE_STATOR_CURRENT_LIMIT,
+        SwerveConstants.DRIVE_STATOR_CURRENT_LIMIT
+      };
 
   /**
    * Constructs a new SwerveDrive instance.
@@ -240,22 +246,61 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     // Active Dynamic Load Shedding — only write to CAN when the limit actually changes
-    double currentLimit =
+    double baseCurrentLimit =
         powerManager.calculateLoadSheddedLimit(
             SwerveConstants.DRIVE_STATOR_CURRENT_LIMIT,
             SwerveConstants.MIN_LOAD_SHED_CURRENT,
             PowerConstants.NOMINAL_VOLTAGE,
             PowerConstants.CRITICAL_VOLTAGE);
 
-    // Only push CAN writes when the limit changes by at least 1A (BUG-03 fix)
-    if (Math.abs(currentLimit - lastLoadShedLimit) >= 1.0) {
-      for (SwerveModule mod : modules) {
-        mod.setCurrentLimit(currentLimit);
-      }
-      lastLoadShedLimit = currentLimit;
-    }
-    Logger.recordOutput("SwerveDrive/LoadShedLimitAmps", currentLimit);
+    // Apply per-module slip ratio traction clamping (254 / 1690 style)
+    if (edu.wpi.first.wpilibj.RobotBase.isReal()) {
+      for (int i = 0; i < 4; i++) {
+        SwerveModule mod = modules[i];
+        double moduleLimit = baseCurrentLimit;
 
+        double desiredSpeed = Math.abs(mod.getDesiredState().speedMetersPerSecond);
+        double actualSpeed = Math.abs(mod.getLatestState().speedMetersPerSecond);
+        double currentAmps = mod.getDriveCurrentAmps();
+
+        // Slip detection: If wheel is pushing massive torque but not moving proportionally
+        if (desiredSpeed > 0.5 && currentAmps > 60.0 && actualSpeed < desiredSpeed * 0.5) {
+          moduleLimit =
+              Math.min(moduleLimit, 40.0); // Severely clamp torque to regain static friction
+        }
+
+        // Heading-Aware Traction Reduction (reduces torque if wheel normal force is light)
+        if (gyroInputs.connected) {
+          double pitch = gyroInputs.pitchPositionRad; // + is pitched back (front wheels light)
+          double roll = gyroInputs.rollPositionRad; // + is rolled right (left wheels light)
+
+          boolean isLight = false;
+          // 0=FL, 1=FR, 2=BL, 3=BR
+          if (i == 0 && (pitch > 0.15 || roll > 0.15)) isLight = true;
+          if (i == 1 && (pitch > 0.15 || roll < -0.15)) isLight = true;
+          if (i == 2 && (pitch < -0.15 || roll > 0.15)) isLight = true;
+          if (i == 3 && (pitch < -0.15 || roll < -0.15)) isLight = true;
+
+          if (isLight) {
+            moduleLimit = Math.min(moduleLimit, 30.0); // extreme limit if wheel has no traction
+          }
+        }
+
+        // Only push CAN writes when the limit changes by at least 1A (BUG-03 fix)
+        if (Math.abs(moduleLimit - lastModuleLimits[i]) >= 1.0) {
+          mod.setCurrentLimit(moduleLimit);
+          lastModuleLimits[i] = moduleLimit;
+        }
+      }
+    } else {
+      // In Simulation, just push the base load shed limit if it changes
+      if (Math.abs(baseCurrentLimit - lastModuleLimits[0]) >= 1.0) {
+        for (int i = 0; i < 4; i++) {
+          modules[i].setCurrentLimit(baseCurrentLimit);
+          lastModuleLimits[i] = baseCurrentLimit;
+        }
+      }
+    }
     // Use real gyro yaw for pose estimation
     // Rotation2d yaw = ... (moved into the drain loop for high frequency accuracy)
 

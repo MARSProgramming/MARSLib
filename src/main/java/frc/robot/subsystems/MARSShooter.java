@@ -8,10 +8,12 @@ import com.marslib.mechanisms.FlywheelIOSim;
 import com.marslib.mechanisms.FlywheelIOTalonFX;
 import com.marslib.power.MARSPowerManager;
 import com.marslib.util.LoggedTunableNumber;
+import com.marslib.util.OnlineFeedforwardEstimator;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.constants.ModeConstants;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -48,6 +50,8 @@ public class MARSShooter extends SubsystemBase {
   private static final double MIN_CURRENT_AMPS = 30.0;
 
   private final MARSPowerManager powerManager;
+  private final OnlineFeedforwardEstimator estimator;
+  private double lastVelocityForSysId = 0.0;
 
   /**
    * Constructs the shooter subsystem.
@@ -73,6 +77,8 @@ public class MARSShooter extends SubsystemBase {
                 },
                 null,
                 this));
+
+    this.estimator = new OnlineFeedforwardEstimator("Shooter", 500, 0.0);
   }
 
   @Override
@@ -96,6 +102,12 @@ public class MARSShooter extends SubsystemBase {
 
     io.setCurrentLimit(currentLimit);
     Logger.recordOutput("Shooter/ActiveCurrentLimit", currentLimit);
+
+    // Continuous TeleOp SysId Extraction
+    double currentVelocity = inputs.velocityRadPerSec;
+    double currentAccel = (currentVelocity - lastVelocityForSysId) / ModeConstants.LOOP_PERIOD_SECS;
+    lastVelocityForSysId = currentVelocity;
+    estimator.addMeasurement(inputs.appliedVolts, currentVelocity, currentAccel);
   }
 
   /**

@@ -5,10 +5,12 @@ import static edu.wpi.first.units.Units.Volts;
 import com.marslib.mechanisms.*;
 import com.marslib.power.MARSPowerManager;
 import com.marslib.util.LoggedTunableNumber;
+import com.marslib.util.OnlineFeedforwardEstimator;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.constants.ModeConstants;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -38,6 +40,8 @@ public class MARSClimber extends SubsystemBase {
 
   private final MARSPowerManager powerManager;
   private final SysIdRoutine sysIdRoutine;
+  private final OnlineFeedforwardEstimator estimator;
+  private double lastVelocityForSysId = 0.0;
 
   public MARSClimber(LinearMechanismIO io, MARSPowerManager powerManager) {
     this.io = io;
@@ -57,6 +61,8 @@ public class MARSClimber extends SubsystemBase {
                 },
                 null,
                 this));
+
+    this.estimator = new OnlineFeedforwardEstimator("Climber", 500, 0.0);
   }
 
   @Override
@@ -82,6 +88,12 @@ public class MARSClimber extends SubsystemBase {
 
     io.setCurrentLimit(currentLimit);
     Logger.recordOutput("Climber/ActiveCurrentLimit", currentLimit);
+
+    // Continuous TeleOp SysId Extraction
+    double currentVelocity = inputs.velocityMetersPerSec;
+    double currentAccel = (currentVelocity - lastVelocityForSysId) / ModeConstants.LOOP_PERIOD_SECS;
+    lastVelocityForSysId = currentVelocity;
+    estimator.addMeasurement(inputs.appliedVolts, currentVelocity, currentAccel);
   }
 
   public void setVoltage(double volts) {

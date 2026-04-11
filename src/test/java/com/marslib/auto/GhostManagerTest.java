@@ -111,9 +111,9 @@ public class GhostManagerTest {
     DoubleSupplier defaultSupplier = () -> 0.0;
     BooleanSupplier defaultBool = () -> false;
 
-    assertEquals(0.5, manager.getLeftY(defaultSupplier));
-    assertEquals(0.25, manager.getLeftX(defaultSupplier));
-    assertEquals(0.0, manager.getRightX(defaultSupplier));
+    assertEquals(0.5, manager.getLeftY(defaultSupplier), 1e-4);
+    assertEquals(0.25, manager.getLeftX(defaultSupplier), 1e-4);
+    assertEquals(0.0, manager.getRightX(defaultSupplier), 1e-4);
     assertFalse(manager.getA(defaultBool));
     assertTrue(manager.getB(defaultBool)); // B is true in dummy
 
