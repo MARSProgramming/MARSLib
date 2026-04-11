@@ -19,15 +19,21 @@ When requested to create or update an AdvantageScope layout to visualize a new f
 
 ### 1. Generating State Files
 - **CRITICAL**: Do NOT use `mcp_advantagescope-mcp_create_layout`, `update_tab`, or `add_source` tools. The current MCP layout generator fundamentally breaks serialization on AdvantageScope 3.10+ by dropping internal dictionary references (like `leftLockedRange`, `renderer`, `controlsHeight`) and obliterating the `version` attribute, causing the fatal "unrecognized format" error.
-- **3. Zod Schema Validation:** AdvantageScope 3.10 uses an extremely strict Zod-based internal schema validator when loading layout JSON files. If a telemetry source binding (like `Field3d` or `Swerve`) requires hidden internal fallback parameters (e.g., `model`, `color`, `arrangement`), giving it an empty dictionary (`"options": {}`) will violently crash the renderer and silently drop the entire tab from the layout.
-    - **Field3d `"robot"` Type:** MUST have `"options": { "model": "Robot" }`.
-    - **Field3d `"ghost"` Type:** MUST have `"options": { "model": "Robot", "color": "#ff0000" }`.
-    - **Swerve `"states"` Type:** MUST have `"options": { "color": "#ff0000", "arrangement": "0,1,2,3" }`.
-    - **LineGraph Type:** MUST have `"options": { "color": "#ff0000" }`.
-- **4. Layout Fallback Strategy:** If manual dictionary injection continues to drop tabs due to undocumented Zod constraints, the safest fallback is to export a structurally empty template (`"sources": []`) directly from AdvantageScope and NOT programmatically populate the telemetry keys. The layout frame will bind accurately, and you simply instruct the user to manually drag the log mappings into the visualizer from the sidebar.
-- **Workflow**: If the user requests a layout change natively, instruct the user to open their local AdvantageScope desktop app, click **File -> Export Layout** into the repository manually.
-- **Modification**: Use Python dictionary injection natively against the user's exported `advantagescope_layout.json` to insert/append field nodes (`tabs`), rather than relying on the MCP backend tools to write the file. The MCP should only be used in a read-only capacity (`get_tab_type_schema`) to query required fields.
-
+- **3. Strict Zod Schema Validation by Tab Type:** AdvantageScope 3.10 uses an extremely strict Zod-based internal schema validator. Every single source type (`robot`, `ghost`, `stepped`, `vision`) across different controllers (`Field2d`, `Field3d`, `LineGraph`) has a rigidly validated `options` dictionary. If you provide an `options` key that the controller's `_Config.ts` schema does not statically define, the entire layout JSON will crash upon load with a "File format not supported" error.
+  - **Field3d Controllers:**
+    - `"robot"` Type MUST have `"options": { "model": "Robot" }`.
+    - `"ghost"` Type MUST have `"options": { "model": "Robot", "color": "#ff0000" }`.
+    - `"vision"` Type MUST have `"options": { "color": "#00ffff", "size": "normal" }`.
+  - **Field2d (Odometry) Controllers:** These do NOT support 3D models. Injecting `model` causes a fatal schema violation.
+    - `"robot"` Type MUST map to bumpers: `"options": { "bumpers": "" }`.
+    - `"ghost"` Type MUST map ONLY to color: `"options": { "color": "#ff0000" }`.
+  - **Swerve Diagnostics:**
+    - `"states"` Type MUST have `"options": { "color": "#ff0000", "arrangement": "0,1,2,3" }`.
+  - **LineGraph Controllers:**
+    - `"stepped"` or `"smooth"` Types MUST have both color and line thickness: `"options": { "color": "#ff0000", "size": "normal" }`.
+- **4. Safe Game Piece Rendering:** The explicit `gamePiece` mesh renderer relies on internally hardcoded, undocumented, year-specific variant strings (e.g., `"Cargo"`, `"Coral"`). Passing an invalid missing string crashes the schema validator. When constructing pre-season layouts or dynamically mapping unknown simulated game pieces, ALWAYS default to rendering field objects as 3D arrays with `type: "ghost"` (which natively renders cleanly as translucent bounding boxes) rather than `type: "gamePiece"` to ensure forward compatibility without needing exact asset strings.
+- **5. Separating Sim vs Playback Architecture:** When designing advanced telemetry workflows, utilize multiple Field3D layouts. Separate real Match Playback (combining SwervePose, Vision Poses, and Vision Frustums) from Headless Simulation tracking (SwervePose, PathPlanner target intent, and PhysicsWorld GamePieces) onto separate independent 3D tracker tabs to maximize visibility without log overlap.
+- **Workflow / Fallback Strategy**: If the user requests a layout change natively, you can read the user's exported `advantagescope_layout.json` to insert/append field nodes (`tabs`) via native scripting. If manual injection continues to drop layout elements due to undocumented Zod constraints, instruct the user to open AS desktop and manually configure it. Do NOT use the MCP `advantagescope-mcp` write commands.
 ### 2. Configuring Point Clouds
 When visualizing `ArrayLidarIOSim` or dynamic dynamic fields:
 - Use `mcp_advantagescope-mcp_add_source` to attach the field `[AutoLog Inputs Path]/LidarArray` array.
