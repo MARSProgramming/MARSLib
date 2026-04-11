@@ -137,7 +137,7 @@
                 "sources": [
                   {
                     "type": "robot",
-                    "logKey": "/RealOutputs/SwerveDrive/Pose",
+                    "logKey": "/RealOutputs/DriveTrain/SimPose",
                     "logType": "Pose2d",
                     "visible": true,
                     "options": {
