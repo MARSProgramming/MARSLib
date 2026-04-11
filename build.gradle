@@ -382,7 +382,7 @@ spotless {
             include "**/*.gradle"
             exclude "**/build/**", "**/build-*/**"
         }
-        greclipse()
+// greclipse() // Removed due to P2 provisioning errors
         indentWithSpaces(4)
         trimTrailingWhitespace()
         endWithNewline()
