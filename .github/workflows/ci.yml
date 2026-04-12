@@ -37,10 +37,10 @@ jobs:
       run: chmod +x gradlew
 
     - name: Compile
-      run: ./gradlew compileJava compileTestJava -Pskip-inspector-wrapper
+      run: ./gradlew compileJava compileTestJava -Pskip-inspector-wrapper -Dorg.gradle.java.home=$JAVA_HOME
 
     - name: Build and Test with Coverage
-      run: ./gradlew build jacocoTestReport -Pskip-inspector-wrapper
+      run: ./gradlew build jacocoTestReport -Pskip-inspector-wrapper -Dorg.gradle.java.home=$JAVA_HOME
 
     - name: Upload Test Reports (on failure)
       if: failure()
@@ -67,7 +67,7 @@ jobs:
 
     - name: Generate Documentation Site
       if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-      run: ./gradlew generateDocs -Pskip-inspector-wrapper
+      run: ./gradlew generateDocs -Pskip-inspector-wrapper -Dorg.gradle.java.home=$JAVA_HOME
 
     - name: Deploy docs to master branch
       if: github.ref == 'refs/heads/master' && github.event_name == 'push'

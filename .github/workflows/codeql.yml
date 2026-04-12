@@ -38,7 +38,7 @@ jobs:
     - name: Build
       run: |
         chmod +x gradlew
-        ./gradlew compileJava -Pskip-inspector-wrapper
+        ./gradlew compileJava -Pskip-inspector-wrapper -Dorg.gradle.java.home=$JAVA_HOME
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
