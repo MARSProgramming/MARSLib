@@ -1,106 +1,81 @@
 /* ===================================================================
- * MARSLib Javadoc Theme
+ * MARSLib Javadoc Theme — Dark Mode
  * Branded for Mountaineer Area RoboticS (MARS) — FRC Team 2614
  *
  * Brand Colors:
  *   MARS Red: #B32416
- *   Black:    #000000
- *   White:    #FFFFFF
- *   Gray:     #363636
+ *   Black:    #0a0a0a
+ *   White:    #e8e8e8
  *
  * Brand Fonts:
  *   Headers: Orbitron
  *   Body:    Ubuntu
+ *   Code:    JetBrains Mono
  * =================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-:root {
-  /* MARS Brand Palette — Dark Theme */
-  --mars-bg-primary: #0a0a0a;
-  --mars-bg-secondary: #141414;
-  --mars-bg-tertiary: #1a1a1a;
-  --mars-bg-card: #1e1e1e;
-  --mars-border: #2a2a2a;
-  --mars-border-muted: #1e1e1e;
-
-  /* MARS Red Accent */
-  --mars-red: #B32416;
-  --mars-red-light: #d42e1e;
-  --mars-red-glow: rgba(179, 36, 22, 0.15);
-  --mars-red-bright: #ef4435;
-
-  /* Supporting Colors */
-  --mars-blue: #6ba3d6;
-  --mars-green: #4caf50;
-  --mars-yellow: #d4a017;
-
-  /* Text */
-  --mars-text-primary: #e8e8e8;
-  --mars-text-secondary: #999999;
-  --mars-text-muted: #666666;
-
-  /* Javadoc Standard Doclet Overrides */
-  --body-background-color: var(--mars-bg-primary);
-  --text-color: var(--mars-text-primary);
-  --block-background-color: var(--mars-bg-secondary);
-  --border-color: var(--mars-border);
-  --title-color: var(--mars-red);
-  --link-color: var(--mars-red-light);
-  --link-color-active: var(--mars-red-bright);
-  --navbar-background-color: var(--mars-bg-secondary);
-  --navbar-text-color: var(--mars-text-primary);
-  --snippet-background-color: var(--mars-bg-tertiary);
-  --snippet-text-color: var(--mars-text-primary);
-  --code-background-color: var(--mars-bg-tertiary);
-  --selected-background-color: var(--mars-red-glow);
-  --even-row-color: var(--mars-bg-secondary);
-  --odd-row-color: var(--mars-bg-primary);
-  --sub-nav-background-color: var(--mars-bg-tertiary);
-}
-
-/* ===== Global ===== */
-body {
-  font-family: 'Ubuntu', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+/* ===== Force Dark Background Globally ===== */
+html, body {
+  background-color: #0a0a0a !important;
+  color: #e0e0e0 !important;
+  font-family: 'Ubuntu', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Override every possible container */
+main, .header, .footer,
+div.contentContainer, div.sourceContainer,
+div.classUseContainer, div.serializedFormContainer,
+div.constantValuesContainer, div.deprecatedListContainer,
+#all-classes-table, #all-packages-table,
+.flex-box, .flex-content,
+.class-uses, .type-summary,
+section, article, aside {
+  background-color: #0a0a0a !important;
+  color: #e0e0e0 !important;
 }
 
 /* ===== Navigation Bar ===== */
 div.top-nav,
 div.sub-nav,
-.nav-bar {
-  background: var(--mars-bg-secondary) !important;
-  border-bottom: 1px solid var(--mars-border) !important;
+div.bottom-nav,
+.nav-bar,
+nav.sub-nav,
+header nav {
+  background: #141414 !important;
+  border-bottom: 1px solid #2a2a2a !important;
+  border-top: 1px solid #2a2a2a !important;
 }
 
 ul.nav-list li {
   border-radius: 6px;
-  transition: background-color 0.2s ease;
 }
 
 ul.nav-list li:hover {
-  background-color: var(--mars-red-glow) !important;
+  background-color: rgba(179, 36, 22, 0.15) !important;
 }
 
 ul.nav-list a,
-ul.sub-nav-list a {
-  color: var(--mars-text-primary) !important;
+ul.sub-nav-list a,
+.nav-bar a,
+div.sub-nav a,
+.sub-nav-list-small a {
+  color: #e0e0e0 !important;
   text-decoration: none;
   font-family: 'Orbitron', sans-serif;
   font-size: 0.8em;
   letter-spacing: 0.04em;
-  transition: color 0.2s ease;
 }
 
 ul.nav-list a:hover,
 ul.sub-nav-list a:hover {
-  color: var(--mars-red-light) !important;
+  color: #d42e1e !important;
 }
 
-/* Active nav highlight */
 ul.nav-list li.nav-bar-cell1-rev {
-  background: var(--mars-red) !important;
+  background: #B32416 !important;
   border-radius: 6px;
 }
 
@@ -110,136 +85,219 @@ ul.nav-list li.nav-bar-cell1-rev a {
 }
 
 /* ===== Headers ===== */
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6,
+.title, .sub-title {
   font-family: 'Orbitron', sans-serif !important;
-  color: var(--mars-text-primary) !important;
+  color: #e8e8e8 !important;
   letter-spacing: -0.01em;
 }
 
 h1.title {
-  color: var(--mars-red) !important;
+  color: #B32416 !important;
   font-weight: 700;
   letter-spacing: 0.02em;
 }
 
-/* ===== Class Descriptions ===== */
+/* ===== Content text ===== */
 .class-description,
-.block {
-  color: var(--mars-text-primary);
-  line-height: 1.7;
+.block,
+.inheritance,
+.description,
+dt, dd,
+p, span, li, div,
+.type-signature,
+.class-description pre,
+.type-name-label,
+.type-name-link,
+.type-signature,
+.extends-implements {
+  color: #e0e0e0 !important;
+}
+
+/* Ensure parameter names & descriptions are visible */
+.params-body td,
+.params-body th,
+dl.notes dt,
+dl.notes dd,
+.notes,
+dd {
+  color: #cccccc !important;
+  line-height: 1.6;
 }
 
 /* ===== Links ===== */
-a {
-  color: var(--mars-red-light);
+a, a:link, a:visited {
+  color: #d42e1e !important;
   text-decoration: none;
-  transition: color 0.15s ease;
 }
 
-a:hover {
-  color: var(--mars-red-bright);
+a:hover, a:active {
+  color: #ef4435 !important;
   text-decoration: underline;
 }
 
 /* ===== Tables ===== */
 .summary-table,
 .details-table,
-table.memberSummary {
-  border: 1px solid var(--mars-border) !important;
+table.memberSummary,
+.caption,
+caption {
+  border: 1px solid #2a2a2a !important;
   border-radius: 8px;
   overflow: hidden;
 }
 
 .summary-table th,
 .details-table th,
-table.memberSummary th {
-  background: var(--mars-bg-card) !important;
-  color: var(--mars-text-primary) !important;
+table.memberSummary th,
+.table-header,
+.caption,
+caption,
+.col-first,
+.col-second,
+.col-last {
+  background: #1e1e1e !important;
+  color: #e8e8e8 !important;
   font-family: 'Orbitron', sans-serif;
   font-weight: 600;
   font-size: 0.85em;
-  border-bottom: 2px solid var(--mars-red) !important;
+  border-bottom: 2px solid #B32416 !important;
   padding: 12px 16px;
 }
 
 .summary-table td,
 .details-table td,
 table.memberSummary td {
-  border-color: var(--mars-border) !important;
+  border-color: #2a2a2a !important;
   padding: 10px 16px;
+  color: #e0e0e0 !important;
+  background-color: transparent !important;
+}
+
+/* Alternate row coloring */
+.even-row-color,
+.odd-row-color,
+tr:nth-child(even),
+.alt-color {
+  background-color: #141414 !important;
+}
+
+tr:nth-child(odd) {
+  background-color: #0a0a0a !important;
 }
 
 .summary-table tr:hover td,
 .details-table tr:hover td {
-  background: var(--mars-red-glow) !important;
+  background: rgba(179, 36, 22, 0.15) !important;
+}
+
+/* Specific column text colors */
+.col-first, .col-first a,
+.col-second,
+.col-last,
+.col-constructor-name, .col-constructor-name a,
+td.col-first, td.col-second, td.col-last {
+  color: #e0e0e0 !important;
+}
+
+td.col-first a, .col-constructor-name a {
+  color: #d42e1e !important;
 }
 
 /* ===== Code Blocks ===== */
-code, pre, .source-code {
+code, pre, .source-code,
+.source-line-no,
+tt, samp, kbd {
   font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', ui-monospace, SFMono-Regular, monospace !important;
   font-size: 0.9em;
-  background: var(--mars-bg-tertiary);
+  background: #1a1a1a !important;
   border-radius: 6px;
   padding: 2px 6px;
-  color: var(--mars-red-bright);
+  color: #ef4435 !important;
 }
 
 pre {
-  padding: 16px;
-  border: 1px solid var(--mars-border);
+  padding: 16px !important;
+  border: 1px solid #2a2a2a !important;
   overflow-x: auto;
+  background: #1a1a1a !important;
+  color: #e0e0e0 !important;
 }
 
 /* ===== Type Signatures ===== */
 .member-signature {
-  background: var(--mars-bg-tertiary) !important;
-  border-left: 3px solid var(--mars-red) !important;
+  background: #1a1a1a !important;
+  border-left: 3px solid #B32416 !important;
   padding: 12px 16px !important;
   border-radius: 0 6px 6px 0;
   font-family: 'JetBrains Mono', monospace !important;
   font-size: 0.9em;
+  color: #e0e0e0 !important;
+}
+
+.member-signature .return-type,
+.member-signature .type-parameters,
+.member-signature .modifiers,
+.member-signature .arguments,
+.member-signature .exceptions {
+  color: #cccccc !important;
 }
 
 /* ===== Section Details ===== */
 section.detail {
-  border-bottom: 1px solid var(--mars-border);
+  border-bottom: 1px solid #2a2a2a;
   padding-bottom: 20px;
   margin-bottom: 20px;
 }
 
-/* ===== Deprecation Notices ===== */
-.deprecated-block {
-  background: rgba(179, 36, 22, 0.1) !important;
-  border: 1px solid var(--mars-red) !important;
-  border-radius: 8px;
-  padding: 16px !important;
-  color: var(--mars-red-bright);
+section.class-description,
+section.summary,
+section.details {
+  background: #0a0a0a !important;
 }
 
-/* ===== Notes / Tips ===== */
-.notes,
-dd {
-  color: var(--mars-text-secondary);
-  line-height: 1.6;
+/* ===== Deprecation Notices ===== */
+.deprecated-block,
+.deprecated-label {
+  background: rgba(179, 36, 22, 0.1) !important;
+  border: 1px solid #B32416 !important;
+  border-radius: 8px;
+  padding: 16px !important;
+  color: #ef4435 !important;
 }
 
 /* ===== Search Box ===== */
 input[type="search"],
-input[type="text"] {
-  background: var(--mars-bg-tertiary) !important;
-  color: var(--mars-text-primary) !important;
-  border: 1px solid var(--mars-border) !important;
+input[type="text"],
+.search-input {
+  background: #1a1a1a !important;
+  color: #e8e8e8 !important;
+  border: 1px solid #2a2a2a !important;
   border-radius: 6px;
   padding: 8px 12px;
   font-family: 'Ubuntu', sans-serif;
   outline: none;
-  transition: border-color 0.2s ease;
 }
 
 input[type="search"]:focus,
 input[type="text"]:focus {
-  border-color: var(--mars-red) !important;
-  box-shadow: 0 0 0 3px var(--mars-red-glow);
+  border-color: #B32416 !important;
+  box-shadow: 0 0 0 3px rgba(179, 36, 22, 0.15);
+}
+
+/* Search results dropdown */
+.ui-autocomplete,
+.search-tag-result,
+ul.ui-autocomplete {
+  background: #141414 !important;
+  border: 1px solid #2a2a2a !important;
+  color: #e0e0e0 !important;
+}
+
+.ui-autocomplete li,
+.ui-state-active {
+  background: #1e1e1e !important;
+  color: #e0e0e0 !important;
 }
 
 /* ===== Scrollbars (Webkit) ===== */
@@ -249,36 +307,67 @@ input[type="text"]:focus {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--mars-bg-primary);
+  background: #0a0a0a;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--mars-border);
+  background: #2a2a2a;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--mars-text-muted);
+  background: #666666;
 }
 
 /* ===== Package List Styling ===== */
 .package-summary-table td.col-first a {
   font-weight: 600;
-  color: var(--mars-red) !important;
+  color: #B32416 !important;
 }
 
 .package-summary-table td.col-first a:hover {
-  color: var(--mars-red-bright) !important;
+  color: #ef4435 !important;
 }
 
 /* ===== Footer ===== */
-.legal {
-  color: var(--mars-text-muted) !important;
-  border-top: 1px solid var(--mars-border) !important;
+.legal,
+.bottom-nav,
+footer {
+  color: #666666 !important;
+  background: #0a0a0a !important;
+  border-top: 1px solid #2a2a2a !important;
   padding-top: 16px;
 }
 
-/* Smooth transitions globally */
-* {
-  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+/* ===== Breadcrumbs / Sub-nav ===== */
+.sub-nav, .sub-nav-list {
+  background: #1a1a1a !important;
+}
+
+/* ===== Help page ===== */
+.help-section .help-note {
+  background: #141414 !important;
+  border: 1px solid #2a2a2a !important;
+}
+
+/* ===== Constant fields page ===== */
+.constant-values-container {
+  background: #0a0a0a !important;
+}
+
+/* ===== Inheritance tree lines ===== */
+.inheritance li {
+  color: #999999 !important;
+}
+
+/* ===== Horizontal rulers ===== */
+hr {
+  border-color: #2a2a2a !important;
+}
+
+/* ===== Catch-all for any remaining white backgrounds ===== */
+div, section, article, header, footer, nav, main, aside,
+.flex-box, .flex-content, .content-container,
+.class-use-page, .hierarchy, .overview-tree {
+  background-color: #0a0a0a !important;
 }
