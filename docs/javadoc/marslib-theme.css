@@ -1,41 +1,59 @@
-:root {
-  /* MARSLib Brand Palette - Space-inspired dark theme */
-  --mars-bg-primary: #0d1117;
-  --mars-bg-secondary: #161b22;
-  --mars-bg-tertiary: #1c2128;
-  --mars-bg-card: #21262d;
-  --mars-border: #30363d;
-  --mars-border-muted: #21262d;
+/* ===================================================================
+ * MARSLib Javadoc Theme
+ * Branded for Mountaineer Area RoboticS (MARS) — FRC Team 2614
+ *
+ * Brand Colors:
+ *   MARS Red: #B32416
+ *   Black:    #000000
+ *   White:    #FFFFFF
+ *   Gray:     #363636
+ *
+ * Brand Fonts:
+ *   Headers: Orbitron
+ *   Body:    Ubuntu
+ * =================================================================== */
 
-  /* Accent Colors */
-  --mars-accent: #ff6b35;
-  --mars-accent-light: #ff8c5a;
-  --mars-accent-glow: rgba(255, 107, 53, 0.15);
-  --mars-blue: #58a6ff;
-  --mars-green: #3fb950;
-  --mars-purple: #bc8cff;
-  --mars-yellow: #d29922;
-  --mars-red: #f85149;
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* MARS Brand Palette — Dark Theme */
+  --mars-bg-primary: #0a0a0a;
+  --mars-bg-secondary: #141414;
+  --mars-bg-tertiary: #1a1a1a;
+  --mars-bg-card: #1e1e1e;
+  --mars-border: #2a2a2a;
+  --mars-border-muted: #1e1e1e;
+
+  /* MARS Red Accent */
+  --mars-red: #B32416;
+  --mars-red-light: #d42e1e;
+  --mars-red-glow: rgba(179, 36, 22, 0.15);
+  --mars-red-bright: #ef4435;
+
+  /* Supporting Colors */
+  --mars-blue: #6ba3d6;
+  --mars-green: #4caf50;
+  --mars-yellow: #d4a017;
 
   /* Text */
-  --mars-text-primary: #e6edf3;
-  --mars-text-secondary: #8b949e;
-  --mars-text-muted: #6e7681;
+  --mars-text-primary: #e8e8e8;
+  --mars-text-secondary: #999999;
+  --mars-text-muted: #666666;
 
   /* Javadoc Standard Doclet Overrides */
   --body-background-color: var(--mars-bg-primary);
   --text-color: var(--mars-text-primary);
   --block-background-color: var(--mars-bg-secondary);
   --border-color: var(--mars-border);
-  --title-color: var(--mars-accent);
-  --link-color: var(--mars-blue);
-  --link-color-active: var(--mars-accent-light);
+  --title-color: var(--mars-red);
+  --link-color: var(--mars-red-light);
+  --link-color-active: var(--mars-red-bright);
   --navbar-background-color: var(--mars-bg-secondary);
   --navbar-text-color: var(--mars-text-primary);
   --snippet-background-color: var(--mars-bg-tertiary);
   --snippet-text-color: var(--mars-text-primary);
   --code-background-color: var(--mars-bg-tertiary);
-  --selected-background-color: var(--mars-accent-glow);
+  --selected-background-color: var(--mars-red-glow);
   --even-row-color: var(--mars-bg-secondary);
   --odd-row-color: var(--mars-bg-primary);
   --sub-nav-background-color: var(--mars-bg-tertiary);
@@ -43,7 +61,7 @@
 
 /* ===== Global ===== */
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Ubuntu', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -62,24 +80,27 @@ ul.nav-list li {
 }
 
 ul.nav-list li:hover {
-  background-color: var(--mars-accent-glow) !important;
+  background-color: var(--mars-red-glow) !important;
 }
 
 ul.nav-list a,
 ul.sub-nav-list a {
   color: var(--mars-text-primary) !important;
   text-decoration: none;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.8em;
+  letter-spacing: 0.04em;
   transition: color 0.2s ease;
 }
 
 ul.nav-list a:hover,
 ul.sub-nav-list a:hover {
-  color: var(--mars-accent-light) !important;
+  color: var(--mars-red-light) !important;
 }
 
 /* Active nav highlight */
 ul.nav-list li.nav-bar-cell1-rev {
-  background: var(--mars-accent) !important;
+  background: var(--mars-red) !important;
   border-radius: 6px;
 }
 
@@ -90,13 +111,15 @@ ul.nav-list li.nav-bar-cell1-rev a {
 
 /* ===== Headers ===== */
 h1, h2, h3, h4, h5, h6 {
+  font-family: 'Orbitron', sans-serif !important;
   color: var(--mars-text-primary) !important;
+  letter-spacing: -0.01em;
 }
 
 h1.title {
-  color: var(--mars-accent) !important;
+  color: var(--mars-red) !important;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.02em;
 }
 
 /* ===== Class Descriptions ===== */
@@ -108,13 +131,13 @@ h1.title {
 
 /* ===== Links ===== */
 a {
-  color: var(--mars-blue);
+  color: var(--mars-red-light);
   text-decoration: none;
   transition: color 0.15s ease;
 }
 
 a:hover {
-  color: var(--mars-accent-light);
+  color: var(--mars-red-bright);
   text-decoration: underline;
 }
 
@@ -132,8 +155,10 @@ table.memberSummary {
 table.memberSummary th {
   background: var(--mars-bg-card) !important;
   color: var(--mars-text-primary) !important;
+  font-family: 'Orbitron', sans-serif;
   font-weight: 600;
-  border-bottom: 2px solid var(--mars-accent) !important;
+  font-size: 0.85em;
+  border-bottom: 2px solid var(--mars-red) !important;
   padding: 12px 16px;
 }
 
@@ -146,7 +171,7 @@ table.memberSummary td {
 
 .summary-table tr:hover td,
 .details-table tr:hover td {
-  background: var(--mars-accent-glow) !important;
+  background: var(--mars-red-glow) !important;
 }
 
 /* ===== Code Blocks ===== */
@@ -156,7 +181,7 @@ code, pre, .source-code {
   background: var(--mars-bg-tertiary);
   border-radius: 6px;
   padding: 2px 6px;
-  color: var(--mars-accent-light);
+  color: var(--mars-red-bright);
 }
 
 pre {
@@ -168,7 +193,7 @@ pre {
 /* ===== Type Signatures ===== */
 .member-signature {
   background: var(--mars-bg-tertiary) !important;
-  border-left: 3px solid var(--mars-accent) !important;
+  border-left: 3px solid var(--mars-red) !important;
   padding: 12px 16px !important;
   border-radius: 0 6px 6px 0;
   font-family: 'JetBrains Mono', monospace !important;
@@ -184,14 +209,14 @@ section.detail {
 
 /* ===== Deprecation Notices ===== */
 .deprecated-block {
-  background: rgba(248, 81, 73, 0.1) !important;
+  background: rgba(179, 36, 22, 0.1) !important;
   border: 1px solid var(--mars-red) !important;
   border-radius: 8px;
   padding: 16px !important;
-  color: var(--mars-red);
+  color: var(--mars-red-bright);
 }
 
-/* ===== Notes / Tips (custom @implNote etc) ===== */
+/* ===== Notes / Tips ===== */
 .notes,
 dd {
   color: var(--mars-text-secondary);
@@ -206,14 +231,15 @@ input[type="text"] {
   border: 1px solid var(--mars-border) !important;
   border-radius: 6px;
   padding: 8px 12px;
+  font-family: 'Ubuntu', sans-serif;
   outline: none;
   transition: border-color 0.2s ease;
 }
 
 input[type="search"]:focus,
 input[type="text"]:focus {
-  border-color: var(--mars-accent) !important;
-  box-shadow: 0 0 0 3px var(--mars-accent-glow);
+  border-color: var(--mars-red) !important;
+  box-shadow: 0 0 0 3px var(--mars-red-glow);
 }
 
 /* ===== Scrollbars (Webkit) ===== */
@@ -238,11 +264,11 @@ input[type="text"]:focus {
 /* ===== Package List Styling ===== */
 .package-summary-table td.col-first a {
   font-weight: 600;
-  color: var(--mars-accent) !important;
+  color: var(--mars-red) !important;
 }
 
 .package-summary-table td.col-first a:hover {
-  color: var(--mars-accent-light) !important;
+  color: var(--mars-red-bright) !important;
 }
 
 /* ===== Footer ===== */
@@ -250,11 +276,6 @@ input[type="text"]:focus {
   color: var(--mars-text-muted) !important;
   border-top: 1px solid var(--mars-border) !important;
   padding-top: 16px;
-}
-
-/* ===== MARSLib Custom Brand Header ===== */
-.header .title::before {
-  content: "🪐 ";
 }
 
 /* Smooth transitions globally */

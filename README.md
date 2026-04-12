@@ -1,17 +1,18 @@
 <div align="center">
 
 # 🪐 MARSLib
-### Elite FRC AdvantageKit Abstraction & Physics Template
+### FRC AdvantageKit Abstraction & Physics Template
 
-[![CI Build](https://github.com/thehomelessguy/MARSLib/actions/workflows/ci.yml/badge.svg)](https://github.com/thehomelessguy/MARSLib/actions/workflows/ci.yml)
-[![Coverage](https://raw.githubusercontent.com/thehomelessguy/MARSLib/main/.github/badges/jacoco.svg)](https://github.com/thehomelessguy/MARSLib/actions/workflows/ci.yml)
-[![Branches](https://raw.githubusercontent.com/thehomelessguy/MARSLib/main/.github/badges/branches.svg)](https://github.com/thehomelessguy/MARSLib/actions/workflows/ci.yml)
+[![CI Build](https://github.com/MARSProgramming/MARSLib/actions/workflows/ci.yml/badge.svg)](https://github.com/MARSProgramming/MARSLib/actions/workflows/ci.yml)
+[![Coverage](https://raw.githubusercontent.com/MARSProgramming/MARSLib/main/.github/badges/jacoco.svg)](https://github.com/MARSProgramming/MARSLib/actions/workflows/ci.yml)
+[![Branches](https://raw.githubusercontent.com/MARSProgramming/MARSLib/main/.github/badges/branches.svg)](https://github.com/MARSProgramming/MARSLib/actions/workflows/ci.yml)
 [![Spotless](https://img.shields.io/badge/style-spotless-brightgreen)](https://github.com/diffplug/spotless)
-[![Team](https://img.shields.io/badge/FRC-2614-orange)](https://www.thebluealliance.com/team/2614)
+[![Team](https://img.shields.io/badge/FRC-2614-B32416)](https://www.thebluealliance.com/team/2614)
 [![AdvantageKit](https://img.shields.io/badge/Powered%20By-AdvantageKit-yellow)](https://github.com/Mechanical-Advantage/AdvantageKit)
 [![Dyn4j](https://img.shields.io/badge/Physics-Dyn4j-blue)](https://dyn4j.org/)
+[![Docs](https://img.shields.io/badge/docs-MARSLib-B32416)](https://MARSProgramming.github.io/MARSLib/)
 
-**A championship-tier software template for FRC Team 2614.**
+**A championship-tier software template for Mountaineer Area RoboticS — FRC Team 2614.**
 </div>
 
 ---
@@ -24,9 +25,18 @@ This architecture is built so that students can develop completely offline. Our 
 
 *   **100% Simulated Logic:** Run `./gradlew simulateJava` and visualize your robot mathematically navigating the REBUILT field before you even touch a real battery.
 *   **Time-Of-Flight Aiming:** Native quadratic kinematic intersections mean the robot shoots accurately while pulling full-speed swerve maneuvers.
-*   **Ghost Manager:** Press a button to record your entire teleop driving sequence to disk. Press another to play it perfectly back into PathPlanner as an autonomous macro.
 *   **Voltage Load-Shedding:** A native Stator Current allocation daemon statically bounds TalonFX modules to actively prevent robotic brownouts when pushing against defense.
 *   **Continuous Automation:** Every push to GitHub runs a spotless lint check and validates physics-backed JUnit tests against the dyn4j simulation engine before compiling and logging an uploadable JAR.
+
+## 📖 Documentation
+
+Full API documentation is available at **[MARSProgramming.github.io/MARSLib](https://MARSProgramming.github.io/MARSLib/)**
+
+To generate documentation locally:
+```bash
+./gradlew generateDocs
+# Open docs/index.html in your browser
+```
 
 ## 🧬 Architecture Diagram
 
@@ -56,8 +66,9 @@ graph TD
 MARSLib/
 ├── .github/                 # CI Pipelines, Dependabot, and PR Templates
 ├── .wpilib/                 # FRC 2614 Team Radio Configurations
+├── docs/                    # Generated documentation site (GitHub Pages)
 ├── com.marslib/             # Inner Architecture (Do Not Edit Routine Logic Here)
-│   ├── auto/                # GhostManager Macro Recording & Playback
+│   ├── auto/                # PathPlanner Integration & Diagnostic Checks
 │   ├── faults/              # MARSFaultManager & Alert System
 │   ├── mechanisms/          # Linear/Rotary/Flywheel IO Abstractions
 │   ├── power/               # MARSPowerManager Load-Shedding Daemon
@@ -90,7 +101,7 @@ MARSLib abstracts the `Real` hardware from the `Sim` hardware using pure Depende
 3. `SubsystemIOSim` - The Physics (Dyn4j wrappers, friction calculations)
 
 ### 3. Firing up AdvantageScope
-Want to analyze a bug or watch your ghost-mode playback?
+Want to analyze a bug or replay a match?
 1. Open AdvantageScope
 2. Click `File > Open Layout` and select the `advantagescope_layout.json` located at the root of this repository!
 3. You now have a fully operational 3D Dashboard monitoring battery voltage limits alongside Hexagonal Field boundaries.

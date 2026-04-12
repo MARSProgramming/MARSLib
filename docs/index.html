@@ -3,38 +3,46 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MARSLib — Championship FRC Framework</title>
-  <meta name="description" content="MARSLib is a championship-tier FRC software framework with zero-allocation performance, dyn4j physics simulation, and AdvantageKit deterministic logging.">
+  <title>MARSLib — FRC Team 2614 Software Framework</title>
+  <meta name="description" content="MARSLib is a championship-tier FRC software framework with zero-allocation performance, dyn4j physics simulation, and AdvantageKit deterministic logging. Built by MARS — FRC Team 2614.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     /* ===== Reset & Base ===== */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg-primary: #0d1117;
-      --bg-secondary: #161b22;
-      --bg-card: #21262d;
-      --bg-card-hover: #292e36;
-      --border: #30363d;
-      --accent: #ff6b35;
-      --accent-light: #ff8c5a;
-      --accent-glow: rgba(255, 107, 53, 0.12);
-      --blue: #58a6ff;
-      --green: #3fb950;
-      --purple: #bc8cff;
-      --yellow: #d29922;
-      --red: #f85149;
-      --text-primary: #e6edf3;
-      --text-secondary: #8b949e;
-      --text-muted: #6e7681;
+      /* MARS Brand Colors */
+      --mars-red: #B32416;
+      --mars-red-light: #d42e1e;
+      --mars-red-bright: #ef4435;
+      --mars-red-glow: rgba(179, 36, 22, 0.12);
+      --mars-red-deep: #8a1c10;
+
+      /* Dark Theme */
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #141414;
+      --bg-card: #1a1a1a;
+      --bg-card-hover: #222222;
+      --border: #2a2a2a;
+
+      /* Supporting */
+      --blue: #6ba3d6;
+      --green: #4caf50;
+      --purple: #9c7bcc;
+      --yellow: #d4a017;
+
+      /* Text */
+      --text-primary: #e8e8e8;
+      --text-secondary: #999999;
+      --text-muted: #666666;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: 'Ubuntu', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: var(--bg-primary);
       color: var(--text-primary);
       -webkit-font-smoothing: antialiased;
@@ -96,7 +104,7 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(13, 17, 23, 0.85);
+      background: rgba(10, 10, 10, 0.85);
       backdrop-filter: blur(20px) saturate(180%);
       -webkit-backdrop-filter: blur(20px) saturate(180%);
       border-bottom: 1px solid var(--border);
@@ -111,16 +119,17 @@
     }
 
     .nav-logo {
+      font-family: 'Orbitron', sans-serif;
       font-weight: 800;
       font-size: 1.25rem;
-      color: var(--accent);
+      color: var(--mars-red);
       text-decoration: none;
-      letter-spacing: -0.02em;
+      letter-spacing: 0.04em;
     }
 
     .nav-logo span { color: var(--text-primary); }
 
-    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }
 
     .nav-links a {
       color: var(--text-secondary);
@@ -133,16 +142,19 @@
     .nav-links a:hover { color: var(--text-primary); }
 
     .nav-links .btn-primary {
-      background: var(--accent);
+      background: var(--mars-red);
       color: white;
       padding: 8px 20px;
       border-radius: 8px;
+      font-family: 'Orbitron', sans-serif;
       font-weight: 600;
+      font-size: 0.8rem;
+      letter-spacing: 0.04em;
       transition: background 0.2s, transform 0.15s;
     }
 
     .nav-links .btn-primary:hover {
-      background: var(--accent-light);
+      background: var(--mars-red-light);
       transform: translateY(-1px);
     }
 
@@ -161,7 +173,7 @@
       transform: translateX(-50%);
       width: 800px;
       height: 600px;
-      background: radial-gradient(ellipse, var(--accent-glow) 0%, transparent 70%);
+      background: radial-gradient(ellipse, var(--mars-red-glow) 0%, transparent 70%);
       pointer-events: none;
     }
 
@@ -174,18 +186,22 @@
       border-radius: 24px;
       padding: 6px 16px;
       font-size: 0.85rem;
-      color: var(--accent);
+      color: var(--mars-red);
       font-weight: 600;
       margin-bottom: 24px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
     }
 
     .hero h1 {
+      font-family: 'Orbitron', sans-serif;
       font-size: clamp(3rem, 7vw, 5rem);
       font-weight: 900;
       line-height: 1.1;
-      letter-spacing: -0.04em;
+      letter-spacing: 0.02em;
       margin-bottom: 20px;
-      background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 50%, var(--accent-light) 100%);
+      background: linear-gradient(135deg, var(--text-primary) 0%, var(--mars-red) 50%, var(--mars-red-light) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -216,15 +232,18 @@
     }
 
     .btn-accent {
-      background: var(--accent);
+      background: var(--mars-red);
       color: white;
-      box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3);
+      box-shadow: 0 4px 20px rgba(179, 36, 22, 0.3);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.04em;
     }
 
     .btn-accent:hover {
-      background: var(--accent-light);
+      background: var(--mars-red-light);
       transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(255, 107, 53, 0.4);
+      box-shadow: 0 8px 30px rgba(179, 36, 22, 0.4);
     }
 
     .btn-outline {
@@ -234,8 +253,8 @@
     }
 
     .btn-outline:hover {
-      border-color: var(--accent);
-      background: var(--accent-glow);
+      border-color: var(--mars-red);
+      background: var(--mars-red-glow);
     }
 
     /* ===== Stats Bar ===== */
@@ -247,15 +266,14 @@
       flex-wrap: wrap;
     }
 
-    .stat {
-      text-align: center;
-    }
+    .stat { text-align: center; }
 
     .stat-value {
+      font-family: 'Orbitron', sans-serif;
       font-size: 2.5rem;
       font-weight: 800;
-      color: var(--accent);
-      letter-spacing: -0.02em;
+      color: var(--mars-red);
+      letter-spacing: 0.02em;
     }
 
     .stat-label {
@@ -275,9 +293,10 @@
     }
 
     .section-header h2 {
-      font-size: 2.5rem;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.2rem;
       font-weight: 800;
-      letter-spacing: -0.03em;
+      letter-spacing: 0.02em;
       margin-bottom: 12px;
     }
 
@@ -311,13 +330,13 @@
       top: 0; left: 0;
       width: 100%;
       height: 3px;
-      background: linear-gradient(90deg, var(--accent), var(--accent-light));
+      background: linear-gradient(90deg, var(--mars-red), var(--mars-red-light));
       opacity: 0;
       transition: opacity 0.3s;
     }
 
     .feature-card:hover {
-      border-color: var(--accent);
+      border-color: var(--mars-red);
       transform: translateY(-4px);
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
     }
@@ -336,8 +355,10 @@
     }
 
     .feature-card h3 {
-      font-size: 1.2rem;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
       font-weight: 700;
+      letter-spacing: 0.02em;
       margin-bottom: 10px;
     }
 
@@ -348,12 +369,12 @@
     }
 
     /* Icon background colors */
-    .icon-perf { background: rgba(63, 185, 80, 0.15); }
-    .icon-sim { background: rgba(188, 140, 255, 0.15); }
-    .icon-log { background: rgba(88, 166, 255, 0.15); }
-    .icon-fault { background: rgba(248, 81, 73, 0.15); }
-    .icon-shot { background: rgba(210, 153, 34, 0.15); }
-    .icon-test { background: rgba(255, 107, 53, 0.15); }
+    .icon-perf { background: rgba(179, 36, 22, 0.15); }
+    .icon-sim { background: rgba(156, 123, 204, 0.15); }
+    .icon-log { background: rgba(107, 163, 214, 0.15); }
+    .icon-fault { background: rgba(179, 36, 22, 0.25); }
+    .icon-shot { background: rgba(212, 160, 23, 0.15); }
+    .icon-test { background: rgba(76, 175, 80, 0.15); }
 
     /* ===== Coverage Section ===== */
     .coverage-grid {
@@ -370,8 +391,10 @@
     }
 
     .coverage-card h4 {
-      font-size: 1rem;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.85rem;
       font-weight: 600;
+      letter-spacing: 0.02em;
       margin-bottom: 12px;
       display: flex;
       align-items: center;
@@ -431,12 +454,13 @@
       background: var(--bg-secondary);
       padding: 16px 20px;
       text-align: left;
+      font-family: 'Orbitron', sans-serif;
       font-weight: 600;
-      font-size: 0.85rem;
+      font-size: 0.75rem;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.08em;
       color: var(--text-muted);
-      border-bottom: 2px solid var(--accent);
+      border-bottom: 2px solid var(--mars-red);
     }
 
     .package-table td {
@@ -447,7 +471,7 @@
 
     .package-table tr:last-child td { border-bottom: none; }
 
-    .package-table tr:hover td { background: var(--accent-glow); }
+    .package-table tr:hover td { background: var(--mars-red-glow); }
 
     .package-table code {
       background: var(--bg-primary);
@@ -455,7 +479,7 @@
       border-radius: 4px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.85rem;
-      color: var(--accent);
+      color: var(--mars-red-light);
     }
 
     /* ===== Footer ===== */
@@ -467,8 +491,8 @@
       font-size: 0.9rem;
     }
 
-    footer a { color: var(--accent); text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
+    footer a { color: var(--mars-red); text-decoration: none; }
+    footer a:hover { color: var(--mars-red-light); text-decoration: underline; }
 
     .footer-links {
       display: flex;
@@ -495,13 +519,13 @@
 <!-- Navigation -->
 <nav>
   <div class="container">
-    <a href="index.html" class="nav-logo">🪐 MARS<span>Lib</span></a>
+    <a href="index.html" class="nav-logo">MARS<span>Lib</span></a>
     <ul class="nav-links">
       <li><a href="#features">Features</a></li>
       <li><a href="#architecture">Architecture</a></li>
       <li><a href="#packages">Packages</a></li>
       <li><a href="#coverage">Testing</a></li>
-      <li><a href="javadoc/index.html" class="btn-primary">API Docs →</a></li>
+      <li><a href="javadoc/index.html" class="btn-primary">API DOCS →</a></li>
     </ul>
   </div>
 </nav>
@@ -509,15 +533,15 @@
 <!-- Hero -->
 <section class="hero">
   <div class="container">
-    <div class="hero-badge">🏆 Championship-Grade Framework</div>
+    <div class="hero-badge">MOUNTAINEER AREA ROBOTICS — TEAM 2614</div>
     <h1>MARSLib</h1>
     <p>
       A zero-allocation, physics-simulated FRC framework with deterministic AdvantageKit logging,
-      250Hz odometry, and shot-on-the-move kinematics. Built by FRC Team 2614 for Einstein.
+      250Hz odometry, and shot-on-the-move kinematics.
     </p>
     <div class="hero-actions">
-      <a href="javadoc/index.html" class="btn btn-accent">📖 Browse API Docs</a>
-      <a href="https://github.com/thehomelessguy/MARSLib" class="btn btn-outline">⭐ View on GitHub</a>
+      <a href="javadoc/index.html" class="btn btn-accent">BROWSE API DOCS</a>
+      <a href="https://github.com/MARSProgramming/MARSLib" class="btn btn-outline">⭐ View on GitHub</a>
     </div>
   </div>
 </section>
@@ -558,32 +582,32 @@
     <div class="feature-grid">
       <div class="feature-card">
         <div class="feature-icon icon-perf">⚡</div>
-        <h3>Zero-Allocation Hot Path</h3>
+        <h3>ZERO-ALLOCATION HOT PATH</h3>
         <p>Pre-allocated odometry buffers, cached module states, and static velocity constants ensure the 20ms control loop runs with zero garbage collection pressure.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon icon-sim">🔮</div>
-        <h3>Dyn4j Physics Simulation</h3>
+        <h3>DYN4J PHYSICS SIMULATION</h3>
         <p>Full 2D rigid-body simulation with game piece dynamics, field obstacles, and superstructure collisions. Develop completely offline — no robot required.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon icon-log">📊</div>
-        <h3>AdvantageKit Deterministic Logging</h3>
+        <h3>ADVANTAGEKIT LOGGING</h3>
         <p>Every input is recorded, every output is reproducible. Replay any match in AdvantageScope with bit-perfect algorithm reproduction through the IO abstraction.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon icon-fault">🛡️</div>
-        <h3>Thread-Safe Fault Management</h3>
+        <h3>THREAD-SAFE FAULT MANAGEMENT</h3>
         <p>ConcurrentHashMap-backed fault tracking with atomic counters. CAN bus dropouts trigger LED alerts, controller rumble, and automatic dead-reckoning fallback.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon icon-shot">🎯</div>
-        <h3>Shot-On-The-Move Solver</h3>
+        <h3>SHOT-ON-THE-MOVE SOLVER</h3>
         <p>Quadratic time-of-flight interception with Magnus lift compensation. Accurate shooting while pulling full-speed swerve maneuvers.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon icon-test">🧪</div>
-        <h3>Physics-Backed Testing</h3>
+        <h3>PHYSICS-BACKED TESTING</h3>
         <p>89 JUnit 5 tests run against the dyn4j simulation engine — no mocks. Tests verify real physics: swerve kinematics, vision fusion, superstructure collisions.</p>
       </div>
     </div>
@@ -682,8 +706,8 @@
         </tr>
         <tr>
           <td><code>com.marslib.auto</code></td>
-          <td>Ghost recording, PathPlanner integration, and diagnostic checks</td>
-          <td>GhostManager, MARSDiagnosticCheck</td>
+          <td>PathPlanner integration, alignment commands, and diagnostic checks</td>
+          <td>MARSAutoBuilder, MARSDiagnosticCheck</td>
         </tr>
         <tr>
           <td><code>frc.robot</code></td>
@@ -706,7 +730,7 @@
       <div class="coverage-card">
         <h4>📏 Line Coverage</h4>
         <div class="progress-bar">
-          <div class="progress-fill" style="width: 48%; background: linear-gradient(90deg, var(--accent), var(--yellow));"></div>
+          <div class="progress-fill" style="width: 48%; background: linear-gradient(90deg, var(--mars-red), var(--yellow));"></div>
         </div>
         <div class="coverage-meta">1,766 / 3,714 lines covered (48%)</div>
       </div>
@@ -727,7 +751,7 @@
       <div class="coverage-card">
         <h4>🏗️ Class Coverage</h4>
         <div class="progress-bar">
-          <div class="progress-fill" style="width: 60%; background: linear-gradient(90deg, var(--green), var(--accent));"></div>
+          <div class="progress-fill" style="width: 60%; background: linear-gradient(90deg, var(--green), var(--mars-red));"></div>
         </div>
         <div class="coverage-meta">69 / 115 classes covered (60%)</div>
       </div>
@@ -740,11 +764,11 @@
   <div class="container">
     <ul class="footer-links">
       <li><a href="javadoc/index.html">API Docs</a></li>
-      <li><a href="https://github.com/thehomelessguy/MARSLib">GitHub</a></li>
+      <li><a href="https://github.com/MARSProgramming/MARSLib">GitHub</a></li>
       <li><a href="https://www.thebluealliance.com/team/2614">TBA Profile</a></li>
       <li><a href="CONTROLLER_MAPPINGS.html">Controller Mappings</a></li>
     </ul>
-    <p>© 2026 FRC Team 2614 — MARS. Built with AdvantageKit, Dyn4j, and PathPlanner.</p>
+    <p>&copy; 2026 Mountaineer Area RoboticS &mdash; FRC Team 2614. Built with AdvantageKit, Dyn4j, and PathPlanner.</p>
   </div>
 </footer>
 

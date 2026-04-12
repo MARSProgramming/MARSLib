@@ -190,12 +190,14 @@ task generateDocs {
     dependsOn javadoc, jacocoTestReport
 
     def docsDir = file("docs")
-    outputs.dir(docsDir)
+    def javadocDir = layout.buildDirectory.dir("docs/javadoc")
+    inputs.dir(javadocDir)
+    outputs.dir("${docsDir}/javadoc")
 
     doLast {
         // Copy javadoc output into docs/javadoc
         copy {
-            from "${buildDir}/docs/javadoc"
+            from javadocDir
             into "${docsDir}/javadoc"
         }
 
