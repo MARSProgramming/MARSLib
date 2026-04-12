@@ -118,6 +118,19 @@
       height: 64px;
     }
 
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .nav-brand img {
+      height: 40px;
+      width: auto;
+      border-radius: 50%;
+    }
+
     .nav-logo {
       font-family: 'Orbitron', sans-serif;
       font-weight: 800;
@@ -161,7 +174,7 @@
     /* ===== Hero ===== */
     .hero {
       text-align: center;
-      padding: 120px 0 80px;
+      padding: 100px 0 60px;
       position: relative;
     }
 
@@ -175,6 +188,20 @@
       height: 600px;
       background: radial-gradient(ellipse, var(--mars-red-glow) 0%, transparent 70%);
       pointer-events: none;
+    }
+
+    .hero-logo {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      margin: 0 auto 24px;
+      box-shadow: 0 0 40px rgba(179, 36, 22, 0.25), 0 0 80px rgba(179, 36, 22, 0.1);
+      animation: logoPulse 4s ease-in-out infinite;
+    }
+
+    @keyframes logoPulse {
+      0%, 100% { box-shadow: 0 0 40px rgba(179, 36, 22, 0.25), 0 0 80px rgba(179, 36, 22, 0.1); }
+      50% { box-shadow: 0 0 60px rgba(179, 36, 22, 0.4), 0 0 120px rgba(179, 36, 22, 0.15); }
     }
 
     .hero-badge {
@@ -216,6 +243,60 @@
     }
 
     .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+    /* ===== Hall of Fame Banner ===== */
+    .hof-banner {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(179, 36, 22, 0.06) 100%);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 16px;
+      padding: 32px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      margin: 40px auto;
+      max-width: 800px;
+      transition: border-color 0.3s;
+    }
+
+    .hof-banner:hover {
+      border-color: rgba(212, 175, 55, 0.4);
+    }
+
+    .hof-banner img {
+      height: 64px;
+      width: auto;
+      filter: brightness(1.1);
+    }
+
+    .hof-text {
+      text-align: left;
+    }
+
+    .hof-text h3 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: #d4af37;
+      margin-bottom: 4px;
+    }
+
+    .hof-text p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .hof-year {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: #d4af37;
+      opacity: 0.7;
+      letter-spacing: 0.04em;
+    }
 
     .btn {
       display: inline-flex;
@@ -519,7 +600,10 @@
 <!-- Navigation -->
 <nav>
   <div class="container">
-    <a href="index.html" class="nav-logo">MARS<span>Lib</span></a>
+    <a href="index.html" class="nav-brand">
+      <img src="assets/mars-logo.png" alt="MARS Logo">
+      <span class="nav-logo">MARS<span>Lib</span></span>
+    </a>
     <ul class="nav-links">
       <li><a href="#features">Features</a></li>
       <li><a href="#architecture">Architecture</a></li>
@@ -533,6 +617,7 @@
 <!-- Hero -->
 <section class="hero">
   <div class="container">
+    <img src="assets/mars-logo.png" alt="MARS Team 2614 Logo" class="hero-logo">
     <div class="hero-badge">MOUNTAINEER AREA ROBOTICS — TEAM 2614</div>
     <h1>MARSLib</h1>
     <p>
@@ -545,6 +630,20 @@
     </div>
   </div>
 </section>
+
+<!-- Hall of Fame -->
+<div class="container">
+  <a href="https://www.firsthalloffame.org" target="_blank" style="text-decoration: none;">
+    <div class="hof-banner">
+      <img src="assets/hall-of-fame.png" alt="FIRST Hall of Fame">
+      <div class="hof-text">
+        <h3>FIRST HALL OF FAME INDUCTEE</h3>
+        <p>Championship Chairman's Award Winner — recognized for transforming the culture of STEM in West Virginia.</p>
+      </div>
+      <div class="hof-year">2017</div>
+    </div>
+  </a>
+</div>
 
 <!-- Stats -->
 <div class="container">
@@ -762,13 +861,19 @@
 <!-- Footer -->
 <footer>
   <div class="container">
+    <div style="margin-bottom: 20px;">
+      <img src="assets/mars-logo.png" alt="MARS" style="height: 60px; border-radius: 50%; opacity: 0.8;">
+    </div>
     <ul class="footer-links">
       <li><a href="javadoc/index.html">API Docs</a></li>
       <li><a href="https://github.com/MARSProgramming/MARSLib">GitHub</a></li>
       <li><a href="https://www.thebluealliance.com/team/2614">TBA Profile</a></li>
+      <li><a href="https://marsfirst.org">marsfirst.org</a></li>
+      <li><a href="https://www.firsthalloffame.org">Hall of Fame</a></li>
       <li><a href="CONTROLLER_MAPPINGS.html">Controller Mappings</a></li>
     </ul>
-    <p>&copy; 2026 Mountaineer Area RoboticS &mdash; FRC Team 2614. Built with AdvantageKit, Dyn4j, and PathPlanner.</p>
+    <p>&copy; 2026 Mountaineer Area RoboticS &mdash; FRC Team 2614 &mdash; FIRST Hall of Fame Class of 2017</p>
+    <p style="margin-top: 8px; font-size: 0.8rem;">Built with AdvantageKit, Dyn4j, and PathPlanner.</p>
   </div>
 </footer>
 
