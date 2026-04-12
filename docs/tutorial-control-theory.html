@@ -337,7 +337,7 @@ motor.setVoltage(ffVoltage + pidVoltage);</code></pre>
       if(voltage < 0) voltage = 0; // Shooter only goes forward
       
       const ACCELERATION = (voltage * 15); // rad/s^2 per volt
-      const DRAG = (fwVel * fwVel * 0.0005); // drag proportional to v^2
+      const DRAG = (fwVel * 1.8); // 1.8 makes max speed 100 rad/s at 12v
       
       fwVel += (ACCELERATION - DRAG) * 0.02; // 20ms dt
       if(fwVel < 0) fwVel = 0;
@@ -410,6 +410,13 @@ motor.setVoltage(ffVoltage + pidVoltage);</code></pre>
   setInterval(simFlywheel, 20);
   drawFlywheel();
 </script>
+
+<p style="margin-top:20px;"><strong>How to manually tune a Flywheel:</strong></p>
+<ol>
+  <li>Set <strong>kP = 0</strong>. Adjust the <strong>kV</strong> slider until the Actual velocity (red) perfectly tracks the Setpoint velocity (blue) in steady state (e.g. at 80 rad/s). In this simulator, that happens around <code>kV = 0.12</code>.</li>
+  <li>Once the wheel holds its setpoint on its own, click <strong>INJECT BALL</strong> to introduce a massive physical drag disturbance.</li>
+  <li>Notice the horrific recovery time using only kV? Increase <strong>kP</strong> to aggressively spike voltage during the disturbance to violently snap the wheel back to the setpoint!</li>
+</ol>
 
 <h2>4. Rotating Arm (Cosine Feedforward)</h2>
 <p>Unlike an Elevator where gravity pulls equally at all times, a rotating <strong>Arm</strong> or <strong>Intake Pivot</strong> experiences gravity differently depending on its angle. When perfectly horizontal (0&deg;), gravity exerts maximum torque. When perfectly vertical (90&deg; or -90&deg;), the center of mass aligns with the fulcrum, meaning gravity exerts <strong>zero torque</strong>.</p>
@@ -538,6 +545,19 @@ motor.setVoltage(ffVoltage + pidVoltage);</code></pre>
   setInterval(simArm, 20);
   drawArm();
 </script>
+
+<p style="margin-top:20px;"><strong>How to manually tune an Arm:</strong></p>
+<ol>
+  <li>Change the <strong>Target Angle</strong> to exactly <code>0&deg;</code> (Horizontal). This is where gravity pulls the hardest.</li>
+  <li>Set <strong>kP = 0</strong> to disable PID. Adjust <strong>kG</strong> until the FF Voltage precisely counters the physical drop and holds the arm perfectly level.</li>
+  <li>With FF holding the arm up perfectly against gravity, increase <strong>kP</strong> to help the arm quickly snap to new angles.</li>
+  <li>Move the Target Angle to <code>90&deg;</code> (straight up). Watch the kG voltage organically shrink to zero and the arm stabilize effortlessly without PID fighting!</li>
+</ol>
+
+<div class="callout" style="margin-top: 50px;">
+  <h4>Looking for SysId?</h4>
+  <p>MARSLib recommends mathematically automating all kS, kV, and kA calculations. If you want to skip manual tuning and let WPILib calculate perfection, check out our dedicated <a href="tutorial-sysid.html" style="color:var(--ai-cyan); font-weight:bold;">SysId Characterization Tutorial</a>!</p>
+</div>
 
 <footer>
   <p style="text-align: center; margin-top: 60px; font-size: 0.9rem;">&copy; 2026 Mountaineer Area RoboticS — FRC Team 2614 — FRC 2026: REBUILT</p>
