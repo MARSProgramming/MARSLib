@@ -87,11 +87,11 @@ loadScripts(document, 'script');</script>
  <p><b>Pipeline stages:</b>
 
  <ol>
-   <li>Deadband (10%) â€” filters stick drift
-   <li>Cubic scaling â€” provides fine control at small deflections
-   <li>Physical scaling â€” converts [-1,1] to m/s and rad/s
-   <li>WPILib sign convention â€” negates to convert stick-forward to +X
-   <li>Alliance flip â€” negates X and Y for Red alliance
+   <li>Deadband (10%) — filters stick drift
+   <li>Cubic scaling — provides fine control at small deflections
+   <li>Physical scaling — converts [-1,1] to m/s and rad/s
+   <li>WPILib sign convention — negates to convert stick-forward to +X
+   <li>Alliance flip — negates X and Y for Red alliance
  </ol>
 
  <p>Note: slew rate limiting and gyro-lock are stateful operations that remain in <code>
@@ -185,7 +185,7 @@ loadScripts(document, 'script');</script>
  boolean&nbsp;isRedAlliance,
  edu.wpi.first.math.kinematics.ChassisSpeeds&nbsp;outSpeeds)</span></div>
 <div class="block">Computes field-relative ChassisSpeeds from raw joystick axes BEFORE slew rate limiting. This is
- the pure-math portion of the teleop pipeline: deadband â†’ cube â†’ scale â†’ negate â†’ alliance-flip.</div>
+ the pure-math portion of the teleop pipeline: deadband → cube → scale → negate → alliance-flip.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>rawLeftY</code> - Raw left stick Y axis (negative = forward per HID convention)</dd>
