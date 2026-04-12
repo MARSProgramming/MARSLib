@@ -99,6 +99,10 @@ configurations.all {
         force 'com.fasterxml.jackson.core:jackson-core:2.15.2'
         force 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
     }
+    // Suppress Gradle 10 archives deprecation warnings from WPILib/vendor plugins
+    if (it.name == 'archives') {
+        it.outgoing.artifact(jar)
+    }
 }
 
 dependencies {
@@ -146,7 +150,7 @@ jacocoTestReport {
     dependsOn test
     reports {
         xml.required = true
-        csv.required = false
+        csv.required = true
         html.required = true
     }
 }
@@ -166,9 +170,7 @@ checkstyle {
     showViolations = true
 }
 
-tasks.named("pmdTest").configure {
-    enabled = false
-}
+
 
 tasks.withType(Javadoc) {
     options.addBooleanOption('Werror', true)
@@ -393,7 +395,6 @@ def generateVersionFile = tasks.register("generateVersionFile", GenerateVersionF
 sourceSets.main.java.srcDir(generateVersionFile.map { it.outputDir })
 
 project.compileJava.dependsOn(generateVersionFile)
-// project.compileJava.dependsOn(installGitHooks) // Removed to avoid configuration cache discard
 
 task generateControllerMappings {
     description = "Automatically generates CONTROLLER_MAPPINGS.md from RobotBindings.java"
@@ -512,7 +513,7 @@ task(eventDeploy) {
                 exec {
                     workingDir(projectDirFile)
                     executable 'git'
-                    args 'add', '-A'
+                    args 'add', '-A', ':(exclude)third_party/maple-sim-upstream'
                 }
                 exec {
                     workingDir(projectDirFile)
