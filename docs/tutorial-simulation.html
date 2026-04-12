@@ -308,6 +308,20 @@ document.addEventListener("DOMContentLoaded", () => {
   <p>Run your PathPlanner autonomous paths in simulation with <strong>Efficiency Mode OFF</strong> to test how physical collisions with obstacle walls might knock your robot off path. If your pathing breaks here, it will definitely break on the real field.</p>
 </div>
 
+<h2>5. Offline Log Replay and Auto-Tuning</h2>
+<p>Because MARSLib strictly abstracts hardware out with the AdvantageKit IO layer, simulation isn't just about the physics engine—it natively supports <strong>Log Replay</strong>. You can pull an active <code>.wpilog</code> file from a real match (or download it directly from GitHub Actions via the automated log-uploader) and feed it straight back into the robot code on your laptop.</p>
+
+<p>When running in Replay mode, the framework injects the exact historical sensor data natively back into the subsystems. This provides incredible development superpowers:</p>
+<ul>
+    <li><strong>Automatically Figure Out Constants:</strong> Run a match log through the replay tool, and MARSLib's Continuous SysId (<code>OnlineFeedforwardEstimator</code>) will passively process the historical velocity and voltage telemetry. It will mathematically curve-fit and spit out the absolute perfect <code>kS</code>, <code>kV</code>, and <code>kA</code> feedforward constants entirely offline without needing physical robot access!</li>
+    <li><strong>Iterative Vision Tuning:</strong> Modify your Megatag standard deviations, ambiguity thresholds, or trust algorithms in the code, then run replay on an old match log. You can securely watch in AdvantageScope whether your code changes theoretically improved or destroyed the odometry before trying it on the real carpet.</li>
+    <li><strong>Post-Mortem Debugging:</strong> If the superstructure gets stuck transitioning out of a shooting state during finals, you don't have to guess why. Just replay the log and step through the state machine transitions line by line to locate the exact variable that triggered the stall.</li>
+</ul>
+
+<pre><code class="language-java">// To run Replay offline, pass the wpilog path to the Robot configuration
+// This is typically done automatically or via environment variables in MARSLib tests
+Robot.setUseReplayMode(true, "C:/logs/einstein_finals_m1.wpilog");</code></pre>
+
 <footer>
   <p style="text-align: center; margin-top: 60px; font-size: 0.9rem;">&copy; 2026 Mountaineer Area RoboticS — FRC Team 2614 — FRC 2026: REBUILT</p>
 </footer>
