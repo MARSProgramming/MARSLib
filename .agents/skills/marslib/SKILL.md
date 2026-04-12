@@ -29,7 +29,7 @@ These rules are **non-negotiable** across all MARSLib code:
 
 | Rule | Details | Skill |
 |---|---|---|
-| No SmartDashboard | Use `Logger.recordOutput()` and `LoggedTunableNumber` only | `marslib-telemetry` |
+| No SmartDashboard for telemetry | Use `Logger.recordOutput()` and `LoggedTunableNumber` for data. `SmartDashboard.putData()` is allowed for interactive command widgets and `SendableChooser` only. | `marslib-telemetry` |
 | No Mockito in tests | Use `*IOSim` with dyn4j physics instead | `marslib-testing` |
 | Phoenix 6 only | No Phoenix 5 APIs (`WPI_TalonFX`, `TalonFXControlMode`) | `marslib-power` |
 | Dual current limits | Always set both Stator and Supply limits on TalonFX | `marslib-power` |

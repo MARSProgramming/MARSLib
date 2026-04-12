@@ -323,8 +323,16 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
         frameYawRad =
             gyroInputs
                 .odometryYawPositions[Math.min(i, gyroInputs.odometryYawPositions.length - 1)];
-      } else {
+      } else if (gyroInputs.connected) {
         frameYawRad = gyroInputs.yawPositionRad;
+      } else {
+        // M4: Dead-reckoning fallback — integrate heading from wheel speeds when gyro disconnects
+        ChassisSpeeds wheelSpeeds =
+            kinematics.toChassisSpeeds(
+                modules[0].getLatestState(), modules[1].getLatestState(),
+                modules[2].getLatestState(), modules[3].getLatestState());
+        double dt = ModeConstants.LOOP_PERIOD_SECS;
+        frameYawRad = frameYawCache[0].getRadians() + wheelSpeeds.omegaRadiansPerSecond * dt;
       }
       frameYawCache[0] = Rotation2d.fromRadians(frameYawRad);
 
@@ -379,23 +387,26 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
    * @param speeds The requested translational and rotational velocities in m/s and rad/s.
    */
   public void runVelocity(ChassisSpeeds speeds) {
+    // Discretize FIRST with the original requested speeds for proper drift compensation
+    ChassisSpeeds discretizedSpeeds =
+        ChassisSpeeds.discretize(speeds, ModeConstants.LOOP_PERIOD_SECS);
+
     // Determine dynamic battery stability modifier
     double voltageScale =
         powerManager.calculateVoltageScaleFactor(
             frc.robot.constants.PowerConstants.NOMINAL_VOLTAGE,
             frc.robot.constants.PowerConstants.CRITICAL_VOLTAGE);
 
-    // Scale user requests to avoid pulling massive transients during brownouts
-    speeds.vxMetersPerSecond *= voltageScale;
-    speeds.vyMetersPerSecond *= voltageScale;
-    speeds.omegaRadiansPerSecond *= voltageScale;
-
-    ChassisSpeeds discretizedSpeeds =
-        ChassisSpeeds.discretize(speeds, ModeConstants.LOOP_PERIOD_SECS);
+    // Scale discretized speeds locally — never mutate the caller's object
+    ChassisSpeeds scaledSpeeds =
+        new ChassisSpeeds(
+            discretizedSpeeds.vxMetersPerSecond * voltageScale,
+            discretizedSpeeds.vyMetersPerSecond * voltageScale,
+            discretizedSpeeds.omegaRadiansPerSecond * voltageScale);
 
     this.prevSetpoint =
         setpointGenerator.generateSetpoint(
-            kinematicLimits, prevSetpoint, discretizedSpeeds, ModeConstants.LOOP_PERIOD_SECS);
+            kinematicLimits, prevSetpoint, scaledSpeeds, ModeConstants.LOOP_PERIOD_SECS);
 
     SwerveModuleState[] states = prevSetpoint.moduleStates;
 
@@ -459,7 +470,9 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
         pose2d.getY(),
         0.0,
         new Rotation3d(
-            gyroInputs.rollPositionRad, gyroInputs.pitchPositionRad, gyroInputs.yawPositionRad));
+            gyroInputs.rollPositionRad,
+            gyroInputs.pitchPositionRad,
+            pose2d.getRotation().getRadians()));
   }
 
   /** Specifically returns the ground-truth 3D pose during simulation. */
@@ -552,9 +565,9 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
               target.get(),
               new com.pathplanner.lib.path.PathConstraints(
                   SwerveConstants.MAX_LINEAR_SPEED_MPS,
-                  SwerveConstants.MAX_LINEAR_SPEED_MPS,
+                  SwerveConstants.MAX_LINEAR_SPEED_MPS * 0.7, // 70% of max speed for safe accel
                   SwerveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC,
-                  SwerveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC),
+                  SwerveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC * 0.7),
               0.0 // goal end velocity
               );
         },

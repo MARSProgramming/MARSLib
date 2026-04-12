@@ -143,10 +143,4 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     config.NeutralMode = enable ? NeutralModeValue.Brake : NeutralModeValue.Coast;
     turnMotor.getConfigurator().apply(config);
   }
-
-  @Override
-  public void setCurrentLimit(double amps) {
-    // Deprecated framework pattern. Motor controllers now self-regulate SupplyCurrent Limit via
-    // hardware init.
-  }
 }

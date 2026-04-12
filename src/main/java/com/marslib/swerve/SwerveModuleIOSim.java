@@ -21,7 +21,6 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
 
   private double driveAppliedVolts = 0.0;
   private double turnAppliedVolts = 0.0;
-  private double lastCurrentLimitAmps = 0.0;
 
   @SuppressWarnings("PMD.UnusedFormalParameter")
   public SwerveModuleIOSim(int moduleIndex) {}
@@ -75,19 +74,6 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
     if (steerCont != null) {
       steerCont.requestVoltage(Volts.of(volts));
     }
-  }
-
-  @Override
-  public void setCurrentLimit(double amps) {
-    lastCurrentLimitAmps = amps;
-    // maple-sim can enforce at controller level, but we manage it dynamically
-    if (driveCont != null) {
-      driveCont.withCurrentLimit(edu.wpi.first.units.Units.Amps.of(amps));
-    }
-  }
-
-  public double getCurrentLimitAmps() {
-    return lastCurrentLimitAmps;
   }
 
   public double getSimDriveVoltage() {

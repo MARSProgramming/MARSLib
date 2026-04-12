@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.Timer;
  * the FRC carpet (usually ~1.1g or 10.78 m/s^2).
  */
 public class TractionControlLimiter {
+  private static final Translation2d ZERO_VELOCITY = new Translation2d();
+
   private final double maxAccelMetersPerSecSq;
   private Translation2d lastVelocity = new Translation2d();
   private double lastTime = Timer.getFPGATimestamp();
@@ -53,9 +55,9 @@ public class TractionControlLimiter {
 
     lastVelocity = lastVelocity.plus(deltaV);
 
-    // Ensure we don't float slightly off 0.0 due to dt calculation margins
+    // Snap to zero when nearly stopped to avoid floating-point drift
     if (targetVelocity.getNorm() == 0.0 && lastVelocity.getNorm() < 0.05) {
-      lastVelocity = new Translation2d();
+      lastVelocity = ZERO_VELOCITY;
     }
 
     return lastVelocity;

@@ -55,16 +55,8 @@ public class MARSSuperstructure extends SubsystemBase {
   private final EliteShooterMath.EliteShooterSetpoint shotCache =
       new EliteShooterMath.EliteShooterSetpoint();
   private final ChassisSpeeds zeroSpeedsCache = new ChassisSpeeds();
-  private final Translation3d redHub3dCache =
-      new Translation3d(
-          FieldConstants.RED_HUB_POS.getX(),
-          FieldConstants.RED_HUB_POS.getY(),
-          FieldConstants.HUB_SIZE_METERS);
-  private final Translation3d blueHub3dCache =
-      new Translation3d(
-          FieldConstants.BLUE_HUB_POS.getX(),
-          FieldConstants.BLUE_HUB_POS.getY(),
-          FieldConstants.HUB_SIZE_METERS);
+  private final Translation3d redHub3dCache = FieldConstants.RED_HUB_3D;
+  private final Translation3d blueHub3dCache = FieldConstants.BLUE_HUB_3D;
 
   private double goalCowlAngle = 0.0;
   private double goalIntakeAngle = 0.0;
@@ -255,7 +247,8 @@ public class MARSSuperstructure extends SubsystemBase {
     if (currentState == SuperstructureState.SCORE) {
       double targetRadPerSec = 4000.0 * Math.PI * 2.0 / 60.0; // Default fallback
       if (cachedShot != null && cachedShot.isValid) {
-        targetRadPerSec = cachedShot.launchSpeedMetersPerSec * 30.0;
+        targetRadPerSec =
+            cachedShot.launchSpeedMetersPerSec / ShooterConstants.SHOOTER_WHEEL_RADIUS_METERS;
       }
 
       shooter.setClosedLoopVelocity(targetRadPerSec);

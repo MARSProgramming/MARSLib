@@ -43,7 +43,4 @@ public interface SwerveModuleIO {
 
   /** Sets the neutral mode of the turn motor. */
   public default void setTurnBrakeMode(boolean enable) {}
-
-  /** Dynamically limits the drive motor current for load shedding. */
-  public default void setCurrentLimit(double amps) {}
 }

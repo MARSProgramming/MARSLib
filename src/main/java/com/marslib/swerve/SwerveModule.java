@@ -79,18 +79,23 @@ public class SwerveModule {
     return cachedDeltas[cachedDeltaCount - 1];
   }
 
+  private final SwerveModuleState cachedLatestState = new SwerveModuleState();
+
   /**
    * Translates drive wheel RPS and turn module radians into WPILib Velocity metrics.
    *
-   * @return A {@link SwerveModuleState} tracking linear velocity (m/s) and angular heading.
+   * @return A cached {@link SwerveModuleState} tracking linear velocity (m/s) and angular heading.
+   *     The returned object is reused — do not store references across ticks.
    */
   public SwerveModuleState getLatestState() {
-    return new SwerveModuleState(
-        inputs.driveVelocityRadPerSec * SwerveConstants.WHEEL_RADIUS_METERS,
+    cachedLatestState.speedMetersPerSecond =
+        inputs.driveVelocityRadPerSec * SwerveConstants.WHEEL_RADIUS_METERS;
+    cachedLatestState.angle =
         Rotation2d.fromRadians(
             inputs.turnPositionsRad.length > 0
                 ? inputs.turnPositionsRad[inputs.turnPositionsRad.length - 1]
-                : 0.0));
+                : 0.0);
+    return cachedLatestState;
   }
 
   private SwerveModuleState lastDesiredState = new SwerveModuleState();
@@ -178,17 +183,6 @@ public class SwerveModule {
    */
   public void setTurnVoltage(double volts) {
     io.setTurnVoltage(volts);
-  }
-
-  /**
-   * Commands strict stator current limitations mapped directly proportional against Battery Drop
-   * (Load Shedding).
-   *
-   * @param amps Absolute ceiling limit mapped securely via the {@link
-   *     com.marslib.power.MARSPowerManager}.
-   */
-  public void setCurrentLimit(double amps) {
-    io.setCurrentLimit(amps);
   }
 
   /**

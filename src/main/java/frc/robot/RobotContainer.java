@@ -430,7 +430,7 @@ public class RobotContainer {
 
     matchTab
         .addBoolean(
-            "Vision Connected",
+            "Gyro Connected",
             () -> {
               com.marslib.swerve.GyroIOInputsAutoLogged gyro = swerveDrive.getGyroInputs();
               return gyro.connected;
