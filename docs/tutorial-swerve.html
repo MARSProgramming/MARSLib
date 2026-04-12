@@ -148,21 +148,19 @@
     sCtx.fillStyle = 'rgba(179,36,22,0.3)';
     sCtx.fillRect(cx - (W/2)*scale, cy - (L/2)*scale, W*scale, 10);
     
-    const vx = parseFloat(vxSlider.value);
-    const vy = -parseFloat(vySlider.value); // Invert Y for screen coords
-    const omega = -parseFloat(omegaSlider.value); 
-
-    // Swerve Math (Output in m/s)
-    const A = vx - omega * (L / 2);
-    const B = vx + omega * (L / 2);
-    const C = vy - omega * (W / 2);
-    const D = vy + omega * (W / 2);
+    const v_x = parseFloat(vxSlider.value); // Chassis Forward (m/s)
+    const v_y = parseFloat(vySlider.value); // Chassis Left (m/s)
+    const omega = parseFloat(omegaSlider.value); // Chassis CCW Rotation (rad/s)
     
+    // Front Left:  +X, +Y
+    // Front Right: +X, -Y
+    // Back Left:   -X, +Y
+    // Back Right:  -X, -Y
     const modules = [
-      { name: "FL", wx: cx - (W/2)*scale, wy: cy - (L/2)*scale, B: B, D: D }, // Front Left
-      { name: "FR", wx: cx + (W/2)*scale, wy: cy - (L/2)*scale, B: B, C: C }, // Front Right
-      { name: "BL", wx: cx - (W/2)*scale, wy: cy + (L/2)*scale, A: A, D: D }, // Back Left
-      { name: "BR", wx: cx + (W/2)*scale, wy: cy + (L/2)*scale, A: A, C: C }  // Back Right
+      { name: "FL", wx: cx - (W/2)*scale, wy: cy - (L/2)*scale, x: L/2, y: W/2 },
+      { name: "FR", wx: cx + (W/2)*scale, wy: cy - (L/2)*scale, x: L/2, y: -W/2 },
+      { name: "BL", wx: cx - (W/2)*scale, wy: cy + (L/2)*scale, x: -L/2, y: W/2 },
+      { name: "BR", wx: cx + (W/2)*scale, wy: cy + (L/2)*scale, x: -L/2, y: -W/2 }
     ];
     
     // Draw modules & vectors
@@ -171,15 +169,15 @@
       sCtx.fillStyle = '#222';
       sCtx.fillRect(m.wx - 10, m.wy - 10, 20, 20);
       
-      const vdx = 'B' in m ? ('C' in m ? m.B : m.B) : ('C' in m ? m.A : m.A);
-      const vdy = 'D' in m ? ('B' in m ? m.D : m.D) : ('D' in m ? m.D : m.D); 
-      // Actually standard math maps:
-      // FR: speed = sqrt(B^2 + C^2)
-      let wheel_vx, wheel_vy;
-      if(m.name === "FR") { wheel_vx = C; wheel_vy = B; }
-      if(m.name === "FL") { wheel_vx = D; wheel_vy = B; }
-      if(m.name === "BR") { wheel_vx = C; wheel_vy = A; }
-      if(m.name === "BL") { wheel_vx = D; wheel_vy = A; }
+      // True 2D Rigid Body Kinematics (WPILib Standard)
+      const mod_v_x = v_x - omega * m.y; // Forward velocity depends on Left/Right offset
+      const mod_v_y = v_y + omega * m.x; // Left velocity depends on Forward/Back offset
+      
+      // Map to Canvas Coordinates
+      // Screen X (+Right) = Physical Right (-mod_v_y)
+      // Screen Y mathematical plane (+Up) = Physical Forward (mod_v_x)
+      const wheel_vx = -mod_v_y;
+      const wheel_vy = mod_v_x;
       
       const speed = Math.sqrt(wheel_vx*wheel_vx + wheel_vy*wheel_vy);
       const angle = Math.atan2(wheel_vy, wheel_vx);
@@ -187,7 +185,7 @@
       // Draw Vector Line (Scaled mapping: 1 m/s = 20px)
       const maxVecL = 20 * speed;
       const tX = m.wx + Math.cos(angle) * maxVecL;
-      const tY = m.wy - Math.sin(angle) * maxVecL; // invert y
+      const tY = m.wy - Math.sin(angle) * maxVecL; // invert y for canvas drawing
       
       if(speed > 0.01) {
           drawArrow(sCtx, m.wx, m.wy, tX, tY, '#29b6f6');
@@ -208,9 +206,11 @@
     });
     
     // Draw Center Vector (Chassis Vel)
-    const chSpeed = Math.sqrt(vx*vx + vy*vy);
+    const chSpeed = Math.sqrt(v_x*v_x + v_y*v_y);
     if(chSpeed > 0.01) {
-       const chAngle = Math.atan2(vx, vy);
+       const wheel_vx_center = -v_y;
+       const wheel_vy_center = v_x;
+       const chAngle = Math.atan2(wheel_vy_center, wheel_vx_center);
        const cxT = cx + Math.cos(chAngle) * chSpeed * 20;
        const cyT = cy - Math.sin(chAngle) * chSpeed * 20;
        drawArrow(sCtx, cx, cy, cxT, cyT, 'rgba(255,255,255,0.3)');
