@@ -126,13 +126,7 @@ task outputJavadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
-artifacts {
-    archives sourcesJar
-    archives javadocJar
-    archives outputJar
-    archives outputSourcesJar
-    archives outputJavadocJar
-}
+assemble.dependsOn sourcesJar, javadocJar, outputJar, outputSourcesJar, outputJavadocJar
 
 libraryBuild.dependsOn build
 
