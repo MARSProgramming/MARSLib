@@ -57,8 +57,11 @@
 
 <p>When you add a variable like <code>public double motorCurrentAmps = 0.0;</code> inside an IO struct, AdvantageKit immediately picks it up and pushes it to NetworkTables dynamically. The `Robot.java` loop uses this logged struct identically, whether running in physical competition or in Replay mode.</p>
 
-<h2>2. Installing AdvantageScope</h2>
-<p>We use AdvantageScope instead of Shuffleboard or Glass for all 2614 visualizations.</p>
+<h2>2. AdvantageScope vs. Shuffleboard</h2>
+<p>While MARSLib fundamentally relies on <strong>AdvantageScope</strong> for sophisticated 3D visualizations, log replay, and time-series graphing, we still utilize <strong>Shuffleboard</strong> for certain live operations.</p>
+<p>Shuffleboard is typically reserved for simple boolean toggles (like selecting auto routines from the driver station), sending basic string configurations prior to a match, or when rapid drag-and-drop dashboarding is required without setting up rigid JSON layouts. However, for in-depth mechanism tuning or 3D swerve analysis, AdvantageScope is mandatory.</p>
+
+<h3>Installing AdvantageScope</h3>
 
 <ol>
   <li>Navigate to the <a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases" target="_blank" style="color: var(--ai-cyan);">AdvantageScope Releases</a> page.</li>
@@ -88,6 +91,21 @@
   <li>Open AdvantageScope locally, change the Source down arrow over to <strong>Log File</strong>, and target your `.wpilog` file.</li>
   <li>You can scrub back and forward using the slider—you'll see exactly what angles the Swerve modules were targeting right as the error occurred.</li>
 </ul>
+
+<h2>5. Advanced Log Replay &amp; Live Tuning</h2>
+<p>AdvantageKit provides an unparalleled workflow called <strong>Simulation Replay</strong>. Because all sensor inputs are completely decoupled from control logic, you can execute a physically recorded log, but inject modified robot logic <em>while the log replays</em>.</p>
+
+<div class="callout">
+  <h4>Vision Tuning Example</h4>
+  <p>Imagine your robot missed several shots during an autonomous routine because the Vision hallucination rejection filter failed to discard ghost tags. Instead of guessing parameters and restarting the code repeatedly on the live robot:</p>
+  <ul>
+    <li>Download the <code>.wpilog</code> from the match where the errors occurred.</li>
+    <li>Boot MARSLib in <code>SimReplay</code> mode and target the log file.</li>
+    <li>The framework will ingest the exact raw tracking data and Megatag ambiguity outputs from the past.</li>
+    <li>You can alter your Pose Estimation code locally (e.g., tightening the strictness of the ambiguity threshold), rebuild the code, and watch the exact match play out with your newly tuned vision filters.</li>
+  </ul>
+</div>
+<p>This approach allows engineers to endlessly tweak feedforward loops, vision confidence tuning, and superstructure kinematic logic using a single match's data until it's perfected—without ever turning on the physical robot.</p>
 
 <footer>
   <p style="text-align: center; margin-top: 60px; font-size: 0.9rem;">&copy; 2026 Mountaineer Area RoboticS — FRC Team 2614 — FRC 2026: REBUILT</p>
