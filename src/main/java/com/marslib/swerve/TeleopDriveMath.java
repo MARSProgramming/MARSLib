@@ -38,9 +38,9 @@ public final class TeleopDriveMath {
    * @param rawLeftX Raw left stick X axis (negative = left per HID convention)
    * @param rawOmega Raw right stick X axis (negative = CCW per HID convention)
    * @param isRedAlliance Whether the robot is on the Red alliance (flips translation axes)
-   * @return Field-relative ChassisSpeeds before slew rate limiting. Omega is negated so that
-   *     rightward stick (positive HID) produces negative (clockwise) rotation per WPILib
-   *     ChassisSpeeds convention.
+   * @param outSpeeds The pre-allocated ChassisSpeeds to populate with field-relative velocities.
+   *     Omega is negated so that rightward stick (positive HID) produces negative (clockwise)
+   *     rotation per WPILib ChassisSpeeds convention.
    */
   public static void computeFieldRelativeSpeeds(
       double rawLeftY,

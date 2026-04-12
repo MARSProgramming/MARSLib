@@ -7,8 +7,9 @@ import org.littletonrobotics.junction.Logger;
  * (Voltage, Velocity, Acceleration) to compute empirical kV and kA values dynamically.
  *
  * <p>It uses a sliding-window Ordinary Least Squares (OLS) regression algorithm on a 2-variable
- * system (Velocity & Acceleration) against Effective Voltage (Voltage - kS). By operating strictly
- * over periods of contiguous movement (vel > threshold), it avoids static friction nonlinearities.
+ * system (Velocity &amp; Acceleration) against Effective Voltage (Voltage - kS). By operating
+ * strictly over periods of contiguous movement (vel > threshold), it avoids static friction
+ * nonlinearities.
  *
  * <p>Students: You can use this to perfectly dial in your Feedforward models without running a
  * formal SysId sequence.
