@@ -277,11 +277,19 @@ motor.setVoltage(ffVoltage + pidVoltage);</code></pre>
         <input type="range" id="fw-kp" min="0" max="0.5" step="0.01" value="0.08">
       </label>
       <label style="color:#e8e8e8; font-family:'JetBrains Mono'; font-size:12px; display: flex; flex-direction: column; gap:4px;">
-        <span>Setpoint (rad/s): <span id="fw-set-val" style="color:#B32416">80</span></span>
+        <span>kI (Integral) <span id="fw-ki-val" style="color:var(--ai-cyan)">0.00</span></span>
+        <input type="range" id="fw-ki" min="0" max="0.5" step="0.01" value="0.00">
+      </label>
+      <label style="color:#e8e8e8; font-family:'JetBrains Mono'; font-size:12px; display: flex; flex-direction: column; gap:4px;">
+        <span>kD (Derivative) <span id="fw-kd-val" style="color:var(--ai-cyan)">0.00</span></span>
+        <input type="range" id="fw-kd" min="0" max="0.5" step="0.01" value="0.00">
+      </label>
+      <label style="color:#e8e8e8; font-family:'JetBrains Mono'; font-size:12px; display: flex; flex-direction: column; gap:4px;">
+        <span>Setpoint: <span id="fw-set-val" style="color:#B32416">80</span></span>
         <input type="range" id="fw-set" min="0" max="150" step="5" value="80">
       </label>
     </div>
-    <button id="btn-shoot" style="background:var(--mars-red); color:#fff; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-family:'Orbitron'; font-weight:700;">INJECT BALL (DROP RPM)</button>
+    <button id="btn-shoot" style="background:var(--mars-red); color:#fff; border:none; padding:10px 15px; border-radius:6px; cursor:pointer; font-family:'Orbitron'; font-weight:700;">INJECT BALL</button>
   </div>
   <div style="display: flex; height: 260px; padding: 20px; gap: 20px;">
     <!-- Wheel Canvas -->
@@ -304,16 +312,22 @@ motor.setVoltage(ffVoltage + pidVoltage);</code></pre>
   
   const fvKvSlider = document.getElementById('fw-kv');
   const fvKpSlider = document.getElementById('fw-kp');
+  const fvKiSlider = document.getElementById('fw-ki');
+  const fvKdSlider = document.getElementById('fw-kd');
   const fwSetSlider = document.getElementById('fw-set');
   const shootBtn = document.getElementById('btn-shoot');
   
   fvKvSlider.oninput = () => document.getElementById('fw-kv-val').innerText = parseFloat(fvKvSlider.value).toFixed(2);
   fvKpSlider.oninput = () => document.getElementById('fw-kp-val').innerText = parseFloat(fvKpSlider.value).toFixed(2);
+  fvKiSlider.oninput = () => document.getElementById('fw-ki-val').innerText = parseFloat(fvKiSlider.value).toFixed(2);
+  fvKdSlider.oninput = () => document.getElementById('fw-kd-val').innerText = parseFloat(fvKdSlider.value).toFixed(2);
   fwSetSlider.oninput = () => document.getElementById('fw-set-val').innerText = fwSetSlider.value;
   
   let fwVel = 0;
   let fwAngle = 0;
   let fwSet = 80;
+  let fwLastError = 0;
+  let fwIntegral = 0;
   let fwHist = [];
   
   shootBtn.onclick = () => {
@@ -328,9 +342,18 @@ motor.setVoltage(ffVoltage + pidVoltage);</code></pre>
       fwSet = parseFloat(fwSetSlider.value);
       const kV = parseFloat(fvKvSlider.value);
       const kP = parseFloat(fvKpSlider.value);
+      const kI = parseFloat(fvKiSlider.value);
+      const kD = parseFloat(fvKdSlider.value);
       
       const error = fwSet - fwVel;
-      let voltage = (kV * fwSet) + (kP * error);
+      const errorRate = (error - fwLastError) / 0.02;
+      fwLastError = error;
+
+      fwIntegral += error * 0.02;
+      if(fwIntegral > 20) fwIntegral = 20; // Anti-windup
+      if(fwIntegral < -20) fwIntegral = -20;
+      
+      let voltage = (kV * fwSet) + (kP * error) + (kI * fwIntegral) + (kD * errorRate);
       
       // Limit voltage to 12v max
       if(voltage > 12) voltage = 12;
@@ -413,9 +436,11 @@ motor.setVoltage(ffVoltage + pidVoltage);</code></pre>
 
 <p style="margin-top:20px;"><strong>How to manually tune a Flywheel:</strong></p>
 <ol>
-  <li>Set <strong>kP = 0</strong>. Adjust the <strong>kV</strong> slider until the Actual velocity (red) perfectly tracks the Setpoint velocity (blue) in steady state (e.g. at 80 rad/s). In this simulator, that happens around <code>kV = 0.12</code>.</li>
+  <li>Set <strong>kP = 0, kI = 0, kD = 0</strong>. Adjust the <strong>kV</strong> slider until the Actual velocity (red) perfectly tracks the Setpoint velocity (blue) in steady state (e.g. at 80 rad/s). In this simulator, that happens around <code>kV = 0.12</code>.</li>
   <li>Once the wheel holds its setpoint on its own, click <strong>INJECT BALL</strong> to introduce a massive physical drag disturbance.</li>
   <li>Notice the horrific recovery time using only kV? Increase <strong>kP</strong> to aggressively spike voltage during the disturbance to violently snap the wheel back to the setpoint!</li>
+  <li>Use <strong>kD (Derivative)</strong> if your kP is causing the wheel to overshoot past 80 rad/s. A small kD acts like a parachute, slowing down the acceleration as the error rate rapidly shrinks.</li>
+  <li>Use <strong>kI (Integral)</strong> sparingly if the velocity gets "stuck" right underneath the setpoint (e.g. 78 rad/s) because kP isn't strong enough. In systems with high friction, the integral mathematically "builds up" over time, forcing that last 2 rad/s error to zero.</li>
 </ol>
 
 <h2>4. Rotating Arm (Cosine Feedforward)</h2>
@@ -436,6 +461,14 @@ motor.setVoltage(ffVoltage + pidVoltage);</code></pre>
       <label style="color:#e8e8e8; font-family:'JetBrains Mono'; font-size:12px; display: flex; flex-direction: column; gap:4px;">
         <span>kP (Proportional) <span id="arm-kp-val" style="color:var(--ai-cyan)">0.05</span></span>
         <input type="range" id="arm-kp" min="0" max="0.2" step="0.01" value="0.05">
+      </label>
+      <label style="color:#e8e8e8; font-family:'JetBrains Mono'; font-size:12px; display: flex; flex-direction: column; gap:4px;">
+        <span>kI (Integral) <span id="arm-ki-val" style="color:var(--ai-cyan)">0.00</span></span>
+        <input type="range" id="arm-ki" min="0" max="0.2" step="0.01" value="0.00">
+      </label>
+      <label style="color:#e8e8e8; font-family:'JetBrains Mono'; font-size:12px; display: flex; flex-direction: column; gap:4px;">
+        <span>kD (Derivative) <span id="arm-kd-val" style="color:var(--ai-cyan)">0.00</span></span>
+        <input type="range" id="arm-kd" min="0" max="0.2" step="0.01" value="0.00">
       </label>
     </div>
   </div>
@@ -465,20 +498,34 @@ motor.setVoltage(ffVoltage + pidVoltage);</code></pre>
   const armSetSlider = document.getElementById('arm-set');
   const armKgSlider = document.getElementById('arm-kg');
   const armKpSlider = document.getElementById('arm-kp');
+  const armKiSlider = document.getElementById('arm-ki');
+  const armKdSlider = document.getElementById('arm-kd');
   
   armSetSlider.oninput = () => document.getElementById('arm-set-val').innerText = armSetSlider.value + "°";
   armKgSlider.oninput = () => document.getElementById('arm-kg-val').innerText = parseFloat(armKgSlider.value).toFixed(2);
   armKpSlider.oninput = () => document.getElementById('arm-kp-val').innerText = parseFloat(armKpSlider.value).toFixed(2);
+  armKiSlider.oninput = () => document.getElementById('arm-ki-val').innerText = parseFloat(armKiSlider.value).toFixed(2);
+  armKdSlider.oninput = () => document.getElementById('arm-kd-val').innerText = parseFloat(armKdSlider.value).toFixed(2);
   
   let armAng = -45; // Start angled down
   let armVel = 0;
+  let armLastError = 0;
+  let armIntegral = 0;
   
   function simArm() {
       const setTarget = parseFloat(armSetSlider.value);
       const kG = parseFloat(armKgSlider.value);
       const kP = parseFloat(armKpSlider.value);
+      const kI = parseFloat(armKiSlider.value);
+      const kD = parseFloat(armKdSlider.value);
       
       const error = setTarget - armAng;
+      const errorRate = (error - armLastError) / 0.02;
+      armLastError = error;
+
+      armIntegral += error * 0.02;
+      if(armIntegral > 50) armIntegral = 50; // Anti-windup
+      if(armIntegral < -50) armIntegral = -50;
       
       // Calculate Cosine FF!
       // In physics, 0 = horizontal right. Math.cos expects radians.
@@ -486,7 +533,7 @@ motor.setVoltage(ffVoltage + pidVoltage);</code></pre>
       const cosTheta = Math.cos(radians);
       
       const ffVoltage = kG * cosTheta;
-      const pidVoltage = kP * error;
+      const pidVoltage = (kP * error) + (kI * armIntegral) + (kD * errorRate);
       
       let voltage = ffVoltage + pidVoltage;
       
@@ -549,8 +596,10 @@ motor.setVoltage(ffVoltage + pidVoltage);</code></pre>
 <p style="margin-top:20px;"><strong>How to manually tune an Arm:</strong></p>
 <ol>
   <li>Change the <strong>Target Angle</strong> to exactly <code>0&deg;</code> (Horizontal). This is where gravity pulls the hardest.</li>
-  <li>Set <strong>kP = 0</strong> to disable PID. Adjust <strong>kG</strong> until the FF Voltage precisely counters the physical drop and holds the arm perfectly level.</li>
+  <li>Set <strong>kP = 0, kI = 0, kD = 0</strong> to disable PID. Adjust <strong>kG</strong> until the FF Voltage precisely counters the physical drop and holds the arm perfectly level.</li>
   <li>With FF holding the arm up perfectly against gravity, increase <strong>kP</strong> to help the arm quickly snap to new angles.</li>
+  <li>If the arm oscillates (wobbles back and forth) before settling, add a small amount of <strong>kD (Derivative)</strong>. It will act like a shock absorber, damping the motion as it approaches the target.</li>
+  <li>If the arm gets stuck incredibly close to its target (e.g. 88&deg; when asking for 90&deg;), use a small <strong>kI (Integral)</strong> to wind up enough voltage to clear the final friction barrier.</li>
   <li>Move the Target Angle to <code>90&deg;</code> (straight up). Watch the kG voltage organically shrink to zero and the arm stabilize effortlessly without PID fighting!</li>
 </ol>
 
