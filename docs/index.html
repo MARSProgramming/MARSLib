@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MARSLib — Championship FRC Framework</title>
+  <meta name="description" content="MARSLib is a championship-tier FRC software framework with zero-allocation performance, dyn4j physics simulation, and AdvantageKit deterministic logging.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ===== Reset & Base ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-primary: #0d1117;
+      --bg-secondary: #161b22;
+      --bg-card: #21262d;
+      --bg-card-hover: #292e36;
+      --border: #30363d;
+      --accent: #ff6b35;
+      --accent-light: #ff8c5a;
+      --accent-glow: rgba(255, 107, 53, 0.12);
+      --blue: #58a6ff;
+      --green: #3fb950;
+      --purple: #bc8cff;
+      --yellow: #d29922;
+      --red: #f85149;
+      --text-primary: #e6edf3;
+      --text-secondary: #8b949e;
+      --text-muted: #6e7681;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ===== Animated Background ===== */
+    .stars {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .stars::before, .stars::after {
+      content: '';
+      position: absolute;
+      width: 2px; height: 2px;
+      border-radius: 50%;
+      background: white;
+      box-shadow:
+        120px 80px 0 0 rgba(255,255,255,0.3),
+        340px 200px 0 0 rgba(255,255,255,0.2),
+        560px 120px 0 0 rgba(255,255,255,0.15),
+        780px 300px 0 0 rgba(255,255,255,0.25),
+        200px 400px 0 0 rgba(255,255,255,0.1),
+        900px 50px 0 0 rgba(255,255,255,0.3),
+        1100px 250px 0 0 rgba(255,255,255,0.2),
+        50px 600px 0 0 rgba(255,255,255,0.15),
+        400px 550px 0 0 rgba(255,255,255,0.25),
+        700px 450px 0 0 rgba(255,255,255,0.1),
+        1300px 100px 0 0 rgba(255,255,255,0.2),
+        1000px 500px 0 0 rgba(255,255,255,0.15),
+        250px 150px 0 0 rgba(255,255,255,0.2),
+        650px 350px 0 0 rgba(255,255,255,0.1),
+        1200px 400px 0 0 rgba(255,255,255,0.25);
+      animation: drift 60s linear infinite;
+    }
+
+    .stars::after {
+      width: 1px; height: 1px;
+      animation-duration: 90s;
+      animation-direction: reverse;
+      opacity: 0.6;
+    }
+
+    @keyframes drift {
+      from { transform: translateY(0) translateX(0); }
+      to { transform: translateY(-200px) translateX(100px); }
+    }
+
+    /* ===== Layout ===== */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+    /* ===== Nav ===== */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13, 17, 23, 0.85);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+    }
+
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .nav-logo {
+      font-weight: 800;
+      font-size: 1.25rem;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-logo span { color: var(--text-primary); }
+
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text-primary); }
+
+    .nav-links .btn-primary {
+      background: var(--accent);
+      color: white;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .nav-links .btn-primary:hover {
+      background: var(--accent-light);
+      transform: translateY(-1px);
+    }
+
+    /* ===== Hero ===== */
+    .hero {
+      text-align: center;
+      padding: 120px 0 80px;
+      position: relative;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 600px;
+      background: radial-gradient(ellipse, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 6px 16px;
+      font-size: 0.85rem;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: clamp(3rem, 7vw, 5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -0.04em;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 50%, var(--accent-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      max-width: 640px;
+      margin: 0 auto 40px;
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-accent {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3);
+    }
+
+    .btn-accent:hover {
+      background: var(--accent-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(255, 107, 53, 0.4);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    /* ===== Stats Bar ===== */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      padding: 40px 0;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: -0.02em;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 4px;
+    }
+
+    /* ===== Section ===== */
+    section { padding: 80px 0; }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .section-header h2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+    }
+
+    .section-header p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* ===== Feature Grid ===== */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-light));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .feature-card:hover::before { opacity: 1; }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+
+    .feature-card h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Icon background colors */
+    .icon-perf { background: rgba(63, 185, 80, 0.15); }
+    .icon-sim { background: rgba(188, 140, 255, 0.15); }
+    .icon-log { background: rgba(88, 166, 255, 0.15); }
+    .icon-fault { background: rgba(248, 81, 73, 0.15); }
+    .icon-shot { background: rgba(210, 153, 34, 0.15); }
+    .icon-test { background: rgba(255, 107, 53, 0.15); }
+
+    /* ===== Coverage Section ===== */
+    .coverage-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .coverage-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+    }
+
+    .coverage-card h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-primary);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 1s ease;
+    }
+
+    .coverage-meta {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== Architecture Section ===== */
+    .arch-diagram {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px;
+      text-align: center;
+      overflow-x: auto;
+    }
+
+    .arch-diagram pre {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--text-primary);
+      line-height: 1.8;
+      display: inline-block;
+      text-align: left;
+    }
+
+    /* ===== Package Table ===== */
+    .package-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-card);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .package-table th {
+      background: var(--bg-secondary);
+      padding: 16px 20px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      border-bottom: 2px solid var(--accent);
+    }
+
+    .package-table td {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.95rem;
+    }
+
+    .package-table tr:last-child td { border-bottom: none; }
+
+    .package-table tr:hover td { background: var(--accent-glow); }
+
+    .package-table code {
+      background: var(--bg-primary);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--accent);
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-bottom: 16px;
+      list-style: none;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 768px) {
+      .nav-links { gap: 16px; }
+      .stats { gap: 24px; }
+      .stat-value { font-size: 2rem; }
+      .hero { padding: 80px 0 60px; }
+      .feature-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="stars"></div>
+
+<!-- Navigation -->
+<nav>
+  <div class="container">
+    <a href="index.html" class="nav-logo">🪐 MARS<span>Lib</span></a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#architecture">Architecture</a></li>
+      <li><a href="#packages">Packages</a></li>
+      <li><a href="#coverage">Testing</a></li>
+      <li><a href="javadoc/index.html" class="btn-primary">API Docs →</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">🏆 Championship-Grade Framework</div>
+    <h1>MARSLib</h1>
+    <p>
+      A zero-allocation, physics-simulated FRC framework with deterministic AdvantageKit logging,
+      250Hz odometry, and shot-on-the-move kinematics. Built by FRC Team 2614 for Einstein.
+    </p>
+    <div class="hero-actions">
+      <a href="javadoc/index.html" class="btn btn-accent">📖 Browse API Docs</a>
+      <a href="https://github.com/thehomelessguy/MARSLib" class="btn btn-outline">⭐ View on GitHub</a>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<div class="container">
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-value">87</div>
+      <div class="stat-label">Source Files</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">89</div>
+      <div class="stat-label">Unit Tests</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">48%</div>
+      <div class="stat-label">Line Coverage</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">250Hz</div>
+      <div class="stat-label">Odometry Rate</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">0</div>
+      <div class="stat-label">Hot-Path Allocs</div>
+    </div>
+  </div>
+</div>
+
+<!-- Features -->
+<section id="features">
+  <div class="container">
+    <div class="section-header">
+      <h2>Framework Features</h2>
+      <p>Every system is designed for deterministic, replay-safe operation under competition stress.</p>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon icon-perf">⚡</div>
+        <h3>Zero-Allocation Hot Path</h3>
+        <p>Pre-allocated odometry buffers, cached module states, and static velocity constants ensure the 20ms control loop runs with zero garbage collection pressure.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-sim">🔮</div>
+        <h3>Dyn4j Physics Simulation</h3>
+        <p>Full 2D rigid-body simulation with game piece dynamics, field obstacles, and superstructure collisions. Develop completely offline — no robot required.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-log">📊</div>
+        <h3>AdvantageKit Deterministic Logging</h3>
+        <p>Every input is recorded, every output is reproducible. Replay any match in AdvantageScope with bit-perfect algorithm reproduction through the IO abstraction.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-fault">🛡️</div>
+        <h3>Thread-Safe Fault Management</h3>
+        <p>ConcurrentHashMap-backed fault tracking with atomic counters. CAN bus dropouts trigger LED alerts, controller rumble, and automatic dead-reckoning fallback.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-shot">🎯</div>
+        <h3>Shot-On-The-Move Solver</h3>
+        <p>Quadratic time-of-flight interception with Magnus lift compensation. Accurate shooting while pulling full-speed swerve maneuvers.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-test">🧪</div>
+        <h3>Physics-Backed Testing</h3>
+        <p>89 JUnit 5 tests run against the dyn4j simulation engine — no mocks. Tests verify real physics: swerve kinematics, vision fusion, superstructure collisions.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Architecture -->
+<section id="architecture">
+  <div class="container">
+    <div class="section-header">
+      <h2>Architecture</h2>
+      <p>Strict AdvantageKit dependency injection isolates logic from hardware.</p>
+    </div>
+    <div class="arch-diagram">
+      <pre>
+  ┌──────────────────────────────────────────────────────────────────┐
+  │                        Robot.java                                │
+  │                     TimedRobot Loop                              │
+  └────────────────────────┬─────────────────────────────────────────┘
+                           │
+  ┌────────────────────────▼─────────────────────────────────────────┐
+  │                    RobotContainer                                │
+  │        Subsystem Construction · Command Bindings                 │
+  └───┬──────────┬──────────┬──────────┬──────────┬─────────────────┘
+      │          │          │          │          │
+  ┌───▼──┐  ┌───▼──┐  ┌───▼──┐  ┌───▼──┐  ┌───▼──────────────┐
+  │Swerve│  │Shoot │  │Cowl  │  │Climb │  │MARSSuperstructure│
+  │Drive │  │  er  │  │      │  │  er  │  │  State Machine   │
+  └──┬───┘  └──┬───┘  └──┬───┘  └──┬───┘  └───────┬──────────┘
+     │         │         │         │               │
+  ┌──▼─────────▼─────────▼─────────▼───────────────▼──────────┐
+  │                   IO Interface Layer                        │
+  │    SwerveModuleIO · GyroIO · RotaryMechanismIO · VisionIO  │
+  └──────┬───────────────────────────────────┬─────────────────┘
+         │                                   │
+  ┌──────▼───────────────┐    ┌──────────────▼────────────────┐
+  │   IO<b>Real</b> (Hardware)  │    │    IO<b>Sim</b> (Dyn4j Physics)    │
+  │ TalonFX · Pigeon2    │    │ DCMotorSim · RigidBody2D     │
+  │ Limelight · CANcoder │    │ GamePieceBody · FieldWalls   │
+  └──────────────────────┘    └───────────────────────────────┘
+      </pre>
+    </div>
+  </div>
+</section>
+
+<!-- Packages -->
+<section id="packages">
+  <div class="container">
+    <div class="section-header">
+      <h2>Package Reference</h2>
+      <p>Core framework packages and their responsibilities.</p>
+    </div>
+    <table class="package-table">
+      <thead>
+        <tr>
+          <th>Package</th>
+          <th>Description</th>
+          <th>Key Classes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>com.marslib.swerve</code></td>
+          <td>250Hz odometry, swerve kinematics, traction control, and teleop math</td>
+          <td>SwerveDrive, SwerveModule, PhoenixOdometryThread</td>
+        </tr>
+        <tr>
+          <td><code>com.marslib.vision</code></td>
+          <td>AprilTag localization with MegaTag 2.0 fusion and ambiguity rejection</td>
+          <td>MARSVision, VisionIO, VisionConstants</td>
+        </tr>
+        <tr>
+          <td><code>com.marslib.mechanisms</code></td>
+          <td>Generic IO abstractions for linear, rotary, and flywheel mechanisms</td>
+          <td>RotaryMechanismIO, LinearMechanismIO</td>
+        </tr>
+        <tr>
+          <td><code>com.marslib.faults</code></td>
+          <td>Thread-safe fault reporting, LED alerts, and diagnostic commands</td>
+          <td>MARSFaultManager, Alert</td>
+        </tr>
+        <tr>
+          <td><code>com.marslib.simulation</code></td>
+          <td>Dyn4j physics world, game piece spawning, and field obstacle meshes</td>
+          <td>MARSPhysicsWorld, GamePieceBody</td>
+        </tr>
+        <tr>
+          <td><code>com.marslib.power</code></td>
+          <td>Voltage load-shedding and stator current monitoring</td>
+          <td>MARSPowerManager</td>
+        </tr>
+        <tr>
+          <td><code>com.marslib.util</code></td>
+          <td>State machines, tunable numbers, shot math, and feedforward estimation</td>
+          <td>MARSStateMachine, EliteShooterMath, LoggedTunableNumber</td>
+        </tr>
+        <tr>
+          <td><code>com.marslib.auto</code></td>
+          <td>Ghost recording, PathPlanner integration, and diagnostic checks</td>
+          <td>GhostManager, MARSDiagnosticCheck</td>
+        </tr>
+        <tr>
+          <td><code>frc.robot</code></td>
+          <td>Competition logic: RobotContainer, commands, constants, and bindings</td>
+          <td>RobotContainer, MARSSuperstructure, ShootOnTheMoveCommand</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Coverage -->
+<section id="coverage">
+  <div class="container">
+    <div class="section-header">
+      <h2>Test Coverage</h2>
+      <p>JaCoCo-measured coverage across 29 test files and 89 test cases.</p>
+    </div>
+    <div class="coverage-grid">
+      <div class="coverage-card">
+        <h4>📏 Line Coverage</h4>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 48%; background: linear-gradient(90deg, var(--accent), var(--yellow));"></div>
+        </div>
+        <div class="coverage-meta">1,766 / 3,714 lines covered (48%)</div>
+      </div>
+      <div class="coverage-card">
+        <h4>🌿 Branch Coverage</h4>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 42%; background: linear-gradient(90deg, var(--green), var(--blue));"></div>
+        </div>
+        <div class="coverage-meta">355 / 841 branches covered (42%)</div>
+      </div>
+      <div class="coverage-card">
+        <h4>⚙️ Instruction Coverage</h4>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 48%; background: linear-gradient(90deg, var(--purple), var(--blue));"></div>
+        </div>
+        <div class="coverage-meta">8,750 / 18,054 instructions covered (48%)</div>
+      </div>
+      <div class="coverage-card">
+        <h4>🏗️ Class Coverage</h4>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 60%; background: linear-gradient(90deg, var(--green), var(--accent));"></div>
+        </div>
+        <div class="coverage-meta">69 / 115 classes covered (60%)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <ul class="footer-links">
+      <li><a href="javadoc/index.html">API Docs</a></li>
+      <li><a href="https://github.com/thehomelessguy/MARSLib">GitHub</a></li>
+      <li><a href="https://www.thebluealliance.com/team/2614">TBA Profile</a></li>
+      <li><a href="CONTROLLER_MAPPINGS.html">Controller Mappings</a></li>
+    </ul>
+    <p>© 2026 FRC Team 2614 — MARS. Built with AdvantageKit, Dyn4j, and PathPlanner.</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -173,6 +173,44 @@ tasks.named("pmdTest").configure {
 tasks.withType(Javadoc) {
     options.addBooleanOption('Werror', true)
     options.addStringOption('Xdoclint:all,-missing', '-quiet')
+
+    // MARSLib branded dark theme
+    def themeCss = file("${projectDir}/src/main/javadoc/marslib-theme.css")
+    if (themeCss.exists()) {
+        options.addStringOption('-add-stylesheet', themeCss.absolutePath)
+    }
+    options.windowTitle = 'MARSLib API - FRC Team 2614'
+    options.docTitle = 'MARSLib API Reference'
+    options.header = '<a href="../index.html" style="color:#ff6b35;text-decoration:none;font-weight:700;">MARSLib</a> - FRC 2614'
+}
+
+// Generate docs site: landing page + themed javadoc
+task generateDocs {
+    description = 'Generates the full MARSLib documentation site into docs/'
+    dependsOn javadoc, jacocoTestReport
+
+    def docsDir = file("docs")
+    outputs.dir(docsDir)
+
+    doLast {
+        // Copy javadoc output into docs/javadoc
+        copy {
+            from "${buildDir}/docs/javadoc"
+            into "${docsDir}/javadoc"
+        }
+
+        // Copy controller mappings html
+        def mappings = file("CONTROLLER_MAPPINGS.html")
+        if (mappings.exists()) {
+            copy {
+                from mappings
+                into docsDir
+            }
+        }
+
+        println "Documentation site generated at: ${docsDir.absolutePath}"
+        println "Open docs/index.html in your browser to preview."
+    }
 }
 
 // 2. Automated vendordeps/ JSON Validation
