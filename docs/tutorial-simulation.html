@@ -101,13 +101,18 @@ document.addEventListener("DOMContentLoaded", () => {
     let lastRobotY = 200;
     let robotVx = 0;
     let robotVy = 0;
+    let score = 0;
+    
+    // Define the Goal area (left center)
+    const goal = { x: 0, y: 150, w: 30, h: 100 };
 
     function initWorld() {
         balls = [];
+        score = 0;
         // Spawn 8 Fuel Balls randomly, avoiding the center (robot start)
         for(let i=0; i<8; i++) {
             balls.push({
-                x: 100 + Math.random() * 600,
+                x: 150 + Math.random() * 550,
                 y: 50 + Math.random() * 300,
                 vx: 0,
                 vy: 0,
@@ -157,8 +162,21 @@ document.addEventListener("DOMContentLoaded", () => {
         let logMsg = "Dyn4j Simulation Tracking...";
         let collisionTriggered = false;
 
-        // Ball to Wall
+        // Ball to Wall and Goal Check
         balls.forEach(b => {
+            // Check Goal (Left wall, inside goal Y bounds)
+            if (b.x - b.radius < goal.w && b.y > goal.y && b.y < goal.y + goal.h) {
+                score++;
+                logMsg = "⚽ GOAL SCORED! Resetting ball...";
+                collisionTriggered = true;
+                // Respawn ball randomly in the field
+                b.x = 400 + Math.random() * 300;
+                b.y = 50 + Math.random() * 300;
+                b.vx = 0;
+                b.vy = 0;
+                return; // Skip normal wall collision for this frame
+            }
+            
             if (b.x - b.radius < 0) { b.x = b.radius; b.vx *= -0.7; }
             if (b.x + b.radius > canvas.width) { b.x = canvas.width - b.radius; b.vx *= -0.7; }
             if (b.y - b.radius < 0) { b.y = b.radius; b.vy *= -0.7; }
@@ -243,6 +261,38 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.lineWidth = 1;
         for(let i=0; i<canvas.width; i+=40) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke(); }
         for(let i=0; i<canvas.height; i+=40) { ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke(); }
+
+        // Draw Goal
+        ctx.fillStyle = "rgba(41, 182, 246, 0.1)";
+        ctx.fillRect(goal.x, goal.y, goal.w, goal.h);
+        ctx.strokeStyle = "var(--ai-cyan)";
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.moveTo(goal.x + goal.w, goal.y);
+        ctx.lineTo(goal.x + goal.w, goal.y + goal.h);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        
+        ctx.fillStyle = "var(--ai-cyan)";
+        ctx.font = "bold 14px Orbitron";
+        ctx.save();
+        ctx.translate(goal.x + 10, goal.y + goal.h / 2);
+        ctx.rotate(-Math.PI / 2);
+        ctx.textAlign = "center";
+        ctx.fillText("GOAL", 0, 0);
+        ctx.restore();
+
+        // Draw Score Display
+        ctx.fillStyle = "rgba(10, 10, 10, 0.85)";
+        ctx.strokeStyle = "#333";
+        ctx.fillRect(canvas.width - 150, 10, 130, 45);
+        ctx.strokeRect(canvas.width - 150, 10, 130, 45);
+        ctx.fillStyle = "var(--mars-red-light)";
+        ctx.font = "bold 18px Orbitron";
+        ctx.textAlign = "center";
+        ctx.fillText(`SCORE: ${score}`, canvas.width - 85, 38);
+        ctx.textAlign = "left";
 
         // Draw Balls
         balls.forEach(b => {
