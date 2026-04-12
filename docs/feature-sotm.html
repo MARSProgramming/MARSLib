@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shot-On-The-Move Solver — MARSLib</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --mars-red: #B32416;
+      --mars-red-light: #d42e1e;
+      --bg-primary: #0a0a0a;
+      --bg-card: #1a1a1a;
+      --border: #2a2a2a;
+      --text-primary: #e8e8e8;
+      --text-secondary: #999999;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Ubuntu', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; padding: 40px 20px; max-width: 800px; margin: auto; }
+    h1, h2 { font-family: 'Orbitron', sans-serif; color: var(--mars-red-light); margin-bottom: 20px; }
+    h1 { font-size: 2.5rem; text-align: center; }
+    h2 { font-size: 1.8rem; margin-top: 40px; }
+    p { margin-bottom: 16px; color: var(--text-secondary); font-size: 1.1rem; }
+    ul { margin-bottom: 20px; padding-left: 20px; color: var(--text-secondary); font-size: 1.1rem; }
+    li { margin-bottom: 10px; }
+    .back-link { display: inline-block; margin-bottom: 30px; color: var(--mars-red); text-decoration: none; font-weight: bold; font-family: 'Orbitron', sans-serif; }
+    .back-link:hover { text-decoration: underline; }
+    .card { background: var(--bg-card); border: 1px solid var(--border); padding: 30px; border-radius: 12px; margin-top: 30px; }
+  </style>
+</head>
+<body>
+  <a href="index.html#features" class="back-link">← BACK TO FEATURES</a>
+  <h1>Shot-On-The-Move Solver</h1>
+  
+  <div class="card">
+    <h2>Dynamic Target Interception</h2>
+    <p>A modern swerve drive loses immense offensive capability if it has to come to a complete stop to line up a shot. We've brought military-grade interception math into FRC to ensure the robot can score a speaker shot while pulling rapid maneuvers.</p>
+    
+    <h2>The Math Engine</h2>
+    <p>MARSLib's <code>EliteShooterMath</code> iteratively solves the physics problem of moving targets:</p>
+    <ul>
+      <li><strong>Time-of-Flight Iteration:</strong> Because gravity is parabolic, you can't just aim where the goal is now. We iteratively estimate the time the projectile will spend in the air based on a tunable map of flyband speeds, then calculate where the robot <i>will be</i> relative to the goal when the piece hits it.</li>
+      <li><strong>Swerve Velocity Compensation:</strong> The math calculates the lateral velocity of our chassis during the shot, transforming our chassis speeds to field-centric vectors to apply compensatory angles to the turret and hood.</li>
+      <li><strong>Magnus Lift Adjustments:</strong> Our flywheels apply high backward spin to game pieces. This alters their parabolic arc in midair due to the Magnus effect. MARSLib compensates for this aerodynamic lift allowing precise shots from long ranges.</li>
+    </ul>
+
+    <h2>Instant Feedback</h2>
+    <p>Through AdvantageKit, our SOTM solver visualizes the predicted trajectory of the released note live in 3D, allowing programmers to tune the map accurately against real-world video without guessing.</p>
+  </div>
+</body>
+</html>

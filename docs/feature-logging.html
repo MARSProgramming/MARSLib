@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AdvantageKit Logging — MARSLib</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --mars-red: #B32416;
+      --mars-red-light: #d42e1e;
+      --bg-primary: #0a0a0a;
+      --bg-card: #1a1a1a;
+      --border: #2a2a2a;
+      --text-primary: #e8e8e8;
+      --text-secondary: #999999;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Ubuntu', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; padding: 40px 20px; max-width: 800px; margin: auto; }
+    h1, h2 { font-family: 'Orbitron', sans-serif; color: var(--mars-red-light); margin-bottom: 20px; }
+    h1 { font-size: 2.5rem; text-align: center; }
+    h2 { font-size: 1.8rem; margin-top: 40px; }
+    p { margin-bottom: 16px; color: var(--text-secondary); font-size: 1.1rem; }
+    ul { margin-bottom: 20px; padding-left: 20px; color: var(--text-secondary); font-size: 1.1rem; }
+    li { margin-bottom: 10px; }
+    .back-link { display: inline-block; margin-bottom: 30px; color: var(--mars-red); text-decoration: none; font-weight: bold; font-family: 'Orbitron', sans-serif; }
+    .back-link:hover { text-decoration: underline; }
+    .card { background: var(--bg-card); border: 1px solid var(--border); padding: 30px; border-radius: 12px; margin-top: 30px; }
+  </style>
+</head>
+<body>
+  <a href="index.html#features" class="back-link">← BACK TO FEATURES</a>
+  <h1>AdvantageKit Logging</h1>
+  
+  <div class="card">
+    <h2>The Value of Determinism</h2>
+    <p>When an issue happens on the field at a competition, "I couldn't replicate it in the pits" is an unacceptable answer. With AdvantageKit, MARSLib logs all sensor inputs exactly as they enter the code. This means we can plug a thumb drive into the robot, download the log file, and completely "replay" the match step-by-step through our codebase in the pits.</p>
+    
+    <h2>The IO Layer Pattern</h2>
+    <p>We decouple robot logic from hardware calls using an advanced Dependency Injection pattern:</p>
+    <ul>
+      <li><strong>Hardware Segregation:</strong> Subsystems never instantiate a `TalonFX` or `SparkMax` directly. Instead, they accept an `IO` interface (e.g., `SwerveModuleIO`).</li>
+      <li><strong>Input Recording:</strong> Every loop, the hardware passes an `AutoLoggedInputs` object into the subsystem. This data is recorded to the USB drive.</li>
+      <li><strong>Replay Mode:</strong> During Replay Mode, the hardware is disconnected. AdvantageKit reads the inputs from the log file and feeds them into the exact same subsystem logic, allowing us to find logic faults deterministically.</li>
+    </ul>
+
+    <h2>AdvantageScope Synergy</h2>
+    <p>Our AdvantageKit implementation is intricately mapped to AdvantageScope. Every subsystem exports 3D `Pose3d` points, allowing us to instantly view 3D renders of our swerve modules, elevator positions, shooter angles, and game piece trajectories synchronized to video footage.</p>
+  </div>
+</body>
+</html>

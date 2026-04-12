@@ -679,36 +679,54 @@
       <p>Every system is designed for deterministic, replay-safe operation under competition stress.</p>
     </div>
     <div class="feature-grid">
-      <div class="feature-card">
-        <div class="feature-icon icon-perf">⚡</div>
-        <h3>ZERO-ALLOCATION HOT PATH</h3>
-        <p>Pre-allocated odometry buffers, cached module states, and static velocity constants ensure the 20ms control loop runs with zero garbage collection pressure.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon icon-sim">🔮</div>
-        <h3>DYN4J PHYSICS SIMULATION</h3>
-        <p>Full 2D rigid-body simulation with game piece dynamics, field obstacles, and superstructure collisions. Develop completely offline — no robot required.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon icon-log">📊</div>
-        <h3>ADVANTAGEKIT LOGGING</h3>
-        <p>Every input is recorded, every output is reproducible. Replay any match in AdvantageScope with bit-perfect algorithm reproduction through the IO abstraction.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon icon-fault">🛡️</div>
-        <h3>THREAD-SAFE FAULT MANAGEMENT</h3>
-        <p>ConcurrentHashMap-backed fault tracking with atomic counters. CAN bus dropouts trigger LED alerts, controller rumble, and automatic dead-reckoning fallback.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon icon-shot">🎯</div>
-        <h3>SHOT-ON-THE-MOVE SOLVER</h3>
-        <p>Quadratic time-of-flight interception with Magnus lift compensation. Accurate shooting while pulling full-speed swerve maneuvers.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon icon-test">🧪</div>
-        <h3>PHYSICS-BACKED TESTING</h3>
-        <p>89 JUnit 5 tests run against the dyn4j simulation engine — no mocks. Tests verify real physics: swerve kinematics, vision fusion, superstructure collisions.</p>
-      </div>
+      <a href="feature-zero-allocation.html" style="text-decoration: none; color: inherit;">
+        <div class="feature-card">
+          <div class="feature-icon icon-perf">⚡</div>
+          <h3>ZERO-ALLOCATION HOT PATH</h3>
+          <p>Pre-allocated odometry buffers, cached module states, and static velocity constants ensure the 20ms control loop runs with zero garbage collection pressure.</p>
+          <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--mars-red-light); letter-spacing: 0.06em;">LEARN MORE →</span>
+        </div>
+      </a>
+      <a href="feature-simulation.html" style="text-decoration: none; color: inherit;">
+        <div class="feature-card">
+          <div class="feature-icon icon-sim">🔮</div>
+          <h3>DYN4J PHYSICS SIMULATION</h3>
+          <p>Full 2D rigid-body simulation with game piece dynamics, field obstacles, and superstructure collisions. Develop completely offline — no robot required.</p>
+          <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--purple); letter-spacing: 0.06em;">LEARN MORE →</span>
+        </div>
+      </a>
+      <a href="feature-logging.html" style="text-decoration: none; color: inherit;">
+        <div class="feature-card">
+          <div class="feature-icon icon-log">📊</div>
+          <h3>ADVANTAGEKIT LOGGING</h3>
+          <p>Every input is recorded, every output is reproducible. Replay any match in AdvantageScope with bit-perfect algorithm reproduction through the IO abstraction.</p>
+          <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--blue); letter-spacing: 0.06em;">LEARN MORE →</span>
+        </div>
+      </a>
+      <a href="feature-faults.html" style="text-decoration: none; color: inherit;">
+        <div class="feature-card">
+          <div class="feature-icon icon-fault">🛡️</div>
+          <h3>THREAD-SAFE FAULT MANAGEMENT</h3>
+          <p>ConcurrentHashMap-backed fault tracking with atomic counters. CAN bus dropouts trigger LED alerts, controller rumble, and automatic dead-reckoning fallback.</p>
+          <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--mars-red-light); letter-spacing: 0.06em;">LEARN MORE →</span>
+        </div>
+      </a>
+      <a href="feature-sotm.html" style="text-decoration: none; color: inherit;">
+        <div class="feature-card">
+          <div class="feature-icon icon-shot">🎯</div>
+          <h3>SHOT-ON-THE-MOVE SOLVER</h3>
+          <p>Quadratic time-of-flight interception with Magnus lift compensation. Accurate shooting while pulling full-speed swerve maneuvers.</p>
+          <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--yellow); letter-spacing: 0.06em;">LEARN MORE →</span>
+        </div>
+      </a>
+      <a href="feature-testing.html" style="text-decoration: none; color: inherit;">
+        <div class="feature-card">
+          <div class="feature-icon icon-test">🧪</div>
+          <h3>PHYSICS-BACKED TESTING</h3>
+          <p>89 JUnit 5 tests run against the dyn4j simulation engine — no mocks. Tests verify real physics: swerve kinematics, vision fusion, superstructure collisions.</p>
+          <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--green); letter-spacing: 0.06em;">LEARN MORE →</span>
+        </div>
+      </a>
     </div>
   </div>
 </section>
@@ -769,44 +787,70 @@
       </thead>
       <tbody>
         <tr>
-          <td><code>com.marslib.swerve</code></td>
+          <td><a href="javadoc/com/marslib/swerve/package-summary.html" style="text-decoration: none; color: inherit;"><code>com.marslib.swerve</code></a></td>
           <td>250Hz odometry, swerve kinematics, traction control, and teleop math</td>
-          <td>SwerveDrive, SwerveModule, PhoenixOdometryThread</td>
+          <td>
+            <a href="javadoc/com/marslib/swerve/SwerveDrive.html" style="color: var(--mars-red-light); text-decoration: none;">SwerveDrive</a>, 
+            <a href="javadoc/com/marslib/swerve/SwerveModule.html" style="color: var(--mars-red-light); text-decoration: none;">SwerveModule</a>, 
+            <a href="javadoc/com/marslib/swerve/PhoenixOdometryThread.html" style="color: var(--mars-red-light); text-decoration: none;">PhoenixOdometryThread</a>
+          </td>
         </tr>
         <tr>
-          <td><code>com.marslib.vision</code></td>
+          <td><a href="javadoc/com/marslib/vision/package-summary.html" style="text-decoration: none; color: inherit;"><code>com.marslib.vision</code></a></td>
           <td>AprilTag localization with MegaTag 2.0 fusion and ambiguity rejection</td>
-          <td>MARSVision, VisionIO, VisionConstants</td>
+          <td>
+            <a href="javadoc/com/marslib/vision/MARSVision.html" style="color: var(--mars-red-light); text-decoration: none;">MARSVision</a>, 
+            <a href="javadoc/com/marslib/vision/VisionIO.html" style="color: var(--mars-red-light); text-decoration: none;">VisionIO</a>, 
+            <a href="javadoc/com/marslib/vision/VisionConstants.html" style="color: var(--mars-red-light); text-decoration: none;">VisionConstants</a>
+          </td>
         </tr>
         <tr>
-          <td><code>com.marslib.mechanisms</code></td>
+          <td><a href="javadoc/com/marslib/mechanisms/package-summary.html" style="text-decoration: none; color: inherit;"><code>com.marslib.mechanisms</code></a></td>
           <td>Generic IO abstractions for linear, rotary, and flywheel mechanisms</td>
-          <td>RotaryMechanismIO, LinearMechanismIO</td>
+          <td>
+            <a href="javadoc/com/marslib/mechanisms/RotaryMechanismIO.html" style="color: var(--mars-red-light); text-decoration: none;">RotaryMechanismIO</a>, 
+            <a href="javadoc/com/marslib/mechanisms/LinearMechanismIO.html" style="color: var(--mars-red-light); text-decoration: none;">LinearMechanismIO</a>
+          </td>
         </tr>
         <tr>
-          <td><code>com.marslib.faults</code></td>
+          <td><a href="javadoc/com/marslib/faults/package-summary.html" style="text-decoration: none; color: inherit;"><code>com.marslib.faults</code></a></td>
           <td>Thread-safe fault reporting, LED alerts, and diagnostic commands</td>
-          <td>MARSFaultManager, Alert</td>
+          <td>
+            <a href="javadoc/com/marslib/faults/MARSFaultManager.html" style="color: var(--mars-red-light); text-decoration: none;">MARSFaultManager</a>, 
+            <a href="javadoc/com/marslib/faults/Alert.html" style="color: var(--mars-red-light); text-decoration: none;">Alert</a>
+          </td>
         </tr>
         <tr>
-          <td><code>com.marslib.simulation</code></td>
+          <td><a href="javadoc/com/marslib/simulation/package-summary.html" style="text-decoration: none; color: inherit;"><code>com.marslib.simulation</code></a></td>
           <td>Dyn4j physics world, game piece spawning, and field obstacle meshes</td>
-          <td>MARSPhysicsWorld, GamePieceBody</td>
+          <td>
+            <a href="javadoc/com/marslib/simulation/MARSPhysicsWorld.html" style="color: var(--mars-red-light); text-decoration: none;">MARSPhysicsWorld</a>, 
+            <a href="javadoc/com/marslib/simulation/GamePieceBody.html" style="color: var(--mars-red-light); text-decoration: none;">GamePieceBody</a>
+          </td>
         </tr>
         <tr>
-          <td><code>com.marslib.power</code></td>
+          <td><a href="javadoc/com/marslib/power/package-summary.html" style="text-decoration: none; color: inherit;"><code>com.marslib.power</code></a></td>
           <td>Voltage load-shedding and stator current monitoring</td>
-          <td>MARSPowerManager</td>
+          <td>
+            <a href="javadoc/com/marslib/power/MARSPowerManager.html" style="color: var(--mars-red-light); text-decoration: none;">MARSPowerManager</a>
+          </td>
         </tr>
         <tr>
-          <td><code>com.marslib.util</code></td>
+          <td><a href="javadoc/com/marslib/util/package-summary.html" style="text-decoration: none; color: inherit;"><code>com.marslib.util</code></a></td>
           <td>State machines, tunable numbers, shot math, and feedforward estimation</td>
-          <td>MARSStateMachine, EliteShooterMath, LoggedTunableNumber</td>
+          <td>
+            <a href="javadoc/com/marslib/util/MARSStateMachine.html" style="color: var(--mars-red-light); text-decoration: none;">MARSStateMachine</a>, 
+            <a href="javadoc/com/marslib/util/EliteShooterMath.html" style="color: var(--mars-red-light); text-decoration: none;">EliteShooterMath</a>, 
+            <a href="javadoc/com/marslib/util/LoggedTunableNumber.html" style="color: var(--mars-red-light); text-decoration: none;">LoggedTunableNumber</a>
+          </td>
         </tr>
         <tr>
-          <td><code>com.marslib.auto</code></td>
+          <td><a href="javadoc/com/marslib/auto/package-summary.html" style="text-decoration: none; color: inherit;"><code>com.marslib.auto</code></a></td>
           <td>PathPlanner integration, alignment commands, and diagnostic checks</td>
-          <td>MARSAutoBuilder, MARSDiagnosticCheck</td>
+          <td>
+            <a href="javadoc/com/marslib/auto/MARSAutoBuilder.html" style="color: var(--mars-red-light); text-decoration: none;">MARSAutoBuilder</a>, 
+            <a href="javadoc/com/marslib/auto/MARSDiagnosticCheck.html" style="color: var(--mars-red-light); text-decoration: none;">MARSDiagnosticCheck</a>
+          </td>
         </tr>
         <tr>
           <td><code>frc.robot</code></td>

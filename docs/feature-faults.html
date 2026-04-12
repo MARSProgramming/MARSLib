@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thread-Safe Fault Management — MARSLib</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --mars-red: #B32416;
+      --mars-red-light: #d42e1e;
+      --bg-primary: #0a0a0a;
+      --bg-card: #1a1a1a;
+      --border: #2a2a2a;
+      --text-primary: #e8e8e8;
+      --text-secondary: #999999;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Ubuntu', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; padding: 40px 20px; max-width: 800px; margin: auto; }
+    h1, h2 { font-family: 'Orbitron', sans-serif; color: var(--mars-red-light); margin-bottom: 20px; }
+    h1 { font-size: 2.5rem; text-align: center; }
+    h2 { font-size: 1.8rem; margin-top: 40px; }
+    p { margin-bottom: 16px; color: var(--text-secondary); font-size: 1.1rem; }
+    ul { margin-bottom: 20px; padding-left: 20px; color: var(--text-secondary); font-size: 1.1rem; }
+    li { margin-bottom: 10px; }
+    .back-link { display: inline-block; margin-bottom: 30px; color: var(--mars-red); text-decoration: none; font-weight: bold; font-family: 'Orbitron', sans-serif; }
+    .back-link:hover { text-decoration: underline; }
+    .card { background: var(--bg-card); border: 1px solid var(--border); padding: 30px; border-radius: 12px; margin-top: 30px; }
+  </style>
+</head>
+<body>
+  <a href="index.html#features" class="back-link">← BACK TO FEATURES</a>
+  <h1>Thread-Safe Fault Management</h1>
+  
+  <div class="card">
+    <h2>Why Fault Management?</h2>
+    <p>A single disconnected sensor network cable during an intense playoff match can completely blind a robot. The software framework needs an incredibly fast, thread-safe way to detect hardware non-compliance, alert the drive team, and fallback to safe routines.</p>
+    
+    <h2>The Implementation</h2>
+    <p>MARSLib's fault manager uses concurrent Java data structures (like <code>ConcurrentHashMap</code> and Atomic primitives) to track errors asynchronously:</p>
+    <ul>
+      <li><strong>CAN Bus Drops:</strong> Hardware IO layers constantly sweep motor controller status signals. If a device misses 3 periodic frames in a row, a critical fault is logged.</li>
+      <li><strong>Automatic Fallbacks:</strong> If a Vision Coprocessor drops off the network, Odometry ignores vision updates automatically. If a swerve module's absolute encoder fails, we gracefully degrade to relative encoder states.</li>
+      <li><strong>Driver Feedback:</strong> Active faults dynamically trigger Xbox controller rumble patterns based on fault severity. Simultaneously, our CANdle addressable LED system renders flashing red indicators on the robot so the drive coach is aware hardware is malfunctioning.</li>
+    </ul>
+
+    <h2>Pre-Match Checks</h2>
+    <p>Before every match, MARSLib offers automatic system checks on the field that sweep all sensors, verifying their current position matches last-known states to prevent catastrophic failure immediately at auto initialization.</p>
+  </div>
+</body>
+</html>

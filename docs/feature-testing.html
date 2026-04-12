@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Physics-Backed Testing — MARSLib</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --mars-red: #B32416;
+      --mars-red-light: #d42e1e;
+      --bg-primary: #0a0a0a;
+      --bg-card: #1a1a1a;
+      --border: #2a2a2a;
+      --text-primary: #e8e8e8;
+      --text-secondary: #999999;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Ubuntu', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; padding: 40px 20px; max-width: 800px; margin: auto; }
+    h1, h2 { font-family: 'Orbitron', sans-serif; color: var(--mars-red-light); margin-bottom: 20px; }
+    h1 { font-size: 2.5rem; text-align: center; }
+    h2 { font-size: 1.8rem; margin-top: 40px; }
+    p { margin-bottom: 16px; color: var(--text-secondary); font-size: 1.1rem; }
+    ul { margin-bottom: 20px; padding-left: 20px; color: var(--text-secondary); font-size: 1.1rem; }
+    li { margin-bottom: 10px; }
+    .back-link { display: inline-block; margin-bottom: 30px; color: var(--mars-red); text-decoration: none; font-weight: bold; font-family: 'Orbitron', sans-serif; }
+    .back-link:hover { text-decoration: underline; }
+    .card { background: var(--bg-card); border: 1px solid var(--border); padding: 30px; border-radius: 12px; margin-top: 30px; }
+  </style>
+</head>
+<body>
+  <a href="index.html#features" class="back-link">← BACK TO FEATURES</a>
+  <h1>Physics-Backed Testing</h1>
+  
+  <div class="card">
+    <h2>Beyond Mocks</h2>
+    <p>Writing tests that simply mock returning values doesn't prove an FRC system works correctly in reality. MARSLib uses JUnit 5 wired directly into our dyn4j physics framework to ensure that tests evaluate real consequences.</p>
+    
+    <h2>How Tests Run</h2>
+    <p>When running <code>./gradlew test</code> on MARSLib:</p>
+    <ul>
+      <li><strong>Realistic Hardware Simulation:</strong> E.g. when testing the elevator subsystem to go to a setpoint, our test doesn't mock an encoder. It applies motor voltage to a physics mass on a continuous hinge joint. The test waits for the virtual PID to actually move the virtual mass to the target.</li>
+      <li><strong>Extensive Coverage:</strong> We compile close to 90 test cases asserting everything from SOTM polynomial correctness, 250Hz threading integrity, swerve kinematics bounding ranges, to state machine validity.</li>
+      <li><strong>Continuous Integration:</strong> All PRs are instantly built and tested on Ubuntu Github Actions runners. Strict linters prevent malformed code from entering master.</li>
+    </ul>
+
+    <h2>Confidence in the Codebase</h2>
+    <p>If our physics tests pass, we know the robot will operate identically on the field. The simulation physics are an exact substitute for real hardware—ensuring a fundamentally sound code repository at all times.</p>
+  </div>
+</body>
+</html>

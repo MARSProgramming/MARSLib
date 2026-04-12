@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dyn4j Physics Simulation — MARSLib</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --mars-red: #B32416;
+      --mars-red-light: #d42e1e;
+      --bg-primary: #0a0a0a;
+      --bg-card: #1a1a1a;
+      --border: #2a2a2a;
+      --text-primary: #e8e8e8;
+      --text-secondary: #999999;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Ubuntu', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; padding: 40px 20px; max-width: 800px; margin: auto; }
+    h1, h2 { font-family: 'Orbitron', sans-serif; color: var(--mars-red-light); margin-bottom: 20px; }
+    h1 { font-size: 2.5rem; text-align: center; }
+    h2 { font-size: 1.8rem; margin-top: 40px; }
+    p { margin-bottom: 16px; color: var(--text-secondary); font-size: 1.1rem; }
+    ul { margin-bottom: 20px; padding-left: 20px; color: var(--text-secondary); font-size: 1.1rem; }
+    li { margin-bottom: 10px; }
+    .back-link { display: inline-block; margin-bottom: 30px; color: var(--mars-red); text-decoration: none; font-weight: bold; font-family: 'Orbitron', sans-serif; }
+    .back-link:hover { text-decoration: underline; }
+    .card { background: var(--bg-card); border: 1px solid var(--border); padding: 30px; border-radius: 12px; margin-top: 30px; }
+  </style>
+</head>
+<body>
+  <a href="index.html#features" class="back-link">← BACK TO FEATURES</a>
+  <h1>Dyn4j Physics Simulation</h1>
+  
+  <div class="card">
+    <h2>Why Simulate with Dyn4j?</h2>
+    <p>Standard WPILib simulation uses 1D kinematics, which are great for simple mechanisms, but fail to capture the chaotic reality of an FRC field. Hardware development time is precious—having a high-fidelity virtual robot allows the software team to develop and tune complete autonomous routines before the mechanical team has even finished the drivetrain.</p>
+    
+    <h2>MARSLib's Integration</h2>
+    <p>MARSLib deeply natively integrates the <code>dyn4j</code> 2D physics engine. The `IO` layer pattern abstracts the physical robot hardware into simulated counterparts:</p>
+    <ul>
+      <li><strong>Rigid Bodies & Collisions:</strong> The robot bumpers, game pieces (Notes, Rings, etc.), and field elements (like the Stage or Speaker) are constructed as rigid and soft bodies. They bounce, spin, and collide realistically.</li>
+      <li><strong>Intake Mechanics:</strong> Our simulated intakes apply actual physics forces to game piece geometry to pull them inward. If you miss your alignment, the game piece bounces away—just like real life.</li>
+      <li><strong>Center of Gravity Modeling:</strong> The robot's mass and angular inertia are modeled. If you accelerate a heavy elevator to the top and hit the brakes, the simulated robot will tip and its odometry will reflect the disturbance.</li>
+    </ul>
+
+    <h2>Virtual Testing & AdvantageScope</h2>
+    <p>By simulating in dyn4j, we instantly get 3D rendered poses for AdvantageScope, making debugging autonomous paths, vision pose fusion, and collision avoidance incredibly intuitive and fast.</p>
+  </div>
+</body>
+</html>

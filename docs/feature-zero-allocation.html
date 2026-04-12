@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zero-Allocation Hot Path — MARSLib</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* Reuse base MARSLib styles */
+    :root {
+      --mars-red: #B32416;
+      --mars-red-light: #d42e1e;
+      --bg-primary: #0a0a0a;
+      --bg-card: #1a1a1a;
+      --border: #2a2a2a;
+      --text-primary: #e8e8e8;
+      --text-secondary: #999999;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Ubuntu', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; padding: 40px 20px; max-width: 800px; margin: auto; }
+    h1, h2 { font-family: 'Orbitron', sans-serif; color: var(--mars-red-light); margin-bottom: 20px; }
+    h1 { font-size: 2.5rem; text-align: center; }
+    h2 { font-size: 1.8rem; margin-top: 40px; }
+    p { margin-bottom: 16px; color: var(--text-secondary); font-size: 1.1rem; }
+    ul { margin-bottom: 20px; padding-left: 20px; color: var(--text-secondary); font-size: 1.1rem; }
+    li { margin-bottom: 10px; }
+    .back-link { display: inline-block; margin-bottom: 30px; color: var(--mars-red); text-decoration: none; font-weight: bold; font-family: 'Orbitron', sans-serif; }
+    .back-link:hover { text-decoration: underline; }
+    .card { background: var(--bg-card); border: 1px solid var(--border); padding: 30px; border-radius: 12px; margin-top: 30px; }
+  </style>
+</head>
+<body>
+  <a href="index.html#features" class="back-link">← BACK TO FEATURES</a>
+  <h1>Zero-Allocation Hot Path</h1>
+  
+  <div class="card">
+    <h2>Why Zero-Allocation?</h2>
+    <p>In the high-stakes environment of FIRST Robotics Competition matches, control loop consistency is critical. The RoboRIO's JVM garbage collector (GC) can cause non-deterministic pauses—sometimes lasting upwards of 10-20ms. In a 20ms control loop, a single GC pause can result in skipped loops, jittery odometry, and missed shots.</p>
+    
+    <h2>MARSLib's Approach</h2>
+    <p>MARSLib enforces strict zero-allocation rules on the hot path (the 20ms robot loop and critical subsystems). We achieve this through:</p>
+    <ul>
+      <li><strong>Pre-allocated Buffers:</strong> Odometry arrays, pose arrays for AdvantageKit, and state containers are instantiated once during <code>robotInit()</code>. We never use <code>new</code> within a periodic function.</li>
+      <li><strong>Static Velocity & Pose Constants:</strong> Heavy objects like <code>Transform3d</code> or <code>Rotation2d</code> are cached where possible rather than dynamically generated every tick.</li>
+      <li><strong>Mutating Existing Objects:</strong> Instead of creating new arrays to pass data, we mutate pre-defined structured objects inside the hardware IO layers.</li>
+      <li><strong>No Magic Math Boxing:</strong> Using primitive <code>double</code> variables everywhere. Avoiding accidental `Double` wrapper boxing that causes hidden garbage collection pressure.</li>
+    </ul>
+
+    <h2>Impact on Performance</h2>
+    <p>By keeping the GC idle during the teleoperated and autonomous routines, MARSLib ensures the robot maneuvers accurately and predictably, even during complex trajectories and rapid swerve module steering.</p>
+  </div>
+</body>
+</html>
