@@ -30,6 +30,13 @@ public class MARSVision extends SubsystemBase {
   private final AprilTagVisionIOInputsAutoLogged[] aprilTagInputs;
   private Optional<Translation2d> latestTargetTranslation = Optional.empty();
 
+  private double lastYawVelocity = 0.0;
+  private double lastPitchVelocity = 0.0;
+  private double lastRollVelocity = 0.0;
+
+  private double lastPoseX = 0.0;
+  private double lastPoseY = 0.0;
+
   private final List<VIOSlamIO> slamIOs;
   private final VIOSlamIOInputsAutoLogged[] slamInputs;
 
@@ -66,6 +73,35 @@ public class MARSVision extends SubsystemBase {
 
     GyroIOInputsAutoLogged gyro = swerveDrive.getGyroInputs();
 
+    double dt = frc.robot.constants.ModeConstants.LOOP_PERIOD_SECS;
+    double maxAngularAccel =
+        Math.max(
+            Math.abs((gyro.yawVelocityRadPerSec - lastYawVelocity) / dt),
+            Math.max(
+                Math.abs((gyro.pitchVelocityRadPerSec - lastPitchVelocity) / dt),
+                Math.abs((gyro.rollVelocityRadPerSec - lastRollVelocity) / dt)));
+
+    lastYawVelocity = gyro.yawVelocityRadPerSec;
+    lastPitchVelocity = gyro.pitchVelocityRadPerSec;
+    lastRollVelocity = gyro.rollVelocityRadPerSec;
+
+    boolean isImpactShock =
+        Math.toDegrees(maxAngularAccel) > VisionConstants.MAX_ANGULAR_ACCEL_DEG_PER_SEC2.get();
+
+    Pose2d currentFilteredPose = swerveDrive.getPose();
+    double dx = currentFilteredPose.getX() - lastPoseX;
+    double dy = currentFilteredPose.getY() - lastPoseY;
+    double smoothLinearVelocity = Math.hypot(dx, dy) / dt;
+
+    lastPoseX = currentFilteredPose.getX();
+    lastPoseY = currentFilteredPose.getY();
+
+    double continuousVelocityMultiplier =
+        1.0
+            + (smoothLinearVelocity * VisionConstants.LINEAR_VELOCITY_STD_MULTIPLIER.get())
+            + (Math.toDegrees(Math.abs(gyro.yawVelocityRadPerSec))
+                * VisionConstants.ANGULAR_VELOCITY_STD_MULTIPLIER.get());
+
     // Process AprilTags
     for (int i = 0; i < aprilTagIOs.size(); i++) {
 
@@ -82,11 +118,11 @@ public class MARSVision extends SubsystemBase {
       Logger.processInputs("Vision/AprilTag/" + i, aprilTagInputs[i]);
 
       int acceptedCount = 0;
-      boolean rejectedYawRate = false;
       boolean rejectedTilt = false;
       boolean rejectedOOB = false;
       boolean rejectedZHeight = false;
       boolean rejectedAmbiguity = false;
+      boolean rejectedImpactShock = false;
 
       for (int f = 0; f < aprilTagInputs[i].estimatedPoses.length; f++) {
         Pose3d pose3d = aprilTagInputs[i].estimatedPoses[f];
@@ -120,10 +156,9 @@ public class MARSVision extends SubsystemBase {
           continue;
         }
 
-        // Check 4: Yaw Rate (Motion blur)
-        if (Math.toDegrees(Math.abs(gyro.yawVelocityRadPerSec))
-            > VisionConstants.MAX_YAW_RATE_DEG_PER_SEC.get()) {
-          rejectedYawRate = true;
+        // Check 4: Impact Shock / Jerk (Vibrational blur)
+        if (isImpactShock) {
+          rejectedImpactShock = true;
           continue;
         }
 
@@ -145,6 +180,11 @@ public class MARSVision extends SubsystemBase {
 
         double angularStdDev = linearStdDev * VisionConstants.ANGULAR_STD_MULTIPLIER.get();
 
+        // Continuous Velocity Scaling: smoothly blur out vision trust at max speeds without hard
+        // cutoffs
+        linearStdDev *= continuousVelocityMultiplier;
+        angularStdDev *= continuousVelocityMultiplier;
+
         Matrix<N3, N1> stdDevs = VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev);
 
         swerveDrive.addVisionMeasurement(pose2d, timestamp, stdDevs);
@@ -153,11 +193,11 @@ public class MARSVision extends SubsystemBase {
       }
 
       // Log rejection telemetry
-      Logger.recordOutput("Vision/Rejected/YawRate/" + i, rejectedYawRate);
       Logger.recordOutput("Vision/Rejected/Tilt/" + i, rejectedTilt);
       Logger.recordOutput("Vision/Rejected/OutOfBounds/" + i, rejectedOOB);
       Logger.recordOutput("Vision/Rejected/ZHeight/" + i, rejectedZHeight);
       Logger.recordOutput("Vision/Rejected/Ambiguity/" + i, rejectedAmbiguity);
+      Logger.recordOutput("Vision/Rejected/ImpactShock/" + i, rejectedImpactShock);
       Logger.recordOutput("Vision/AcceptedCount/" + i, acceptedCount);
 
       Logger.recordOutput("Vision/CameraFrustums/" + i, aprilTagInputs[i].cameraFrustum);

@@ -347,7 +347,8 @@ public class RobotContainer {
 
     // Task 1: Asynchronously pre-load all PathPlanner trajectories to prevent match-start CPU
     // stutter
-    new Thread(
+    Thread trajectoryPreloader =
+        new Thread(
             () -> {
               for (String autoName : com.pathplanner.lib.auto.AutoBuilder.getAllAutoNames()) {
                 try {
@@ -359,8 +360,10 @@ public class RobotContainer {
                       .set(true);
                 }
               }
-            })
-        .start();
+            });
+    trajectoryPreloader.setDaemon(true);
+    trajectoryPreloader.setName("PathPlannerPreloader");
+    trajectoryPreloader.start();
 
     // Expose utility commands directly on SmartDashboard for generic access
     edu.wpi.first.wpilibj.smartdashboard.SmartDashboard.putData(
@@ -426,7 +429,12 @@ public class RobotContainer {
         .withPosition(3, 0);
 
     matchTab
-        .addBoolean("Vision Connected", () -> vision != null)
+        .addBoolean(
+            "Vision Connected",
+            () -> {
+              com.marslib.swerve.GyroIOInputsAutoLogged gyro = swerveDrive.getGyroInputs();
+              return gyro.connected;
+            })
         .withWidget(edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets.kBooleanBox)
         .withSize(1, 1)
         .withPosition(3, 1);
@@ -480,7 +488,12 @@ public class RobotContainer {
         .withPosition(5, 0);
 
     practiceTab
-        .addBoolean("Swerve Odometry Synchronized", () -> swerveDrive != null)
+        .addBoolean(
+            "Swerve Odometry Synchronized",
+            () -> {
+              com.marslib.swerve.GyroIOInputsAutoLogged gyro = swerveDrive.getGyroInputs();
+              return gyro.connected;
+            })
         .withSize(2, 1)
         .withPosition(3, 1);
   }

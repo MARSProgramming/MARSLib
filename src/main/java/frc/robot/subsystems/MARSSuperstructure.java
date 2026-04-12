@@ -109,6 +109,8 @@ public class MARSSuperstructure extends SubsystemBase {
     stateMachine.addValidBidirectional(SuperstructureState.STOWED, SuperstructureState.INTAKE_DOWN);
     stateMachine.addValidBidirectional(
         SuperstructureState.INTAKE_DOWN, SuperstructureState.INTAKE_RUNNING);
+    stateMachine.addValidBidirectional(
+        SuperstructureState.STOWED, SuperstructureState.INTAKE_RUNNING);
     stateMachine.addValidBidirectional(SuperstructureState.STOWED, SuperstructureState.SCORE);
     stateMachine.addValidBidirectional(SuperstructureState.STOWED, SuperstructureState.UNJAM);
     stateMachine.addValidBidirectional(SuperstructureState.STOWED, SuperstructureState.BEACHED);
@@ -126,16 +128,19 @@ public class MARSSuperstructure extends SubsystemBase {
         });
 
     stateMachine.setOnTransition(
-        (from, to) ->
-            Logger.recordOutput(
-                "Superstructure/TransitionDetail",
-                String.format(
-                    "%s→%s at cowl=%.3frad intake=%.3frad gamePieceCount=%d",
-                    from.name(),
-                    to.name(),
-                    cowl.getPositionRads(),
-                    intakePivot.getPositionRads(),
-                    gamePieceCount)));
+        (from, to) -> {
+          StringBuilder sb = new StringBuilder(64);
+          sb.append(from.name())
+              .append(" -> ")
+              .append(to.name())
+              .append(" at cowl=")
+              .append(cowl.getPositionRads())
+              .append("rad intake=")
+              .append(intakePivot.getPositionRads())
+              .append("rad gamePieceCount=")
+              .append(gamePieceCount);
+          Logger.recordOutput("Superstructure/TransitionDetail", sb.toString());
+        });
   }
 
   /**
@@ -179,18 +184,28 @@ public class MARSSuperstructure extends SubsystemBase {
     if (tiltDegrees > 25.0 && stateMachine.getState() != SuperstructureState.BEACHED) {
       forceState(SuperstructureState.BEACHED);
     }
+    // Automatic recovery: return to STOWED when tilt drops below 20° (hysteresis band)
+    if (tiltDegrees < 20.0 && stateMachine.getState() == SuperstructureState.BEACHED) {
+      forceState(SuperstructureState.STOWED);
+    }
 
     stateMachine.update();
     SuperstructureState currentState = stateMachine.getState();
 
+    // Cache shot calculation once per loop to avoid duplicate solver runs
+    EliteShooterMath.EliteShooterSetpoint cachedShot = null;
+    if (currentState == SuperstructureState.SCORE) {
+      cachedShot = calculateStaticShot();
+    }
+
     // Update mechanism targets based on current state
-    updateMechanismTargets(currentState);
+    updateMechanismTargets(currentState, cachedShot);
     cowl.setTargetPosition(goalCowlAngle);
     intakePivot.setTargetPosition(goalIntakeAngle);
 
     // Execute state-specific motor logic
     handleIntakeLogic(currentState);
-    handleScoringLogic(currentState);
+    handleScoringLogic(currentState, cachedShot);
     handleUnjamLogic(currentState);
 
     // Log state
@@ -198,7 +213,8 @@ public class MARSSuperstructure extends SubsystemBase {
   }
 
   /** Sets goalCowlAngle and goalIntakeAngle based on the current state. */
-  private void updateMechanismTargets(SuperstructureState currentState) {
+  private void updateMechanismTargets(
+      SuperstructureState currentState, EliteShooterMath.EliteShooterSetpoint cachedShot) {
     switch (currentState) {
       case INTAKE_DOWN:
       case INTAKE_RUNNING:
@@ -207,9 +223,8 @@ public class MARSSuperstructure extends SubsystemBase {
         break;
       case SCORE:
         goalIntakeAngle = 0.0;
-        EliteShooterMath.EliteShooterSetpoint shot = calculateStaticShot();
-        if (shot.isValid) {
-          goalCowlAngle = shot.hoodRadians;
+        if (cachedShot != null && cachedShot.isValid) {
+          goalCowlAngle = cachedShot.hoodRadians;
         } else {
           goalCowlAngle = SuperstructureConstants.SCORE_FALLBACK_COWL_ANGLE;
         }
@@ -235,12 +250,12 @@ public class MARSSuperstructure extends SubsystemBase {
   }
 
   /** Handles shooter spin-up, flywheel readiness checks, feeding, and game piece launching. */
-  private void handleScoringLogic(SuperstructureState currentState) {
+  private void handleScoringLogic(
+      SuperstructureState currentState, EliteShooterMath.EliteShooterSetpoint cachedShot) {
     if (currentState == SuperstructureState.SCORE) {
-      EliteShooterMath.EliteShooterSetpoint shot = calculateStaticShot();
       double targetRadPerSec = 4000.0 * Math.PI * 2.0 / 60.0; // Default fallback
-      if (shot.isValid) {
-        targetRadPerSec = shot.launchSpeedMetersPerSec * 30.0;
+      if (cachedShot != null && cachedShot.isValid) {
+        targetRadPerSec = cachedShot.launchSpeedMetersPerSec * 30.0;
       }
 
       shooter.setClosedLoopVelocity(targetRadPerSec);

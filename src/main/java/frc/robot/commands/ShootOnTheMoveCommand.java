@@ -43,17 +43,9 @@ public class ShootOnTheMoveCommand extends Command {
 
   private final EliteShooterSetpoint shotCache = new EliteShooterSetpoint();
 
-  private static final Translation3d BLUE_HUB_3D =
-      new Translation3d(
-          frc.robot.constants.FieldConstants.BLUE_HUB_POS.getX(),
-          frc.robot.constants.FieldConstants.BLUE_HUB_POS.getY(),
-          frc.robot.constants.FieldConstants.HUB_SIZE_METERS);
+  private static final Translation3d BLUE_HUB_3D = frc.robot.constants.FieldConstants.BLUE_HUB_3D;
 
-  private static final Translation3d RED_HUB_3D =
-      new Translation3d(
-          frc.robot.constants.FieldConstants.RED_HUB_POS.getX(),
-          frc.robot.constants.FieldConstants.RED_HUB_POS.getY(),
-          frc.robot.constants.FieldConstants.HUB_SIZE_METERS);
+  private static final Translation3d RED_HUB_3D = frc.robot.constants.FieldConstants.RED_HUB_3D;
 
   public ShootOnTheMoveCommand(
       SwerveDrive swerveDrive,

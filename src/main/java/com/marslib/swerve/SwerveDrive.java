@@ -244,7 +244,10 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
               new PIDConstants(
                   SwerveConstants.AUTO_ROTATION_KP, 0.0, SwerveConstants.AUTO_ROTATION_KD)),
           config,
-          () -> false, // Mirroring
+          () ->
+              edu.wpi.first.wpilibj.DriverStation.getAlliance()
+                      .orElse(edu.wpi.first.wpilibj.DriverStation.Alliance.Blue)
+                  == edu.wpi.first.wpilibj.DriverStation.Alliance.Red, // Mirror paths for Red
           this // Subsystem requirement
           );
     } catch (Exception e) {

@@ -19,15 +19,15 @@ public final class VisionConstants {
       new LoggedTunableNumber("Vision/MAX_Z_HEIGHT", 0.5);
 
   /**
-   * Maximum acceptable yaw angular velocity (deg/sec) to reject vision during high-speed spins
-   * (motion blur).
+   * Maximum acceptable angular acceleration (deg/sec^2) across any axis to reject frames impacted
+   * by extreme physical shock or bumping (vibrational blur).
    */
-  public static final LoggedTunableNumber MAX_YAW_RATE_DEG_PER_SEC =
-      new LoggedTunableNumber("Vision/MAX_YAW_RATE_DEG_PER_SEC", 120.0);
+  public static final LoggedTunableNumber MAX_ANGULAR_ACCEL_DEG_PER_SEC2 =
+      new LoggedTunableNumber("Vision/MAX_ANGULAR_ACCEL_DEG_PER_SEC2", 500.0);
 
   /** Maximum acceptable pitch or roll angle (deg) to reject vision when beached on an obstacle. */
   public static final LoggedTunableNumber MAX_TILT_DEG =
-      new LoggedTunableNumber("Vision/MAX_TILT_DEG", 15.0);
+      new LoggedTunableNumber("Vision/MAX_TILT_DEG", 30.0);
 
   /** Allowable field coordinate boundary margin in meters for pose rejection. */
   public static final LoggedTunableNumber FIELD_MARGIN_METERS =
@@ -40,6 +40,20 @@ public final class VisionConstants {
   /** Multiplier to convert linear StdDev to angular StdDev for the pose estimator. */
   public static final LoggedTunableNumber ANGULAR_STD_MULTIPLIER =
       new LoggedTunableNumber("Vision/ANGULAR_STD_MULTIPLIER", 2.0);
+
+  /**
+   * Continuous scaling factor to dynamically inflate StdDev linearly based on robot ground speed
+   * (m/s).
+   */
+  public static final LoggedTunableNumber LINEAR_VELOCITY_STD_MULTIPLIER =
+      new LoggedTunableNumber("Vision/LINEAR_VELOCITY_STD_MULTIPLIER", 0.1);
+
+  /**
+   * Continuous scaling factor to dynamically inflate StdDev linearly based on chassis angular spin
+   * (deg/s).
+   */
+  public static final LoggedTunableNumber ANGULAR_VELOCITY_STD_MULTIPLIER =
+      new LoggedTunableNumber("Vision/ANGULAR_VELOCITY_STD_MULTIPLIER", 0.01);
 
   /** Static standard deviation for VIO SLAM measurements (meters and radians). */
   public static final LoggedTunableNumber SLAM_STD_DEV =
