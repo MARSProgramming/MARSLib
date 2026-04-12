@@ -2,11 +2,11 @@ name: MARSLib FRC CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
     paths-ignore:
       - '**.md'
   pull_request:
-    branches: [ "main" ]
+    branches: [ "master" ]
     paths-ignore:
       - '**.md'
 
@@ -17,6 +17,8 @@ concurrency:
 permissions:
   contents: write
   pull-requests: write
+  pages: write
+  id-token: write
 
 jobs:
   build:
@@ -44,7 +46,7 @@ jobs:
     - name: Apply Code Formatting
       if: matrix.os == 'ubuntu-latest'
       run: ./gradlew spotlessApply
-      
+
     - name: Commit Auto-formatted Code
       if: matrix.os == 'ubuntu-latest'
       uses: stefanzweifel/git-auto-commit-action@v5
@@ -59,7 +61,7 @@ jobs:
         workdir: ./
         reporter: github-pr-review
         fail_on_error: false
-      
+
     - name: Compile (pre-check)
       run: ./gradlew compileJava compileTestJava
 
@@ -99,28 +101,48 @@ jobs:
         badges-directory: .github/badges
 
     - name: Commit JaCoCo Badges
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push' && matrix.os == 'ubuntu-latest'
+      if: github.ref == 'refs/heads/master' && github.event_name == 'push' && matrix.os == 'ubuntu-latest'
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: "docs: update jacoco coverage badges [skip ci]"
         file_pattern: ".github/badges/*.svg"
 
-    - name: Generate Javadocs
+    - name: Generate Full Documentation Site
       if: matrix.os == 'ubuntu-latest'
-      run: ./gradlew javadoc
+      run: ./gradlew generateDocs
 
-    - name: Upload Javadoc Artifact
+    - name: Upload Documentation Artifact
       if: matrix.os == 'ubuntu-latest'
       uses: actions/upload-artifact@v4
       with:
-        name: MARSLib-Javadocs
-        path: build/docs/javadoc/
+        name: MARSLib-Docs
+        path: docs/
 
-    - name: Deploy Javadocs to GitHub Pages
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push' && matrix.os == 'ubuntu-latest'
-      uses: peaceiris/actions-gh-pages@v3
+  # Deploy docs to GitHub Pages (only on push to master)
+  deploy-docs:
+    needs: build
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+    - name: Download Documentation Artifact
+      uses: actions/download-artifact@v4
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./build/docs/javadoc
-        destination_dir: docs
-        keep_files: false
+        name: MARSLib-Docs
+        path: docs/
+
+    - name: Configure GitHub Pages
+      uses: actions/configure-pages@v5
+
+    - name: Upload to GitHub Pages
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: docs/
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
