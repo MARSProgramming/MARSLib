@@ -23,6 +23,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
 
     - name: Set up JDK 17
       uses: actions/setup-java@v4
@@ -37,7 +39,7 @@ jobs:
       run: chmod +x gradlew
 
     - name: Apply Code Formatting
-      run: ./gradlew spotlessApply
+      run: ./gradlew spotlessApply -Pskip-inspector-wrapper
 
     - name: Commit Auto-formatted Code
       uses: stefanzweifel/git-auto-commit-action@v5
@@ -45,10 +47,10 @@ jobs:
         commit_message: "style: auto-format code with spotless [skip ci]"
 
     - name: Compile
-      run: ./gradlew compileJava compileTestJava
+      run: ./gradlew compileJava compileTestJava -Pskip-inspector-wrapper
 
     - name: Build and Test with Coverage
-      run: ./gradlew build jacocoTestReport
+      run: ./gradlew build jacocoTestReport -Pskip-inspector-wrapper
 
     - name: Upload Test Reports (on failure)
       if: failure()
@@ -88,7 +90,7 @@ jobs:
         file_pattern: ".github/badges/*.svg"
 
     - name: Generate Documentation Site
-      run: ./gradlew generateDocs
+      run: ./gradlew generateDocs -Pskip-inspector-wrapper
 
     - name: Upload Documentation Artifact
       uses: actions/upload-artifact@v4
