@@ -73,9 +73,9 @@ MARSPhysicsWorld.getInstance().getDyn4jWorld().addBody(fuelBall);</code></pre>
   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
     <div>
       <h3 style="margin:0; color:white;">Interactive Collision Sandbox</h3>
-      <p style="margin:0; font-size:0.9rem; color:var(--text-secondary);">Drag the blue robot chassis to collide with the Fuel Balls, utilizing 2D continuous collision detection.</p>
+      <p style="margin:0; font-size:0.9rem; color:var(--text-secondary);">Drag the blue robot chassis to collide with the Fuel Balls, utilizing 2D continuous collision detection. Hit the Fuel Balls into the glowing blue goal on the left to score points and test momentum transfer dynamics!</p>
     </div>
-    <button id="resetSimBtn" style="background:var(--ai-cyan); color:#000; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-family:'Orbitron'; font-weight:700;">RESET WORLD</button>
+    <button id="resetSimBtn" style="background:var(--ai-cyan); color:#000; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-family:'Orbitron'; font-weight:700; box-shadow: 0 0 15px rgba(41, 182, 246, 0.4);">RESET WORLD</button>
   </div>
   
   <canvas id="physicsCanvas" width="800" height="400" style="width:100%; height:400px; background:#050505; border-radius:8px; border: 1px solid #333; cursor: grab; box-shadow: inset 0 0 40px rgba(0,0,0,0.8);"></canvas>
@@ -263,36 +263,52 @@ document.addEventListener("DOMContentLoaded", () => {
         for(let i=0; i<canvas.height; i+=40) { ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke(); }
 
         // Draw Goal
-        ctx.fillStyle = "rgba(41, 182, 246, 0.1)";
+        ctx.fillStyle = "rgba(41, 182, 246, 0.3)"; // Brighter fill
         ctx.fillRect(goal.x, goal.y, goal.w, goal.h);
+        
+        ctx.save();
+        ctx.shadowColor = "var(--ai-cyan)";
+        ctx.shadowBlur = 15;
         ctx.strokeStyle = "var(--ai-cyan)";
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 3; // Thicker border
         ctx.setLineDash([5, 5]);
         ctx.beginPath();
         ctx.moveTo(goal.x + goal.w, goal.y);
         ctx.lineTo(goal.x + goal.w, goal.y + goal.h);
         ctx.stroke();
-        ctx.setLineDash([]);
+        ctx.restore();
         
-        ctx.fillStyle = "var(--ai-cyan)";
-        ctx.font = "bold 14px Orbitron";
+        ctx.fillStyle = "#ffffff"; // Bright white text
+        ctx.font = "bold 16px Orbitron";
         ctx.save();
-        ctx.translate(goal.x + 10, goal.y + goal.h / 2);
+        ctx.translate(goal.x + 15, goal.y + goal.h / 2);
         ctx.rotate(-Math.PI / 2);
         ctx.textAlign = "center";
+        
+        // Text glow effect for the goal
+        ctx.shadowColor = "var(--ai-cyan)";
+        ctx.shadowBlur = 10;
         ctx.fillText("GOAL", 0, 0);
         ctx.restore();
 
         // Draw Score Display
-        ctx.fillStyle = "rgba(10, 10, 10, 0.85)";
-        ctx.strokeStyle = "#333";
-        ctx.fillRect(canvas.width - 150, 10, 130, 45);
-        ctx.strokeRect(canvas.width - 150, 10, 130, 45);
-        ctx.fillStyle = "var(--mars-red-light)";
-        ctx.font = "bold 18px Orbitron";
+        ctx.save();
+        ctx.fillStyle = "rgba(10, 10, 10, 0.9)";
+        ctx.strokeStyle = "var(--ai-cyan)"; // Cyan border for score box
+        ctx.lineWidth = 2;
+        ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
+        ctx.shadowBlur = 10;
+        ctx.fillRect(canvas.width - 150, 15, 130, 45);
+        ctx.strokeRect(canvas.width - 150, 15, 130, 45);
+        
+        ctx.shadowColor = "rgba(41, 182, 246, 0.5)"; // Soft blue glow on text
+        ctx.shadowBlur = 5;
+        ctx.fillStyle = "#ffffff"; // White score text
+        ctx.font = "bold 20px Orbitron";
         ctx.textAlign = "center";
-        ctx.fillText(`SCORE: ${score}`, canvas.width - 85, 38);
+        ctx.fillText(`SCORE: ${score}`, canvas.width - 85, 45);
         ctx.textAlign = "left";
+        ctx.restore();
 
         // Draw Balls
         balls.forEach(b => {
