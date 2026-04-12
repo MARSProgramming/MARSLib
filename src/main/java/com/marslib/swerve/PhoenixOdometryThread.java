@@ -18,9 +18,16 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * <p><b>Thread Safety:</b> All signal registration and data access is guarded by a {@link
  * ReentrantLock}. The queues use a fixed capacity of 50 to bound memory usage.
+ *
+ * <p><b>Zero-Allocation Contract:</b> All drain methods ({@link #getSyncData}, {@link
+ * #getGyroYawData}) write into pre-allocated fixed-capacity arrays and return a valid sample count.
+ * No heap allocations occur on the hot path.
  */
 public class PhoenixOdometryThread extends Thread {
   private static PhoenixOdometryThread instance = null;
+
+  /** Maximum number of odometry samples buffered between drains (250Hz / 50Hz = 5 typical). */
+  public static final int MAX_SAMPLES = 50;
 
   /**
    * Returns the singleton instance, creating and starting the thread on first access.
@@ -35,16 +42,36 @@ public class PhoenixOdometryThread extends Thread {
     return instance;
   }
 
-  /** Container for a batch of synchronized odometry samples from a single module. */
+  /**
+   * Container for a batch of synchronized odometry samples from a single module.
+   *
+   * <p>Arrays are pre-allocated at fixed capacity ({@link #MAX_SAMPLES}). Use {@link #validCount}
+   * to determine how many entries are populated. Do not read beyond {@code validCount - 1}.
+   */
   public static class SyncData {
     /** Accumulated drive encoder positions (motor rotations) since the last drain. */
-    public double[] drivePositions;
+    public final double[] drivePositions = new double[MAX_SAMPLES];
 
     /** Accumulated turn encoder positions (motor rotations) since the last drain. */
-    public double[] turnPositions;
+    public final double[] turnPositions = new double[MAX_SAMPLES];
 
     /** FPGA timestamps corresponding to each position sample. */
-    public double[] timestamps;
+    public final double[] timestamps = new double[MAX_SAMPLES];
+
+    /** Number of valid samples in this batch. Only indices {@code [0, validCount)} are valid. */
+    public int validCount = 0;
+  }
+
+  /**
+   * Container for pre-allocated gyro yaw data. Use {@link #validCount} to determine how many
+   * entries are populated.
+   */
+  public static class GyroYawData {
+    /** High-frequency yaw position samples (rotations). */
+    public final double[] yawPositions = new double[MAX_SAMPLES];
+
+    /** Number of valid samples. Only indices {@code [0, validCount)} are valid. */
+    public int validCount = 0;
   }
 
   private final List<BaseStatusSignal> signals = new ArrayList<>();
@@ -55,12 +82,19 @@ public class PhoenixOdometryThread extends Thread {
   private final List<BlockingQueue<Double>> turnPositionQueues = new ArrayList<>();
   private final List<BlockingQueue<Double>> timestampQueues = new ArrayList<>();
 
-  private final BlockingQueue<Double> gyroYawQueue = new ArrayBlockingQueue<>(50);
+  // Pre-allocated SyncData per module (max 4 modules)
+  private final SyncData[] syncDataCache = new SyncData[4];
+
+  private final BlockingQueue<Double> gyroYawQueue = new ArrayBlockingQueue<>(MAX_SAMPLES);
+  private final GyroYawData gyroYawDataCache = new GyroYawData();
   private int gyroSignalIndex = -1;
 
   public PhoenixOdometryThread() {
     setName("PhoenixOdometryThread");
     setDaemon(true);
+    for (int i = 0; i < syncDataCache.length; i++) {
+      syncDataCache[i] = new SyncData();
+    }
   }
 
   /**
@@ -74,9 +108,9 @@ public class PhoenixOdometryThread extends Thread {
     signalsLock.lock();
     try {
       int id = drivePositionQueues.size();
-      drivePositionQueues.add(new ArrayBlockingQueue<>(50));
-      turnPositionQueues.add(new ArrayBlockingQueue<>(50));
-      timestampQueues.add(new ArrayBlockingQueue<>(50));
+      drivePositionQueues.add(new ArrayBlockingQueue<>(MAX_SAMPLES));
+      turnPositionQueues.add(new ArrayBlockingQueue<>(MAX_SAMPLES));
+      timestampQueues.add(new ArrayBlockingQueue<>(MAX_SAMPLES));
 
       signals.add(drivePosition);
       signals.add(turnPosition);
@@ -95,8 +129,13 @@ public class PhoenixOdometryThread extends Thread {
   /**
    * Drains all buffered odometry samples for a specific module since the last call.
    *
+   * <p><b>Zero-allocation:</b> Returns a pre-allocated {@link SyncData} with fixed-capacity arrays.
+   * Check {@link SyncData#validCount} for the number of populated entries. The returned object is
+   * reused — do not store references across ticks.
+   *
    * @param moduleId The module ID returned by {@link #registerModule}.
-   * @return A {@link SyncData} containing synchronized drive/turn positions and timestamps.
+   * @return A pre-allocated {@link SyncData} containing synchronized drive/turn positions and
+   *     timestamps.
    */
   public SyncData getSyncData(int moduleId) {
     signalsLock.lock();
@@ -105,11 +144,9 @@ public class PhoenixOdometryThread extends Thread {
       BlockingQueue<Double> tQueue = turnPositionQueues.get(moduleId);
       BlockingQueue<Double> tsQueue = timestampQueues.get(moduleId);
 
-      int size = dQueue.size();
-      SyncData data = new SyncData();
-      data.drivePositions = new double[size];
-      data.turnPositions = new double[size];
-      data.timestamps = new double[size];
+      SyncData data = syncDataCache[moduleId];
+      int size = Math.min(dQueue.size(), MAX_SAMPLES);
+      data.validCount = size;
 
       for (int i = 0; i < size; i++) {
         Double driveVal = dQueue.poll();
@@ -145,18 +182,23 @@ public class PhoenixOdometryThread extends Thread {
   /**
    * Drains all buffered high-frequency gyro yaw samples since the last call.
    *
-   * @return Array of yaw positions (rotations) accumulated since the last drain.
+   * <p><b>Zero-allocation:</b> Returns a pre-allocated {@link GyroYawData} with a fixed-capacity
+   * array. Check {@link GyroYawData#validCount} for the number of populated entries. The returned
+   * object is reused — do not store references across ticks.
+   *
+   * @return Pre-allocated container with yaw positions (rotations) accumulated since the last
+   *     drain.
    */
-  public double[] getGyroYawData() {
+  public GyroYawData getGyroYawData() {
     signalsLock.lock();
     try {
-      int size = gyroYawQueue.size();
-      double[] data = new double[size];
+      int size = Math.min(gyroYawQueue.size(), MAX_SAMPLES);
+      gyroYawDataCache.validCount = size;
       for (int i = 0; i < size; i++) {
         Double val = gyroYawQueue.poll();
-        data[i] = val != null ? val : 0.0;
+        gyroYawDataCache.yawPositions[i] = val != null ? val : 0.0;
       }
-      return data;
+      return gyroYawDataCache;
     } finally {
       signalsLock.unlock();
     }

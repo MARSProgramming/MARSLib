@@ -49,6 +49,9 @@ public class GyroIOPigeon2 implements GyroIO {
     pigeon.optimizeBusUtilization();
   }
 
+  // Pre-allocated odometry yaw array — only reallocated when sample count changes
+  private double[] cachedOdometryYaw = new double[0];
+
   @Override
   public void updateInputs(GyroIOInputs inputs) {
     BaseStatusSignal.refreshAll(yaw, pitch, roll, yawVelocity, pitchVelocity, rollVelocity);
@@ -60,12 +63,19 @@ public class GyroIOPigeon2 implements GyroIO {
     inputs.pitchVelocityRadPerSec = Units.degreesToRadians(pitchVelocity.getValueAsDouble());
     inputs.rollVelocityRadPerSec = Units.degreesToRadians(rollVelocity.getValueAsDouble());
 
-    double[] rawOdometryYaw = PhoenixOdometryThread.getInstance().getGyroYawData();
-    // In MARSLib, we'll need to store this in GyroIOInputs. Let's assume there's a field for
-    // odometryYawPositions
-    inputs.odometryYawPositions = new double[rawOdometryYaw.length];
-    for (int i = 0; i < rawOdometryYaw.length; i++) {
-      inputs.odometryYawPositions[i] = Units.degreesToRadians(rawOdometryYaw[i]);
+    // Drain pre-allocated high-frequency yaw buffer
+    PhoenixOdometryThread.GyroYawData yawData =
+        PhoenixOdometryThread.getInstance().getGyroYawData();
+    int count = yawData.validCount;
+
+    // Only reallocate when sample count changes (typically stable at ~5 samples per drain)
+    if (cachedOdometryYaw.length != count) {
+      cachedOdometryYaw = new double[count];
     }
+
+    for (int i = 0; i < count; i++) {
+      cachedOdometryYaw[i] = Units.degreesToRadians(yawData.yawPositions[i]);
+    }
+    inputs.odometryYawPositions = cachedOdometryYaw;
   }
 }

@@ -76,6 +76,11 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     turnMotor.optimizeBusUtilization();
   }
 
+  // Pre-allocated odometry arrays — only reallocated when sample count changes (rare)
+  private double[] cachedDrivePositionsRad = new double[0];
+  private double[] cachedTurnPositionsRad = new double[0];
+  private double[] cachedTimestamps = new double[0];
+
   @Override
   public void updateInputs(SwerveModuleIOInputs inputs) {
     // Query the bulk 50hz telemetry
@@ -97,25 +102,32 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     inputs.driveCurrentAmps = driveCurrent.getValueAsDouble();
     inputs.turnCurrentAmps = turnCurrent.getValueAsDouble();
 
-    // Drain the high-frequency buffer
+    // Drain the high-frequency buffer (returns pre-allocated SyncData)
     PhoenixOdometryThread.SyncData data =
         PhoenixOdometryThread.getInstance().getSyncData(odometryId);
+    int count = data.validCount;
 
-    // Convert to radians
-    inputs.drivePositionsRad = new double[data.drivePositions.length];
-    inputs.turnPositionsRad = new double[data.turnPositions.length];
-    inputs.odometryTimestamps = new double[data.timestamps.length];
+    // Only reallocate when sample count changes (typically stable at ~5 samples per drain)
+    if (cachedDrivePositionsRad.length != count) {
+      cachedDrivePositionsRad = new double[count];
+      cachedTurnPositionsRad = new double[count];
+      cachedTimestamps = new double[count];
+    }
 
-    for (int i = 0; i < data.drivePositions.length; i++) {
-      // Convert from motor rotations to output-shaft radians (post-gearing)
-      inputs.drivePositionsRad[i] =
+    // Convert from motor rotations to output-shaft radians (post-gearing)
+    for (int i = 0; i < count; i++) {
+      cachedDrivePositionsRad[i] =
           Units.rotationsToRadians(data.drivePositions[i])
               / frc.robot.SwerveConstants.DRIVE_GEAR_RATIO;
-      inputs.turnPositionsRad[i] =
+      cachedTurnPositionsRad[i] =
           Units.rotationsToRadians(data.turnPositions[i])
               / frc.robot.SwerveConstants.TURN_GEAR_RATIO;
-      inputs.odometryTimestamps[i] = data.timestamps[i];
+      cachedTimestamps[i] = data.timestamps[i];
     }
+
+    inputs.drivePositionsRad = cachedDrivePositionsRad;
+    inputs.turnPositionsRad = cachedTurnPositionsRad;
+    inputs.odometryTimestamps = cachedTimestamps;
   }
 
   @Override
