@@ -40,8 +40,8 @@ MARSTestHarness.reset(); // Clears MARSFaultManager, Alert, PhysicsWorld, etc.
 ```
 Failing to reset causes fault state to bleed across tests, producing false failures.
 
-### Rule D: System Sweeps Test Physical Motion
-`MARSDiagnosticCheck` doesn't just check connectivity — it commands mechanisms to physical positions and asserts encoder deltas match expected travel. If the elevator is commanded to 0.5m but only reads 0.01m, the gearbox is stripped.
+### Rule D: System Sweeps Must Implement SystemTestable
+`MARSDiagnosticCheck` doesn't just check connectivity — it commands mechanisms to physical positions and asserts encoder deltas match expected travel. To achieve this predictably, every major hardware subsystem MUST implement the `SystemTestable` interface and provide a `getSystemCheckCommand()` that can be sequenced during the pre-match ritual. If an elevator is commanded to 0.5m but only reads 0.01m, the gearbox is stripped structure.
 
 ## 3. Adding New Fault Checks
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tutorial: Elite Shooting (SOTM) — MARSLib</title>
+  <title>Tutorial: Physics-Backed Unit Testing — MARSLib</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -48,49 +48,58 @@
 
 <a href="tutorials.html" class="back-link">← BACK TO TUTORIALS</a>
 
-<h1>Elite Shooting (SOTM)</h1>
+<h1>Physics-Backed Testing</h1>
 
-<p>Standing still to score is a 2010 strategy. In the modern 2026 <strong>Fuel Frenzy</strong> era, "Shot-On-The-Move" (SOTM) is a requirement for Einstein-level play. MARSLib includes a physics-based iterative solver that accounts for chassis velocity, time-of-flight, and aerodynamics using high-frequency MegaTag 2.0 odometry.</p>
+<p>Most FRC unit tests simply "mock" the hardware. They verify that a motor was told to run at 50%, but they never verify if the robot actually moves. In MARSLib, we run <strong>Physics-Backed Unit Tests</strong> that integrate tightly with Dyn4j, ensuring that our software actually solves real-world physics problems during Continuous Integration (CI).</p>
 
-<h2>1. The Core Problem</h2>
-<p>If your robot is driving sideways at 4 meters per second and you shoot, the <strong>Fuel Ball</strong> inherits that sideways velocity. To hit the <strong>Hub</strong>, you must aim "behind" where you want it to go, effectively leading the target.</p>
+<h2>1. The MARSTestHarness</h2>
+<p>To run physics-backed tests, your JUnit 5 test class must initialize the <code>MARSTestHarness</code>. This harness overrides the internal HAL clock and resets static singletons, guaranteeing that every test starts with a clean slate.</p>
 
-<div class="callout">
-  <h4>Vector Interception</h4>
-  <p>MARSLib doesn't just use a simple lookup table. It computes a 3D vector interception where <code>V_shot = V_required - V_chassis</code>. It then solves for the required pitch and RPM to make that resulting vector hit the Hub center.</p>
-</div>
-
-<h2>2. Tuning the Distance Map</h2>
-<p>The first step is building a sparse lookup table of "Perfect Shots". Park your robot at 1m, 2m, 3m, 4m, and 5m. Find the RPM and Cowl Angle that consistently score Fuel Balls.</p>
-
-<pre><code>public static final InterpolatingDoubleTreeMap RPM_MAP = new InterpolatingDoubleTreeMap();
-static {
-  RPM_MAP.put(1.0, 2500.0);
-  RPM_MAP.put(3.0, 3200.0);
-  RPM_MAP.put(5.0, 4500.0);
+<pre><code>@BeforeEach
+public void setup() {
+    MARSTestHarness.setupTestEnvironment();
+    // Initialize subsystems...
 }</code></pre>
 
-<h2>3. Predictive SOTM & Latency</h2>
-<p>Because the shot reaches the target at a future time, we must account for where the robot <em>will be</em> when the ball finishes its flight. MARSLib uses a <strong>Recursive Iterative Solver</strong>:</p>
-<ol>
-  <li>Guess the time of flight (e.g., 0.5s).</li>
-  <li>Calculate where the robot will be in 0.5s.</li>
-  <li>Calculate the required shot for that future position.</li>
-  <li>Recalculate the time of flight and repeat until convergence (usually 3 iterations).</li>
-</ol>
+<h2>2. Advancing Time</h2>
+<p>Because tests run instantly on your CPU, you must explicitly command the simulation clock to tick forward to watch physics happen.</p>
+
+<pre><code>// Command the elevator to position 1.5 meters
+elevator.setGoal(1.5);
+
+// Tick the physics world forward by 2.0 seconds
+for (int i = 0; i < 100; i++) {
+    elevator.periodic();
+    MARSPhysicsWorld.getInstance().update(0.02);
+}
+
+// Assert the physical rigibody actually reached the goal
+assertEquals(1.5, elevator.getPosition().in(Meters), 0.05);</code></pre>
 
 <div class="callout callout-warning">
-  <h4>Replay Watch: Latency Tuning</h4>
-  <p>To tune the SOTM solver correctly, you must account for <code>phaseDelay</code> (the time it takes the Fuel Ball to leave the shooter after you pull the trigger). Instead of guessing, analyze your <a href="https://github.com/Mechanical-Advantage/AdvantageKit" style="color: var(--ai-cyan);">AdvantageKit</a> logs using <strong>Replay Watch</strong>. Compare the <code>SOTM/TargetPose</code> against the robot's actual pose when the ball leaves the mechanism.</p>
+  <h4>Beware the 20ms Loop</h4>
+  <p>Never advance the clock by more than <code>0.02</code> seconds (20ms) at a time. The PID controllers and kinematic math assume a 50Hz execution cycle. Bypassing this will cause your integrators to explode.</p>
 </div>
 
-<h2>4. Aerodynamic Compensation</h2>
-<p>Fuel balls have significant air resistance and Magnus lift (if they have spin). In <code>EliteShooterMath.java</code>, you can adjust the <code>DRAG_COEFFICIENT</code> and <code>MAGNUS_CONSTANT</code>. To tune this:</p>
-<ol>
-  <li>Shoot at a distant target while standing still.</li>
-  <li>If the ball consistently drops short, increase the <code>DRAG_COEFFICIENT</code>.</li>
-  <li>If the ball curves upwards too much, decrease the <code>BACKSPIN_RATIO</code>.</li>
-</ol>
+<h2>3. Testing Autonomous Paths</h2>
+<p>Because we have <code>IOSim</code> and Dyn4j, you can actually test a full PathPlanner macro in JUnit!</p>
+
+<pre><code>Command autoRoutine = AutoBuilder.buildAuto("Four Fuel Ball Auto");
+autoRoutine.initialize();
+
+// Run the auto for 15 seconds
+for (int i = 0; i < 750; i++) {
+    autoRoutine.execute();
+    swerve.periodic();
+    MARSPhysicsWorld.getInstance().update(0.02);
+}
+
+assertTrue(autoRoutine.isFinished());
+// Assert that we scored exactly 4 times in the physics engine
+assertEquals(4, GameField.getScoredHubCount());</code></pre>
+
+<h2>4. CI/CD Validation</h2>
+<p>Every time you push to GitHub, a GitHub Actions workflow executes <code>./gradlew test</code>. If a math commit accidentally breaks the chassis kinematics, the trajectory tests will fail, and the PR will be blocked. This is true Einstein-level safety.</p>
 
 <footer>
   <p style="text-align: center; margin-top: 60px; font-size: 0.9rem;">&copy; 2026 Mountaineer Area RoboticS — FRC Team 2614 — FRC 2026: FUEL FRENZY</p>

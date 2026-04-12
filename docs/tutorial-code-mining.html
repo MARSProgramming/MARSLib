@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tutorial: High-Frequency Swerve — MARSLib</title>
+  <title>Elite Playbook: Code Mining — MARSLib</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -26,7 +26,7 @@
     .back-link:hover { transform: translateX(-5px); }
     
     h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: white; margin-bottom: 20px; letter-spacing: 0.05em; }
-    h1 { font-size: clamp(2rem, 5vw, 3rem); text-align: center; color: var(--ai-cyan); margin-bottom: 40px; }
+    h1 { font-size: clamp(2rem, 5vw, 3rem); text-align: center; color: var(--mars-red); margin-bottom: 40px; }
     h2 { font-size: 1.8rem; margin-top: 50px; border-left: 4px solid var(--mars-red); padding-left: 20px; }
     h3 { font-size: 1.2rem; color: var(--ai-cyan); margin-top: 20px; }
     
@@ -48,30 +48,27 @@
 
 <a href="tutorials.html" class="back-link">← BACK TO TUTORIALS</a>
 
-<h1>High-Frequency Swerve</h1>
+<h1>Elite Architecture Mining</h1>
 
-<p>A standard FRC robot executes its control loop every 20ms (50Hz). This is fine for moving an elevator, but it is <strong>unacceptably slow</strong> for Swerve Odometry. If a robot moving at 5 m/s only calculates its position 50 times a second, the math inherently creates a "drift" of several centimeters per second.</p>
+<p>Every year, Chief Delphi lights up with the source code drops from World Champions like Team 1690, 254, 6328, and 2910. Every year, hundreds of teams attempt to copy-paste their advanced time-of-flight models or trajectory solvers. And every year, their robots break due to architectural bloat and corrupted state variables.</p>
 
-<p>MARSLib solves this by utilizing the <strong>PhoenixOdometryThread</strong>.</p>
+<p>In MARSLib, we do not copy-paste. We perform structurally rigid <strong>Architecture Mining</strong> governed by our AI Agentic Skills framework.</p>
 
-<h2>1. The 250Hz Thread</h2>
-<p>Instead of relying on the main RoboRIO thread, our swerve architecture spins up an isolated background thread that communicates directly with the CTRE CANivore bus. This thread calculates the robot's physical kinematics at 250Hz.</p>
+<h2>1. The Abstraction Integrity Rule</h2>
+<p>In 2024, Team 1690 released an incredible time-of-flight interpolation engine for shooting on the move. However, their repository was monolithic—a beautiful mess of interwoven singletons.</p>
+
+<p>When mining this logic, you must strictly strip the target repository of its architecture and salvage <em>only the raw mathematics</em>. If the original code calls a motor controller directly inside the math solver, you must replace it with a decoupled <code>MARSMechanismTarget</code> payload.</p>
 
 <div class="callout callout-warning">
-  <h4>Zero-Allocation (GC) Danger</h4>
-  <p>Because this thread runs 250 times a second, if you instantiate an object (like `new Pose2d()`) inside this loop, you will instantly crash the RoboRIO due to massive Garbage Collection (GC) pressure. This is why our Agentic Skills strictly enforce the <strong>Ephemeral Struct</strong> proxy architecture across the Swerve subsystem.</p>
+  <h4>AI Agent Enforcement</h4>
+  <p>MARSLib natively enforces this boundary via the <code>marslib-elite-mining</code> skill. Lead engineers can command the AI to ingest a target repository file, extract the discrete state-space models, and map them purely into our AdvantageKit <code>IO</code> layer paradigm. The AI is forbidden from ingesting the hardware implementations of rival teams.</p>
 </div>
 
-<h2>2. MegaTag 2.0 Integration</h2>
-<p>Limelight 4's MegaTag 2.0 system relies heavily on the IMU Yaw rates to compensate for camera latency. Because we process the Pigeon 2.0 data at 250Hz, our gyro-seeding to the Limelight is incredibly precise, allowing for flawless localization even while spinning and traversing the Bump.</p>
+<h2>2. Telemetry Rewiring</h2>
+<p>Elite teams often use complex Dashboard configurations or raw `SmartDashboard` calls. When bringing this logic into MARSLib, all telemetry calls must be gutted and replaced explicitly with AdvantageKit <code>Logger.recordOutput(...)</code> arrays, preserving determinism.</p>
 
-<pre><code>// Asynchronously injecting vision without locking the thread
-public void addVisionMeasurement(Pose2d visionPose, double timestamp, Matrix<N3, N1> stdDevs) {
-    poseEstimator.addVisionMeasurement(visionPose, timestamp, stdDevs);
-}</code></pre>
-
-<h2>3. Heading-Aware Traction Control</h2>
-<p>With high-frequency data, we can implement micro-adjustments in real-time. If the IMU detects that the robot is physically slipping or skidding (comparing commanded chassis speeds to actual integrated acceleration), MARSLib's traction control algorithm will temporarily limit the torque current applied to the Kraken X60 drive motors to regain grip.</p>
+<h2>3. Mathematical Normalization</h2>
+<p>Team 254 uses custom <code>Twist2d</code> math. Team 2910 uses <code>ChassisSpeeds</code>. When ingesting kinematics, you must normalize the source mathematics into MARSLib's expected physical units utilizing standard WPILib geometry structs (e.g. <code>Translation2d</code> in Meters, not Inches; Radians, not Degrees). No raw sensor ticks are allowed past the IO layer interface.</p>
 
 <footer>
   <p style="text-align: center; margin-top: 60px; font-size: 0.9rem;">&copy; 2026 Mountaineer Area RoboticS — FRC Team 2614 — FRC 2026: FUEL FRENZY</p>

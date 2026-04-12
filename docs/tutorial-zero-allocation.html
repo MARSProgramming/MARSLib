@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tutorial: High-Frequency Swerve — MARSLib</title>
+  <title>Elite Playbook: Zero-Allocation — MARSLib</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -26,7 +26,7 @@
     .back-link:hover { transform: translateX(-5px); }
     
     h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: white; margin-bottom: 20px; letter-spacing: 0.05em; }
-    h1 { font-size: clamp(2rem, 5vw, 3rem); text-align: center; color: var(--ai-cyan); margin-bottom: 40px; }
+    h1 { font-size: clamp(2rem, 5vw, 3rem); text-align: center; color: var(--mars-red); margin-bottom: 40px; }
     h2 { font-size: 1.8rem; margin-top: 50px; border-left: 4px solid var(--mars-red); padding-left: 20px; }
     h3 { font-size: 1.2rem; color: var(--ai-cyan); margin-top: 20px; }
     
@@ -48,30 +48,40 @@
 
 <a href="tutorials.html" class="back-link">← BACK TO TUTORIALS</a>
 
-<h1>High-Frequency Swerve</h1>
+<h1>Zero-Allocation Engineering</h1>
 
-<p>A standard FRC robot executes its control loop every 20ms (50Hz). This is fine for moving an elevator, but it is <strong>unacceptably slow</strong> for Swerve Odometry. If a robot moving at 5 m/s only calculates its position 50 times a second, the math inherently creates a "drift" of several centimeters per second.</p>
+<p>The single greatest threat to determinism in a Java-based FRC robot is the JVM's Garbage Collector (GC). Every time you use the <code>new</code> keyword to instantiate an object inside your 50Hz or 250Hz loops, memory is allocated on the heap. Eventually, the JVM pauses the entire robot to clean it up. This causes a sudden, violent 20-30ms spike where your PID loops stall and your odometry misses critical sensor updates.</p>
 
-<p>MARSLib solves this by utilizing the <strong>PhoenixOdometryThread</strong>.</p>
+<h2>1. The 'Ephemeral Struct' Pattern</h2>
+<p>To eliminate these GC spikes, MARSLib enforces a strict zero-allocation architecture across hot loops. We achieve this using pre-allocated <strong>Mutable Proxy References</strong>, governed strictly by our Agentic AI skill parameters.</p>
 
-<h2>1. The 250Hz Thread</h2>
-<p>Instead of relying on the main RoboRIO thread, our swerve architecture spins up an isolated background thread that communicates directly with the CTRE CANivore bus. This thread calculates the robot's physical kinematics at 250Hz.</p>
+<pre><code>// BAD: Allocates 250 objects per second inside the Odometry Thread!
+public void periodic() {
+    Pose2d currentPose = new Pose2d(x, y, new Rotation2d(theta));
+    updatePose(currentPose);
+}
 
-<div class="callout callout-warning">
-  <h4>Zero-Allocation (GC) Danger</h4>
-  <p>Because this thread runs 250 times a second, if you instantiate an object (like `new Pose2d()`) inside this loop, you will instantly crash the RoboRIO due to massive Garbage Collection (GC) pressure. This is why our Agentic Skills strictly enforce the <strong>Ephemeral Struct</strong> proxy architecture across the Swerve subsystem.</p>
-</div>
+// GOOD: Pre-allocated Ephemeral Structs that are mutated in place
+private final Pose2d mutablePose = new Pose2d();
+private final Rotation2d mutableRotation = new Rotation2d();
 
-<h2>2. MegaTag 2.0 Integration</h2>
-<p>Limelight 4's MegaTag 2.0 system relies heavily on the IMU Yaw rates to compensate for camera latency. Because we process the Pigeon 2.0 data at 250Hz, our gyro-seeding to the Limelight is incredibly precise, allowing for flawless localization even while spinning and traversing the Bump.</p>
-
-<pre><code>// Asynchronously injecting vision without locking the thread
-public void addVisionMeasurement(Pose2d visionPose, double timestamp, Matrix<N3, N1> stdDevs) {
-    poseEstimator.addVisionMeasurement(visionPose, timestamp, stdDevs);
+public void periodic() {
+    // No 'new' keyword. Pure mathematical mutation.
+    mutableRotation.setRadians(theta);
+    mutablePose.set(x, y, mutableRotation);
+    updatePose(mutablePose);
 }</code></pre>
 
-<h2>3. Heading-Aware Traction Control</h2>
-<p>With high-frequency data, we can implement micro-adjustments in real-time. If the IMU detects that the robot is physically slipping or skidding (comparing commanded chassis speeds to actual integrated acceleration), MARSLib's traction control algorithm will temporarily limit the torque current applied to the Kraken X60 drive motors to regain grip.</p>
+<h2>2. The Pointer Danger</h2>
+<p>When you pass a mutable proxy reference into another class (like a trajectory follower), you are passing the <em>memory pointer</em>. When the 20ms loop executes again next tick, it will overwrite the internal values of that exact same object!</p>
+
+<div class="callout callout-warning">
+  <h4>The Clone Rule</h4>
+  <p>If a downstream class requires a persistent snapshot or history of data across multiple ticks (like calculating derivative error over time), it must explicitly <strong>clone</strong> the proxy object. Our rule is: "Assume any struct reference passed into a function is mathematically poisoned the moment the function returns."</p>
+</div>
+
+<h2>3. Static Array Caching</h2>
+<p>In Swerve Kinematics, we frequently convert <code>ChassisSpeeds</code> into arrays of <code>SwerveModuleState[]</code>. WPILib's native <code>toSwerveModuleStates()</code> allocates a new array every call. MARSLib overrides this with a static pre-allocated array cache, mutating the array elements in place to save thousands of heap allocations a minute.</p>
 
 <footer>
   <p style="text-align: center; margin-top: 60px; font-size: 0.9rem;">&copy; 2026 Mountaineer Area RoboticS — FRC Team 2614 — FRC 2026: FUEL FRENZY</p>

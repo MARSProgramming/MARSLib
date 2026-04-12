@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tutorial: Elite Shooting (SOTM) — MARSLib</title>
+  <title>Tutorial: Control Theory Mastery — MARSLib</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -48,49 +48,36 @@
 
 <a href="tutorials.html" class="back-link">← BACK TO TUTORIALS</a>
 
-<h1>Elite Shooting (SOTM)</h1>
+<h1>Control Theory Mastery</h1>
 
-<p>Standing still to score is a 2010 strategy. In the modern 2026 <strong>Fuel Frenzy</strong> era, "Shot-On-The-Move" (SOTM) is a requirement for Einstein-level play. MARSLib includes a physics-based iterative solver that accounts for chassis velocity, time-of-flight, and aerodynamics using high-frequency MegaTag 2.0 odometry.</p>
+<p>Basic PID loops are reacting to the past. To achieve World Championship fidelity, your mechanisms must predict the future. MARSLib employs advanced control theory algorithms, including <strong>Feedforwards</strong> and <strong>State Space Models</strong>.</p>
 
-<h2>1. The Core Problem</h2>
-<p>If your robot is driving sideways at 4 meters per second and you shoot, the <strong>Fuel Ball</strong> inherits that sideways velocity. To hit the <strong>Hub</strong>, you must aim "behind" where you want it to go, effectively leading the target.</p>
+<h2>1. Feedforward: Predicting the Physics</h2>
+<p>A PID loop only acts when there is an error. A <strong>Feedforward (FF)</strong> model <em>anticipates</em> the physical energy required to reach a state. For a heavy elevator (like the <strong>Ladder</strong> climber), gravity is always pulling it down. A <code>ElevatorFeedforward</code> calculates the exact voltage needed to counteract gravity (kG) before the PID even kicks in.</p>
 
-<div class="callout">
-  <h4>Vector Interception</h4>
-  <p>MARSLib doesn't just use a simple lookup table. It computes a 3D vector interception where <code>V_shot = V_required - V_chassis</code>. It then solves for the required pitch and RPM to make that resulting vector hit the Hub center.</p>
-</div>
+<pre><code>// kS (Static Friction), kG (Gravity), kV (Velocity), kA (Acceleration)
+ElevatorFeedforward ff = new ElevatorFeedforward(0.1, 0.4, 1.2, 0.05);
 
-<h2>2. Tuning the Distance Map</h2>
-<p>The first step is building a sparse lookup table of "Perfect Shots". Park your robot at 1m, 2m, 3m, 4m, and 5m. Find the RPM and Cowl Angle that consistently score Fuel Balls.</p>
+// Calculate voltage required to hold steady, PLUS voltage to reach target velocity
+double ffVoltage = ff.calculate(currentVelocity, targetVelocity);
+double pidVoltage = pid.calculate(currentPosition, targetPosition);
 
-<pre><code>public static final InterpolatingDoubleTreeMap RPM_MAP = new InterpolatingDoubleTreeMap();
-static {
-  RPM_MAP.put(1.0, 2500.0);
-  RPM_MAP.put(3.0, 3200.0);
-  RPM_MAP.put(5.0, 4500.0);
-}</code></pre>
+motor.setVoltage(ffVoltage + pidVoltage);</code></pre>
 
-<h2>3. Predictive SOTM & Latency</h2>
-<p>Because the shot reaches the target at a future time, we must account for where the robot <em>will be</em> when the ball finishes its flight. MARSLib uses a <strong>Recursive Iterative Solver</strong>:</p>
-<ol>
-  <li>Guess the time of flight (e.g., 0.5s).</li>
-  <li>Calculate where the robot will be in 0.5s.</li>
-  <li>Calculate the required shot for that future position.</li>
-  <li>Recalculate the time of flight and repeat until convergence (usually 3 iterations).</li>
-</ol>
+<h2>2. Online Feedforward Estimation</h2>
+<p>As the battery drains, the real-world performance of motors changes. MARSLib implements the <code>OnlineFeedforwardEstimator</code>, which continuously tweaks the <code>kS</code> and <code>kV</code> constants during the match by monitoring voltage output vs actual velocity.</p>
+
+<h2>3. Continuous vs. Discrete Math</h2>
+<p>FRC operates discretely (a loop runs every 20ms). If you command the robot to drive 5 m/s with 2 rad/s rotation, a standard <strong>Continuous</strong> calculation assumes those vectors happen at the exact same time. <br><br>
+However, over 20ms, the rotation actually changes the heading <em>while</em> you are driving. Therefore, we use <code>ChassisSpeeds.discretize()</code> to warp the straight-line vector into a curved arc, perfectly representing physical reality.</p>
 
 <div class="callout callout-warning">
-  <h4>Replay Watch: Latency Tuning</h4>
-  <p>To tune the SOTM solver correctly, you must account for <code>phaseDelay</code> (the time it takes the Fuel Ball to leave the shooter after you pull the trigger). Instead of guessing, analyze your <a href="https://github.com/Mechanical-Advantage/AdvantageKit" style="color: var(--ai-cyan);">AdvantageKit</a> logs using <strong>Replay Watch</strong>. Compare the <code>SOTM/TargetPose</code> against the robot's actual pose when the ball leaves the mechanism.</p>
+  <h4>Unit Nomenclature</h4>
+  <p>To write elite control theory, you must use proper nomenclature. The <code>marslib-core-standards</code> skill bans generic variable names. Use <code>targetVelocityMetersPerSecond</code>, not <code>targetSpeed</code>. Do not use raw CAN ticks in high-level physics.</p>
 </div>
 
-<h2>4. Aerodynamic Compensation</h2>
-<p>Fuel balls have significant air resistance and Magnus lift (if they have spin). In <code>EliteShooterMath.java</code>, you can adjust the <code>DRAG_COEFFICIENT</code> and <code>MAGNUS_CONSTANT</code>. To tune this:</p>
-<ol>
-  <li>Shoot at a distant target while standing still.</li>
-  <li>If the ball consistently drops short, increase the <code>DRAG_COEFFICIENT</code>.</li>
-  <li>If the ball curves upwards too much, decrease the <code>BACKSPIN_RATIO</code>.</li>
-</ol>
+<h2>4. SysId Characterization</h2>
+<p>Never guess your FF constants. Use <strong>SysId</strong>! MARSLib subsystems natively bind SysId routines. Run a Quasistatic test to solve for friction (`kS`), and a Dynamic test to solve for acceleration (`kA`).</p>
 
 <footer>
   <p style="text-align: center; margin-top: 60px; font-size: 0.9rem;">&copy; 2026 Mountaineer Area RoboticS — FRC Team 2614 — FRC 2026: FUEL FRENZY</p>

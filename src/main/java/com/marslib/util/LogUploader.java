@@ -43,11 +43,16 @@ public final class LogUploader {
   private static final Path PAT_FILE_LOCAL = Path.of("src/main/deploy/github_pat.txt");
   private static final Path UPLOAD_MANIFEST = Path.of(".uploaded_logs");
 
-  private static final Path[] LOG_DIRS = {
+  private static Path[] log_dirs = {
     Path.of("/U/logs"), // USB drive on roboRIO
     Path.of("/home/lvuser/logs"), // Internal roboRIO fallback
     Path.of("logs") // Simulation default
   };
+
+  /** Overrides the directories scanned for logs. Used for unit testing. */
+  public static void setLogDirs(Path... dirs) {
+    log_dirs = dirs;
+  }
 
   private static final ExecutorService executor =
       Executors.newSingleThreadExecutor(
@@ -60,7 +65,14 @@ public final class LogUploader {
   private static final HttpClient HTTP_CLIENT =
       HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
   private static final AtomicBoolean isUploading = new AtomicBoolean(false);
+  private static String patOverride = null;
   private static long lastTriggerTime = 0;
+
+  /** Overrides the PAT token for testing. */
+  public static void setPatToken(String token) {
+    patOverride = token;
+  }
+
   private static final int MAX_MANIFEST_ENTRIES = 50;
 
   private LogUploader() {}
@@ -103,7 +115,7 @@ public final class LogUploader {
         });
   }
 
-  private static void doUploadLogs() throws Exception {
+  static void doUploadLogs() throws Exception {
     String pat = readPatToken();
     if (pat == null) {
       return; // Silent fail if PAT is not configured
@@ -111,7 +123,7 @@ public final class LogUploader {
 
     Set<String> uploadedSet = readUploadedManifest();
 
-    for (Path dir : LOG_DIRS) {
+    for (Path dir : log_dirs) {
       if (!Files.exists(dir) || !Files.isDirectory(dir)) {
         continue;
       }
@@ -169,6 +181,9 @@ public final class LogUploader {
   }
 
   private static String readPatToken() {
+    if (patOverride != null) {
+      return patOverride;
+    }
     try {
       if (Files.exists(PAT_FILE)) {
         return Files.readString(PAT_FILE).trim();
@@ -183,7 +198,7 @@ public final class LogUploader {
     return null;
   }
 
-  private static Set<String> readUploadedManifest() {
+  static Set<String> readUploadedManifest() {
     Set<String> set = new HashSet<>();
     try {
       if (Files.exists(UPLOAD_MANIFEST)) {
@@ -197,7 +212,7 @@ public final class LogUploader {
     return set;
   }
 
-  private static void saveUploadedManifest(Set<String> uploadedSet) {
+  static void saveUploadedManifest(Set<String> uploadedSet) {
     try {
       String content =
           uploadedSet.stream()
@@ -326,7 +341,11 @@ public final class LogUploader {
     return null;
   }
 
-  private static Integer extractIdFromJson(String json) {
+  static Integer extractIdFromJson(String json) {
+    if (json == null) {
+      return null;
+    }
+
     // Simple manual parsing to avoid bringing in Gson directly here,
     // though WPILib contains Jackson/Gson. Looking for: "id": 1234567,
     String searchKey = "\"id\":";

@@ -39,10 +39,13 @@ All telemetry MUST go through AdvantageKit's `Logger`. Do NOT use `SmartDashboar
 
 Never put algorithm decisions in IO inputs. Never put sensor readings in outputs. Mixing them breaks replay determinism.
 
-### Rule C: Never Branch on Replay State
-Do NOT write `if (!isReplay()) { ... }`. The algorithm logic in `periodic()` must execute identically whether running live or replaying from a log. The ONLY layer that diverges is the IO implementation (real hardware vs. sim vs. replay).
+### Rule C: Never Branch on Replay State (Replay Watch)
+Do NOT write `if (!isReplay()) { ... }`. The algorithm logic in `periodic()` must execute identically whether running live or replaying from a log. The ONLY layer that diverges is the IO implementation (real hardware vs. sim vs. replay). MARSLib relies on **Replay Watch**—a bit-perfect reproduction of math and decisions over the timestamp. It is functionally superior to live tracing via NetworkTables because it is immune to packet loss.
 
-### Rule D: Match Units Between Sim and Real
+### Rule D: Automated Cloud Logging
+Do not assume operators will manually retrieve USB drives unless necessary. MARSLib integrates a daemon `LogUploader`. When the robot is disabled (and non-FMS), it scans `/U/logs` and `/home/lvuser/logs`, tags them as `REAL_` or `SIM_`, and pushes `.wpilog` files direct to the team GitHub release.
+
+### Rule E: Match Units Between Sim and Real
 The `IOSim` and `IOReal` implementations MUST use identical units. If `IOReal` reports position in radians, `IOSim` must also report radians — not rotations, not degrees. Unit mismatches are the #1 cause of "works in sim, fails on robot" bugs.
 
 ## 3. Adding New Log Keys

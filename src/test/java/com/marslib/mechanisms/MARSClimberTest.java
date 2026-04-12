@@ -2,6 +2,7 @@ package com.marslib.mechanisms;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.marslib.power.*;
 import com.marslib.power.MARSPowerManager;
 import com.marslib.power.PowerIO;
 import com.marslib.simulation.MARSPhysicsWorld;

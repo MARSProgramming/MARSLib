@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tutorial: High-Frequency Swerve — MARSLib</title>
+  <title>Elite Playbook: Power Shedding — MARSLib</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -26,7 +26,7 @@
     .back-link:hover { transform: translateX(-5px); }
     
     h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: white; margin-bottom: 20px; letter-spacing: 0.05em; }
-    h1 { font-size: clamp(2rem, 5vw, 3rem); text-align: center; color: var(--ai-cyan); margin-bottom: 40px; }
+    h1 { font-size: clamp(2rem, 5vw, 3rem); text-align: center; color: var(--mars-red); margin-bottom: 40px; }
     h2 { font-size: 1.8rem; margin-top: 50px; border-left: 4px solid var(--mars-red); padding-left: 20px; }
     h3 { font-size: 1.2rem; color: var(--ai-cyan); margin-top: 20px; }
     
@@ -48,30 +48,39 @@
 
 <a href="tutorials.html" class="back-link">← BACK TO TUTORIALS</a>
 
-<h1>High-Frequency Swerve</h1>
+<h1>Dynamic Power Shedding</h1>
 
-<p>A standard FRC robot executes its control loop every 20ms (50Hz). This is fine for moving an elevator, but it is <strong>unacceptably slow</strong> for Swerve Odometry. If a robot moving at 5 m/s only calculates its position 50 times a second, the math inherently creates a "drift" of several centimeters per second.</p>
+<p>Modern FRC hardware—specifically Krakens and Falcons—can physically pull more power than the RoboRIO and a 12V battery can safely provide. If your Swerve Drive engages in a massive pushing match while the Intake is stalled on a stuck <strong>Fuel Ball</strong>, the battery voltage will dip below 7V, the RoboRIO will reset, and you will lose the match.</p>
 
-<p>MARSLib solves this by utilizing the <strong>PhoenixOdometryThread</strong>.</p>
+<h2>1. The Problem with Static Limits</h2>
+<p>Most teams solve this by configuring static breaker current limits. This is a compromise. It neuters your robot's acceleration when the battery is fully charged at 12.8V just to protect it when it drops to 9V.</p>
 
-<h2>1. The 250Hz Thread</h2>
-<p>Instead of relying on the main RoboRIO thread, our swerve architecture spins up an isolated background thread that communicates directly with the CTRE CANivore bus. This thread calculates the robot's physical kinematics at 250Hz.</p>
+<h2>2. MARSPowerManager: Voltage Scaling</h2>
+<p>In MARSLib, we use the <code>MARSPowerManager</code> to implement <strong>Voltage Scaling</strong> and <strong>Power Shedding</strong>. Instead of static stator current bounds, our subsystems dynamically cap their output voltage based on the real-time health of the battery.</p>
+
+<pre><code>// Inside an IO implementation's periodic loop
+double currentSystemVoltage = MARSPowerManager.getInstance().getBatteryVoltage();
+double maxAllowedVoltage = 12.0;
+
+if (currentSystemVoltage < 9.5) {
+    // Battery is sagging heavily, shed power from non-essentials
+    maxAllowedVoltage = 3.0; // Throttle intake to prevent brownout
+}
+
+motor.setVoltage(MathUtil.clamp(requestedVoltage, -maxAllowedVoltage, maxAllowedVoltage));</code></pre>
+
+<h2>3. Subsystem Priority Classes</h2>
+<p>Not all subsystems are created equal. When the <code>MARSPowerManager</code> detects a critical system voltage sag (e.g., `< 9.5V`), it initiates a lockdown phase. The framework groups mechanisms into three distinct tiers:</p>
+<ul>
+    <li><strong>TIER 1 (Critical):</strong> Drivetrain Swerve Modules. These never scale down. Losing traction or evasiveness is unacceptable.</li>
+    <li><strong>TIER 2 (High):</strong> Shooter Flywheels & Pivot. Voltage output is slightly scaled to ensure consistent shots, but not eliminated.</li>
+    <li><strong>TIER 3 (Sheddable):</strong> Intakes, Feeders, and LEDs. If the voltage drops to 9V, these subsystems are aggressively clamped to a maximum output of 2-3 Volts until the battery recovers.</li>
+</ul>
 
 <div class="callout callout-warning">
-  <h4>Zero-Allocation (GC) Danger</h4>
-  <p>Because this thread runs 250 times a second, if you instantiate an object (like `new Pose2d()`) inside this loop, you will instantly crash the RoboRIO due to massive Garbage Collection (GC) pressure. This is why our Agentic Skills strictly enforce the <strong>Ephemeral Struct</strong> proxy architecture across the Swerve subsystem.</p>
+  <h4>Simulation Parity</h4>
+  <p>You can test your power shedding algorithms entirely in Dyn4j. The <code>MARSPhysicsWorld</code> natively simulates voltage sag as the sum of all simulated motor torque output increases, allowing you to trigger brownout scenarios in your JUnit tests and ensure your shedding algorithm functions correctly.</p>
 </div>
-
-<h2>2. MegaTag 2.0 Integration</h2>
-<p>Limelight 4's MegaTag 2.0 system relies heavily on the IMU Yaw rates to compensate for camera latency. Because we process the Pigeon 2.0 data at 250Hz, our gyro-seeding to the Limelight is incredibly precise, allowing for flawless localization even while spinning and traversing the Bump.</p>
-
-<pre><code>// Asynchronously injecting vision without locking the thread
-public void addVisionMeasurement(Pose2d visionPose, double timestamp, Matrix<N3, N1> stdDevs) {
-    poseEstimator.addVisionMeasurement(visionPose, timestamp, stdDevs);
-}</code></pre>
-
-<h2>3. Heading-Aware Traction Control</h2>
-<p>With high-frequency data, we can implement micro-adjustments in real-time. If the IMU detects that the robot is physically slipping or skidding (comparing commanded chassis speeds to actual integrated acceleration), MARSLib's traction control algorithm will temporarily limit the torque current applied to the Kraken X60 drive motors to regain grip.</p>
 
 <footer>
   <p style="text-align: center; margin-top: 60px; font-size: 0.9rem;">&copy; 2026 Mountaineer Area RoboticS — FRC Team 2614 — FRC 2026: FUEL FRENZY</p>

@@ -35,6 +35,7 @@ import java.util.TreeMap;
 public class LoggedTunableNumber implements Sendable {
   private static final String tableKey = "TunableNumbers";
   private static final List<LoggedTunableNumber> registeredTunables = new ArrayList<>();
+  private static boolean dashboardBuilt = false;
 
   private final String key;
   private boolean hasDefault = false;
@@ -152,6 +153,10 @@ public class LoggedTunableNumber implements Sendable {
    * beautifully sorted List layouts seamlessly for 0-friction calibration logging.
    */
   public static void buildTuningDashboard() {
+    if (dashboardBuilt) {
+      return;
+    }
+    dashboardBuilt = true;
     ShuffleboardTab tuningTab = Shuffleboard.getTab("Tuning");
 
     // Utilities
@@ -200,6 +205,25 @@ public class LoggedTunableNumber implements Sendable {
   public static void clear() {
     synchronized (registeredTunables) {
       registeredTunables.clear();
+    }
+    dashboardBuilt = false;
+  }
+
+  /**
+   * Releases native NetworkTables handles. Should be called when a tunable is no longer needed,
+   * especially in unit tests to prevent resource leaks and native crashes.
+   */
+  public void close() {
+    if (publisher != null) {
+      publisher.close();
+      publisher = null;
+    }
+    if (subscriber != null) {
+      subscriber.close();
+      subscriber = null;
+    }
+    synchronized (registeredTunables) {
+      registeredTunables.remove(this);
     }
   }
 }
