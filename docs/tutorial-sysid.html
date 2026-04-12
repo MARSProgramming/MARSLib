@@ -63,7 +63,7 @@
 
 <div class="callout callout-warning">
   <h4>Data Logging</h4>
-  <p>MARSLib leverages AdvantageKit. All SysId tests automatically dump telemetry directly into the <code>.wpilog</code> file on your USB drive. You do not need to download the WPILib SysId client to run the tests on the robot, only to analyze the data afterwards!</p>
+  <p>MARSLib leverages AdvantageKit. All SysId tests automatically dump telemetry directly into the <code>.wpilog</code> file on your USB drive. However, MARSLib also features an <strong>Automated Log Uploader</strong>—if the robot detects an active internet connection (via tether), it will automatically push your SysId logs to the team's GitHub repository as an artifact!</p>
 </div>
 
 <h2>2. Running SysId on the Drivetrain</h2>
@@ -92,7 +92,7 @@ driver.y().whileTrue(swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
 <h2>4. Analyzing the Log</h2>
 <ol>
-  <li>Pull the USB drive from the RoboRIO and plug it into your computer.</li>
+  <li>Retrieve your <code>.wpilog</code> file. You can either pull the USB drive directly from the RoboRIO, or download the automatically uploaded zip from the <strong>GitHub Actions</strong> tab if your robot was tethered to the internet!</li>
   <li>Open WPILib VSCode -> Start Tool -> <strong>SysId</strong>.</li>
   <li>Open the <code>.wpilog</code> file.</li>
   <li>In the SysId tool, select the exact mechanism under test (e.g. <code>SwerveDrive</code>).</li>
