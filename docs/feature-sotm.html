@@ -89,11 +89,28 @@
         const dy = targetY - ry;
         const dist = Math.sqrt(dx*dx + dy*dy);
         
-        // time of flight (naive 1D param estimator)
+        // physics constants
         const shotSpeed = 250;
-        const tof = dist / shotSpeed;
         
-        // aim point = Target - (RobotVel * ToF)
+        // precise quadratic solver for Time of Flight
+        const a = vx*vx + vy*vy - shotSpeed*shotSpeed;
+        const b = -2.0 * (dx*vx + dy*vy);
+        const c = dx*dx + dy*dy;
+        
+        // fall back to 1D approximation if quadratic has no valid solution
+        let tof = dist / shotSpeed; 
+        
+        const discriminant = b*b - 4.0*a*c;
+        if (discriminant >= 0 && a !== 0) {
+            const t1 = (-b + Math.sqrt(discriminant)) / (2.0 * a);
+            const t2 = (-b - Math.sqrt(discriminant)) / (2.0 * a);
+            // We want the smallest positive real root
+            if (t1 > 0 && t2 > 0) tof = Math.min(t1, t2);
+            else if (t1 > 0) tof = t1;
+            else if (t2 > 0) tof = t2;
+        }
+        
+        // Exact aim point = Target - (RobotVel * ToF)
         const aimX = targetX - (vx * tof);
         const aimY = targetY - (vy * tof);
         
