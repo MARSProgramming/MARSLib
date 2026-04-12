@@ -7,6 +7,10 @@
       "source": "./marslib"
     },
     {
+      "name": "marslib-audit",
+      "source": "./marslib-audit"
+    },
+    {
       "name": "marslib-elite-mining",
       "source": "./marslib-elite-mining"
     },

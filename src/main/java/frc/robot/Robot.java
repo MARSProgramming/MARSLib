@@ -32,6 +32,8 @@ public class Robot extends LoggedRobot {
 
     // Record metadata
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
+    Logger.recordMetadata("Framework", "MARSLib 2.0");
+    Logger.recordMetadata("Authors", "FRC Team 2614 MARS");
     Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
     Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
     Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
@@ -77,6 +79,8 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
+    edu.wpi.first.wpilibj.DriverStation.reportWarning(
+        "[MARSLib] Framework Initialized - Made by Team 2614 MARS", false);
     robotContainer = new RobotContainer();
   }
 
@@ -107,10 +111,8 @@ public class Robot extends LoggedRobot {
 
   /** This function is called once when the robot is disabled. */
   @Override
-  @SuppressWarnings("PMD.DoNotCallGarbageCollectionExplicitly")
   public void disabledInit() {
-    // Clear out memory aggressively before a match starts
-    System.gc();
+    // Rely on generational GC to reclaim memory
   }
 
   /** This function is called periodically when disabled. */

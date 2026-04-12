@@ -71,6 +71,28 @@ public class SwerveSetpointGenerator {
     double f(double x, double y);
   }
 
+  /**
+   * Evaluates a mathematical root bound using the Bisection interpolation method.
+   *
+   * <p>Solves for an unknown scalar {@code s} where {@code f(x, y) = 0} between the setpoint
+   * bounds. This is dynamically constrained across:
+   *
+   * <ul>
+   *   <li>\( x = (x_1 - x_0) \cdot s + x_0 \)
+   *   <li>\( y = (y_1 - y_0) \cdot s + y_0 \)
+   * </ul>
+   *
+   * @param func The 2D boundary equation
+   * @param x0 Initial X coordinate (e.g., initial velocity)
+   * @param y0 Initial Y coordinate
+   * @param f0 Initial functional evaluation mapping
+   * @param x1 Target X coordinate
+   * @param y1 Target Y coordinate
+   * @param f1 Target functional evaluation mapping
+   * @param iterationsLeft Deep dive bounds to prevent infinite recursion timeouts.
+   * @return A clamping scalar interval [0.0, 1.0] representing maximum safe application before
+   *     kinematic slip.
+   */
   private double findRoot(
       Function2d func,
       double x0,
@@ -95,6 +117,24 @@ public class SwerveSetpointGenerator {
     }
   }
 
+  /**
+   * Computes the maximum positional scalar \( s_{max} \) for the steering rotation of a Swerve
+   * Module.
+   *
+   * <p>Utilizes {@code findRoot} to determine the exact timestamp bound where the change in module
+   * orientation \( d\theta \) precisely equals the physical limit {@code maxDeviation}. The
+   * equation evaluates \( f(\theta) = \text{unwrap}(\theta) - \text{offset} = 0 \).
+   *
+   * @param x0 Prior structural X (Cosine mapping vector)
+   * @param y0 Prior structural Y (Sine mapping vector)
+   * @param f0 Previous rotation radians
+   * @param x1 Desired structural X
+   * @param y1 Desired structural Y
+   * @param f1 Desired rotation radians
+   * @param maxDeviation The structural Max Steering velocity * \( dt \)
+   * @param maxIterations Bisection cut-off depth.
+   * @return The maximum safe step multiplier scale.
+   */
   protected double findSteeringMaxS(
       double x0,
       double y0,
@@ -117,6 +157,23 @@ public class SwerveSetpointGenerator {
     return findRoot(func, x0, y0, f0 - offset, x1, y1, f1Unwrapped - offset, maxIterations);
   }
 
+  /**
+   * Computes the maximum linear acceleration scalar \( s_{max} \) for the driving vector wheel slip
+   * threshold.
+   *
+   * <p>Calculates the boundary threshold solving for: \( \sqrt{V_x^2 + V_y^2} - (\text{previous
+   * magnitude} + \text{max allowed acceleration step}) = 0 \).
+   *
+   * @param x0 Prior magnitude X velocity
+   * @param y0 Prior magnitude Y velocity
+   * @param f0 Previous hypotenuse sum velocity
+   * @param x1 Desired magnitude X velocity
+   * @param y1 Desired magnitude Y velocity
+   * @param f1 Desired hypotenuse sum velocity
+   * @param maxVelStep Absolute hardcap velocity slip threshold (\( \mu \cdot 9.81 \cdot dt \))
+   * @param maxIterations Limits Newton iteration overloop.
+   * @return A restricted translation scalar multiplier [0.0, 1.0].
+   */
   protected double findDriveMaxS(
       double x0,
       double y0,

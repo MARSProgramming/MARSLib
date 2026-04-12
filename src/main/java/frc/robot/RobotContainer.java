@@ -427,9 +427,9 @@ public class RobotContainer {
         .addString(
             "FMS Alliance",
             () ->
-                edu.wpi.first.wpilibj.DriverStation.getAlliance().isPresent()
-                    ? edu.wpi.first.wpilibj.DriverStation.getAlliance().get().toString()
-                    : "UNCALIBRATED")
+                edu.wpi.first.wpilibj.DriverStation.getAlliance()
+                    .map(edu.wpi.first.wpilibj.DriverStation.Alliance::toString)
+                    .orElse("UNCALIBRATED"))
         .withSize(2, 1)
         .withPosition(3, 0);
 
@@ -486,9 +486,9 @@ public class RobotContainer {
         .addString(
             "FMS Alliance",
             () ->
-                edu.wpi.first.wpilibj.DriverStation.getAlliance().isPresent()
-                    ? edu.wpi.first.wpilibj.DriverStation.getAlliance().get().toString()
-                    : "UNCALIBRATED")
+                edu.wpi.first.wpilibj.DriverStation.getAlliance()
+                    .map(edu.wpi.first.wpilibj.DriverStation.Alliance::toString)
+                    .orElse("UNCALIBRATED"))
         .withSize(2, 1)
         .withPosition(5, 0);
 

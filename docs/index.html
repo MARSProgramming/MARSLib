@@ -593,7 +593,71 @@
       .hero { padding: 80px 0 60px; }
       .feature-grid { grid-template-columns: 1fr; }
     }
+
+    /* ===== Search Bar ===== */
+    .search-container {
+      position: relative;
+      margin-right: 16px;
+    }
+
+    .search-input {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      width: 240px;
+      transition: all 0.2s;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--mars-red);
+      background: rgba(179, 36, 22, 0.05);
+      width: 280px;
+    }
+
+    .search-results {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-top: 8px;
+      list-style: none;
+      z-index: 100;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .search-results li a {
+      display: block;
+      padding: 10px 16px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .search-results li a:hover {
+      background: var(--mars-red-glow);
+      color: var(--mars-red-light);
+    }
   </style>
+  <!-- Google tag (gtag.js) Placeholder: Replace G-XXXXXXXXXX with your actual GA4 Measurement ID -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
 </head>
 <body>
 
@@ -607,6 +671,10 @@
       <span class="nav-logo">MARS<span>Lib</span></span>
     </a>
     <ul class="nav-links">
+      <div class="search-container">
+        <input type="text" id="search-input" class="search-input" placeholder="Quick search..." autocomplete="off">
+        <ul id="search-results" class="search-results"></ul>
+      </div>
       <li><a href="standards.html" style="color: var(--mars-red); font-weight: 700;">STANDARDS</a></li>
       <li><a href="tutorials.html">Tutorials</a></li>
       <li><a href="#features">Features</a></li>
@@ -1050,5 +1118,6 @@
     fontFamily: 'Orbitron'
   });
 </script>
+<script src="assets/search.js"></script>
 </body>
 </html>

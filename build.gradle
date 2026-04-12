@@ -145,7 +145,7 @@ test {
 test.finalizedBy jacocoTestReport
 
 jacoco {
-    toolVersion = "0.8.11"
+    toolVersion = "0.8.12"
 }
 
 jacocoTestReport {
@@ -639,6 +639,7 @@ tasks.named('checkstyleTest') { enabled = false }
 task updateDocsCoverage {
     description = "Updates the docs/index.html file with freshly generated JaCoCo coverage metrics"
     dependsOn jacocoTestReport
+    notCompatibleWithConfigurationCache("Accesses project object via fileTree at execution time")
 
     doLast {
         def csvFile = file("build/reports/jacoco/test/jacocoTestReport.csv")
