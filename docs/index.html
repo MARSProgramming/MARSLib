@@ -765,12 +765,12 @@
           B --> D[Shooter]
           B --> E[MARSSuperstructure]
           
-          C --> F{IO Interface Layer}
-          D --> F
-          E --> F
+          C <--> F{IO Interface Layer}
+          D <--> F
+          E <--> F
           
-          F -->|Hardware Mode| G[IOReal<br><i>TalonFX, Pigeon2</i>]
-          F -->|Simulation Mode| H[IOSim<br><i>Dyn4j Physics</i>]
+          F <-->|Hardware Mode| G[IOReal<br><i>TalonFX, Pigeon2</i>]
+          F <-->|Simulation Mode| H[IOSim<br><i>Dyn4j Physics</i>]
           
           G --> I[(AdvantageKit Log)]
           H --> I
