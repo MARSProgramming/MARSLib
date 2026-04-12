@@ -35,6 +35,7 @@
     .callout { background: rgba(179, 36, 22, 0.1); border-left: 4px solid var(--mars-red); padding: 20px; border-radius: 0 8px 8px 0; margin-bottom: 30px; }
     .callout h4 { font-family: 'Orbitron', sans-serif; margin-bottom: 10px; color: var(--mars-red-light); }
   </style>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -52,7 +53,7 @@
 <h2>1. The Interface (Common Ground)</h2>
 <p>First, we define an interface that lists all inputs the subsystem needs from the hardware. We use <code>@AutoLog</code> to automatically generate the logging boilerplate.</p>
 
-<pre><code>public interface FlywheelIO {
+<pre><code class="language-java">public interface FlywheelIO {
   @AutoLog
   public static class FlywheelIOInputs {
     public double positionRad = 0.0;
@@ -68,7 +69,7 @@
 <h2>2. Hardware Implementation (REAL)</h2>
 <p>The "Real" implementation talks to actual motors (TalonFX, SparkMAX). It has no logic—it only moves data between the hardware and the Inputs object.</p>
 
-<pre><code>public class FlywheelIOTalonFX implements FlywheelIO {
+<pre><code class="language-java">public class FlywheelIOTalonFX implements FlywheelIO {
   private final TalonFX motor;
 
   public FlywheelIOTalonFX(int id) {
@@ -91,7 +92,7 @@
 <h2>3. Physics Implementation (SIM)</h2>
 <p>The "Sim" implementation uses math to calculate how a motor would behave. MARSLib uses <code>DCMotorSim</code> and <code>dyn4j</code> for high-fidelity physics.</p>
 
-<pre><code>public class FlywheelIOSim implements FlywheelIO {
+<pre><code class="language-java">public class FlywheelIOSim implements FlywheelIO {
   private final DCMotorSim sim = new DCMotorSim(DCMotor.getFalcon500(1), 1.0, 0.01);
 
   @Override
@@ -105,7 +106,7 @@
 <h2>4. Dependency Injection</h2>
 <p>Finally, in <code>RobotContainer</code>, we decide which version to use based on the robot mode. The Subsystem itself only ever sees the <code>FlywheelIO</code> interface!</p>
 
-<pre><code>// Inside RobotContainer.java
+<pre><code class="language-java">// Inside RobotContainer.java
 FlywheelIO io;
 if (isReal) {
   io = new FlywheelIOTalonFX(1);
@@ -119,5 +120,7 @@ subsystem = new FlywheelSubsystem(io);</code></pre>
   <p>Always keep your IO implementations "dumb". If you start adding if-statements or math into your hardware layer, you've broken the abstraction. All logic belongs in the Subsystem and Commands.</p>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
 </body>
 </html>

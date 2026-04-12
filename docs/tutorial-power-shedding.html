@@ -43,6 +43,7 @@
     .callout-warning { background: rgba(179, 36, 22, 0.1); border: 1px solid var(--mars-red); }
     .callout-warning h4 { color: var(--mars-red-light); }
   </style>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -58,7 +59,7 @@
 <h2>2. MARSPowerManager: Voltage Scaling</h2>
 <p>In MARSLib, we use the <code>MARSPowerManager</code> to implement <strong>Voltage Scaling</strong> and <strong>Power Shedding</strong>. Instead of static stator current bounds, our subsystems dynamically cap their output voltage based on the real-time health of the battery.</p>
 
-<pre><code>// Inside an IO implementation's periodic loop
+<pre><code class="language-java">// Inside an IO implementation's periodic loop
 double currentSystemVoltage = MARSPowerManager.getInstance().getBatteryVoltage();
 double maxAllowedVoltage = 12.0;
 
@@ -77,6 +78,139 @@ motor.setVoltage(MathUtil.clamp(requestedVoltage, -maxAllowedVoltage, maxAllowed
     <li><strong>TIER 3 (Sheddable):</strong> Intakes, Feeders, and LEDs. If the voltage drops to 9V, these subsystems are aggressively clamped to a maximum output of 2-3 Volts until the battery recovers.</li>
 </ul>
 
+<div id="brownout-sim" style="background: #050505; border: 1px solid var(--border); border-radius: 12px; margin: 30px 0; padding: 20px; box-shadow: inset 0 0 40px rgba(0,0,0,0.8);">
+  <div style="font-family: 'Orbitron'; font-size: 0.8rem; color: var(--ai-cyan); letter-spacing: 1px; margin-bottom: 20px; text-transform: uppercase;">Real-Time Power Shedding Diagnostics</div>
+  
+  <div style="display: flex; gap: 30px; align-items: stretch; flex-wrap: wrap;">
+    <!-- LOAD TOGGLES -->
+    <div style="flex: 1; display: flex; flex-direction: column; gap: 10px;">
+      <button id="btnSwerve" style="background:#222; border:1px solid #444; color:#fff; padding:12px; border-radius:6px; cursor:pointer; font-family:'JetBrains Mono'; text-align:left; transition: 0.2s;">[T1] SWERVE DRIVE <span style="float:right;">+160A</span></button>
+      <button id="btnShooter" style="background:#222; border:1px solid #444; color:#fff; padding:12px; border-radius:6px; cursor:pointer; font-family:'JetBrains Mono'; text-align:left; transition: 0.2s;">[T2] SHOOTER FLYWHEELS <span style="float:right;">+60A</span></button>
+      <button id="btnIntake" style="background:#222; border:1px solid #444; color:#fff; padding:12px; border-radius:6px; cursor:pointer; font-family:'JetBrains Mono'; text-align:left; transition: 0.2s;">[T3] INTAKE MOTORS <span id="intakeLoad" style="float:right;">+40A</span></button>
+      <button id="btnComp" style="background:#222; border:1px solid #444; color:#fff; padding:12px; border-radius:6px; cursor:pointer; font-family:'JetBrains Mono'; text-align:left; transition: 0.2s;">[T3] COMPRESSOR <span id="compLoad" style="float:right;">+30A</span></button>
+    </div>
+    
+    <!-- DASHBOARD -->
+    <div style="flex: 1; min-width: 250px; background: #0a0a0a; border: 1px solid #333; border-radius: 6px; padding: 20px; position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+      <div id="vTxt" style="font-family: 'JetBrains Mono'; font-size: 3rem; font-weight: 700; color: #4caf50;">12.5V</div>
+      <div id="statusTxt" style="font-family: 'Orbitron'; font-size: 1rem; color: #999; margin-top: 10px; letter-spacing: 1px;">SYSTEM NOMINAL</div>
+      
+      <!-- Battery Bar -->
+      <div style="width: 100%; height: 20px; background: #222; border-radius: 10px; margin-top: 20px; overflow: hidden; border: 1px solid #444;">
+        <div id="vBar" style="width: 100%; height: 100%; background: #4caf50; transition: width 0.3s, background 0.3s;"></div>
+      </div>
+      
+      <!-- Shed Overlay Warning -->
+      <div id="shedWarn" style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(179,36,22,0.15); border: 2px solid var(--mars-red); border-radius: 6px; display: none; align-items: center; justify-content: center; pointer-events: none;">
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let state = { swerve: false, shooter: false, intake: false, comp: false };
+  const BASE_VOLTAGE = 12.5;
+  const RESISTANCE = 0.015; // V drop per Amp
+  
+  const bSwerve = document.getElementById('btnSwerve');
+  const bShooter = document.getElementById('btnShooter');
+  const bIntake = document.getElementById('btnIntake');
+  const bComp = document.getElementById('btnComp');
+  
+  function getBtnColor(isActive) { return isActive ? 'var(--ai-cyan)' : '#222'; }
+  function getBtnText(isActive) { return isActive ? '#000' : '#fff'; }
+  function getBtnBorder(isActive) { return isActive ? '1px solid var(--ai-cyan)' : '1px solid #444'; }
+  
+  function updateUI() {
+    let load = 0;
+    let isShedding = false;
+    
+    // Calculate raw load
+    if(state.swerve) load += 160;
+    if(state.shooter) load += 60;
+    
+    // Check if Tier 1 and 2 already cause sag
+    let predictedVoltage = BASE_VOLTAGE - (load * RESISTANCE);
+    
+    if (predictedVoltage < 9.5 || state.intake || state.comp) {
+        // Will activating T3 cause brownout?
+        let testLoad = load + (state.intake ? 40 : 0) + (state.comp ? 30 : 0);
+        if (BASE_VOLTAGE - (testLoad * RESISTANCE) <= 9.0) {
+            isShedding = true; // Engage shedding protocol
+        } else {
+            if(state.intake) load += 40;
+            if(state.comp) load += 30;
+        }
+    }
+    
+    // If shedding is active, lock down T3
+    if(isShedding) {
+        document.getElementById('intakeLoad').innerText = "SHED (0A)";
+        document.getElementById('compLoad').innerText = "SHED (0A)";
+        if(state.intake) bIntake.style.background = 'var(--mars-red)';
+        if(state.comp) bComp.style.background = 'var(--mars-red)';
+    } else {
+        document.getElementById('intakeLoad').innerText = "+40A";
+        document.getElementById('compLoad').innerText = "+30A";
+        bIntake.style.background = getBtnColor(state.intake);
+        bComp.style.background = getBtnColor(state.comp);
+    }
+    
+    bSwerve.style.background = getBtnColor(state.swerve);
+    bSwerve.style.color = getBtnText(state.swerve);
+    bSwerve.style.border = getBtnBorder(state.swerve);
+    
+    bShooter.style.background = getBtnColor(state.shooter);
+    bShooter.style.color = getBtnText(state.shooter);
+    bShooter.style.border = getBtnBorder(state.shooter);
+    
+    bIntake.style.color = getBtnText(state.intake);
+    bIntake.style.border = isShedding && state.intake ? '1px solid var(--mars-red-light)' : getBtnBorder(state.intake);
+    
+    bComp.style.color = getBtnText(state.comp);
+    bComp.style.border = isShedding && state.comp ? '1px solid var(--mars-red-light)' : getBtnBorder(state.comp);
+    
+    let finalV = BASE_VOLTAGE - (load * RESISTANCE);
+    finalV = Math.max(7.0, finalV); // floor
+    
+    document.getElementById('vTxt').innerText = finalV.toFixed(1) + "V";
+    
+    let pct = (finalV / 13.0) * 100;
+    document.getElementById('vBar').style.width = pct + "%";
+    
+    let stat = document.getElementById('statusTxt');
+    if (finalV < 8.5) {
+        document.getElementById('vTxt').style.color = 'var(--mars-red-light)';
+        document.getElementById('vBar').style.background = 'var(--mars-red-light)';
+        stat.innerText = "CRITICAL BROWNOUT RISK";
+        stat.style.color = 'var(--mars-red-light)';
+    } else if (finalV < 10.5) {
+        document.getElementById('vTxt').style.color = '#ffb300';
+        document.getElementById('vBar').style.background = '#ffb300';
+        stat.innerText = "VOLTAGE SAGGING";
+        stat.style.color = '#ffb300';
+    } else {
+        document.getElementById('vTxt').style.color = '#4caf50';
+        document.getElementById('vBar').style.background = '#4caf50';
+        stat.innerText = "SYSTEM NOMINAL";
+        stat.style.color = '#999';
+    }
+    
+    if (isShedding) {
+        document.getElementById('shedWarn').style.display = 'flex';
+        stat.innerText = "TIER 3 SHED ACTIVE";
+        stat.style.color = 'var(--mars-red-light)';
+    } else {
+        document.getElementById('shedWarn').style.display = 'none';
+    }
+  }
+
+  bSwerve.onclick = () => { state.swerve = !state.swerve; updateUI(); };
+  bShooter.onclick = () => { state.shooter = !state.shooter; updateUI(); };
+  bIntake.onclick = () => { state.intake = !state.intake; updateUI(); };
+  bComp.onclick = () => { state.comp = !state.comp; updateUI(); };
+</script>
+
 <div class="callout callout-warning">
   <h4>Simulation Parity</h4>
   <p>You can test your power shedding algorithms entirely in Dyn4j. The <code>MARSPhysicsWorld</code> natively simulates voltage sag as the sum of all simulated motor torque output increases, allowing you to trigger brownout scenarios in your JUnit tests and ensure your shedding algorithm functions correctly.</p>
@@ -86,5 +220,7 @@ motor.setVoltage(MathUtil.clamp(requestedVoltage, -maxAllowedVoltage, maxAllowed
   <p style="text-align: center; margin-top: 60px; font-size: 0.9rem;">&copy; 2026 Mountaineer Area RoboticS — FRC Team 2614 — FRC 2026: FUEL FRENZY</p>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
 </body>
 </html>

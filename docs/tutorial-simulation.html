@@ -43,6 +43,7 @@
     .callout-warning { background: rgba(179, 36, 22, 0.1); border: 1px solid var(--mars-red); }
     .callout-warning h4 { color: var(--mars-red-light); }
   </style>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -55,13 +56,13 @@
 <h2>1. The Physics World</h2>
 <p>The <code>MARSPhysicsWorld</code> is a singleton that manages all rigid bodies on the field. It handles collisions, friction, and even battery voltage sag natively alongside standard <a href="https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/index.html" style="color: var(--ai-cyan);">WPILib simulation classes</a>.</p>
 
-<pre><code>// In simulationPeriodic()
+<pre><code class="language-java">// In simulationPeriodic()
 MARSPhysicsWorld.getInstance().update(0.020);</code></pre>
 
 <h2>2. Spawning Game Pieces</h2>
 <p>To test an intake or the complex <strong>Ladder</strong> kinematics, you need game pieces in the simulation. You can spawn <strong>Fuel Balls</strong> dynamically into the world. They will bounce off walls and react to your robot's bumpers.</p>
 
-<pre><code>Body fuelBall = new Body();
+<pre><code class="language-java">Body fuelBall = new Body();
 fuelBall.addFixture(Geometry.createCircle(0.12)); // 24cm diameter
 fuelBall.setMass(MassType.NORMAL);
 fuelBall.translate(2.0, 2.0); // Meters x,y
@@ -87,5 +88,7 @@ MARSPhysicsWorld.getInstance().getDyn4jWorld().addBody(fuelBall);</code></pre>
   <p style="text-align: center; margin-top: 60px; font-size: 0.9rem;">&copy; 2026 Mountaineer Area RoboticS — FRC Team 2614 — FRC 2026: FUEL FRENZY</p>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
 </body>
 </html>

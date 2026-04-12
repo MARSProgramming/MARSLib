@@ -21,13 +21,26 @@ public class MechanismIOInstrumentationTest {
 
   @Test
   public void testLinearMechanismIOTalonFX() {
-    // We instantiate with a mock ID. In simulation, TalonFX creation is safe.
     assertDoesNotThrow(
         () -> {
           LinearMechanismIOTalonFX io = new LinearMechanismIOTalonFX(10, "rio", 1.0, 0.0, false);
           io.updateInputs(new LinearMechanismIO.LinearMechanismIOInputs());
+
+          // Force PID update branch
+          edu.wpi.first.networktables.NetworkTableInstance.getDefault()
+              .getTable("TunableNumbers")
+              .getEntry("LinearMechanism_10/kP")
+              .setDouble(99.0);
+          edu.wpi.first.networktables.NetworkTableInstance.getDefault().flush();
+          try {
+            Thread.sleep(20);
+          } catch (Exception e) {
+          }
+
+          io.updateInputs(new LinearMechanismIO.LinearMechanismIOInputs());
+
           io.setVoltage(1.0);
-          io.setVoltage(0.0);
+          io.setClosedLoopPosition(1.0, 2.0);
         });
   }
 
@@ -37,8 +50,22 @@ public class MechanismIOInstrumentationTest {
         () -> {
           RotaryMechanismIOTalonFX io = new RotaryMechanismIOTalonFX(11, "rio", 1.0, false);
           io.updateInputs(new RotaryMechanismIO.RotaryMechanismIOInputs());
+
+          // Force PID update branch
+          edu.wpi.first.networktables.NetworkTableInstance.getDefault()
+              .getTable("TunableNumbers")
+              .getEntry("RotaryMechanism_11/kP")
+              .setDouble(99.0);
+          edu.wpi.first.networktables.NetworkTableInstance.getDefault().flush();
+          try {
+            Thread.sleep(20);
+          } catch (Exception e) {
+          }
+
+          io.updateInputs(new RotaryMechanismIO.RotaryMechanismIOInputs());
+
           io.setVoltage(1.0);
-          io.setVoltage(0.0);
+          io.setClosedLoopPosition(1.0, 2.0);
         });
   }
 
@@ -48,6 +75,24 @@ public class MechanismIOInstrumentationTest {
         () -> {
           SwerveModuleIOTalonFX io = new SwerveModuleIOTalonFX(12, 13, "rio");
           io.updateInputs(new com.marslib.swerve.SwerveModuleIO.SwerveModuleIOInputs());
+
+          // Force PID update branch
+          edu.wpi.first.networktables.NetworkTableInstance.getDefault()
+              .getTable("TunableNumbers")
+              .getEntry("Swerve_12/Drive_kP")
+              .setDouble(99.0);
+          edu.wpi.first.networktables.NetworkTableInstance.getDefault()
+              .getTable("TunableNumbers")
+              .getEntry("Swerve_12/Turn_kP")
+              .setDouble(99.0);
+          edu.wpi.first.networktables.NetworkTableInstance.getDefault().flush();
+          try {
+            Thread.sleep(20);
+          } catch (Exception e) {
+          }
+
+          io.updateInputs(new com.marslib.swerve.SwerveModuleIO.SwerveModuleIOInputs());
+
           io.setDriveVoltage(1.0);
           io.setTurnVoltage(1.0);
         });

@@ -43,6 +43,7 @@
     .callout-warning { background: rgba(179, 36, 22, 0.1); border: 1px solid var(--mars-red); }
     .callout-warning h4 { color: var(--mars-red-light); }
   </style>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -55,7 +56,7 @@
 <h2>1. The MARSTestHarness</h2>
 <p>To run physics-backed tests, your JUnit 5 test class must initialize the <code>MARSTestHarness</code>. This harness overrides the internal HAL clock and resets static singletons, guaranteeing that every test starts with a clean slate.</p>
 
-<pre><code>@BeforeEach
+<pre><code class="language-java">@BeforeEach
 public void setup() {
     MARSTestHarness.setupTestEnvironment();
     // Initialize subsystems...
@@ -64,7 +65,7 @@ public void setup() {
 <h2>2. Advancing Time</h2>
 <p>Because tests run instantly on your CPU, you must explicitly command the simulation clock to tick forward to watch physics happen.</p>
 
-<pre><code>// Command the elevator to position 1.5 meters
+<pre><code class="language-java">// Command the elevator to position 1.5 meters
 elevator.setGoal(1.5);
 
 // Tick the physics world forward by 2.0 seconds
@@ -84,7 +85,7 @@ assertEquals(1.5, elevator.getPosition().in(Meters), 0.05);</code></pre>
 <h2>3. Testing Autonomous Paths</h2>
 <p>Because we have <code>IOSim</code> and Dyn4j, you can actually test a full PathPlanner macro in JUnit!</p>
 
-<pre><code>Command autoRoutine = AutoBuilder.buildAuto("Four Fuel Ball Auto");
+<pre><code class="language-java">Command autoRoutine = AutoBuilder.buildAuto("Four Fuel Ball Auto");
 autoRoutine.initialize();
 
 // Run the auto for 15 seconds
@@ -105,5 +106,7 @@ assertEquals(4, GameField.getScoredHubCount());</code></pre>
   <p style="text-align: center; margin-top: 60px; font-size: 0.9rem;">&copy; 2026 Mountaineer Area RoboticS — FRC Team 2614 — FRC 2026: FUEL FRENZY</p>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
 </body>
 </html>

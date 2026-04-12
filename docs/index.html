@@ -605,6 +605,7 @@
       <span class="nav-logo">MARS<span>Lib</span></span>
     </a>
     <ul class="nav-links">
+      <li><a href="standards.html" style="color: var(--mars-red); font-weight: 700;">STANDARDS</a></li>
       <li><a href="tutorials.html">Tutorials</a></li>
       <li><a href="#features">Features</a></li>
       <li><a href="#architecture">Architecture</a></li>
@@ -627,8 +628,8 @@
     </p>
     <div class="hero-actions">
       <a href="tutorials.html" class="btn-primary" style="text-decoration: none; padding: 12px 32px; border-radius: 12px; font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1rem; letter-spacing: 0.05em; transition: all 0.2s; display: inline-block;">START LEARNING →</a>
-      <a href="javadoc/index.html" class="btn btn-accent">BROWSE API DOCS</a>
-      <a href="https://github.com/MARSProgramming/MARSLib" class="btn btn-outline">⭐ View on GitHub</a>
+      <a href="standards.html" class="btn btn-accent" style="box-shadow: 0 4px 20px rgba(179, 36, 22, 0.4);">📖 CORE STANDARDS</a>
+      <a href="javadoc/index.html" class="btn btn-outline">BROWSE API DOCS</a>
     </div>
   </div>
 </section>
@@ -749,33 +750,33 @@
       <h2>Architecture</h2>
       <p>Strict AdvantageKit dependency injection isolates logic from hardware.</p>
     </div>
-    <div class="arch-diagram">
-      <pre>
-  ┌──────────────────────────────────────────────────────────────────┐
-  │                        Robot.java                                │
-  │                     TimedRobot Loop                              │
-  └────────────────────────┬─────────────────────────────────────────┘
-                           │
-  ┌────────────────────────▼─────────────────────────────────────────┐
-  │                    RobotContainer                                │
-  │        Subsystem Construction · Command Bindings                 │
-  └───┬──────────┬──────────┬──────────┬──────────┬─────────────────┘
-      │          │          │          │          │
-  ┌───▼──┐  ┌───▼──┐  ┌───▼──┐  ┌───▼──┐  ┌───▼──────────────┐
-  │Swerve│  │Shoot │  │Cowl  │  │Climb │  │MARSSuperstructure│
-  │Drive │  │  er  │  │      │  │  er  │  │  State Machine   │
-  └──┬───┘  └──┬───┘  └──┬───┘  └──┬───┘  └───────┬──────────┘
-     │         │         │         │               │
-  ┌──▼─────────▼─────────▼─────────▼───────────────▼──────────┐
-  │                   IO Interface Layer                        │
-  │    SwerveModuleIO · GyroIO · RotaryMechanismIO · VisionIO  │
-  └──────┬───────────────────────────────────┬─────────────────┘
-         │                                   │
-  ┌──────▼───────────────┐    ┌──────────────▼────────────────┐
-  │   IO<b>Real</b> (Hardware)  │    │    IO<b>Sim</b> (Dyn4j Physics)    │
-  │ TalonFX · Pigeon2    │    │ DCMotorSim · RigidBody2D     │
-  │ Limelight · CANcoder │    │ GamePieceBody · FieldWalls   │
-  └──────────────────────┘    └───────────────────────────────┘
+    <div class="arch-diagram" style="padding: 24px; text-align: center;">
+      <pre class="mermaid" style="background: transparent; border: none; overflow: visible; display: inline-block; text-align: center;">
+      graph TD
+          A[Robot.java<br><i>TimedRobot Loop</i>] -->|20ms| B(RobotContainer<br><i>Subsystem Binding</i>)
+          B --> C[SwerveDrive]
+          B --> D[Shooter]
+          B --> E[MARSSuperstructure]
+          
+          C --> F{IO Interface Layer}
+          D --> F
+          E --> F
+          
+          F -->|Hardware Mode| G[IOReal<br><i>TalonFX, Pigeon2</i>]
+          F -->|Simulation Mode| H[IOSim<br><i>Dyn4j Physics</i>]
+          
+          G --> I[(AdvantageKit Log)]
+          H --> I
+          
+          style A fill:#0a0a0a,stroke:#2a2a2a,stroke-width:2px,color:#e8e8e8
+          style B fill:#141414,stroke:#B32416,stroke-width:2px,color:#e8e8e8
+          style C fill:#1a1a1a,stroke:#2a2a2a,stroke-width:1px,color:#e8e8e8
+          style D fill:#1a1a1a,stroke:#2a2a2a,stroke-width:1px,color:#e8e8e8
+          style E fill:#1a1a1a,stroke:#2a2a2a,stroke-width:1px,color:#e8e8e8
+          style F fill:#B32416,stroke:#d42e1e,stroke-width:2px,color:#fff
+          style G fill:#2a2a2a,stroke:#1a1a1a,stroke-width:1px,color:#29b6f6
+          style H fill:#2a2a2a,stroke:#1a1a1a,stroke-width:1px,color:#9c7bcc
+          style I fill:#0a0a0a,stroke:#6ba3d6,stroke-width:2px,color:#6ba3d6
       </pre>
     </div>
   </div>
@@ -1008,5 +1009,13 @@
   </div>
 </footer>
 
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'dark',
+    fontFamily: 'Orbitron'
+  });
+</script>
 </body>
 </html>

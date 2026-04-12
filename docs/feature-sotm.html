@@ -36,6 +36,121 @@
     <h2>Dynamic Target Interception</h2>
     <p>A modern swerve drive loses immense offensive capability if it has to come to a complete stop to line up a shot. We've brought military-grade interception math into FRC to ensure the robot can score a hub shot while pulling rapid maneuvers.</p>
     
+    <div id="sim-container" style="width: 100%; height: 350px; background: #050505; border: 1px solid var(--border); border-radius: 12px; margin: 30px 0; position: relative; overflow: hidden; box-shadow: inset 0 0 40px rgba(0,0,0,0.8);">
+      <canvas id="sotmCanvas" width="800" height="350"></canvas>
+      <div style="position: absolute; top: 15px; right: 15px; font-family: 'Orbitron'; font-size: 0.75rem; color: var(--mars-red-light); letter-spacing: 0.1em; background: rgba(179,36,22,0.1); padding: 4px 12px; border-radius: 12px; border: 1px solid rgba(179,36,22,0.3);">LIVE KINEMATICS</div>
+    </div>
+    
+    <script>
+      const canvas = document.getElementById('sotmCanvas');
+      const ctx = canvas.getContext('2d');
+      function resize() {
+        if(canvas.parentElement) {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      let time = 0;
+      function loop() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        const targetX = canvas.width - 80;
+        const targetY = canvas.height / 2;
+        
+        // draw field grid
+        ctx.strokeStyle = '#111';
+        ctx.lineWidth = 1;
+        for(let i=0; i<canvas.width; i+=40) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); ctx.stroke(); }
+        for(let i=0; i<canvas.height; i+=40) { ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(canvas.width,i); ctx.stroke(); }
+
+        // draw target (hub)
+        ctx.beginPath();
+        ctx.arc(targetX, targetY, 20, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(179, 36, 22, 0.2)';
+        ctx.fill();
+        ctx.strokeStyle = '#B32416';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // robot physics
+        time += 0.02;
+        const rx = 100 + (time * 60) % (canvas.width - 250); 
+        const ry = canvas.height/2 + Math.sin(time * 1.5) * 80; 
+        
+        // local velocity vectors (derivative of position)
+        const vx = 60;
+        const vy = Math.cos(time * 1.5) * 80 * 1.5;
+        
+        // physical distance
+        const dx = targetX - rx;
+        const dy = targetY - ry;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        
+        // time of flight (naive 1D param estimator)
+        const shotSpeed = 250;
+        const tof = dist / shotSpeed;
+        
+        // aim point = Target - (RobotVel * ToF)
+        const aimX = targetX - (vx * tof);
+        const aimY = targetY - (vy * tof);
+        
+        // true path
+        ctx.beginPath();
+        ctx.moveTo(rx, ry);
+        ctx.lineTo(targetX, targetY);
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([2, 4]);
+        ctx.stroke();
+
+        // aim vector
+        ctx.beginPath();
+        ctx.moveTo(rx, ry);
+        ctx.lineTo(aimX, aimY);
+        ctx.strokeStyle = '#29b6f6';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 5]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        
+        // aim reticle
+        ctx.beginPath();
+        ctx.arc(aimX, aimY, 6, 0, Math.PI * 2);
+        ctx.fillStyle = '#29b6f6';
+        ctx.fill();
+
+        // draw robot
+        ctx.save();
+        ctx.translate(rx, ry);
+        const angle = Math.atan2(aimY - ry, aimX - rx);
+        ctx.rotate(angle);
+        ctx.shadowColor = '#000';
+        ctx.shadowBlur = 10;
+        ctx.fillStyle = '#ddd';
+        ctx.fillRect(-15, -15, 30, 30);
+        ctx.fillStyle = '#29b6f6';
+        ctx.fillRect(0, -4, 25, 8); // turret
+        ctx.restore();
+        
+        // stats overlay
+        ctx.fillStyle = 'rgba(10, 10, 10, 0.85)';
+        ctx.strokeStyle = '#333';
+        ctx.fillRect(10, 10, 170, 75);
+        ctx.strokeRect(10, 10, 170, 75);
+        ctx.fillStyle = '#29b6f6';
+        ctx.font = '11px "JetBrains Mono", monospace';
+        ctx.fillText(`DIST : ${Math.round(dist)} units`, 20, 30);
+        ctx.fillText(`TOF  : ${tof.toFixed(3)} s`, 20, 50);
+        ctx.fillText(`VSKEW: ${Math.round(Math.sqrt(vx*vx+vy*vy))} u/s`, 20, 70);
+
+        requestAnimationFrame(loop);
+      }
+      loop();
+    </script>
+    
     <h2>The Math Engine</h2>
     <p>MARSLib's <code>EliteShooterMath</code> iteratively solves the physics problem of moving targets:</p>
     <ul>

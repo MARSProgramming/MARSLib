@@ -43,6 +43,7 @@
     .callout-warning { background: rgba(179, 36, 22, 0.1); border: 1px solid var(--mars-red); }
     .callout-warning h4 { color: var(--mars-red-light); }
   </style>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -55,7 +56,7 @@
 <h2>1. Feedforward: Predicting the Physics</h2>
 <p>A PID loop only acts when there is an error. A <strong>Feedforward (FF)</strong> model <em>anticipates</em> the physical energy required to reach a state. For a heavy elevator (like the <strong>Ladder</strong> climber), gravity is always pulling it down. A <code>ElevatorFeedforward</code> calculates the exact voltage needed to counteract gravity (kG) before the PID even kicks in.</p>
 
-<pre><code>// kS (Static Friction), kG (Gravity), kV (Velocity), kA (Acceleration)
+<pre><code class="language-java">// kS (Static Friction), kG (Gravity), kV (Velocity), kA (Acceleration)
 ElevatorFeedforward ff = new ElevatorFeedforward(0.1, 0.4, 1.2, 0.05);
 
 // Calculate voltage required to hold steady, PLUS voltage to reach target velocity
@@ -63,6 +64,192 @@ double ffVoltage = ff.calculate(currentVelocity, targetVelocity);
 double pidVoltage = pid.calculate(currentPosition, targetPosition);
 
 motor.setVoltage(ffVoltage + pidVoltage);</code></pre>
+
+<div id="pid-sim" style="background: #050505; border: 1px solid var(--border); border-radius: 12px; margin: 30px 0; display: flex; flex-direction: column; overflow: hidden; box-shadow: inset 0 0 40px rgba(0,0,0,0.8);">
+  <div style="display: flex; gap: 20px; padding: 16px 20px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border); align-items: center; justify-content: space-between; flex-wrap: wrap;">
+    <div style="display: flex; gap: 24px; flex-wrap: wrap;">
+      <label style="color:#e8e8e8; font-family:'JetBrains Mono'; font-size:12px; display: flex; flex-direction: column; gap:4px;">
+        <span>kP (Proportional) <span id="kp-val" style="color:var(--ai-cyan)">0.20</span></span>
+        <input type="range" id="kp" min="0" max="1" step="0.01" value="0.2">
+      </label>
+      <label style="color:#e8e8e8; font-family:'JetBrains Mono'; font-size:12px; display: flex; flex-direction: column; gap:4px;">
+        <span>kI (Integral) <span id="ki-val" style="color:var(--ai-cyan)">0.00</span></span>
+        <input type="range" id="ki" min="0" max="1" step="0.01" value="0">
+      </label>
+      <label style="color:#e8e8e8; font-family:'JetBrains Mono'; font-size:12px; display: flex; flex-direction: column; gap:4px;">
+        <span>kD (Derivative) <span id="kd-val" style="color:var(--ai-cyan)">0.05</span></span>
+        <input type="range" id="kd" min="0" max="1" step="0.01" value="0.05">
+      </label>
+      <label style="color:#e8e8e8; font-family:'JetBrains Mono'; font-size:12px; display: flex; flex-direction: column; gap:4px;">
+        <span>kG (Gravity FF) <span id="kg-val" style="color:var(--yellow)">0.0</span></span>
+        <input type="range" id="kg" min="0" max="10" step="0.1" value="0.0">
+      </label>
+    </div>
+    <button id="resetSim" style="background:var(--mars-red); color:#fff; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-family:'Orbitron'; font-weight:700; transition: transform 0.1s;">FLIP SETPOINT</button>
+  </div>
+  <div style="display: flex; height: 300px; padding: 20px; gap: 20px;">
+    <!-- Elevator Canvas -->
+    <div style="flex: 0 0 80px; position: relative;">
+      <canvas id="elevatorCanvas" width="80" height="260" style="background: #111; border: 1px solid #333; border-radius: 6px;"></canvas>
+    </div>
+    <!-- Graph Canvas -->
+    <div style="flex: 1; position: relative;">
+      <canvas id="graphCanvas" width="700" height="260" style="width: 100%; height: 100%; display: block;"></canvas>
+      <div style="position:absolute; top:5px; right:15px; display:flex; gap:15px; font-family:'JetBrains Mono'; font-size:11px; background: rgba(0,0,0,0.5); padding: 4px 8px; border-radius: 4px;">
+        <span style="color:#29b6f6;">■ Setpoint</span>
+        <span style="color:#B32416;">■ Actual</span>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  const eCanvas = document.getElementById('elevatorCanvas');
+  const eCtx = eCanvas.getContext('2d');
+  const gCanvas = document.getElementById('graphCanvas');
+  const gCtx = gCanvas.getContext('2d');
+  
+  const kpSlider = document.getElementById('kp');
+  const kiSlider = document.getElementById('ki');
+  const kdSlider = document.getElementById('kd');
+  const kgSlider = document.getElementById('kg');
+  const btn = document.getElementById('resetSim');
+  
+  kpSlider.oninput = () => document.getElementById('kp-val').innerText = parseFloat(kpSlider.value).toFixed(2);
+  kiSlider.oninput = () => document.getElementById('ki-val').innerText = parseFloat(kiSlider.value).toFixed(2);
+  kdSlider.oninput = () => document.getElementById('kd-val').innerText = parseFloat(kdSlider.value).toFixed(2);
+  kgSlider.oninput = () => document.getElementById('kg-val').innerText = parseFloat(kgSlider.value).toFixed(1);
+  
+  function resizeG() { 
+      if(gCanvas.parentElement) {
+          gCanvas.width = gCanvas.parentElement.clientWidth; 
+          gCanvas.height = gCanvas.parentElement.clientHeight; 
+      }
+  }
+  window.addEventListener('resize', resizeG);
+  resizeG();
+
+  let position = 0.2; 
+  let velocity = 0;
+  let setpoint = 0.8;
+  let lastError = 0;
+  let integral = 0;
+  
+  btn.onclick = () => { 
+      setpoint = setpoint > 0.5 ? 0.2 : 0.8; 
+      btn.style.transform = 'scale(0.95)';
+      setTimeout(() => btn.style.transform = 'none', 100);
+      // Optional: anti-windup or reset integral on setpoint change
+      // integral = 0; 
+  };
+  
+  const history = [];
+
+  function simulate() {
+    const kP = parseFloat(kpSlider.value);
+    const kI = parseFloat(kiSlider.value);
+    const kD = parseFloat(kdSlider.value);
+    const kG = parseFloat(kgSlider.value);
+    
+    const error = setpoint - position;
+    const errorRate = (error - lastError) / 0.02;
+    lastError = error;
+    
+    // Integral windup bound
+    integral += error * 0.02;
+    if(integral > 2) integral = 2;
+    if(integral < -2) integral = -2;
+    
+    // PID Output
+    let voltage = (kP * error * 50) + (kI * integral * 20) + (kD * errorRate * 1.5);
+    // Gravity FF (Constant Volts pushing up)
+    voltage += kG;
+    
+    // Physical Simulation
+    // Gravity force pulls down continuously (-5.0 equivalent volts)
+    const GRAVITY_FORCE = -0.5; // Acceleration units
+    const MOTOR_FORCE = (voltage * 0.1); // Max 12v = 1.2 accel
+    const FORCE = MOTOR_FORCE + GRAVITY_FORCE; 
+    
+    velocity += FORCE * 0.02; // dt = 20ms
+    velocity *= 0.88; // Friction/damping
+    
+    position += velocity * 0.02;
+    
+    // Hard limits
+    if(position <= 0) { position = 0; velocity = 0; integral = 0; }
+    if(position >= 1) { position = 1; velocity = 0; integral = 0; }
+    
+    history.push({p: position, s: setpoint});
+    if(history.length > 300) history.shift();
+  }
+
+  function draw() {
+    // Elevator
+    eCtx.clearRect(0,0,eCanvas.width,eCanvas.height);
+    const eH = eCanvas.height;
+    
+    // Track
+    eCtx.fillStyle = '#222';
+    eCtx.fillRect(35, 10, 10, eH-20);
+    
+    // Y coords (1.0 goes to 10px, 0.0 goes to eH-10px)
+    const trackH = eH - 40;
+    const yPx = (1 - position) * trackH + 10;
+    const syPx = (1 - setpoint) * trackH + 10;
+    
+    // Setpoint Line
+    eCtx.strokeStyle = '#29b6f6';
+    eCtx.lineWidth = 2;
+    eCtx.beginPath(); eCtx.moveTo(10, syPx+10); eCtx.lineTo(70, syPx+10); eCtx.stroke();
+    
+    // Carriage
+    eCtx.fillStyle = '#B32416';
+    eCtx.fillRect(20, yPx, 40, 20);
+    eCtx.fillStyle = '#d42e1e';
+    eCtx.fillRect(25, yPx+5, 30, 10);
+    
+    // Graph
+    gCtx.clearRect(0,0,gCanvas.width,gCanvas.height);
+    const gW = gCanvas.width;
+    const gH = gCanvas.height;
+    
+    // Grid Lines
+    gCtx.strokeStyle = '#222';
+    gCtx.lineWidth = 1;
+    for(let i=0; i<=4; i++){ gCtx.beginPath(); gCtx.moveTo(0, i*(gH/4)); gCtx.lineTo(gW, i*(gH/4)); gCtx.stroke(); }
+    
+    if(history.length === 0) { requestAnimationFrame(draw); return; }
+    
+    const slice = gW / 300;
+    
+    // Draw Setpoint
+    gCtx.beginPath();
+    gCtx.strokeStyle = '#29b6f6';
+    gCtx.lineWidth = 2;
+    for(let i=0; i<history.length; i++) {
+        const x = i * slice;
+        const y = (1 - history[i].s) * gH;
+        if(i===0) gCtx.moveTo(x,y); else gCtx.lineTo(x,y);
+    }
+    gCtx.stroke();
+    
+    // Draw Actual Position
+    gCtx.beginPath();
+    gCtx.strokeStyle = '#B32416';
+    gCtx.lineWidth = 2;
+    for(let i=0; i<history.length; i++) {
+        const x = i * slice;
+        const y = (1 - history[i].p) * gH;
+        if(i===0) gCtx.moveTo(x,y); else gCtx.lineTo(x,y);
+    }
+    gCtx.stroke();
+    
+    requestAnimationFrame(draw);
+  }
+  
+  setInterval(simulate, 20);
+  draw();
+</script>
 
 <h2>2. Online Feedforward Estimation</h2>
 <p>As the battery drains, the real-world performance of motors changes. MARSLib implements the <code>OnlineFeedforwardEstimator</code>, which continuously tweaks the <code>kS</code> and <code>kV</code> constants during the match by monitoring voltage output vs actual velocity.</p>
@@ -83,5 +270,7 @@ However, over 20ms, the rotation actually changes the heading <em>while</em> you
   <p style="text-align: center; margin-top: 60px; font-size: 0.9rem;">&copy; 2026 Mountaineer Area RoboticS — FRC Team 2614 — FRC 2026: FUEL FRENZY</p>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
 </body>
 </html>

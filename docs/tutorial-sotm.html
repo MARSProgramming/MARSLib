@@ -43,6 +43,7 @@
     .callout-warning { background: rgba(179, 36, 22, 0.1); border: 1px solid var(--mars-red); }
     .callout-warning h4 { color: var(--mars-red-light); }
   </style>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -63,7 +64,7 @@
 <h2>2. Tuning the Distance Map</h2>
 <p>The first step is building a sparse lookup table of "Perfect Shots". Park your robot at 1m, 2m, 3m, 4m, and 5m. Find the RPM and Cowl Angle that consistently score Fuel Balls.</p>
 
-<pre><code>public static final InterpolatingDoubleTreeMap RPM_MAP = new InterpolatingDoubleTreeMap();
+<pre><code class="language-java">public static final InterpolatingDoubleTreeMap RPM_MAP = new InterpolatingDoubleTreeMap();
 static {
   RPM_MAP.put(1.0, 2500.0);
   RPM_MAP.put(3.0, 3200.0);
@@ -96,5 +97,7 @@ static {
   <p style="text-align: center; margin-top: 60px; font-size: 0.9rem;">&copy; 2026 Mountaineer Area RoboticS — FRC Team 2614 — FRC 2026: FUEL FRENZY</p>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
 </body>
 </html>
