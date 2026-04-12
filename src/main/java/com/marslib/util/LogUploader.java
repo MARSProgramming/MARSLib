@@ -51,7 +51,7 @@ public final class LogUploader {
 
   /** Overrides the directories scanned for logs. Used for unit testing. */
   public static void setLogDirs(Path... dirs) {
-    log_dirs = dirs;
+    log_dirs = dirs.clone();
   }
 
   private static final ExecutorService executor =

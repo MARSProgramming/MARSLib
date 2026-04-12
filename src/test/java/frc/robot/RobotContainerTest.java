@@ -7,7 +7,6 @@ import com.marslib.testing.MARSTestHarness;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj.simulation.JoystickSim;
 import edu.wpi.first.wpilibj.simulation.SimHooks;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.MARSSuperstructure;
 import frc.robot.subsystems.MARSSuperstructure.SuperstructureState;
@@ -168,7 +167,7 @@ public class RobotContainerTest {
   public void testAutonomousSelection() {
     // Selection should return an auto command (pathplanner based)
     // We won't run it (as it requires real trajectory files), but we check it doesn't crash
-    Command auto = robotContainer.getAutonomousCommand();
+    robotContainer.getAutonomousCommand();
     // It might be null if no auto is selected or loaded, but the logic is exercised
   }
 

@@ -213,6 +213,7 @@ public class LoggedTunableNumber implements Sendable {
    * Releases native NetworkTables handles. Should be called when a tunable is no longer needed,
    * especially in unit tests to prevent resource leaks and native crashes.
    */
+  @SuppressWarnings("PMD.NullAssignment")
   public void close() {
     if (publisher != null) {
       publisher.close();

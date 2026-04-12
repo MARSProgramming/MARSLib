@@ -1,0 +1,22 @@
+PMD
+PMD reportProblems found
+#FileLineProblem
+ 
+1
+C:\Users\david\dev\robotics\frc\MARSLib\src\main\java\com\marslib\util\LogUploader.java
+54
+The user-supplied array 'dirs' is stored directly.
+
+ 
+2
+C:\Users\david\dev\robotics\frc\MARSLib\src\main\java\com\marslib\util\LoggedTunableNumber.java
+219
+Assigning an Object to null is a code smell.  Consider refactoring.
+
+ 
+3
+C:\Users\david\dev\robotics\frc\MARSLib\src\main\java\com\marslib\util\LoggedTunableNumber.java
+223
+Assigning an Object to null is a code smell.  Consider refactoring.
+
+

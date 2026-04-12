@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.marslib.mechanisms.*;
-import com.marslib.power.*;
 import com.marslib.simulation.MARSPhysicsWorld;
 import com.marslib.testing.MARSTestHarness;
 import org.junit.jupiter.api.AfterEach;

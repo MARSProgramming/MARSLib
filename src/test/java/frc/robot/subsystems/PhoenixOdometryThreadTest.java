@@ -3,14 +3,12 @@ package frc.robot.subsystems;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.ctre.phoenix6.BaseStatusSignal;
-import com.marslib.mechanisms.*;
-import com.marslib.power.*;
 import com.marslib.swerve.*;
 import com.marslib.testing.MARSTestHarness;
-import com.marslib.util.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("resource")
 public class PhoenixOdometryThreadTest {
 
   @BeforeEach

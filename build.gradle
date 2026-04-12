@@ -637,17 +637,17 @@ tasks.named('checkstyleTest') { enabled = false }
 task updateDocsCoverage {
     description = "Updates the docs/index.html file with freshly generated JaCoCo coverage metrics"
     dependsOn jacocoTestReport
-    
+
     doLast {
         def csvFile = file("build/reports/jacoco/test/jacocoTestReport.csv")
         if (!csvFile.exists()) {
             println "No jacocoTestReport.csv found, skipping documentation update."
             return
         }
-        
+
         def sourceFiles = fileTree("src/main/java").matching { include "**/*.java" }.files.size()
         def testFiles = fileTree("src/test/java").matching { include "**/*.java" }.files.size()
-        
+
         def testCount = 0
         def testResultsDir = file("build/test-results/test")
         if (testResultsDir.exists()) {
@@ -660,7 +660,7 @@ task updateDocsCoverage {
                 }
             }
         }
-        
+
         def instrMissed = 0
         def instrCovered = 0
         def branchMissed = 0
@@ -669,7 +669,7 @@ task updateDocsCoverage {
         def lineCovered = 0
         def classMissed = 0
         def classCovered = 0
-        
+
         csvFile.eachLine { line, index ->
             if (index > 0) { // skip header
                 def parts = line.split(',')
@@ -681,14 +681,14 @@ task updateDocsCoverage {
                         def bc = parts[6].toInteger()
                         def lm = parts[7].toInteger()
                         def lc = parts[8].toInteger()
-                        
+
                         instrMissed += im
                         instrCovered += ic
                         branchMissed += bm
                         branchCovered += bc
                         lineMissed += lm
                         lineCovered += lc
-                        
+
                         if (ic > 0) {
                             classCovered++
                         } else {
@@ -698,71 +698,71 @@ task updateDocsCoverage {
                 }
             }
         }
-        
+
         def instrTotal = instrCovered + instrMissed
         def branchTotal = branchCovered + branchMissed
         def lineTotal = lineCovered + lineMissed
         def classTotal = classCovered + classMissed
-        
+
         def instrPct = instrTotal > 0 ? Math.round((float)instrCovered * 100.0f / instrTotal) : 0
         def branchPct = branchTotal > 0 ? Math.round((float)branchCovered * 100.0f / branchTotal) : 0
         def linePct = lineTotal > 0 ? Math.round((float)lineCovered * 100.0f / lineTotal) : 0
         def classPct = classTotal > 0 ? Math.round((float)classCovered * 100.0f / classTotal) : 0
-        
+
         def fmt = java.text.NumberFormat.getNumberInstance(java.util.Locale.US)
-        
+
         def indexFile = file("docs/index.html")
         if (indexFile.exists()) {
             def content = indexFile.getText('UTF-8')
-            
+
             // 1. Top Section - Source Files
             content = content.replaceAll(
                 /(?s)<div class="stat-value">\d+<\/div>\s*<div class="stat-label">Source Files<\/div>/,
                 "<div class=\"stat-value\">${sourceFiles}</div>\n      <div class=\"stat-label\">Source Files</div>"
             )
-            
+
             // 2. Top Section - Unit Tests
             content = content.replaceAll(
                 /(?s)<div class="stat-value">\d+<\/div>\s*<div class="stat-label">Unit Tests<\/div>/,
                 "<div class=\"stat-value\">${testCount}</div>\n      <div class=\"stat-label\">Unit Tests</div>"
             )
-            
+
             // 3. Top Section - Instruction Coverage
             content = content.replaceAll(
                 /(?s)<div class="percentage">\d+%<\/div>\s*<div class="stat-label">Instruction Coverage<\/div>\s*<div class="instruction-count">[\d,]+ \/ [\d,]+ instructions covered<\/div>/,
                 "<div class=\"percentage\">${instrPct}%</div>\n      <div class=\"stat-label\">Instruction Coverage</div>\n      <div class=\"instruction-count\">${fmt.format(instrCovered)} / ${fmt.format(instrTotal)} instructions covered</div>"
             )
-            
+
             // 4. Bottom Section - Header
             content = content.replaceAll(
                 /<p>JaCoCo-measured coverage across \d+ test files and \d+ test cases\.<\/p>/,
                 "<p>JaCoCo-measured coverage across ${testFiles} test files and ${testCount} test cases.</p>"
             )
-            
+
             // 5. Bottom Section - Line Coverage
             content = content.replaceAll(
                 /(?s)<h4>\uD83D\uDCCF Line Coverage<\/h4>\s*<div class="progress-bar">\s*<div class="progress-fill" style="width: \d+%; background: linear-gradient\(90deg, var\(--mars-red\), var\(--yellow\)\);"><\/div>\s*<\/div>\s*<div class="coverage-meta">[\d,]+ \/ [\d,]+ lines covered \(\d+%\)<\/div>/,
                 "<h4>\uD83D\uDCCF Line Coverage</h4>\n        <div class=\"progress-bar\">\n          <div class=\"progress-fill\" style=\"width: ${linePct}%; background: linear-gradient(90deg, var(--mars-red), var(--yellow));\"></div>\n        </div>\n        <div class=\"coverage-meta\">${fmt.format(lineCovered)} / ${fmt.format(lineTotal)} lines covered (${linePct}%)</div>"
             )
-            
+
             // 6. Bottom Section - Branch Coverage
             content = content.replaceAll(
                 /(?s)<h4>\uD83C\uDF3F Branch Coverage<\/h4>\s*<div class="progress-bar">\s*<div class="progress-fill" style="width: \d+%; background: linear-gradient\(90deg, var\(--green\), var\(--blue\)\);"><\/div>\s*<\/div>\s*<div class="coverage-meta">[\d,]+ \/ [\d,]+ branches covered \(\d+%\)<\/div>/,
                 "<h4>\uD83C\uDF3F Branch Coverage</h4>\n        <div class=\"progress-bar\">\n          <div class=\"progress-fill\" style=\"width: ${branchPct}%; background: linear-gradient(90deg, var(--green), var(--blue));\"></div>\n        </div>\n        <div class=\"coverage-meta\">${fmt.format(branchCovered)} / ${fmt.format(branchTotal)} branches covered (${branchPct}%)</div>"
             )
-            
+
             // 7. Bottom Section - Instruction Coverage
             content = content.replaceAll(
                 /(?s)<h4>⚙️ Instruction Coverage<\/h4>\s*<div class="progress-bar">\s*<div class="progress-fill" style="width: \d+%; background: linear-gradient\(90deg, var\(--purple\), var\(--blue\)\);"><\/div>\s*<\/div>\s*<div class="coverage-meta">[\d,]+ \/ [\d,]+ instructions covered \(\d+%\)<\/div>/,
                 "<h4>⚙️ Instruction Coverage</h4>\n        <div class=\"progress-bar\">\n          <div class=\"progress-fill\" style=\"width: ${instrPct}%; background: linear-gradient(90deg, var(--purple), var(--blue));\"></div>\n        </div>\n        <div class=\"coverage-meta\">${fmt.format(instrCovered)} / ${fmt.format(instrTotal)} instructions covered (${instrPct}%)</div>"
             )
-            
+
             // 8. Bottom Section - Class Coverage
             content = content.replaceAll(
                 /(?s)<h4>\uD83C\uDFD7️ Class Coverage<\/h4>\s*<div class="progress-bar">\s*<div class="progress-fill" style="width: \d+%; background: linear-gradient\(90deg, var\(--green\), var\(--mars-red\)\);"><\/div>\s*<\/div>\s*<div class="coverage-meta">[\d,]+ \/ [\d,]+ classes covered \(\d+%\)<\/div>/,
                 "<h4>\uD83C\uDFD7️ Class Coverage</h4>\n        <div class=\"progress-bar\">\n          <div class=\"progress-fill\" style=\"width: ${classPct}%; background: linear-gradient(90deg, var(--green), var(--mars-red));\"></div>\n        </div>\n        <div class=\"coverage-meta\">${fmt.format(classCovered)} / ${fmt.format(classTotal)} classes covered (${classPct}%)</div>"
             )
-            
+
             indexFile.setText(content, 'UTF-8')
             println "Successfully updated docs/index.html with Jacoco Coverage: Instr ${instrPct}%, Branch ${branchPct}%, Line ${linePct}%, Class ${classPct}%"
             println "Source Files: ${sourceFiles}, Test Files: ${testFiles}, Unit Tests: ${testCount}"
