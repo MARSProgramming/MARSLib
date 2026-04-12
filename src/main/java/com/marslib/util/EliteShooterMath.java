@@ -41,7 +41,9 @@ public class EliteShooterMath {
    * @param releaseHeightZ Height of the robot's shooter mechanism from the floor
    * @param nominalShotSpeedMetersPerSec Base shot velocity output limit
    * @param gravity Gravity constant (typically -9.81)
-   * @param liftCoefficient Aerodynamic lift coefficient of the game piece
+   * @param liftCoefficient Aerodynamic Magnus lift coefficient (1/m). Relates lift acceleration to
+   *     velocity squared: a_lift = liftCoefficient × v². Typical values: 0.05–0.15 for FRC game
+   *     pieces. Set to 0.0 to disable lift compensation.
    * @param setpoint Reference to a pre-allocated EliteShooterSetpoint to mutate and return
    * @return The same setpoint instance populated with computed values
    */
@@ -101,8 +103,12 @@ public class EliteShooterMath {
     double xyVel = Math.sqrt(virtualShotX * virtualShotX + virtualShotY * virtualShotY);
 
     // Apply gravity and lift compensation
-    double drop = 0.5 * t * t * gravity;
-    drop += 0.5 * liftCoefficient * c;
+    // Gravity contributes downward displacement: Δz_gravity = 0.5 * g * t²
+    // Magnus lift on a spinning game piece creates upward acceleration proportional to v²:
+    //   a_lift = liftCoefficient * v²  [units: liftCoefficient is 1/m]
+    //   Δz_lift = 0.5 * a_lift * t² = 0.5 * liftCoefficient * vShot² * t²
+    double drop = 0.5 * gravity * t * t;
+    drop += 0.5 * liftCoefficient * vShot * vShot * t * t;
 
     double virtualDeltaZ = tz - drop;
     double pitchAngleRads = Math.atan2(virtualDeltaZ / t, xyVel);
