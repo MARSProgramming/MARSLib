@@ -99,6 +99,21 @@ driver.y().whileTrue(swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
   <li>Drag your sliders to fit the feedback noise. The UI will instantly spit out your <code>kS</code>, <code>kV</code>, <code>kA</code>, and <code>kP</code> values!</li>
 </ol>
 
+<h2>5. Continuous SysId (Online Estimator)</h2>
+<p>Running a formal SysId sequence requires physical space and dedicated downtime. What if the robot just learned its own constants while the driver was practicing? MARSLib features a groundbreaking <strong>Continuous SysId Extraction</strong> framework built directly into its subsystems via the <code>OnlineFeedforwardEstimator</code>.</p>
+
+<p>A zero-allocation, sliding-window Ordinary Least Squares (OLS) regression algorithm continuously monitors mechanism telemetry (Voltage, Velocity, and Acceleration) during normal Teleop driving. By operating strictly over periods of contiguous movement to avoid static friction nonlinearities, it dynamically computes empirical <code>kV</code> and <code>kA</code> constants in zero-GC real-time.</p>
+
+<pre><code class="language-java">// Inside MARSShooter.java periodic()
+double currentVelocity = inputs.velocityRadPerSec;
+double currentAccel = (currentVelocity - lastVelocityForSysId) / 0.020;
+lastVelocityForSysId = currentVelocity;
+
+// Passively learn the physics model while the driver practices!
+estimator.addMeasurement(inputs.appliedVolts, currentVelocity, currentAccel);</code></pre>
+
+<p>You can deploy your code, pull up AdvantageScope during driving practice, and literally watch your <code>kV</code> and <code>kA</code> values converge towards mathematical perfection over time—without ever running a formal SysId sequence!</p>
+
 <footer>
   <p style="text-align: center; margin-top: 60px; font-size: 0.9rem;">&copy; 2026 Mountaineer Area RoboticS — FRC Team 2614 — FRC 2026: REBUILT</p>
 </footer>
