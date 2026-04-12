@@ -38,14 +38,6 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-    - name: Apply Code Formatting
-      run: ./gradlew spotlessApply -Pskip-inspector-wrapper
-
-    - name: Commit Auto-formatted Code
-      uses: stefanzweifel/git-auto-commit-action@v5
-      with:
-        commit_message: "style: auto-format code with spotless [skip ci]"
-
     - name: Compile
       run: ./gradlew compileJava compileTestJava -Pskip-inspector-wrapper
 
@@ -75,19 +67,7 @@ jobs:
         min-coverage-changed-files: 80
         title: "Test Coverage Report"
 
-    - name: Generate JaCoCo Badges
-      uses: cicirello/jacoco-badge-generator@v2
-      with:
-        jacoco-csv-file: build/reports/jacoco/test/jacocoTestReport.csv
-        generate-branches-badge: true
-        badges-directory: .github/badges
 
-    - name: Commit JaCoCo Badges
-      if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-      uses: stefanzweifel/git-auto-commit-action@v5
-      with:
-        commit_message: "docs: update jacoco coverage badges [skip ci]"
-        file_pattern: ".github/badges/*.svg"
 
     - name: Generate Documentation Site
       run: ./gradlew generateDocs -Pskip-inspector-wrapper
