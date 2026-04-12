@@ -212,6 +212,61 @@ task generateDocs {
             }
         }
 
+        // Dynamic Stats Generation
+        println "Calculating documentation statistics..."
+
+        // 1. Source Files Count
+        def sourceFiles = fileTree("src/main/java").matching { include "**/*.java" }.files.size()
+
+        // 2. Unit Test Count (Parsing JUnit XML results)
+        def testCount = 0
+        def testResultsDir = file("build/test-results/test")
+        if (testResultsDir.exists()) {
+            testResultsDir.listFiles().each { f ->
+                if (f.name.endsWith(".xml")) {
+                    def matcher = f.text =~ /tests="(\d+)"/
+                    if (matcher.find()) {
+                        testCount += matcher.group(1).toInteger()
+                    }
+                }
+            }
+        }
+
+        // 3. Line Coverage (Parsing JaCoCo CSV)
+        def coveragePercent = "0%"
+        def csvFile = file("build/reports/jacoco/test/jacocoTestReport.csv")
+        if (csvFile.exists()) {
+            def linesMissed = 0
+            def linesCovered = 0
+            csvFile.eachLine { line, index ->
+                if (index > 1) { // Skip header
+                    def parts = line.split(',')
+                    if (parts.length >= 9) {
+                        try {
+                            linesMissed += parts[7].toInteger()
+                            linesCovered += parts[8].toInteger()
+                        } catch (Exception e) {}
+                    }
+                }
+            }
+            if (linesCovered + linesMissed > 0) {
+                coveragePercent = "${Math.round(linesCovered * 100.0 / (linesCovered + linesMissed))}%"
+            }
+        }
+
+        println "Stats: ${sourceFiles} files, ${testCount} tests, ${coveragePercent} coverage"
+
+        // Inject into index.html
+        def indexFile = file("${docsDir}/index.html")
+        if (indexFile.exists()) {
+            def content = indexFile.getText('UTF-8')
+            content = content.replace('${SOURCE_FILES}', sourceFiles.toString())
+            content = content.replace('${UNIT_TESTS}', testCount.toString())
+            content = content.replace('${TOTAL_COVERAGE}', coveragePercent)
+            indexFile.setText(content, 'UTF-8')
+            println "Successfully injected stats into index.html"
+        }
+
         println "Documentation site generated at: ${docsDir.absolutePath}"
         println "Open docs/index.html in your browser to preview."
     }

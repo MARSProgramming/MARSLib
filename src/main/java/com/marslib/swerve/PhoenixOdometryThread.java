@@ -42,6 +42,15 @@ public class PhoenixOdometryThread extends Thread {
     return instance;
   }
 
+  /** Stops the current instance and clears the singleton reference. Only used for unit testing. */
+  @SuppressWarnings("PMD.NullAssignment")
+  public static synchronized void resetInstance() {
+    if (instance != null) {
+      instance.interrupt();
+      instance = null;
+    }
+  }
+
   /**
    * Container for a batch of synchronized odometry samples from a single module.
    *

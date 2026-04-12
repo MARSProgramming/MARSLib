@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tutorial: Physics-First Development — MARSLib</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --mars-red: #B32416;
+      --mars-red-light: #d42e1e;
+      --bg-primary: #0a0a0a;
+      --bg-card: #1a1a1a;
+      --border: #2a2a2a;
+      --text-primary: #e8e8e8;
+      --text-secondary: #999999;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Ubuntu', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; padding: 40px 20px; max-width: 900px; margin: auto; }
+    
+    .back-link { display: inline-block; margin-bottom: 30px; color: var(--mars-red); text-decoration: none; font-weight: bold; font-family: 'Orbitron', sans-serif; letter-spacing: 0.1em; }
+    
+    h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: white; margin-bottom: 20px; }
+    h1 { font-size: 2.5rem; text-align: center; color: var(--mars-red-light); }
+    h2 { font-size: 1.8rem; margin-top: 50px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+    h3 { font-size: 1.2rem; color: var(--mars-red-light); margin-top: 30px; }
+    
+    p { margin-bottom: 20px; color: var(--text-secondary); font-size: 1.1rem; }
+    code { font-family: 'JetBrains Mono', monospace; background: #222; padding: 2px 6px; border-radius: 4px; color: #ff9d00; }
+    pre { background: #111; border: 1px solid var(--border); padding: 20px; border-radius: 12px; overflow-x: auto; margin-bottom: 30px; }
+    pre code { background: transparent; padding: 0; color: #e8e8e8; font-size: 0.9rem; }
+    
+    .callout { background: rgba(179, 36, 22, 0.1); border-left: 4px solid var(--mars-red); padding: 20px; border-radius: 0 8px 8px 0; margin-bottom: 30px; }
+    .callout h4 { font-family: 'Orbitron', sans-serif; margin-bottom: 10px; color: var(--mars-red-light); }
+  </style>
+</head>
+<body>
+
+<a href="tutorials.html" class="back-link">← BACK TO TUTORIALS</a>
+
+<h1>Physics-First Development</h1>
+
+<p>Waiting for a physical robot to be built is the #1 cause of losing FRC competitions. MARSLib uses <strong>Dyn4j</strong>, a 2D physics engine, to create a high-fidelity virtual world where you can develop 100% of your code before the metal is even cut.</p>
+
+<h2>1. The Physics World</h2>
+<p>The <code>MARSPhysicsWorld</code> is a singleton that manages all rigid bodies on the field. It handles collisions, friction, and even battery voltage sag.</p>
+
+<pre><code>// In simulationPeriodic()
+MARSPhysicsWorld.getInstance().update(0.020);</code></pre>
+
+<h2>2. Spawning Game Pieces</h2>
+<p>To test an intake, you need game pieces. You can spawn <strong>Fuel Balls</strong> dynamically into the world. They will bounce off walls and react to your robot's bumpers.</p>
+
+<pre><code>Body fuelBall = new Body();
+fuelBall.addFixture(Geometry.createCircle(0.12)); // 24cm diameter
+fuelBall.setMass(MassType.NORMAL);
+fuelBall.translate(2.0, 2.0); // Meters x,y
+MARSPhysicsWorld.getInstance().getDyn4jWorld().addBody(fuelBall);</code></pre>
+
+<h2>3. Subsystem IO-Sim</h2>
+<p>As covered in the IO Layer tutorial, your subsystems should use <code>IOSim</code> implementations. These classes connect WPILib simulators (like <code>ElevatorSim</code>) to the physics world.</p>
+
+<div class="callout">
+  <h4>Realistic Power Modeling</h4>
+  <p>MARSLib doesn't just sim motion; it sims electrical draw. If your elevator hit a mechanical limit and stalls, the <code>MARSPowerManager</code> will calculate the voltage drop, which might cause your "virtual" Rio to brown out! This allows you to tune current limits safely in code.</p>
+</div>
+
+<h2>4. Visualizing with AdvantageScope</h2>
+<p>You can't "see" physics math, so we export all body positions to AdvantageScope. By dragging the <code>PhysicsWorld/GamePieces</code> field into the 3D Field view, you can watch your robot interact with the game in real-time.</p>
+
+<div class="callout">
+  <h4>Student Pro-Tip</h4>
+  <p>Run your autonomous paths in simulation with <strong>Efficiency Mode OFF</strong> to test how physical collisions with obstacle walls might knock your robot off path. If your pathing breaks here, it will definitely break on the real field.</p>
+</div>
+
+</body>
+</html>

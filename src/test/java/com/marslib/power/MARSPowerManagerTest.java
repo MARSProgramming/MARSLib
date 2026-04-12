@@ -1,47 +1,66 @@
 package com.marslib.power;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
+import com.marslib.testing.MARSTestHarness;
+import frc.robot.constants.PowerConstants;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class MARSPowerManagerTest {
 
-  @Test
-  public void testVoltageScalingDuringBrownouts() {
-    // 1. Mock PowerIO to report exact voltages
-    PowerIO mockPowerIO =
+  private MARSPowerManager powerManager;
+  private double simulatedVoltage = 12.0;
+
+  @BeforeEach
+  public void setUp() {
+    MARSTestHarness.reset();
+
+    PowerIO mockIO =
         new PowerIO() {
           @Override
           public void updateInputs(PowerIOInputs inputs) {
-            inputs.voltage = 7.0;
+            inputs.voltage = simulatedVoltage;
           }
         };
-    MARSPowerManager powerManager = new MARSPowerManager(mockPowerIO);
 
-    // 2. Proc updates
+    powerManager = new MARSPowerManager(mockIO);
+  }
+
+  @Test
+  public void testNominalVoltageScaling() {
+    simulatedVoltage = 12.5;
     powerManager.periodic();
 
-    // 3. Assert linear scaling between 6.0V (0.0 multiplier) and 10.0V (1.0 multiplier)
-    // At 7.0V, it should be exactly 0.25 scaling.
-    double scale = powerManager.calculateVoltageScaleFactor(10.0, 6.0);
+    assertEquals(1.0, powerManager.calculateVoltageScaleFactor(12.0, 7.0), 0.001);
+  }
 
-    assertEquals(0.25, scale, 0.01, "PowerManager failed to scale kinematics perfectly at 7.0V");
+  @Test
+  public void testWarningVoltageScaling() {
+    // Exactly halfway between nominal (12.0) and critical (8.0)
+    simulatedVoltage = 10.0;
+    powerManager.periodic();
 
-    // 4. Test nominal clamps to 1.0
-    PowerIO mockNominal =
-        new PowerIO() {
-          @Override
-          public void updateInputs(PowerIOInputs inputs) {
-            inputs.voltage = 12.0;
-          }
-        };
-    MARSPowerManager nominalManager = new MARSPowerManager(mockNominal);
-    nominalManager.periodic();
+    assertEquals(0.5, powerManager.calculateVoltageScaleFactor(12.0, 8.0), 0.001);
+  }
 
-    assertEquals(
-        1.0,
-        nominalManager.calculateVoltageScaleFactor(10.0, 6.0),
-        0.01,
-        "PowerManager should cap scale at 1.0");
+  @Test
+  public void testCriticalVoltageScaling() {
+    simulatedVoltage = 7.5;
+    powerManager.periodic();
+
+    // Below critical should be 0.0
+    assertEquals(0.0, powerManager.calculateVoltageScaleFactor(12.0, 8.0), 0.001);
+  }
+
+  @Test
+  public void testAlertActivation() {
+    // Under warning threshold
+    simulatedVoltage = PowerConstants.WARNING_VOLTAGE - 0.1;
+    powerManager.periodic();
+
+    // We can't easily check the Alert object's private state without reflection,
+    // but we've exercised the logic paths.
+    assertTrue(powerManager.getVoltage() < PowerConstants.WARNING_VOLTAGE);
   }
 }

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tutorial: State Machine Logic — MARSLib</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --mars-red: #B32416;
+      --mars-red-light: #d42e1e;
+      --bg-primary: #0a0a0a;
+      --bg-card: #1a1a1a;
+      --border: #2a2a2a;
+      --text-primary: #e8e8e8;
+      --text-secondary: #999999;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Ubuntu', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; padding: 40px 20px; max-width: 900px; margin: auto; }
+    
+    .back-link { display: inline-block; margin-bottom: 30px; color: var(--mars-red); text-decoration: none; font-weight: bold; font-family: 'Orbitron', sans-serif; letter-spacing: 0.1em; }
+    
+    h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: white; margin-bottom: 20px; }
+    h1 { font-size: 2.5rem; text-align: center; color: var(--mars-red-light); }
+    h2 { font-size: 1.8rem; margin-top: 50px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+    h3 { font-size: 1.2rem; color: var(--mars-red-light); margin-top: 30px; }
+    
+    p { margin-bottom: 20px; color: var(--text-secondary); font-size: 1.1rem; }
+    code { font-family: 'JetBrains Mono', monospace; background: #222; padding: 2px 6px; border-radius: 4px; color: #ff9d00; }
+    pre { background: #111; border: 1px solid var(--border); padding: 20px; border-radius: 12px; overflow-x: auto; margin-bottom: 30px; }
+    pre code { background: transparent; padding: 0; color: #e8e8e8; font-size: 0.9rem; }
+    
+    .callout { background: rgba(179, 36, 22, 0.1); border-left: 4px solid var(--mars-red); padding: 20px; border-radius: 0 8px 8px 0; margin-bottom: 30px; }
+    .callout h4 { font-family: 'Orbitron', sans-serif; margin-bottom: 10px; color: var(--mars-red-light); }
+  </style>
+</head>
+<body>
+
+<a href="tutorials.html" class="back-link">← BACK TO TUTORIALS</a>
+
+<h1>State Machine Logic</h1>
+
+<p>Coordinating multiple mechanisms (like an intake, a pivot, and a shooter) is hard. If you use simple if-statements, you'll eventually end up with "spaghetti code" where the robot crashes into itself. MARSLib uses <code>MARSStateMachine</code> to manage these transitions safely.</p>
+
+<h2>1. Defining Your States</h2>
+<p>Start by creating an enum that represents every possible state of your mechanism.</p>
+
+<pre><code>public enum SuperstructureState {
+  IDLE,
+  INTAKING,
+  LOADED,
+  SHOOTING,
+  UNJAMMING
+}</code></pre>
+
+<h2>2. The Transition Table</h2>
+<p>In your Subsystem's constructor, you define which transitions are legal. This prevents the robot from trying to shoot if it hasn't finished intaking!</p>
+
+<pre><code>stateMachine = new MARSStateMachine<>("Superstructure", SuperstructureState.class, SuperstructureState.IDLE);
+
+// Setup the table
+stateMachine.addTransition(IDLE, INTAKING);
+stateMachine.addTransition(INTAKING, LOADED);
+stateMachine.addBidirectional(LOADED, SHOOTING);
+stateMachine.addWildcardTo(IDLE); // Can always go back to IDLE in emergency</code></pre>
+
+<h2>3. Entry & Exit Actions</h2>
+<p>Often, you want something to happen exactly once when a state changes. For example, when entering <code>INTAKING</code>, you want to deploy the pivot.</p>
+
+<pre><code>stateMachine.setEntryAction(INTAKING, () -> {
+  pivot.setGoal(IntakeConstants.DEPLOY_POS);
+  intakeWheels.run(1.0);
+});
+
+stateMachine.setExitAction(INTAKING, () -> {
+  pivot.setGoal(IntakeConstants.STOW_POS);
+});</code></pre>
+
+<h2>4. Live Mermaid Visualization</h2>
+<p>One of the most powerful features of <code>MARSStateMachine</code> is that it automatically generates a **Mermaid.js flowchart**. This graph is sent over telemetry and can be viewed live in **AdvantageScope**.</p>
+
+<div class="callout">
+  <h4>Visualization in AdvantageScope</h4>
+  <p>Open the "Mermaid" tab in AdvantageScope and drag the <code>Superstructure/StateMachine/MermaidGraph</code> field into it. You will see a live diagram where the current state is highlighted in glowing green!</p>
+</div>
+
+<div class="callout">
+  <h4>Student Pro-Tip</h4>
+  <p>Use <code>stateMachine.getTicksInCurrentState()</code> for timeout-based transitions. For example, if you've been in <code>INTAKING</code> for 150 ticks (3 seconds) without seeing a game piece, automatically return to <code>IDLE</code>.</p>
+</div>
+
+</body>
+</html>

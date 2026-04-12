@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tutorial: Elite Shooting (SOTM) — MARSLib</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --mars-red: #B32416;
+      --mars-red-light: #d42e1e;
+      --bg-primary: #0a0a0a;
+      --bg-card: #1a1a1a;
+      --border: #2a2a2a;
+      --text-primary: #e8e8e8;
+      --text-secondary: #999999;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Ubuntu', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; padding: 40px 20px; max-width: 900px; margin: auto; }
+    
+    .back-link { display: inline-block; margin-bottom: 30px; color: var(--mars-red); text-decoration: none; font-weight: bold; font-family: 'Orbitron', sans-serif; letter-spacing: 0.1em; }
+    
+    h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: white; margin-bottom: 20px; }
+    h1 { font-size: 2.5rem; text-align: center; color: var(--mars-red-light); }
+    h2 { font-size: 1.8rem; margin-top: 50px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+    h3 { font-size: 1.2rem; color: var(--mars-red-light); margin-top: 30px; }
+    
+    p { margin-bottom: 20px; color: var(--text-secondary); font-size: 1.1rem; }
+    code { font-family: 'JetBrains Mono', monospace; background: #222; padding: 2px 6px; border-radius: 4px; color: #ff9d00; }
+    pre { background: #111; border: 1px solid var(--border); padding: 20px; border-radius: 12px; overflow-x: auto; margin-bottom: 30px; }
+    pre code { background: transparent; padding: 0; color: #e8e8e8; font-size: 0.9rem; }
+    
+    .callout { background: rgba(179, 36, 22, 0.1); border-left: 4px solid var(--mars-red); padding: 20px; border-radius: 0 8px 8px 0; margin-bottom: 30px; }
+    .callout h4 { font-family: 'Orbitron', sans-serif; margin-bottom: 10px; color: var(--mars-red-light); }
+  </style>
+</head>
+<body>
+
+<a href="tutorials.html" class="back-link">← BACK TO TUTORIALS</a>
+
+<h1>Elite Shooting (SOTM)</h1>
+
+<p>Standing still to score is a 2010 strategy. In the modern era, "Shot-On-The-Move" (SOTM) is a requirement for Einstein-level play. MARSLib includes a physics-based iterative solver that accounts for chassis velocity, time-of-flight, and aerodynamics.</p>
+
+<h2>1. The Core Problem</h2>
+<p>If your robot is driving sideways at 4 meters per second and you shoot, the fuel ball inherits that sideways velocity. To hit the <strong>Hub</strong>, you must aim "behind" where you want it to go, effectively leading the target.</p>
+
+<div class="callout">
+  <h4>Vector Interception</h4>
+  <p>MARSLib doesn't just use a simple lookup table. It computes a 3D vector interception where <code>V_shot = V_required - V_chassis</code>. It then solves for the required pitch and RPM to make that resulting vector hit the Hub center.</p>
+</div>
+
+<h2>2. Tuning the Distance Map</h2>
+<p>The first step is building a sparse lookup table of "Perfect Shots". Park your robot at 1m, 2m, 3m, 4m, and 5m. Find the RPM and Cowl Angle that consistently score.</p>
+
+<pre><code>public static final InterpolatingDoubleTreeMap RPM_MAP = new InterpolatingDoubleTreeMap();
+static {
+  RPM_MAP.put(1.0, 2500.0);
+  RPM_MAP.put(3.0, 3200.0);
+  RPM_MAP.put(5.0, 4500.0);
+}</code></pre>
+
+<h2>3. Aerodynamic Compensation</h2>
+<p>Fuel balls have significant air resistance and Magnus lift (if they have spin). In <code>EliteShooterMath.java</code>, you can adjust the <code>DRAG_COEFFICIENT</code> and <code>MAGNUS_CONSTANT</code>. To tune this:</p>
+<ol>
+  <li>Shoot at a distant target while standing still.</li>
+  <li>If the ball consistently drops short, increase the <code>DRAG_COEFFICIENT</code>.</li>
+  <li>If the ball curves upwards too much, decrease the <code>BACKSPIN_RATIO</code>.</li>
+</ol>
+
+<h2>4. Predictive SOTM</h2>
+<p>Because the shot reaches the target at a future time, we must account for where the robot *will be* when the ball finishes its flight. MARSLib uses a **Recursive Iterative Solver**:</p>
+<ol>
+  <li>Guess the time of flight (e.g., 0.5s).</li>
+  <li>Calculate where the robot will be in 0.5s.</li>
+  <li>Calculate the required shot for that future position.</li>
+  <li>Recalculate the time of flight and repeat until convergence (usually 3 iterations).</li>
+</ol>
+
+<div class="callout">
+  <h4>Student Pro-Tip</h4>
+  <p>Check the "SOTM/Convergence" log field in AdvantageScope. If it isn't hitting "Converged" within 3 iterations, your starting time-of-flight guess is too far off.</p>
+</div>
+
+</body>
+</html>

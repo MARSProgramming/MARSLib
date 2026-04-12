@@ -1,6 +1,7 @@
 package com.marslib.swerve;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.marslib.power.MARSPowerManager;
 import com.marslib.power.PowerIO;
@@ -19,6 +20,8 @@ public class SwerveDriveTest {
   private double simulatedVoltageOverride = 12.0;
   private SwerveDrive swerveDrive;
   private SwerveModuleIOSim[] simIOs;
+  private GyroIOSim gyroIOSim;
+  private MARSPowerManager spoofedPowerManager;
 
   @BeforeEach
   public void setUp() {
@@ -34,9 +37,9 @@ public class SwerveDriveTest {
             inputs.isBrownedOut = simulatedVoltageOverride < 6.0;
           }
         };
-    MARSPowerManager spoofedPowerManager = new MARSPowerManager(spoofedVoltageIO);
+    spoofedPowerManager = new MARSPowerManager(spoofedVoltageIO);
 
-    GyroIOSim gyroIOSim = new GyroIOSim();
+    gyroIOSim = new GyroIOSim();
     SwerveModule[] modules = new SwerveModule[4];
     simIOs = new SwerveModuleIOSim[4];
 
@@ -102,5 +105,61 @@ public class SwerveDriveTest {
         swerveDrive.getPose().getX(),
         0.05,
         "Robot moved despite critical brownout voltage ceiling clamping.");
+  }
+
+  @Test
+  public void testOdometryTrustDegradesOnTilt() {
+    // We create a separate temporary SwerveDrive with mocked IO to specifically test trust logic
+    // because the standard simIO is linked to the physics engine and hard to manually override.
+
+    double[] mockPitch = {0.0};
+    GyroIO mockGyro =
+        new GyroIO() {
+          @Override
+          public void updateInputs(GyroIOInputs inputs) {
+            inputs.connected = true;
+            inputs.pitchPositionRad = mockPitch[0];
+            inputs.yawPositionRad = 0.0;
+          }
+        };
+
+    double[] mockDrivePos = {0.0};
+    SwerveModuleIO mockModuleIO =
+        new SwerveModuleIO() {
+          @Override
+          public void updateInputs(SwerveModuleIOInputs inputs) {
+            inputs.drivePositionsRad = new double[] {mockDrivePos[0]};
+            inputs.turnPositionsRad = new double[] {0.0};
+            inputs.odometryTimestamps =
+                new double[] {edu.wpi.first.wpilibj.Timer.getFPGATimestamp()};
+          }
+        };
+
+    SwerveModule[] mockModules = {
+      new SwerveModule(0, mockModuleIO), new SwerveModule(1, mockModuleIO),
+      new SwerveModule(2, mockModuleIO), new SwerveModule(3, mockModuleIO)
+    };
+
+    SwerveDrive trustSwerve = new SwerveDrive(mockModules, mockGyro, spoofedPowerManager);
+
+    // 1. Nominal case: flat ground (0 deg tilt)
+    mockPitch[0] = 0.0;
+    double initialX = trustSwerve.getPose().getX();
+    mockDrivePos[0] = 1.0; // 1 meter moved
+    trustSwerve.periodic();
+
+    assertTrue(trustSwerve.getPose().getX() > initialX, "Robot should have moved on flat ground");
+
+    // 2. Tilted case: 30 degrees (exceeds 25 deg threshold)
+    mockPitch[0] = Math.toRadians(30.0);
+    double tiltedX = trustSwerve.getPose().getX();
+    mockDrivePos[0] = 5.0; // Another 4 meters of "slip"
+    trustSwerve.periodic();
+
+    assertEquals(
+        tiltedX,
+        trustSwerve.getPose().getX(),
+        0.01,
+        "Odometry should have ignored slip while tilted >25 deg");
   }
 }

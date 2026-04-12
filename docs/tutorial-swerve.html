@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tutorial: Mastering Swerve Drive — MARSLib</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --mars-red: #B32416;
+      --mars-red-light: #d42e1e;
+      --bg-primary: #0a0a0a;
+      --bg-card: #1a1a1a;
+      --border: #2a2a2a;
+      --text-primary: #e8e8e8;
+      --text-secondary: #999999;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Ubuntu', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; padding: 40px 20px; max-width: 900px; margin: auto; }
+    
+    .back-link { display: inline-block; margin-bottom: 30px; color: var(--mars-red); text-decoration: none; font-weight: bold; font-family: 'Orbitron', sans-serif; letter-spacing: 0.1em; }
+    
+    h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: white; margin-bottom: 20px; }
+    h1 { font-size: 2.5rem; text-align: center; color: var(--mars-red-light); }
+    h2 { font-size: 1.8rem; margin-top: 50px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+    h3 { font-size: 1.2rem; color: var(--mars-red-light); margin-top: 30px; }
+    
+    p { margin-bottom: 20px; color: var(--text-secondary); font-size: 1.1rem; }
+    code { font-family: 'JetBrains Mono', monospace; background: #222; padding: 2px 6px; border-radius: 4px; color: #ff9d00; }
+    pre { background: #111; border: 1px solid var(--border); padding: 20px; border-radius: 12px; overflow-x: auto; margin-bottom: 30px; }
+    pre code { background: transparent; padding: 0; color: #e8e8e8; font-size: 0.9rem; }
+    
+    .callout { background: rgba(179, 36, 22, 0.1); border-left: 4px solid var(--mars-red); padding: 20px; border-radius: 0 8px 8px 0; margin-bottom: 30px; }
+    .callout h4 { font-family: 'Orbitron', sans-serif; margin-bottom: 10px; color: var(--mars-red-light); }
+  </style>
+</head>
+<body>
+
+<a href="tutorials.html" class="back-link">← BACK TO TUTORIALS</a>
+
+<h1>Mastering Swerve Drive</h1>
+
+<p>MARSLib's swerve implementation is designed for world-class performance. We use CTRE Phoenix 6 for high-frequency signal updates and a dedicated 250Hz thread to ensure the most accurate odometry possible.</p>
+
+<h2>1. Configuration (SwerveConstants)</h2>
+<p>Everything starts in <code>SwerveConstants.java</code>. You must define your gear ratios, wheel diameter, and PID constants here. For the 2026 season, we recommend the **SDS MK4i** with L3 gearing.</p>
+
+<pre><code>public static final double WHEEL_DIAMETER_METERS = 0.1016;
+public static final double DRIVE_GEAR_RATIO = 1.0 / 6.12; // MK4i L3
+public static final double STEER_GEAR_RATIO = 1.0 / (150.0 / 7.0);</code></pre>
+
+<h2>2. The Odometry Thread</h2>
+<p>A typical FRC control loop runs at 50Hz (every 20ms). However, at high speeds, a robot can move significantly in those 20ms. MARSLib uses the <code>PhoenixOdometryThread</code> to drain module signals at 250Hz.</p>
+
+<div class="callout">
+  <h4>Zero-Allocation Contract</h4>
+  <p>The 250Hz thread must be extremely efficient. We use pre-allocated buffers and a "data drain" contract to move samples from the hardware thread to the main thread without creating a single Java object on the heap.</p>
+</div>
+
+<h2>3. Calibration (Zeroing Modules)</h2>
+<p>Every swerve module has a <code>CANcoder</code> to track its absolute rotation. Because of manufacturing differences, each module has a unique offset. To calibrate:</p>
+<ol>
+  <li>Point all module wheels perfectly "forward" (using a straight edge).</li>
+  <li>Read the "Absolute Position" from AdvantageScope or Phoenix Tuner.</li>
+  <li>Enter those values into <code>DriveConstants.java</code>.</li>
+</ol>
+
+<pre><code>public static final double FL_OFFSET = 0.123;
+public static final double FR_OFFSET = -0.456;</code></pre>
+
+<h2>4. Traction Control</h2>
+<p>MARSLib includes **Heading-Aware Traction Control**. If a module starts to slip (its wheel speed is higher than the chassis speed), the framework automatically scales back the torque to regain grip, which is essential for consistent autonomous paths.</p>
+
+<div class="callout">
+  <h4>Student Pro-Tip</h4>
+  <p>Use AdvantageScope's "Swerve" tab to visualize your module states live. If the wheels are "fluttering" or oscillating, your steer PID P-gain is likely too high.</p>
+</div>
+
+</body>
+</html>

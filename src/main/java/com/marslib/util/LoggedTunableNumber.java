@@ -195,4 +195,11 @@ public class LoggedTunableNumber implements Sendable {
       }
     }
   }
+
+  /** Clears all registered tunables. Only used for unit testing. */
+  public static void clear() {
+    synchronized (registeredTunables) {
+      registeredTunables.clear();
+    }
+  }
 }

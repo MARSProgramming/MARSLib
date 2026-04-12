@@ -72,6 +72,10 @@ public class RobotContainer {
   private final LoggedDashboardChooser<Command> autoChooser;
 
   public RobotContainer() {
+    this(true);
+  }
+
+  public RobotContainer(boolean buildDashboards) {
     // 1. Dependency Injection based on Current Mode
     switch (ModeConstants.CURRENT_MODE) {
       case SIM:
@@ -370,11 +374,6 @@ public class RobotContainer {
         "Dump Tunables", com.marslib.util.LoggedTunableNumber.getDumpCommand());
     edu.wpi.first.wpilibj.smartdashboard.SmartDashboard.putData(
         "Offload Logs to USB", com.marslib.util.LogUploader.getUsbOffloadCommand());
-
-    configureCompetitionDashboard();
-    configurePracticeDashboard();
-    com.marslib.util.LoggedTunableNumber.buildTuningDashboard();
-
     RobotBindings.configureBindings(
         operatorInterface,
         swerveDrive,
@@ -384,6 +383,12 @@ public class RobotContainer {
         shooter,
         feeder,
         floorIntake);
+
+    if (buildDashboards) {
+      configureCompetitionDashboard();
+      configurePracticeDashboard();
+      com.marslib.util.LoggedTunableNumber.buildTuningDashboard();
+    }
   }
 
   public Command getAutonomousCommand() {

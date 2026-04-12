@@ -69,6 +69,12 @@ public final class MARSTestHarness {
     DriverStationSim.setAllianceStationId(edu.wpi.first.hal.AllianceStationID.Blue1);
     DriverStationSim.setEnabled(true);
     DriverStationSim.notifyNewData();
+
+    // 8. Odometry thread — stops high-frequency scanning thread and clears singleton
+    com.marslib.swerve.PhoenixOdometryThread.resetInstance();
+
+    // 9. Tunables — clears static list of registered tunable numbers
+    com.marslib.util.LoggedTunableNumber.clear();
   }
 
   /**
