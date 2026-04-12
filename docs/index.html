@@ -228,10 +228,11 @@
       line-height: 1.1;
       letter-spacing: 0.02em;
       margin-bottom: 20px;
-      background: linear-gradient(135deg, var(--text-primary) 0%, var(--mars-red) 50%, var(--mars-red-light) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: var(--mars-red);
+    }
+
+    .hero h1 span {
+      color: var(--text-primary);
     }
 
     .hero p {
@@ -621,13 +622,13 @@
   <div class="container">
     <img src="assets/mars-logo.png" alt="MARS Team 2614 Logo" class="hero-logo">
     <div class="hero-badge">MOUNTAINEER AREA ROBOTICS — TEAM 2614</div>
-    <h1>MARSLib</h1>
+    <h1>MARS<span>Lib</span></h1>
     <p>
       A zero-allocation, physics-simulated FRC framework with deterministic AdvantageKit logging,
       250Hz odometry, and shot-on-the-move kinematics.
     </p>
     <div class="hero-actions">
-      <a href="tutorials.html" class="btn-primary" style="text-decoration: none; padding: 12px 32px; border-radius: 12px; font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1rem; letter-spacing: 0.05em; transition: all 0.2s; display: inline-block;">START LEARNING →</a>
+      <a href="tutorials.html" class="btn btn-accent" style="box-shadow: 0 4px 20px rgba(179, 36, 22, 0.4);">🎓 TUTORIALS</a>
       <a href="standards.html" class="btn btn-accent" style="box-shadow: 0 4px 20px rgba(179, 36, 22, 0.4);">📖 CORE STANDARDS</a>
       <a href="javadoc/index.html" class="btn btn-outline">BROWSE API DOCS</a>
     </div>
