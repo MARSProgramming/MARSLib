@@ -1,0 +1,65 @@
+---
+sidebar_position: 1
+---
+
+import PhysicsSandbox from '@site/src/components/PhysicsSandbox';
+
+# Physics-First Development
+
+Waiting for a physical robot to be built is the #1 cause of losing FRC competitions. MARSLib uses **Dyn4j**, a 2D physics engine, to create a high-fidelity virtual world where you can develop 100% of your code before the metal is even cut.
+
+## 1. The Physics World
+
+The `MARSPhysicsWorld` is a singleton that manages all rigid bodies on the field (leveraging architectural patterns from [MapleSim](https://shenzhen-robotics-alliance.github.io/maple-sim/rebuilt/)). It handles collisions, friction, and even battery voltage sag natively alongside standard [WPILib simulation classes](https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/index.html).
+
+```java
+// In simulationPeriodic()
+MARSPhysicsWorld.getInstance().update(0.020);
+```
+
+## 2. Spawning Game Pieces
+
+To test an intake or the complex **Ladder** kinematics, you need game pieces in the simulation. You can spawn **Fuel Balls** dynamically into the world. They will bounce off walls and react to your robot's bumpers.
+
+```java
+Body fuelBall = new Body();
+fuelBall.addFixture(Geometry.createCircle(0.12)); // 24cm diameter
+fuelBall.setMass(MassType.NORMAL);
+fuelBall.translate(2.0, 2.0); // Meters x,y
+MARSPhysicsWorld.getInstance().getDyn4jWorld().addBody(fuelBall);
+```
+
+:::info Interactive Physics Sandbox Demo
+Drag the blue robot chassis to collide with the Fuel Balls. Hit them into the glowing goal on the left!
+:::
+
+<PhysicsSandbox />
+
+## 3. Subsystem IO-Sim
+
+As covered in the IO Layer tutorial, your subsystems should use `IOSim` implementations. These classes connect WPILib simulators (like `ElevatorSim`) to the physics world. The simulator provides the mathematical state, while Dyn4j provides the collision bounds.
+
+:::warning Realistic Power Modeling
+MARSLib doesn't just sim motion; it sims electrical draw. If your elevator hits a mechanical limit and stalls, the `MARSPowerManager` will calculate the voltage drop, which might cause your "virtual" Rio to brown out! This allows you to tune current limits safely in offline code.
+:::
+
+## 4. Visualizing with AdvantageScope
+
+You can't "see" physics math, so we export all body positions to AdvantageScope. By dragging the `PhysicsWorld/GamePieces` field into the 3D Field view, you can watch your robot interact with Fuel Balls and the Hub in real-time.
+
+:::tip Student Pro-Tip
+Run your PathPlanner autonomous paths in simulation with **Efficiency Mode OFF** to test how physical collisions with obstacle walls might knock your robot off path. If your pathing breaks here, it will definitely break on the real field.
+:::
+
+## 5. Offline Log Replay and Auto-Tuning
+
+Because MARSLib strictly abstracts hardware out with the AdvantageKit IO layer, simulation isn't just about the physics engine—it natively supports **Log Replay**. You can pull an active `.wpilog` file from a real match and feed it straight back into the robot code on your laptop.
+
+- **Automatically Figure Out Constants:** Run a match log through the replay tool, and MARSLib's Continuous SysId will passively process the historical velocity and voltage telemetry.
+- **Iterative Vision Tuning:** Modify your Megatag thresholds in code, then run replay on an old match log to see improvements in AdvantageScope.
+- **Post-Mortem Debugging:** If the superstructure gets stuck, replay the log and step through the state machine transitions line by line.
+
+```java
+// To run Replay offline, pass the wpilog path to the Robot configuration
+Robot.setUseReplayMode(true, "C:/logs/einstein_finals_m1.wpilog");
+```
