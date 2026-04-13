@@ -8,47 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Physics-First Development — MARSLib</title>
   <link rel="stylesheet" href="assets/css/style.css">
-  <style>
-    h2 { 
-      font-size: 1.8rem; 
-      margin-top: 50px; 
-      border-left: 4px solid var(--mars-red); 
-      padding-left: 20px; 
-    }
-    h3 { 
-      font-size: 1.2rem; 
-      color: var(--ai-cyan); 
-      margin-top: 20px; 
-    }
-    .callout { 
-      background: rgba(41, 182, 246, 0.1); 
-      border: 1px solid var(--ai-cyan); 
-      padding: 24px; 
-      border-radius: 12px; 
-      margin: 30px 0; 
-    }
-    .callout h4 { 
-      font-family: 'Orbitron', sans-serif; 
-      color: var(--ai-cyan); 
-      margin-bottom: 10px; 
-      text-transform: uppercase; 
-      font-size: 0.9rem; 
-    }
-    .callout-warning { 
-      background: rgba(179, 36, 22, 0.1); 
-      border: 1px solid var(--mars-red); 
-    }
-    .callout-warning h4 { 
-      color: var(--mars-red-light); 
-    }
-    .simulator-container {
-      background:#111; 
-      border: 1px solid var(--border); 
-      border-radius:12px; 
-      padding:20px; 
-      margin:40px 0;
-    }
-  </style>
+
   <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
 </head>
 <body>
@@ -79,7 +39,7 @@ fuelBall.translate(2.0, 2.0); // Meters x,y
 MARSPhysicsWorld.getInstance().getDyn4jWorld().addBody(fuelBall);</code></pre>
 
   <!-- Interactive Physics Sandbox Demo -->
-  <div class="simulator-container">
+  <div class="simulator-container" style="background:#111; border: 1px solid var(--border); border-radius:12px; padding:20px; margin:40px 0;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
       <div>
         <h3 style="margin:0; color:white;">Interactive Collision Sandbox</h3>
@@ -88,7 +48,7 @@ MARSPhysicsWorld.getInstance().getDyn4jWorld().addBody(fuelBall);</code></pre>
       <button id="resetSimBtn" class="btn btn-primary" style="background:var(--ai-cyan); color:#000; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-family:'Orbitron'; font-weight:700;">RESET WORLD</button>
     </div>
     
-    <canvas id="physicsCanvas" width="800" height="400" style="width:100%; height:400px; background:#050505; border-radius:8px; border: 1px solid #333; cursor: grab; box-shadow: inset 0 0 40px rgba(0,0,0,0.8);"></canvas>
+    <canvas id="physicsCanvas" width="800" height="400" style="width:100%; max-width:800px; aspect-ratio:2/1; height:auto; display:block; margin: 0 auto; background:#050505; border-radius:8px; border: 1px solid #333; cursor: grab; box-shadow: inset 0 0 40px rgba(0,0,0,0.8);"></canvas>
     
     <div style="margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.5); border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: #aaa;">
       <div id="simLog">Physics Engine Active: 0 collisions.</div>
