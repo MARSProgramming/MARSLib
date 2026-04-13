@@ -38,7 +38,6 @@ public class TeleopDriveCommand extends Command {
   private final ChassisSpeeds preSlewSpeeds = new ChassisSpeeds();
   private final ChassisSpeeds targetSpeeds = new ChassisSpeeds();
   private final ChassisSpeeds robotRelativeSpeeds = new ChassisSpeeds();
-  private final Translation2d targetTrans = new Translation2d();
 
   private final double[] deadbandLog = new double[3];
   private final double[] fieldRelLog = new double[3];

@@ -79,6 +79,7 @@ public class Robot extends LoggedRobot {
   }
 
   @Override
+  @SuppressWarnings("PMD.SystemPrintln")
   public void robotInit() {
     System.out.println("-------------------------------------------------------");
     System.out.println("  __  __          _____   _____ _      _ _     ");
