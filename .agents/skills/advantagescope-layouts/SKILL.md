@@ -42,3 +42,63 @@ When visualizing `ArrayLidarIOSim` or dynamic dynamic fields:
 
 ### 3. Rendering Gamepads
 AdvantageScope now supports Gamepad Joystick rendering overlays in 3D. When mapping virtual joysticks from the HUD, you must push inputs into `/DriverStation/Joystick[0]` paths in our AdvantageKit logic before linking that schema into the AdvantageScope layout!
+
+## Competition-Grade Layout Standards
+
+### 4. Tab Ordering — Competition Priority
+Tabs MUST be ordered by **competition debugging priority**, not by when they were created. The default selected tab (`"selected": 0`) should be the most useful view during a live match. The canonical ordering is:
+
+1. **Odometry Fusion 2D** — primary competition view (default selected)
+2. **Playback 3D** — match log review
+3. **Simulation 3D** — sim-only debugging
+4. **Swerve Diagnostics** — module health at a glance
+5. **System Health** — loop time, CAN, battery, NaN detection
+6. **Power Draw** — current, voltage, brownout proximity
+7. **Fault Alerts** — critical/warning/info table
+8. **Tuning Table** — feedforward gains and vision thresholds
+9. **Documentation** — reference only, last tab
+
+**Rule**: The `Documentation` tab (type 0) must ALWAYS be the last tab. It is never needed during competition.
+
+### 5. Safe Robot Model Naming
+**NEVER use custom model strings** like `"2026 KitBot"`, `"MyRobot"`, or team-specific names. If the asset doesn't exist in the user's AdvantageScope installation, the robot renders as invisible with no error.
+
+- **Always use**: `"model": "Robot"` — the built-in safe default that is guaranteed to render.
+- If the team has imported a custom `.glb` model into their local AdvantageScope, they can manually change the model string in the AS GUI. The layout file should always ship with the safe default.
+
+### 6. Known Valid Game Piece Variants (2026 Season)
+The following `gamePiece` variant strings are confirmed valid:
+- `"Fuel"` — 2026 game piece (also used in 2017 Steamworks)
+
+When in doubt about a variant string, use `type: "ghost"` instead of `type: "gamePiece"` as documented in §1.4.
+
+### 7. No Redundant Tabs
+Every `logKey` should appear in **at most one line graph tab**. If two tabs graph the same key, merge them into a single tab with left/right axis separation.
+
+**Example**: `PhysicsWorld/ComputedVoltage` should NOT have its own "Power Bounds" tab AND appear in a "Power Draw" tab. Consolidate into one tab with current draw on the left axis and voltage on the right.
+
+### 8. Log Key Completeness — Cross-Reference Audit
+Every `Logger.recordOutput()` key in the Java codebase should have a corresponding visualization in the layout. Run this audit check when modifying layout files:
+
+```powershell
+# Extract all logKeys from the layout
+$layout = Get-Content "advantagescope_layout.json" -Raw
+# Extract all recordOutput keys from Java
+# Cross-reference for missing coverage
+```
+
+Critical keys that MUST be visualized (see marslib-audit §16):
+- `System/LoopRunTime_ms`, `System/BatteryVoltage`, `System/CANBusUtilization`, `System/CANivoreUtilization`
+- `Teleop/NaNDetected`, `SwerveDrive/OdometryTrustMultiplier`
+- `Alerts/Critical`, `Alerts/Warning`, `Alerts/Info`
+- `Power/TotalCurrentDraw_A`
+
+### 9. Dashboard Parity
+The team dashboard (`marsteam_dashboard.json`) must mirror the critical tabs from the main layout. At minimum it must include:
+1. 3D Field View with `SwerveDrive/Pose`
+2. Swerve Diagnostics with both Measured and Desired states
+3. System Health with loop time and CAN utilization
+4. Fault Alerts with all alert severity levels
+5. Power Draw with current and voltage
+
+Both files must have matching `"version"` strings.
