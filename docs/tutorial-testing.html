@@ -4,68 +4,84 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tutorial: Physics-Backed Unit Testing — MARSLib</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
   <style>
-    :root {
-      --mars-red: #B32416;
-      --mars-red-light: #d42e1e;
-      --bg-primary: #0a0a0a;
-      --bg-secondary: #141414;
-      --bg-card: #1a1a1a;
-      --border: #2a2a2a;
-      --text-primary: #e8e8e8;
-      --text-secondary: #999999;
-      --ai-cyan: #29b6f6;
+    pre { 
+      background: #111; 
+      border: 1px solid var(--border); 
+      padding: 20px; 
+      border-radius: 12px; 
+      overflow-x: auto; 
+      margin-bottom: 30px; 
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Ubuntu', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; padding: 60px 20px; max-width: 900px; margin: auto; }
-    
-    .back-link { display: inline-block; margin-bottom: 40px; color: var(--mars-red); text-decoration: none; font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.1em; }
-    .back-link:hover { transform: translateX(-5px); }
-    
-    h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: white; margin-bottom: 20px; letter-spacing: 0.05em; }
-    h1 { font-size: clamp(2rem, 5vw, 3rem); text-align: center; color: var(--ai-cyan); margin-bottom: 40px; }
-    h2 { font-size: 1.8rem; margin-top: 50px; border-left: 4px solid var(--mars-red); padding-left: 20px; }
-    h3 { font-size: 1.2rem; color: var(--ai-cyan); margin-top: 20px; }
-    
-    p { margin-bottom: 20px; color: var(--text-secondary); font-size: 1.1rem; }
-    ul, ol { margin-bottom: 20px; padding-left: 30px; color: var(--text-secondary); }
-    li { margin-bottom: 15px; }
-
-    code { font-family: 'JetBrains Mono', monospace; background: #222; padding: 2px 6px; border-radius: 4px; color: #ffab91; }
-    pre { background: #111; border: 1px solid var(--border); padding: 20px; border-radius: 12px; overflow-x: auto; margin-bottom: 30px; }
-    pre code { background: transparent; padding: 0; color: #e8e8e8; font-size: 0.9rem; }
-    
-    .callout { background: rgba(41, 182, 246, 0.1); border: 1px solid var(--ai-cyan); padding: 24px; border-radius: 12px; margin: 30px 0; }
-    .callout h4 { font-family: 'Orbitron', sans-serif; color: var(--ai-cyan); margin-bottom: 10px; text-transform: uppercase; font-size: 0.9rem; }
-    .callout-warning { background: rgba(179, 36, 22, 0.1); border: 1px solid var(--mars-red); }
-    .callout-warning h4 { color: var(--mars-red-light); }
+    pre code { 
+      background: transparent !important; 
+      padding: 0 !important; 
+      color: #e8e8e8; 
+      font-size: 0.9rem; 
+      font-family: 'JetBrains Mono', monospace !important;
+    }
+    h2 { 
+      font-size: 1.8rem; 
+      margin-top: 50px; 
+      border-left: 4px solid var(--mars-red); 
+      padding-left: 20px; 
+    }
+    h3 { 
+      font-size: 1.2rem; 
+      color: var(--ai-cyan); 
+      margin-top: 20px; 
+    }
+    .callout { 
+      background: rgba(41, 182, 246, 0.05); 
+      border: 1px solid var(--ai-cyan); 
+      padding: 24px; 
+      border-radius: 12px; 
+      margin: 30px 0; 
+    }
+    .callout h4 { 
+      font-family: 'Orbitron', sans-serif; 
+      color: var(--ai-cyan); 
+      margin-bottom: 10px; 
+      text-transform: uppercase; 
+      font-size: 0.9rem; 
+      letter-spacing: 1px;
+    }
+    .callout-warning { 
+      background: rgba(179, 36, 22, 0.05); 
+      border: 1px solid var(--mars-red); 
+    }
+    .callout-warning h4 { 
+      color: var(--mars-red-light); 
+    }
   </style>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
 </head>
 <body>
 
-<a href="tutorials.html" class="back-link">← BACK TO TUTORIALS</a>
+<div id="header-placeholder"></div>
 
-<h1>Physics-Backed Testing</h1>
+<main class="container" style="padding-top: 100px; padding-bottom: 80px;">
+  <div style="text-align: center; margin-bottom: 40px;">
+    <a href="tutorials.html" class="back-link">← BACK TO TUTORIALS</a>
+    <h1>Physics-Backed Testing</h1>
+  </div>
 
-<p>Most FRC unit tests simply "mock" the hardware. They verify that a motor was told to run at 50%, but they never verify if the robot actually moves. In MARSLib, we run <strong>Physics-Backed Unit Tests</strong> that integrate tightly with Dyn4j, ensuring that our software actually solves real-world physics problems during Continuous Integration (CI).</p>
+  <p>Most FRC unit tests simply "mock" the hardware. They verify that a motor was told to run, but they never verify if the robot actually moves. In MARSLib, we run <strong>Physics-Backed Unit Tests</strong> that integrate tightly with Dyn4j, ensuring that our software actually solves real-world physics problems during Continuous Integration.</p>
 
-<h2>1. The MARSTestHarness</h2>
-<p>To run physics-backed tests, your JUnit 5 test class must initialize the <code>MARSTestHarness</code>. This harness overrides the internal HAL clock and resets static singletons, guaranteeing that every test starts with a clean slate.</p>
+  <h2>1. The MARSTestHarness</h2>
+  <p>To run physics-backed tests, your JUnit 5 test class must initialize the <code>MARSTestHarness</code>. This harness overrides the internal HAL clock and resets static singletons, guaranteeing that every test starts with a clean slate.</p>
 
-<pre><code class="language-java">@BeforeEach
+  <pre><code class="language-java">@BeforeEach
 public void setup() {
     MARSTestHarness.setupTestEnvironment();
     // Initialize subsystems...
 }</code></pre>
 
-<h2>2. Advancing Time</h2>
-<p>Because tests run instantly on your CPU, you must explicitly command the simulation clock to tick forward to watch physics happen.</p>
+  <h2>2. Advancing Time</h2>
+  <p>Because tests run instantly on your CPU, you must explicitly command the simulation clock to tick forward to watch physics happen.</p>
 
-<pre><code class="language-java">// Command the elevator to position 1.5 meters
+  <pre><code class="language-java">// Command the elevator to position 1.5 meters
 elevator.setGoal(1.5);
 
 // Tick the physics world forward by 2.0 seconds
@@ -77,15 +93,15 @@ for (int i = 0; i < 100; i++) {
 // Assert the physical rigibody actually reached the goal
 assertEquals(1.5, elevator.getPosition().in(Meters), 0.05);</code></pre>
 
-<div class="callout callout-warning">
-  <h4>Beware the 20ms Loop</h4>
-  <p>Never advance the clock by more than <code>0.02</code> seconds (20ms) at a time. The PID controllers and kinematic math assume a 50Hz execution cycle. Bypassing this will cause your integrators to explode.</p>
-</div>
+  <div class="callout callout-warning">
+    <h4>Beware the 20ms Loop</h4>
+    <p>Never advance the clock by more than <code>0.02</code> seconds (20ms) at a time. The PID controllers assume a 50Hz execution cycle. Bypassing this will cause your integrators to explode.</p>
+  </div>
 
-<h2>3. Testing Autonomous Paths</h2>
-<p>Because we have <code>IOSim</code> and Dyn4j, you can actually test a full PathPlanner macro in JUnit!</p>
+  <h2>3. Testing Autonomous Paths</h2>
+  <p>Because we have <code>IOSim</code> and Dyn4j, you can actually test a full PathPlanner macro in JUnit!</p>
 
-<pre><code class="language-java">Command autoRoutine = AutoBuilder.buildAuto("Four Fuel Ball Auto");
+  <pre><code class="language-java">Command autoRoutine = AutoBuilder.buildAuto("Four Fuel Ball Auto");
 autoRoutine.initialize();
 
 // Run the auto for 15 seconds
@@ -99,13 +115,13 @@ assertTrue(autoRoutine.isFinished());
 // Assert that we scored exactly 4 times in the physics engine
 assertEquals(4, GameField.getScoredHubCount());</code></pre>
 
-<h2>4. CI/CD Validation</h2>
-<p>Every time you push to GitHub, a GitHub Actions workflow executes <code>./gradlew test</code>. If a math commit accidentally breaks the chassis kinematics, the trajectory tests will fail, and the PR will be blocked. This is true Einstein-level safety.</p>
+  <h2>4. CI/CD Validation</h2>
+  <p>Every time you push to GitHub, a GitHub Actions workflow executes <code>./gradlew test</code>. If a math commit accidentally breaks the chassis kinematics, the trajectory tests will fail, and the PR will be blocked. This is true Einstein-level safety.</p>
+</main>
 
-<footer>
-  <p style="text-align: center; margin-top: 60px; font-size: 0.9rem;">&copy; 2026 Mountaineer Area RoboticS — FRC Team 2614 — FRC 2026: REBUILT</p>
-</footer>
+<div id="footer-placeholder"></div>
 
+<script src="assets/js/common.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
 </body>

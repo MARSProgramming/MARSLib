@@ -116,12 +116,12 @@ MARSLib stands upon the shoulders of giants. We extend our deepest gratitude to 
 <p align="center">
   <a href="https://github.com/wpilibsuite/allwpilib" target="_blank"><img src="https://raw.githubusercontent.com/wpilibsuite/branding/main/wpilib-icon.svg" width="40" height="40" alt="WPILib" style="margin: 10px;"></a>
   <a href="https://github.com/Mechanical-Advantage" target="_blank"><img src="https://docs.advantagekit.org/img/logo.png" width="40" height="40" alt="AdvantageKit" style="margin: 10px;"></a>
-  <a href="https://dyn4j.org/" target="_blank"><img src="https://dyn4j.org/assets/img/logo.png" width="40" height="40" alt="Dyn4j" style="margin: 10px;"></a>
+  <a href="https://dyn4j.org/" target="_blank"><img src="https://raw.githubusercontent.com/dyn4j/dyn4j/master/dyn4j.png" width="40" height="40" alt="Dyn4j" style="margin: 10px;"></a>
   <a href="https://pathplanner.dev/" target="_blank"><img src="https://pathplanner.dev/img/logo.png" width="40" height="40" alt="PathPlanner" style="margin: 10px;"></a>
   <a href="https://photonvision.org/" target="_blank"><img src="https://raw.githubusercontent.com/PhotonVision/photonvision-branding/master/PhotonVision%20Branding/Logos/Icon/PNG/PhotonVision-Icon-noBG.png" width="40" height="40" alt="PhotonVision" style="margin: 10px;"></a>
   <a href="https://store.ctr-electronics.com/" target="_blank"><img src="https://v6.docs.ctr-electronics.com/en/stable/_static/ctre.png" width="40" height="40" alt="CTRE" style="margin: 10px;"></a>
-  <a href="https://www.revrobotics.com/" target="_blank"><img src="https://www.revrobotics.com/static/version/frontend/Magento/luma/en_US/images/logo.svg" width="40" height="40" alt="REV" style="margin: 10px;"></a>
-  <a href="https://shenzhen-robotics-alliance.github.io/maple-sim/rebuilt/" target="_blank"><img src="https://shenzhen-robotics-alliance.github.io/maple-sim/assets/logo.png" width="40" height="40" alt="MapleSim" style="margin: 10px;"></a>
+  <a href="https://www.revrobotics.com/" target="_blank"><img src="https://avatars.githubusercontent.com/u/13215904?s=200&v=4" width="40" height="40" alt="REV" style="margin: 10px;"></a>
+  <a href="https://shenzhen-robotics-alliance.github.io/maple-sim/rebuilt/" target="_blank"><img src="https://raw.githubusercontent.com/Shenzhen-Robotics-Alliance/maple-sim/main/docs/media/icon.png" width="40" height="40" alt="MapleSim" style="margin: 10px;"></a>
 </p>
 
 - [Mechanical Advantage (AdvantageKit)](AdvantageKit-License.md)

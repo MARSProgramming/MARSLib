@@ -3,63 +3,72 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Elite Playbook: Power Shedding — MARSLib</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>Dynamic Power Shedding — MARSLib</title>
+  <link rel="stylesheet" href="assets/css/style.css">
   <style>
-    :root {
-      --mars-red: #B32416;
-      --mars-red-light: #d42e1e;
-      --bg-primary: #0a0a0a;
-      --bg-secondary: #141414;
-      --bg-card: #1a1a1a;
-      --border: #2a2a2a;
-      --text-primary: #e8e8e8;
-      --text-secondary: #999999;
-      --ai-cyan: #29b6f6;
+    h2 { 
+      font-size: 1.8rem; 
+      margin-top: 50px; 
+      border-left: 4px solid var(--mars-red); 
+      padding-left: 20px; 
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Ubuntu', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; padding: 60px 20px; max-width: 900px; margin: auto; }
+    h3 { 
+      font-size: 1.2rem; 
+      color: var(--ai-cyan); 
+      margin-top: 20px; 
+    }
+    .callout { 
+      background: rgba(41, 182, 246, 0.1); 
+      border: 1px solid var(--ai-cyan); 
+      padding: 24px; 
+      border-radius: 12px; 
+      margin: 30px 0; 
+    }
+    .callout h4 { 
+      font-family: 'Orbitron', sans-serif; 
+      color: var(--ai-cyan); 
+      margin-bottom: 10px; 
+      text-transform: uppercase; 
+      font-size: 0.9rem; 
+    }
+    .callout-warning { 
+      background: rgba(179, 36, 22, 0.1); 
+      border: 1px solid var(--mars-red); 
+    }
+    .callout-warning h4 { 
+      color: var(--mars-red-light); 
+    }
     
-    .back-link { display: inline-block; margin-bottom: 40px; color: var(--mars-red); text-decoration: none; font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.1em; }
-    .back-link:hover { transform: translateX(-5px); }
-    
-    h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: white; margin-bottom: 20px; letter-spacing: 0.05em; }
-    h1 { font-size: clamp(2rem, 5vw, 3rem); text-align: center; color: var(--mars-red); margin-bottom: 40px; }
-    h2 { font-size: 1.8rem; margin-top: 50px; border-left: 4px solid var(--mars-red); padding-left: 20px; }
-    h3 { font-size: 1.2rem; color: var(--ai-cyan); margin-top: 20px; }
-    
-    p { margin-bottom: 20px; color: var(--text-secondary); font-size: 1.1rem; }
-    ul, ol { margin-bottom: 20px; padding-left: 30px; color: var(--text-secondary); }
-    li { margin-bottom: 15px; }
-
-    code { font-family: 'JetBrains Mono', monospace; background: #222; padding: 2px 6px; border-radius: 4px; color: #ffab91; }
-    pre { background: #111; border: 1px solid var(--border); padding: 20px; border-radius: 12px; overflow-x: auto; margin-bottom: 30px; }
-    pre code { background: transparent; padding: 0; color: #e8e8e8; font-size: 0.9rem; }
-    
-    .callout { background: rgba(41, 182, 246, 0.1); border: 1px solid var(--ai-cyan); padding: 24px; border-radius: 12px; margin: 30px 0; }
-    .callout h4 { font-family: 'Orbitron', sans-serif; color: var(--ai-cyan); margin-bottom: 10px; text-transform: uppercase; font-size: 0.9rem; }
-    .callout-warning { background: rgba(179, 36, 22, 0.1); border: 1px solid var(--mars-red); }
-    .callout-warning h4 { color: var(--mars-red-light); }
+    .sim-panel {
+      background: #050505; 
+      border: 1px solid var(--border); 
+      border-radius: 12px; 
+      margin: 30px 0; 
+      padding: 30px; 
+      box-shadow: inset 0 0 40px rgba(0,0,0,0.8);
+    }
   </style>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
 </head>
 <body>
 
-<a href="tutorials.html" class="back-link">← BACK TO TUTORIALS</a>
+<div id="header-placeholder"></div>
 
-<h1>Dynamic Power Shedding</h1>
+<main class="container" style="padding-top: 100px; padding-bottom: 80px;">
+  <div style="text-align: center; margin-bottom: 40px;">
+    <a href="tutorials.html" class="back-link">← BACK TO TUTORIALS</a>
+    <h1>Dynamic Power Shedding</h1>
+  </div>
 
-<p>Modern FRC hardware—specifically Krakens and Falcons—can physically pull more power than the RoboRIO and a 12V battery can safely provide. If your Swerve Drive engages in a massive pushing match while the Intake is stalled on a stuck <strong>Fuel Ball</strong>, the battery voltage will dip below 7V, the RoboRIO will reset, and you will lose the match.</p>
+  <p>Modern FRC hardware—specifically Krakens and Falcons—can physically pull more power than the RoboRIO and a 12V battery can safely provide. If your Swerve Drive engages in a massive pushing match while the Intake is stalled on a stuck <strong>Fuel Ball</strong>, the battery voltage will dip below 7V, the RoboRIO will reset, and you will lose the match.</p>
 
-<h2>1. The Problem with Static Limits</h2>
-<p>Most teams solve this by configuring static breaker current limits. This is a compromise. It neuters your robot's acceleration when the battery is fully charged at 12.8V just to protect it when it drops to 9V.</p>
+  <h2>1. The Problem with Static Limits</h2>
+  <p>Most teams solve this by configuring static breaker current limits. This is a compromise. It neuters your robot's acceleration when the battery is fully charged at 12.8V just to protect it when it drops to 9V.</p>
 
-<h2>2. MARSPowerManager: Voltage Scaling</h2>
-<p>In MARSLib, we use the <code>MARSPowerManager</code> to implement <strong>Voltage Scaling</strong> and <strong>Power Shedding</strong>. Instead of static stator current bounds, our subsystems dynamically cap their output voltage based on the real-time health of the battery.</p>
+  <h2>2. MARSPowerManager: Voltage Scaling</h2>
+  <p>In MARSLib, we use the <code>MARSPowerManager</code> to implement <strong>Voltage Scaling</strong> and <strong>Power Shedding</strong>. Instead of static stator current bounds, our subsystems dynamically cap their output voltage based on the real-time health of the battery.</p>
 
-<pre><code class="language-java">// Inside an IO implementation's periodic loop
+  <pre><code class="language-java">// Inside an IO implementation's periodic loop
 double currentSystemVoltage = MARSPowerManager.getInstance().getBatteryVoltage();
 double maxAllowedVoltage = 12.0;
 
@@ -70,43 +79,54 @@ if (currentSystemVoltage < 9.5) {
 
 motor.setVoltage(MathUtil.clamp(requestedVoltage, -maxAllowedVoltage, maxAllowedVoltage));</code></pre>
 
-<h2>3. Subsystem Priority Classes</h2>
-<p>Not all subsystems are created equal. When the <code>MARSPowerManager</code> detects a critical system voltage sag (e.g., `< 9.5V`), it initiates a lockdown phase. The framework groups mechanisms into three distinct tiers:</p>
-<ul>
-    <li><strong>TIER 1 (Critical):</strong> Drivetrain Swerve Modules. These never scale down. Losing traction or evasiveness is unacceptable.</li>
-    <li><strong>TIER 2 (High):</strong> Shooter Flywheels & Pivot. Voltage output is slightly scaled to ensure consistent shots, but not eliminated.</li>
-    <li><strong>TIER 3 (Sheddable):</strong> Intakes, Feeders, and LEDs. If the voltage drops to 9V, these subsystems are aggressively clamped to a maximum output of 2-3 Volts until the battery recovers.</li>
-</ul>
+  <h2>3. Subsystem Priority Classes</h2>
+  <p>Not all subsystems are created equal. When the <code>MARSPowerManager</code> detects a critical system voltage sag (e.g., `< 9.5V`), it initiates a lockdown phase. The framework groups mechanisms into three distinct tiers:</p>
+  <ul>
+      <li><strong>TIER 1 (Critical):</strong> Drivetrain Swerve Modules. These never scale down. Losing traction or evasiveness is unacceptable.</li>
+      <li><strong>TIER 2 (High):</strong> Shooter Flywheels & Pivot. Voltage output is slightly scaled to ensure consistent shots, but not eliminated.</li>
+      <li><strong>TIER 3 (Sheddable):</strong> Intakes, Feeders, and LEDs. If the voltage drops to 9V, these subsystems are aggressively clamped to a maximum output of 2-3 Volts until the battery recovers.</li>
+  </ul>
 
-<div id="brownout-sim" style="background: #050505; border: 1px solid var(--border); border-radius: 12px; margin: 30px 0; padding: 20px; box-shadow: inset 0 0 40px rgba(0,0,0,0.8);">
-  <div style="font-family: 'Orbitron'; font-size: 0.8rem; color: var(--ai-cyan); letter-spacing: 1px; margin-bottom: 20px; text-transform: uppercase;">Real-Time Power Shedding Diagnostics</div>
-  
-  <div style="display: flex; gap: 30px; align-items: stretch; flex-wrap: wrap;">
-    <!-- LOAD TOGGLES -->
-    <div style="flex: 1; display: flex; flex-direction: column; gap: 10px;">
-      <button id="btnSwerve" style="background:#222; border:1px solid #444; color:#fff; padding:12px; border-radius:6px; cursor:pointer; font-family:'JetBrains Mono'; text-align:left; transition: 0.2s;">[T1] SWERVE DRIVE <span style="float:right;">+160A</span></button>
-      <button id="btnShooter" style="background:#222; border:1px solid #444; color:#fff; padding:12px; border-radius:6px; cursor:pointer; font-family:'JetBrains Mono'; text-align:left; transition: 0.2s;">[T2] SHOOTER FLYWHEELS <span style="float:right;">+60A</span></button>
-      <button id="btnIntake" style="background:#222; border:1px solid #444; color:#fff; padding:12px; border-radius:6px; cursor:pointer; font-family:'JetBrains Mono'; text-align:left; transition: 0.2s;">[T3] INTAKE MOTORS <span id="intakeLoad" style="float:right;">+40A</span></button>
-      <button id="btnComp" style="background:#222; border:1px solid #444; color:#fff; padding:12px; border-radius:6px; cursor:pointer; font-family:'JetBrains Mono'; text-align:left; transition: 0.2s;">[T3] COMPRESSOR <span id="compLoad" style="float:right;">+30A</span></button>
-    </div>
+  <div id="brownout-sim" class="sim-panel">
+    <div style="font-family: 'Orbitron'; font-size: 0.8rem; color: var(--ai-cyan); letter-spacing: 1px; margin-bottom: 20px; text-transform: uppercase;">Real-Time Power Shedding Diagnostics</div>
     
-    <!-- DASHBOARD -->
-    <div style="flex: 1; min-width: 250px; background: #0a0a0a; border: 1px solid #333; border-radius: 6px; padding: 20px; position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-      <div id="vTxt" style="font-family: 'JetBrains Mono'; font-size: 3rem; font-weight: 700; color: #4caf50;">12.5V</div>
-      <div id="statusTxt" style="font-family: 'Orbitron'; font-size: 1rem; color: #999; margin-top: 10px; letter-spacing: 1px;">SYSTEM NOMINAL</div>
-      
-      <!-- Battery Bar -->
-      <div style="width: 100%; height: 20px; background: #222; border-radius: 10px; margin-top: 20px; overflow: hidden; border: 1px solid #444;">
-        <div id="vBar" style="width: 100%; height: 100%; background: #4caf50; transition: width 0.3s, background 0.3s;"></div>
+    <div style="display: flex; gap: 30px; align-items: stretch; flex-wrap: wrap;">
+      <!-- LOAD TOGGLES -->
+      <div style="flex: 1; display: flex; flex-direction: column; gap: 10px;">
+        <button id="btnSwerve" style="background:#222; border:1px solid #444; color:#fff; padding:12px; border-radius:6px; cursor:pointer; font-family:'JetBrains Mono'; text-align:left; transition: 0.2s;">[T1] SWERVE DRIVE <span style="float:right;">+160A</span></button>
+        <button id="btnShooter" style="background:#222; border:1px solid #444; color:#fff; padding:12px; border-radius:6px; cursor:pointer; font-family:'JetBrains Mono'; text-align:left; transition: 0.2s;">[T2] SHOOTER FLYWHEELS <span style="float:right;">+60A</span></button>
+        <button id="btnIntake" style="background:#222; border:1px solid #444; color:#fff; padding:12px; border-radius:6px; cursor:pointer; font-family:'JetBrains Mono'; text-align:left; transition: 0.2s;">[T3] INTAKE MOTORS <span id="intakeLoad" style="float:right;">+40A</span></button>
+        <button id="btnComp" style="background:#222; border:1px solid #444; color:#fff; padding:12px; border-radius:6px; cursor:pointer; font-family:'JetBrains Mono'; text-align:left; transition: 0.2s;">[T3] COMPRESSOR <span id="compLoad" style="float:right;">+30A</span></button>
       </div>
       
-      <!-- Shed Overlay Warning -->
-      <div id="shedWarn" style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(179,36,22,0.15); border: 2px solid var(--mars-red); border-radius: 6px; display: none; align-items: center; justify-content: center; pointer-events: none;">
+      <!-- DASHBOARD -->
+      <div style="flex: 1; min-width: 250px; background: #0a0a0a; border: 1px solid #333; border-radius: 6px; padding: 20px; position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <div id="vTxt" style="font-family: 'JetBrains Mono'; font-size: 3rem; font-weight: 700; color: #4caf50;">12.5V</div>
+        <div id="statusTxt" style="font-family: 'Orbitron'; font-size: 1rem; color: #999; margin-top: 10px; letter-spacing: 1px;">SYSTEM NOMINAL</div>
+        
+        <!-- Battery Bar -->
+        <div style="width: 100%; height: 20px; background: #222; border-radius: 10px; margin-top: 20px; overflow: hidden; border: 1px solid #444;">
+          <div id="vBar" style="width: 100%; height: 100%; background: #4caf50; transition: width 0.3s, background 0.3s;"></div>
+        </div>
+        
+        <!-- Shed Overlay Warning -->
+        <div id="shedWarn" style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(179,36,22,0.15); border: 2px solid var(--mars-red); border-radius: 6px; display: none; align-items: center; justify-content: center; pointer-events: none;">
+        </div>
       </div>
     </div>
   </div>
-</div>
 
+  <div class="callout callout-warning">
+    <h4>Simulation Parity</h4>
+    <p>You can test your power shedding algorithms entirely in Dyn4j. The <code>MARSPhysicsWorld</code> natively simulates voltage sag as the sum of all simulated motor torque output increases, allowing you to trigger brownout scenarios in your JUnit tests and ensure your shedding algorithm functions correctly.</p>
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="assets/js/common.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
 <script>
   let state = { swerve: false, shooter: false, intake: false, comp: false };
   const BASE_VOLTAGE = 12.5;
@@ -125,25 +145,21 @@ motor.setVoltage(MathUtil.clamp(requestedVoltage, -maxAllowedVoltage, maxAllowed
     let load = 0;
     let isShedding = false;
     
-    // Calculate raw load
     if(state.swerve) load += 160;
     if(state.shooter) load += 60;
     
-    // Check if Tier 1 and 2 already cause sag
     let predictedVoltage = BASE_VOLTAGE - (load * RESISTANCE);
     
     if (predictedVoltage < 9.5 || state.intake || state.comp) {
-        // Will activating T3 cause brownout?
         let testLoad = load + (state.intake ? 40 : 0) + (state.comp ? 30 : 0);
         if (BASE_VOLTAGE - (testLoad * RESISTANCE) <= 9.0) {
-            isShedding = true; // Engage shedding protocol
+            isShedding = true; 
         } else {
             if(state.intake) load += 40;
             if(state.comp) load += 30;
         }
     }
     
-    // If shedding is active, lock down T3
     if(isShedding) {
         document.getElementById('intakeLoad').innerText = "SHED (0A)";
         document.getElementById('compLoad').innerText = "SHED (0A)";
@@ -171,7 +187,7 @@ motor.setVoltage(MathUtil.clamp(requestedVoltage, -maxAllowedVoltage, maxAllowed
     bComp.style.border = isShedding && state.comp ? '1px solid var(--mars-red-light)' : getBtnBorder(state.comp);
     
     let finalV = BASE_VOLTAGE - (load * RESISTANCE);
-    finalV = Math.max(7.0, finalV); // floor
+    finalV = Math.max(7.0, finalV); 
     
     document.getElementById('vTxt').innerText = finalV.toFixed(1) + "V";
     
@@ -210,17 +226,5 @@ motor.setVoltage(MathUtil.clamp(requestedVoltage, -maxAllowedVoltage, maxAllowed
   bIntake.onclick = () => { state.intake = !state.intake; updateUI(); };
   bComp.onclick = () => { state.comp = !state.comp; updateUI(); };
 </script>
-
-<div class="callout callout-warning">
-  <h4>Simulation Parity</h4>
-  <p>You can test your power shedding algorithms entirely in Dyn4j. The <code>MARSPhysicsWorld</code> natively simulates voltage sag as the sum of all simulated motor torque output increases, allowing you to trigger brownout scenarios in your JUnit tests and ensure your shedding algorithm functions correctly.</p>
-</div>
-
-<footer>
-  <p style="text-align: center; margin-top: 60px; font-size: 0.9rem;">&copy; 2026 Mountaineer Area RoboticS — FRC Team 2614 — FRC 2026: REBUILT</p>
-</footer>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
 </body>
 </html>

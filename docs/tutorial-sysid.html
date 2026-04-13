@@ -4,120 +4,131 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tutorial: SysId Characterization — MARSLib</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
   <style>
-    :root {
-      --mars-red: #B32416;
-      --mars-red-light: #d42e1e;
-      --bg-primary: #0a0a0a;
-      --bg-secondary: #141414;
-      --bg-card: #1a1a1a;
-      --border: #2a2a2a;
-      --text-primary: #e8e8e8;
-      --text-secondary: #999999;
-      --ai-cyan: #29b6f6;
+    pre { 
+      background: #111; 
+      border: 1px solid var(--border); 
+      padding: 20px; 
+      border-radius: 12px; 
+      overflow-x: auto; 
+      margin-bottom: 30px; 
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Ubuntu', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; padding: 60px 20px; max-width: 900px; margin: auto; }
-    
-    .back-link { display: inline-block; margin-bottom: 40px; color: var(--mars-red); text-decoration: none; font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.1em; }
-    .back-link:hover { transform: translateX(-5px); }
-    
-    h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: white; margin-bottom: 20px; letter-spacing: 0.05em; }
-    h1 { font-size: clamp(2rem, 5vw, 3rem); text-align: center; color: var(--ai-cyan); margin-bottom: 40px; }
-    h2 { font-size: 1.8rem; margin-top: 50px; border-left: 4px solid var(--mars-red); padding-left: 20px; }
-    h3 { font-size: 1.2rem; color: var(--ai-cyan); margin-top: 20px; }
-    
-    p { margin-bottom: 20px; color: var(--text-secondary); font-size: 1.1rem; }
-    ul, ol { margin-bottom: 20px; padding-left: 30px; color: var(--text-secondary); }
-    li { margin-bottom: 15px; }
-
-    code { font-family: 'JetBrains Mono', monospace; background: #222; padding: 2px 6px; border-radius: 4px; color: #ffab91; }
-    pre { background: #111; border: 1px solid var(--border); padding: 20px; border-radius: 12px; overflow-x: auto; margin-bottom: 30px; }
-    pre code { background: transparent; padding: 0; color: #e8e8e8; font-size: 0.9rem; }
-    
-    .callout { background: rgba(41, 182, 246, 0.1); border: 1px solid var(--ai-cyan); padding: 24px; border-radius: 12px; margin: 30px 0; }
-    .callout h4 { font-family: 'Orbitron', sans-serif; color: var(--ai-cyan); margin-bottom: 10px; text-transform: uppercase; font-size: 0.9rem; }
-    .callout-warning { background: rgba(179, 36, 22, 0.1); border: 1px solid var(--mars-red); }
-    .callout-warning h4 { color: var(--mars-red-light); }
+    pre code { 
+      background: transparent !important; 
+      padding: 0 !important; 
+      color: #e8e8e8; 
+      font-size: 0.9rem; 
+      font-family: 'JetBrains Mono', monospace !important;
+    }
+    h2 { 
+      font-size: 1.8rem; 
+      margin-top: 50px; 
+      border-left: 4px solid var(--mars-red); 
+      padding-left: 20px; 
+    }
+    h3 { 
+      font-size: 1.2rem; 
+      color: var(--ai-cyan); 
+      margin-top: 20px; 
+    }
+    .callout { 
+      background: rgba(41, 182, 246, 0.05); 
+      border: 1px solid var(--ai-cyan); 
+      padding: 24px; 
+      border-radius: 12px; 
+      margin: 30px 0; 
+    }
+    .callout h4 { 
+      font-family: 'Orbitron', sans-serif; 
+      color: var(--ai-cyan); 
+      margin-bottom: 10px; 
+      text-transform: uppercase; 
+      font-size: 0.9rem; 
+      letter-spacing: 1px;
+    }
+    .callout-warning { 
+      background: rgba(179, 36, 22, 0.05); 
+      border: 1px solid var(--mars-red); 
+    }
+    .callout-warning h4 { 
+      color: var(--mars-red-light); 
+    }
   </style>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
 </head>
 <body>
 
-<a href="tutorials.html" class="back-link">← BACK TO TUTORIALS</a>
+<div id="header-placeholder"></div>
 
-<h1>System Identification (SysId)</h1>
+<main class="container" style="padding-top: 100px; padding-bottom: 80px;">
+  <div style="text-align: center; margin-bottom: 40px;">
+    <a href="tutorials.html" class="back-link">← BACK TO TUTORIALS</a>
+    <h1>System Identification</h1>
+  </div>
 
-<p>Instead of manually guessing your <code>kS</code>, <code>kV</code>, <code>kA</code>, and <code>kP</code> constants, we let mathematical regression do the work. MARSLib integrates natively with WPILib's <strong>SysId</strong> tool to algorithmically calculate the perfect constants for your drivetrain, arms, elevators, and shooters.</p>
+  <p>Instead of manually guessing your <code>kS</code>, <code>kV</code>, <code>kA</code>, and <code>kP</code> constants, we let mathematical regression do the work. MARSLib integrates natively with WPILib's <strong>SysId</strong> tool to algorithmically calculate the perfect constants for your drivetrain, arms, elevators, and shooters.</p>
 
-<h2>1. The SysId Process</h2>
-<p>SysId uses two distinct types of tests to build a State Space model of your mechanism. You will run each test in both the Forward and Reverse directions.</p>
+  <h2>1. The SysId Process</h2>
+  <p>SysId uses two distinct types of tests to build a State Space model of your mechanism. You will run each test in both the Forward and Reverse directions.</p>
 
-<ul>
-  <li><strong>Quasistatic Test:</strong> Voltage slowly ramps up continuously at 1 volt per second. This precisely maps your mechanism's <code>kS</code> (Static Friction required to start moving) and <code>kV</code> (Volts required per 1 unit of velocity).</li>
-  <li><strong>Dynamic Test:</strong> Applies an instant voltage step (e.g. instantly jump to 6 volts). This allows the tool to map your <code>kA</code> (Acceleration force) and calculates mathematically optimal <code>kP</code> and <code>kD</code> gains based on your mechanism's inertia.</li>
-</ul>
+  <ul style="margin-bottom: 20px; padding-left: 30px; color: var(--text-secondary);">
+    <li style="margin-bottom: 15px;"><strong>Quasistatic Test:</strong> Voltage slowly ramps up continuously at 1 volt per second. This precisely maps your mechanism's <code>kS</code> (Static Friction) and <code>kV</code> (Velocity constant).</li>
+    <li style="margin-bottom: 15px;"><strong>Dynamic Test:</strong> Applies an instant voltage step (e.g. jump to 6 volts). This maps <code>kA</code> (Acceleration) and calculates optimal <code>kP</code> and <code>kD</code> gains based on inertia.</li>
+  </ul>
 
-<div class="callout callout-warning">
-  <h4>Data Logging</h4>
-  <p>MARSLib leverages AdvantageKit. All SysId tests automatically dump telemetry directly into the <code>.wpilog</code> file on your USB drive. However, MARSLib also features an <strong>Automated Log Uploader</strong>—if the robot detects an active internet connection (via tether), it will automatically push your SysId logs to the team's GitHub repository as an artifact!</p>
-</div>
+  <div class="callout callout-warning">
+    <h4>Data Logging</h4>
+    <p>MARSLib leverages AdvantageKit. All SysId tests automatically dump telemetry directly into the <code>.wpilog</code> file. MARSLib also features an Automated Log Uploader—if the robot detects an active internet connection, it will automatically push your SysId logs to the team's GitHub repository.</p>
+  </div>
 
-<h2>2. Running SysId on the Drivetrain</h2>
-<p>Swerve Drives require their own tuning sequence because the wheels must all be aligned correctly first, and traction must be accounted for. We map the controller bindings to automatically trigger SysId in <code>RobotBindings.java</code>.</p>
-<pre><code class="language-java">// Inside configureDriverBindings()
+  <h2>2. Running SysId</h2>
+  <p>Swerve Drives require their own tuning sequence because the wheels must all be aligned correctly first. We map the controller bindings to automatically trigger SysId in <code>RobotBindings.java</code>.</p>
+  <pre><code class="language-java">// Inside configureDriverBindings()
 driver.a().whileTrue(swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
 driver.b().whileTrue(swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
 driver.x().whileTrue(swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kForward));
 driver.y().whileTrue(swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kReverse));</code></pre>
 
-<p><strong>Instructions:</strong> Put the robot on carpet. Press and hold <code>A</code> until the robot reaches near full speed, then let go. Wait 5 seconds. Press and hold <code>B</code> to do the same backwards. Then repeat the process by holding <code>X</code> (instant jump), waiting, and holding <code>Y</code>.</p>
+  <h2>3. Mechanism Integration</h2>
+  <p>MARSLib's structural <code>LinearMechanismIO</code> and <code>RotaryMechanismIO</code> abstractions automatically have SysId hooked into them! You just have to instantiate a <code>SysIdRoutine</code> object in the Subsystem and pass it your IO methods.</p>
 
-<h2>3. Running SysId on Mechanisms</h2>
-<p>MARSLib's structural <code>LinearMechanismIO</code> and <code>RotaryMechanismIO</code> abstractions automatically have SysId hooked into them! You just have to instantiate a <code>SysIdRoutine</code> object in the Subsystem and pass it your IO methods.</p>
-
-<pre><code class="language-java">SysIdRoutine routine = new SysIdRoutine(
+  <pre><code class="language-java">SysIdRoutine routine = new SysIdRoutine(
   new SysIdRoutine.Config(),
   new SysIdRoutine.Mechanism(
     (Volts volts) -> io.setVoltage(volts.in(Volts)),
-    null, // AdvantageKit logs natively, no need for observer
+    null, // AdvantageKit logs natively
     this // The subsystem
   )
 );</code></pre>
 
-<p>You can map this routine to your Operator controller just like the Swerve code. Be extremely careful when running SysId on elevators or arms, as there are <strong>no soft limits</strong> enforced during SysId ramps (by definition, it disables PID restrictions).</p>
+  <div class="callout" style="border-left-color: var(--ai-cyan); background: rgba(41, 182, 246, 0.05);">
+    <h4 style="color: var(--ai-cyan);">Safety Notice</h4>
+    <p>Be extremely careful when running SysId on elevators or arms, as there are <strong>no soft limits</strong> enforced during SysId ramps (by definition, it disables PID restrictions).</p>
+  </div>
 
-<h2>4. Analyzing the Log</h2>
-<ol>
-  <li>Retrieve your <code>.wpilog</code> file. You can either pull the USB drive directly from the RoboRIO, or download the automatically uploaded zip from the <strong>GitHub Actions</strong> tab if your robot was tethered to the internet!</li>
-  <li>Open WPILib VSCode -> Start Tool -> <strong>SysId</strong>.</li>
-  <li>Open the <code>.wpilog</code> file.</li>
-  <li>In the SysId tool, select the exact mechanism under test (e.g. <code>SwerveDrive</code>).</li>
-  <li>Drag your sliders to fit the feedback noise. The UI will instantly spit out your <code>kS</code>, <code>kV</code>, <code>kA</code>, and <code>kP</code> values!</li>
-</ol>
+  <h2>4. Analyzing the Log</h2>
+  <ol style="margin-bottom: 20px; padding-left: 30px; color: var(--text-secondary);">
+    <li style="margin-bottom: 15px;">Retrieve your <code>.wpilog</code> file from the USB drive or GitHub Actions.</li>
+    <li style="margin-bottom: 15px;">Open WPILib VSCode -> Start Tool -> <strong>SysId</strong>.</li>
+    <li style="margin-bottom: 15px;">Open the <code>.wpilog</code> file and select the mechanism under test.</li>
+    <li style="margin-bottom: 15px;">Drag your sliders to fit the feedback noise. The UI will instantly spit out your <code>kS</code>, <code>kV</code>, <code>kA</code>, and <code>kP</code> values!</li>
+  </ol>
 
-<h2>5. Continuous SysId (Online Estimator)</h2>
-<p>Running a formal SysId sequence requires physical space and dedicated downtime. What if the robot just learned its own constants while the driver was practicing? MARSLib features a groundbreaking <strong>Continuous SysId Extraction</strong> framework built directly into its subsystems via the <code>OnlineFeedforwardEstimator</code>.</p>
+  <h2>5. Continuous SysId (Online Estimator)</h2>
+  <p>What if the robot learned its own constants while the driver was practicing? MARSLib features an <strong>Online Feedforward Estimator</strong> built directly into its subsystems.</p>
 
-<p>A zero-allocation, sliding-window Ordinary Least Squares (OLS) regression algorithm continuously monitors mechanism telemetry (Voltage, Velocity, and Acceleration) during normal Teleop driving. By operating strictly over periods of contiguous movement to avoid static friction nonlinearities, it dynamically computes empirical <code>kV</code> and <code>kA</code> constants in zero-GC real-time.</p>
+  <p>A zero-allocation, sliding-window Ordinary Least Squares (OLS) regression algorithm continuously monitors mechanism telemetry during normal Teleop driving. It dynamically computes empirical <code>kV</code> and <code>kA</code> constants in zero-GC real-time.</p>
 
-<pre><code class="language-java">// Inside MARSShooter.java periodic()
+  <pre><code class="language-java">// Inside periodic()
 double currentVelocity = inputs.velocityRadPerSec;
-double currentAccel = (currentVelocity - lastVelocityForSysId) / 0.020;
-lastVelocityForSysId = currentVelocity;
-
-// Passively learn the physics model while the driver practices!
+double currentAccel = (currentVelocity - lastVelocity) / 0.020;
 estimator.addMeasurement(inputs.appliedVolts, currentVelocity, currentAccel);</code></pre>
+</main>
 
-<p>You can deploy your code, pull up AdvantageScope during driving practice, and literally watch your <code>kV</code> and <code>kA</code> values converge towards mathematical perfection over time—without ever running a formal SysId sequence!</p>
+<div id="footer-placeholder"></div>
 
-<footer>
-  <p style="text-align: center; margin-top: 60px; font-size: 0.9rem;">&copy; 2026 Mountaineer Area RoboticS — FRC Team 2614 — FRC 2026: REBUILT</p>
-</footer>
-
+<script src="assets/js/common.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
 </body>

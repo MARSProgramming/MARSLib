@@ -3,88 +3,129 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tutorial: Physics-First Development — MARSLib</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>Physics-First Development — MARSLib</title>
+  <link rel="stylesheet" href="assets/css/style.css">
   <style>
-    :root {
-      --mars-red: #B32416;
-      --mars-red-light: #d42e1e;
-      --bg-primary: #0a0a0a;
-      --bg-secondary: #141414;
-      --bg-card: #1a1a1a;
-      --border: #2a2a2a;
-      --text-primary: #e8e8e8;
-      --text-secondary: #999999;
-      --ai-cyan: #29b6f6;
+    h2 { 
+      font-size: 1.8rem; 
+      margin-top: 50px; 
+      border-left: 4px solid var(--mars-red); 
+      padding-left: 20px; 
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Ubuntu', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; padding: 60px 20px; max-width: 900px; margin: auto; }
-    
-    .back-link { display: inline-block; margin-bottom: 40px; color: var(--mars-red); text-decoration: none; font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.1em; }
-    .back-link:hover { transform: translateX(-5px); }
-    
-    h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: white; margin-bottom: 20px; letter-spacing: 0.05em; }
-    h1 { font-size: clamp(2rem, 5vw, 3rem); text-align: center; color: var(--ai-cyan); margin-bottom: 40px; }
-    h2 { font-size: 1.8rem; margin-top: 50px; border-left: 4px solid var(--mars-red); padding-left: 20px; }
-    h3 { font-size: 1.2rem; color: var(--ai-cyan); margin-top: 20px; }
-    
-    p { margin-bottom: 20px; color: var(--text-secondary); font-size: 1.1rem; }
-    ul, ol { margin-bottom: 20px; padding-left: 30px; color: var(--text-secondary); }
-    li { margin-bottom: 15px; }
-
-    code { font-family: 'JetBrains Mono', monospace; background: #222; padding: 2px 6px; border-radius: 4px; color: #ffab91; }
-    pre { background: #111; border: 1px solid var(--border); padding: 20px; border-radius: 12px; overflow-x: auto; margin-bottom: 30px; }
-    pre code { background: transparent; padding: 0; color: #e8e8e8; font-size: 0.9rem; }
-    
-    .callout { background: rgba(41, 182, 246, 0.1); border: 1px solid var(--ai-cyan); padding: 24px; border-radius: 12px; margin: 30px 0; }
-    .callout h4 { font-family: 'Orbitron', sans-serif; color: var(--ai-cyan); margin-bottom: 10px; text-transform: uppercase; font-size: 0.9rem; }
-    .callout-warning { background: rgba(179, 36, 22, 0.1); border: 1px solid var(--mars-red); }
-    .callout-warning h4 { color: var(--mars-red-light); }
+    h3 { 
+      font-size: 1.2rem; 
+      color: var(--ai-cyan); 
+      margin-top: 20px; 
+    }
+    .callout { 
+      background: rgba(41, 182, 246, 0.1); 
+      border: 1px solid var(--ai-cyan); 
+      padding: 24px; 
+      border-radius: 12px; 
+      margin: 30px 0; 
+    }
+    .callout h4 { 
+      font-family: 'Orbitron', sans-serif; 
+      color: var(--ai-cyan); 
+      margin-bottom: 10px; 
+      text-transform: uppercase; 
+      font-size: 0.9rem; 
+    }
+    .callout-warning { 
+      background: rgba(179, 36, 22, 0.1); 
+      border: 1px solid var(--mars-red); 
+    }
+    .callout-warning h4 { 
+      color: var(--mars-red-light); 
+    }
+    .simulator-container {
+      background:#111; 
+      border: 1px solid var(--border); 
+      border-radius:12px; 
+      padding:20px; 
+      margin:40px 0;
+    }
   </style>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
 </head>
 <body>
 
-<a href="tutorials.html" class="back-link">← BACK TO TUTORIALS</a>
+<div id="header-placeholder"></div>
 
-<h1>Physics-First Development</h1>
+<main class="container" style="padding-top: 100px; padding-bottom: 80px;">
+  <div style="text-align: center; margin-bottom: 40px;">
+    <a href="tutorials.html" class="back-link">← BACK TO TUTORIALS</a>
+    <h1>Physics-First Development</h1>
+  </div>
 
-<p>Waiting for a physical robot to be built is the #1 cause of losing FRC competitions. MARSLib uses <strong>Dyn4j</strong>, a 2D physics engine, to create a high-fidelity virtual world where you can develop 100% of your code before the metal is even cut.</p>
+  <p>Waiting for a physical robot to be built is the #1 cause of losing FRC competitions. MARSLib uses <strong>Dyn4j</strong>, a 2D physics engine, to create a high-fidelity virtual world where you can develop 100% of your code before the metal is even cut.</p>
 
-<h2>1. The Physics World</h2>
-<p>The <code>MARSPhysicsWorld</code> is a singleton that manages all rigid bodies on the field (leveraging architectural patterns from <a href="https://shenzhen-robotics-alliance.github.io/maple-sim/rebuilt/" target="_blank" style="color: var(--ai-cyan);">MapleSim</a>). It handles collisions, friction, and even battery voltage sag natively alongside standard <a href="https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/index.html" style="color: var(--ai-cyan);">WPILib simulation classes</a>.</p>
+  <h2>1. The Physics World</h2>
+  <p>The <code>MARSPhysicsWorld</code> is a singleton that manages all rigid bodies on the field (leveraging architectural patterns from <a href="https://shenzhen-robotics-alliance.github.io/maple-sim/rebuilt/" target="_blank" style="color: var(--ai-cyan);">MapleSim</a>). It handles collisions, friction, and even battery voltage sag natively alongside standard <a href="https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/index.html" style="color: var(--ai-cyan);">WPILib simulation classes</a>.</p>
 
-<pre><code class="language-java">// In simulationPeriodic()
+  <pre><code class="language-java">// In simulationPeriodic()
 MARSPhysicsWorld.getInstance().update(0.020);</code></pre>
 
-<h2>2. Spawning Game Pieces</h2>
-<p>To test an intake or the complex <strong>Ladder</strong> kinematics, you need game pieces in the simulation. You can spawn <strong>Fuel Balls</strong> dynamically into the world. They will bounce off walls and react to your robot's bumpers.</p>
+  <h2>2. Spawning Game Pieces</h2>
+  <p>To test an intake or the complex <strong>Ladder</strong> kinematics, you need game pieces in the simulation. You can spawn <strong>Fuel Balls</strong> dynamically into the world. They will bounce off walls and react to your robot's bumpers.</p>
 
-<pre><code class="language-java">Body fuelBall = new Body();
+  <pre><code class="language-java">Body fuelBall = new Body();
 fuelBall.addFixture(Geometry.createCircle(0.12)); // 24cm diameter
 fuelBall.setMass(MassType.NORMAL);
 fuelBall.translate(2.0, 2.0); // Meters x,y
 MARSPhysicsWorld.getInstance().getDyn4jWorld().addBody(fuelBall);</code></pre>
 
-<!-- Interactive Physics Sandbox Demo -->
-<div class="simulator-container" style="background:#111; border: 1px solid var(--border); border-radius:12px; padding:20px; margin:40px 0;">
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-    <div>
-      <h3 style="margin:0; color:white;">Interactive Collision Sandbox</h3>
-      <p style="margin:0; font-size:0.9rem; color:var(--text-secondary);">Drag the blue robot chassis to collide with the Fuel Balls, utilizing 2D continuous collision detection. Hit the Fuel Balls into the glowing blue goal on the left to score points and test momentum transfer dynamics!</p>
+  <!-- Interactive Physics Sandbox Demo -->
+  <div class="simulator-container">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+      <div>
+        <h3 style="margin:0; color:white;">Interactive Collision Sandbox</h3>
+        <p style="margin:0; font-size:0.9rem; color:var(--text-secondary);">Drag the blue robot chassis to collide with the Fuel Balls. Hit them into the glowing goal on the left!</p>
+      </div>
+      <button id="resetSimBtn" class="btn btn-primary" style="background:var(--ai-cyan); color:#000; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-family:'Orbitron'; font-weight:700;">RESET WORLD</button>
     </div>
-    <button id="resetSimBtn" style="background:var(--ai-cyan); color:#000; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-family:'Orbitron'; font-weight:700; box-shadow: 0 0 15px rgba(41, 182, 246, 0.4);">RESET WORLD</button>
+    
+    <canvas id="physicsCanvas" width="800" height="400" style="width:100%; height:400px; background:#050505; border-radius:8px; border: 1px solid #333; cursor: grab; box-shadow: inset 0 0 40px rgba(0,0,0,0.8);"></canvas>
+    
+    <div style="margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.5); border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: #aaa;">
+      <div id="simLog">Physics Engine Active: 0 collisions.</div>
+    </div>
   </div>
-  
-  <canvas id="physicsCanvas" width="800" height="400" style="width:100%; height:400px; background:#050505; border-radius:8px; border: 1px solid #333; cursor: grab; box-shadow: inset 0 0 40px rgba(0,0,0,0.8);"></canvas>
-  
-  <div style="margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.5); border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: #aaa;">
-    <div id="simLog">Physics Engine Active: 0 collisions.</div>
-  </div>
-</div>
 
+  <h2>3. Subsystem IO-Sim</h2>
+  <p>As covered in the IO Layer tutorial, your subsystems should use <code>IOSim</code> implementations. These classes connect WPILib simulators (like <code>ElevatorSim</code>) to the physics world. The simulator provides the mathematical state, while Dyn4j provides the collision bounds.</p>
+
+  <div class="callout callout-warning">
+    <h4>Realistic Power Modeling</h4>
+    <p>MARSLib doesn't just sim motion; it sims electrical draw. If your elevator hits a mechanical limit and stalls, the <code>MARSPowerManager</code> will calculate the voltage drop, which might cause your "virtual" Rio to brown out! This allows you to tune current limits safely in offline code.</p>
+  </div>
+
+  <h2>4. Visualizing with AdvantageScope</h2>
+  <p>You can't "see" physics math, so we export all body positions to AdvantageScope. By dragging the <code>PhysicsWorld/GamePieces</code> field into the 3D Field view, you can watch your robot interact with Fuel Balls and the Hub in real-time.</p>
+
+  <div class="callout">
+    <h4>Student Pro-Tip</h4>
+    <p>Run your PathPlanner autonomous paths in simulation with <strong>Efficiency Mode OFF</strong> to test how physical collisions with obstacle walls might knock your robot off path. If your pathing breaks here, it will definitely break on the real field.</p>
+  </div>
+
+  <h2>5. Offline Log Replay and Auto-Tuning</h2>
+  <p>Because MARSLib strictly abstracts hardware out with the AdvantageKit IO layer, simulation isn't just about the physics engine—it natively supports <strong>Log Replay</strong>. You can pull an active <code>.wpilog</code> file from a real match and feed it straight back into the robot code on your laptop.</p>
+
+  <ul>
+      <li><strong>Automatically Figure Out Constants:</strong> Run a match log through the replay tool, and MARSLib's Continuous SysId will passively process the historical velocity and voltage telemetry.</li>
+      <li><strong>Iterative Vision Tuning:</strong> Modify your Megatag thresholds in code, then run replay on an old match log to see improvements in AdvantageScope.</li>
+      <li><strong>Post-Mortem Debugging:</strong> If the superstructure gets stuck, replay the log and step through the state machine transitions line by line.</li>
+  </ul>
+
+  <pre><code class="language-java">// To run Replay offline, pass the wpilog path to the Robot configuration
+Robot.setUseReplayMode(true, "C:/logs/einstein_finals_m1.wpilog");</code></pre>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="assets/js/common.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById("physicsCanvas");
@@ -102,14 +143,11 @@ document.addEventListener("DOMContentLoaded", () => {
     let robotVx = 0;
     let robotVy = 0;
     let score = 0;
-    
-    // Define the Goal area (left center)
     const goal = { x: 0, y: 150, w: 30, h: 100 };
 
     function initWorld() {
         balls = [];
         score = 0;
-        // Spawn 8 Fuel Balls randomly, avoiding the center (robot start)
         for(let i=0; i<8; i++) {
             balls.push({
                 x: 150 + Math.random() * 550,
@@ -127,12 +165,10 @@ document.addEventListener("DOMContentLoaded", () => {
     initWorld();
     resetBtn.addEventListener("click", initWorld);
 
-    // Mouse Tracking
     canvas.addEventListener("mousedown", (e) => {
         const rect = canvas.getBoundingClientRect();
         const mx = (e.clientX - rect.left) * (canvas.width / rect.width);
         const my = (e.clientY - rect.top) * (canvas.height / rect.height);
-        
         if (mx >= robot.x && mx <= robot.x + robot.w && my >= robot.y && my <= robot.y + robot.h) {
             isDragging = true;
             canvas.style.cursor = "grabbing";
@@ -153,59 +189,43 @@ document.addEventListener("DOMContentLoaded", () => {
     canvas.addEventListener("mouseleave", () => { isDragging = false; canvas.style.cursor = "grab"; });
 
     function resolvePhysics() {
-        // Calculate Robot velocity for collision transfer
         robotVx = robot.x - lastRobotX;
         robotVy = robot.y - lastRobotY;
         lastRobotX = robot.x;
         lastRobotY = robot.y;
-
         let logMsg = "Dyn4j Simulation Tracking...";
         let collisionTriggered = false;
-
-        // Ball to Wall and Goal Check
         balls.forEach(b => {
-            // Check Goal (Left wall, inside goal Y bounds)
             if (b.x - b.radius < goal.w && b.y > goal.y && b.y < goal.y + goal.h) {
                 score++;
                 logMsg = "⚽ GOAL SCORED! Resetting ball...";
                 collisionTriggered = true;
-                // Respawn ball randomly in the field
                 b.x = 400 + Math.random() * 300;
                 b.y = 50 + Math.random() * 300;
                 b.vx = 0;
                 b.vy = 0;
-                return; // Skip normal wall collision for this frame
+                return;
             }
-            
             if (b.x - b.radius < 0) { b.x = b.radius; b.vx *= -0.7; }
             if (b.x + b.radius > canvas.width) { b.x = canvas.width - b.radius; b.vx *= -0.7; }
             if (b.y - b.radius < 0) { b.y = b.radius; b.vy *= -0.7; }
             if (b.y + b.radius > canvas.height) { b.y = canvas.height - b.radius; b.vy *= -0.7; }
-
-            // Ball to Robot (AABB resolving to Circle)
             let testX = b.x;
             let testY = b.y;
-            
             if (b.x < robot.x) testX = robot.x; else if (b.x > robot.x + robot.w) testX = robot.x + robot.w;
             if (b.y < robot.y) testY = robot.y; else if (b.y > robot.y + robot.h) testY = robot.y + robot.h;
-            
             let distX = b.x - testX;
             let distY = b.y - testY;
             let distance = Math.sqrt((distX*distX) + (distY*distY));
-
             if (distance < b.radius) {
                 collisionTriggered = true;
-                logMsg = "💥 CONTINUOUS COLLISION DETECTED: [FRCChassis] -> [FuelBall]";
-                
+                logMsg = "💥 CONTINUOUS COLLISION DETECTED";
                 let overlap = b.radius - distance;
                 if (distance === 0) { distX = 1; distY = 0; distance = 1; }
                 let nx = distX / distance;
                 let ny = distY / distance;
-
                 b.x += nx * overlap;
                 b.y += ny * overlap;
-
-                // Transfer momentum
                 if (isDragging) {
                     b.vx += (robotVx * 0.8) + (nx * 2);
                     b.vy += (robotVy * 0.8) + (ny * 2);
@@ -214,14 +234,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     b.vy += ny * 2;
                 }
             }
-
             b.x += b.vx;
             b.y += b.vy;
-            b.vx *= 0.92; // Field Carpet Friction
+            b.vx *= 0.92;
             b.vy *= 0.92;
         });
-
-        // Ball to Ball
         for(let i=0; i<balls.length; i++) {
             for(let j=i+1; j<balls.length; j++) {
                 let b1 = balls[i]; let b2 = balls[j];
@@ -231,17 +248,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     collisionTriggered = true;
                     let overlap = (b1.radius + b2.radius) - dist;
                     let nx = dx / dist; let ny = dy / dist;
-                    
                     b1.x -= nx * overlap/2; b1.y -= ny * overlap/2;
                     b2.x += nx * overlap/2; b2.y += ny * overlap/2;
-                    
                     let tx = b1.vx; let ty = b1.vy;
                     b1.vx += (b2.vx - b1.vx) * 0.8; b1.vy += (b2.vy - b1.vy) * 0.8;
                     b2.vx += (tx - b2.vx) * 0.8; b2.vy += (ty - b2.vy) * 0.8;
                 }
             }
         }
-        
         if(collisionTriggered) {
           simLog.style.color = "var(--mars-red-light)";
           simLog.innerText = logMsg;
@@ -253,146 +267,71 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function render() {
         resolvePhysics();
-
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // Field Grid
         ctx.strokeStyle = "#111";
         ctx.lineWidth = 1;
         for(let i=0; i<canvas.width; i+=40) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke(); }
         for(let i=0; i<canvas.height; i+=40) { ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke(); }
-
-        // Draw Goal
-        ctx.fillStyle = "rgba(41, 182, 246, 0.3)"; // Brighter fill
+        ctx.fillStyle = "rgba(41, 182, 246, 0.3)";
         ctx.fillRect(goal.x, goal.y, goal.w, goal.h);
-        
         ctx.save();
         ctx.shadowColor = "var(--ai-cyan)";
         ctx.shadowBlur = 15;
         ctx.strokeStyle = "var(--ai-cyan)";
-        ctx.lineWidth = 3; // Thicker border
+        ctx.lineWidth = 3;
         ctx.setLineDash([5, 5]);
         ctx.beginPath();
         ctx.moveTo(goal.x + goal.w, goal.y);
         ctx.lineTo(goal.x + goal.w, goal.y + goal.h);
         ctx.stroke();
         ctx.restore();
-        
-        ctx.fillStyle = "#ffffff"; // Bright white text
+        ctx.fillStyle = "#ffffff";
         ctx.font = "bold 16px Orbitron";
         ctx.save();
         ctx.translate(goal.x + 15, goal.y + goal.h / 2);
         ctx.rotate(-Math.PI / 2);
         ctx.textAlign = "center";
-        
-        // Text glow effect for the goal
         ctx.shadowColor = "var(--ai-cyan)";
         ctx.shadowBlur = 10;
         ctx.fillText("GOAL", 0, 0);
         ctx.restore();
-
-        // Draw Score Display
         ctx.save();
         ctx.fillStyle = "rgba(10, 10, 10, 0.9)";
-        ctx.strokeStyle = "var(--ai-cyan)"; // Cyan border for score box
+        ctx.strokeStyle = "var(--ai-cyan)";
         ctx.lineWidth = 2;
-        ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
-        ctx.shadowBlur = 10;
         ctx.fillRect(canvas.width - 150, 15, 130, 45);
         ctx.strokeRect(canvas.width - 150, 15, 130, 45);
-        
-        ctx.shadowColor = "rgba(41, 182, 246, 0.5)"; // Soft blue glow on text
-        ctx.shadowBlur = 5;
-        ctx.fillStyle = "#ffffff"; // White score text
+        ctx.fillStyle = "#ffffff";
         ctx.font = "bold 20px Orbitron";
         ctx.textAlign = "center";
         ctx.fillText(`SCORE: ${score}`, canvas.width - 85, 45);
-        ctx.textAlign = "left";
         ctx.restore();
-
-        // Draw Balls
         balls.forEach(b => {
-             // Outer glow
             const grad = ctx.createRadialGradient(b.x, b.y, b.radius*0.5, b.x, b.y, b.radius*1.5);
             grad.addColorStop(0, '#ff9800');
             grad.addColorStop(1, 'rgba(255, 152, 0, 0)');
             ctx.fillStyle = grad;
             ctx.beginPath(); ctx.arc(b.x, b.y, b.radius*1.5, 0, Math.PI*2); ctx.fill();
-            
-            // Core
             ctx.fillStyle = "#ffb300";
             ctx.beginPath(); ctx.arc(b.x, b.y, b.radius, 0, Math.PI*2); ctx.fill();
             ctx.strokeStyle = "#e65100"; ctx.lineWidth = 2; ctx.stroke();
-            
             ctx.fillStyle = "#fff";
             ctx.font = "10px sans-serif";
             ctx.fillText("FB", b.x-6, b.y+3);
         });
-
-        // Draw Robot
         ctx.fillStyle = "rgba(41, 182, 246, 0.2)";
         ctx.fillRect(robot.x, robot.y, robot.w, robot.h);
         ctx.strokeStyle = "var(--ai-cyan)";
         ctx.lineWidth = 2;
         ctx.strokeRect(robot.x, robot.y, robot.w, robot.h);
-        
-        // Vector lines for robot speed
-        if(Math.abs(robotVx) > 1 || Math.abs(robotVy) > 1) {
-            ctx.strokeStyle = "var(--mars-red-light)";
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(robot.x + robot.w/2, robot.y + robot.h/2);
-            ctx.lineTo(robot.x + robot.w/2 + (robotVx*2), robot.y + robot.h/2 + (robotVy*2));
-            ctx.stroke();
-        }
-
         ctx.fillStyle = "white";
         ctx.font = "bold 12px Orbitron";
         ctx.textAlign = "center";
         ctx.fillText("CHASSIS", robot.x + robot.w/2, robot.y + robot.h/2 + 4);
-        ctx.textAlign = "left";
-
         requestAnimationFrame(render);
     }
     render();
 });
 </script>
-
-<h2>3. Subsystem IO-Sim</h2>
-<p>As covered in the IO Layer tutorial, your subsystems should use <code>IOSim</code> implementations. These classes connect WPILib simulators (like <code>ElevatorSim</code>) to the physics world. The simulator provides the mathematical state, while Dyn4j provides the collision bounds.</p>
-
-<div class="callout callout-warning">
-  <h4>Realistic Power Modeling</h4>
-  <p>MARSLib doesn't just sim motion; it sims electrical draw. If your elevator hits a mechanical limit and stalls, the <code>MARSPowerManager</code> will calculate the voltage drop, which might cause your "virtual" Rio to brown out! This allows you to tune current limits safely in offline code.</p>
-</div>
-
-<h2>4. Visualizing with AdvantageScope</h2>
-<p>You can't "see" physics math, so we export all body positions to AdvantageScope. By dragging the <code>PhysicsWorld/GamePieces</code> field into the 3D Field view, you can watch your robot interact with Fuel Balls and the Hub in real-time.</p>
-
-<div class="callout">
-  <h4>Student Pro-Tip</h4>
-  <p>Run your PathPlanner autonomous paths in simulation with <strong>Efficiency Mode OFF</strong> to test how physical collisions with obstacle walls might knock your robot off path. If your pathing breaks here, it will definitely break on the real field.</p>
-</div>
-
-<h2>5. Offline Log Replay and Auto-Tuning</h2>
-<p>Because MARSLib strictly abstracts hardware out with the AdvantageKit IO layer, simulation isn't just about the physics engine—it natively supports <strong>Log Replay</strong>. You can pull an active <code>.wpilog</code> file from a real match (or download it directly from GitHub Actions via the automated log-uploader) and feed it straight back into the robot code on your laptop.</p>
-
-<p>When running in Replay mode, the framework injects the exact historical sensor data natively back into the subsystems. This provides incredible development superpowers:</p>
-<ul>
-    <li><strong>Automatically Figure Out Constants:</strong> Run a match log through the replay tool, and MARSLib's Continuous SysId (<code>OnlineFeedforwardEstimator</code>) will passively process the historical velocity and voltage telemetry. It will mathematically curve-fit and spit out the absolute perfect <code>kS</code>, <code>kV</code>, and <code>kA</code> feedforward constants entirely offline without needing physical robot access!</li>
-    <li><strong>Iterative Vision Tuning:</strong> Modify your Megatag standard deviations, ambiguity thresholds, or trust algorithms in the code, then run replay on an old match log. You can securely watch in AdvantageScope whether your code changes theoretically improved or destroyed the odometry before trying it on the real carpet.</li>
-    <li><strong>Post-Mortem Debugging:</strong> If the superstructure gets stuck transitioning out of a shooting state during finals, you don't have to guess why. Just replay the log and step through the state machine transitions line by line to locate the exact variable that triggered the stall.</li>
-</ul>
-
-<pre><code class="language-java">// To run Replay offline, pass the wpilog path to the Robot configuration
-// This is typically done automatically or via environment variables in MARSLib tests
-Robot.setUseReplayMode(true, "C:/logs/einstein_finals_m1.wpilog");</code></pre>
-
-<footer>
-  <p style="text-align: center; margin-top: 60px; font-size: 0.9rem;">&copy; 2026 Mountaineer Area RoboticS — FRC Team 2614 — FRC 2026: REBUILT</p>
-</footer>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
 </body>
 </html>

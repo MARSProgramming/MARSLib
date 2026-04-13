@@ -4,240 +4,219 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tutorial: High-Frequency Swerve — MARSLib</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
   <style>
-    :root {
-      --mars-red: #B32416;
-      --mars-red-light: #d42e1e;
-      --bg-primary: #0a0a0a;
-      --bg-secondary: #141414;
-      --bg-card: #1a1a1a;
-      --border: #2a2a2a;
-      --text-primary: #e8e8e8;
-      --text-secondary: #999999;
-      --ai-cyan: #29b6f6;
+    .callout { 
+      background: rgba(41, 182, 246, 0.05); 
+      border: 1px solid var(--ai-cyan); 
+      padding: 24px; 
+      border-radius: 12px; 
+      margin: 30px 0; 
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Ubuntu', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; padding: 60px 20px; max-width: 900px; margin: auto; }
-    
-    .back-link { display: inline-block; margin-bottom: 40px; color: var(--mars-red); text-decoration: none; font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.1em; }
-    .back-link:hover { transform: translateX(-5px); }
-    
-    h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: white; margin-bottom: 20px; letter-spacing: 0.05em; }
-    h1 { font-size: clamp(2rem, 5vw, 3rem); text-align: center; color: var(--ai-cyan); margin-bottom: 40px; }
-    h2 { font-size: 1.8rem; margin-top: 50px; border-left: 4px solid var(--mars-red); padding-left: 20px; }
-    h3 { font-size: 1.2rem; color: var(--ai-cyan); margin-top: 20px; }
-    
-    p { margin-bottom: 20px; color: var(--text-secondary); font-size: 1.1rem; }
-    ul, ol { margin-bottom: 20px; padding-left: 30px; color: var(--text-secondary); }
-    li { margin-bottom: 15px; }
-
-    code { font-family: 'JetBrains Mono', monospace; background: #222; padding: 2px 6px; border-radius: 4px; color: #ffab91; }
-    pre { background: #111; border: 1px solid var(--border); padding: 20px; border-radius: 12px; overflow-x: auto; margin-bottom: 30px; }
-    pre code { background: transparent; padding: 0; color: #e8e8e8; font-size: 0.9rem; }
-    
-    .callout { background: rgba(41, 182, 246, 0.1); border: 1px solid var(--ai-cyan); padding: 24px; border-radius: 12px; margin: 30px 0; }
-    .callout h4 { font-family: 'Orbitron', sans-serif; color: var(--ai-cyan); margin-bottom: 10px; text-transform: uppercase; font-size: 0.9rem; }
-    .callout-warning { background: rgba(179, 36, 22, 0.1); border: 1px solid var(--mars-red); }
-    .callout-warning h4 { color: var(--mars-red-light); }
+    .callout h4 { 
+      font-family: 'Orbitron', sans-serif; 
+      color: var(--ai-cyan); 
+      margin-bottom: 10px; 
+      text-transform: uppercase; 
+      font-size: 0.9rem; 
+      letter-spacing: 1px;
+    }
+    .callout-warning { 
+      background: rgba(179, 36, 22, 0.05); 
+      border: 1px solid var(--mars-red); 
+    }
+    .callout-warning h4 { 
+      color: var(--mars-red-light); 
+    }
+    pre { 
+      background: #111; 
+      border: 1px solid var(--border); 
+      padding: 20px; 
+      border-radius: 12px; 
+      overflow-x: auto; 
+      margin-bottom: 30px; 
+    }
+    pre code { 
+      background: transparent !important; 
+      padding: 0 !important; 
+      color: #e8e8e8; 
+      font-size: 0.9rem; 
+      font-family: 'JetBrains Mono', monospace !important;
+    }
+    h2 { 
+      font-size: 1.8rem; 
+      margin-top: 50px; 
+      border-left: 4px solid var(--mars-red); 
+      padding-left: 20px; 
+    }
+    h3 { 
+      font-size: 1.2rem; 
+      color: var(--ai-cyan); 
+      margin-top: 20px; 
+    }
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--ai-cyan);
+    }
   </style>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
 </head>
 <body>
 
-<a href="tutorials.html" class="back-link">← BACK TO TUTORIALS</a>
+<div id="header-placeholder"></div>
 
-<h1>High-Frequency Swerve</h1>
+<main class="container" style="padding-top: 100px; padding-bottom: 80px;">
+  <div style="text-align: center; margin-bottom: 40px;">
+    <a href="tutorials.html" class="back-link">← BACK TO TUTORIALS</a>
+    <h1>High-Frequency Swerve</h1>
+  </div>
 
-<p>A standard FRC robot executes its control loop every 20ms (50Hz). This is fine for moving an elevator, but it is <strong>unacceptably slow</strong> for Swerve Odometry. If a robot moving at 5 m/s only calculates its position 50 times a second, the math inherently creates a "drift" of several centimeters per second.</p>
+  <p>A standard FRC robot executes its control loop every 20ms (50Hz). This is fine for moving an elevator, but it is <strong>unacceptably slow</strong> for Swerve Odometry. If a robot moving at 5 m/s only calculates its position 50 times a second, the math inherently creates a "drift" of several centimeters per second.</p>
 
-<p>MARSLib solves this by utilizing the <strong>PhoenixOdometryThread</strong>.</p>
+  <p>MARSLib solves this by utilizing the <strong>PhoenixOdometryThread</strong>.</p>
 
-<h2>1. The 250Hz Thread</h2>
-<p>Instead of relying on the main RoboRIO thread, our swerve architecture spins up an isolated background thread that communicates directly with the CTRE CANivore bus. This thread calculates the robot's physical kinematics at 250Hz.</p>
+  <h2>1. The 250Hz Thread</h2>
+  <p>Instead of relying on the main RoboRIO thread, our swerve architecture spins up an isolated background thread that communicates directly with the CTRE CANivore bus. This thread calculates the robot's physical kinematics at 250Hz.</p>
 
-<div class="callout callout-warning">
-  <h4>Zero-Allocation (GC) Danger</h4>
-  <p>Because this thread runs 250 times a second, if you instantiate an object (like `new Pose2d()`) inside this loop, you will instantly crash the RoboRIO due to massive Garbage Collection (GC) pressure. This is why our Agentic Skills strictly enforce the <strong>Ephemeral Struct</strong> proxy architecture across the Swerve subsystem.</p>
-</div>
+  <div class="callout callout-warning">
+    <h4>Zero-Allocation (GC) Danger</h4>
+    <p>Because this thread runs 250 times a second, if you instantiate an object inside this loop, you will instantly crash the RoboRIO due to massive Garbage Collection pressure. This is why our Agentic Skills strictly enforce the <strong>Ephemeral Struct</strong> proxy architecture across the Swerve subsystem.</p>
+  </div>
 
-<div id="swerve-sim" style="background: #050505; border: 1px solid var(--border); border-radius: 12px; margin: 30px 0; display: flex; flex-direction: column; overflow: hidden; box-shadow: inset 0 0 40px rgba(0,0,0,0.8);">
-  <div style="display: flex; gap: 20px; padding: 16px 20px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border); align-items: center; justify-content: space-between; flex-wrap: wrap;">
-    <div style="display: flex; gap: 24px; flex-wrap: wrap; width: 100%;">
-      <label style="color:#e8e8e8; font-family:'JetBrains Mono'; font-size:12px; display: flex; flex-direction: column; gap:4px; flex: 1;">
-        <span>Vx (Forward/Back) <span id="vx-val" style="color:var(--ai-cyan)">0.0</span> m/s</span>
-        <input type="range" id="vx" min="-5" max="5" step="0.1" value="0.0">
-      </label>
-      <label style="color:#e8e8e8; font-family:'JetBrains Mono'; font-size:12px; display: flex; flex-direction: column; gap:4px; flex: 1;">
-        <span>Vy (Left/Right) <span id="vy-val" style="color:var(--ai-cyan)">0.0</span> m/s</span>
-        <input type="range" id="vy" min="-5" max="5" step="0.1" value="0.0">
-      </label>
-      <label style="color:#e8e8e8; font-family:'JetBrains Mono'; font-size:12px; display: flex; flex-direction: column; gap:4px; flex: 1;">
-        <span>Omega (Rotation) <span id="omega-val" style="color:var(--mars-red-light)">0.0</span> rad/s</span>
-        <input type="range" id="omega" min="-5" max="5" step="0.1" value="0.0">
-      </label>
-      <button id="resetSwerve" style="background:#222; color:#fff; border:1px solid #444; padding:8px 16px; border-radius:6px; cursor:pointer; font-family:'Orbitron'; font-weight:700; height: fit-content; align-self: flex-end;">ZERO</button>
+  <div id="swerve-sim" style="background: #050505; border: 1px solid var(--border); border-radius: 12px; margin: 30px 0; display: flex; flex-direction: column; overflow: hidden; box-shadow: inset 0 0 40px rgba(0,0,0,0.8);">
+    <div style="display: flex; gap: 20px; padding: 16px 20px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border); align-items: center; justify-content: space-between; flex-wrap: wrap;">
+      <div style="display: flex; gap: 24px; flex-wrap: wrap; width: 100%;">
+        <label style="color:#e8e8e8; font-family:'JetBrains Mono'; font-size:12px; display: flex; flex-direction: column; gap:4px; flex: 1; min-width: 150px;">
+          <span>Vx (Forward/Back) <span id="vx-val" style="color:var(--ai-cyan)">0.0</span> m/s</span>
+          <input type="range" id="vx" min="-5" max="5" step="0.1" value="0.0">
+        </label>
+        <label style="color:#e8e8e8; font-family:'JetBrains Mono'; font-size:12px; display: flex; flex-direction: column; gap:4px; flex: 1; min-width: 150px;">
+          <span>Vy (Left/Right) <span id="vy-val" style="color:var(--ai-cyan)">0.0</span> m/s</span>
+          <input type="range" id="vy" min="-5" max="5" step="0.1" value="0.0">
+        </label>
+        <label style="color:#e8e8e8; font-family:'JetBrains Mono'; font-size:12px; display: flex; flex-direction: column; gap:4px; flex: 1; min-width: 150px;">
+          <span>Omega (Rotation) <span id="omega-val" style="color:var(--mars-red-light)">0.0</span> rad/s</span>
+          <input type="range" id="omega" min="-5" max="5" step="0.1" value="0.0">
+        </label>
+        <button id="resetSwerve" style="background:#222; color:#fff; border:1px solid #444; padding:8px 16px; border-radius:6px; cursor:pointer; font-family:'Orbitron'; font-weight:700; height: fit-content; align-self: flex-end;">ZERO</button>
+      </div>
+    </div>
+    <div style="display: flex; justify-content: center; align-items: center; padding: 20px;">
+      <div style="position:relative;">
+        <canvas id="swerveCanvas" width="400" height="400" style="background: #111; border: 1px solid #333; border-radius: 6px; max-width: 100%; height: auto;"></canvas>
+        <div style="position:absolute; top:10px; right:10px; font-family:'Orbitron'; font-size:10px; color:var(--mars-red-light); letter-spacing: 1px;">KINEMATICS SOLVER</div>
+      </div>
     </div>
   </div>
-  <div style="display: flex; justify-content: center; align-items: center; padding: 20px;">
-    <div style="position:relative;">
-      <canvas id="swerveCanvas" width="400" height="400" style="background: #111; border: 1px solid #333; border-radius: 6px;"></canvas>
-      <div style="position:absolute; top:10px; right:10px; font-family:'Orbitron'; font-size:10px; color:var(--mars-red-light); letter-spacing: 1px;">KINEMATICS SOLVER</div>
-    </div>
-  </div>
-</div>
-<script>
-  const sCanvas = document.getElementById('swerveCanvas');
-  const sCtx = sCanvas.getContext('2d');
-  
-  const vxSlider = document.getElementById('vx');
-  const vySlider = document.getElementById('vy');
-  const omegaSlider = document.getElementById('omega');
-  
-  const updateLabels = () => {
-    document.getElementById('vx-val').innerText = parseFloat(vxSlider.value).toFixed(1);
-    document.getElementById('vy-val').innerText = parseFloat(vySlider.value).toFixed(1);
-    document.getElementById('omega-val').innerText = parseFloat(omegaSlider.value).toFixed(1);
-  };
-  
-  vxSlider.oninput = updateLabels;
-  vySlider.oninput = updateLabels;
-  omegaSlider.oninput = updateLabels;
-  
-  document.getElementById('resetSwerve').onclick = () => {
-      vxSlider.value = 0; vySlider.value = 0; omegaSlider.value = 0;
-      updateLabels();
-  };
 
-  const L = 0.6; // Length (m)
-  const W = 0.6; // Width (m)
+  <h2>2. MegaTag 2.0 Integration</h2>
+  <p>Limelight 4's MegaTag 2.0 system relies heavily on the IMU Yaw rates to compensate for camera latency. Because we process the Pigeon 2.0 data at 250Hz, our gyro-seeding to the Limelight is incredibly precise, allowing for flawless localization even while spinning and traversing the Bump.</p>
 
-  function drawArrow(ctx, fromx, fromy, tox, toy, color) {
-    var headlen = 8;
-    var dx = tox - fromx;
-    var dy = toy - fromy;
-    var angle = Math.atan2(dy, dx);
-    ctx.beginPath();
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 3;
-    ctx.moveTo(fromx, fromy);
-    ctx.lineTo(tox, toy);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.fillStyle = color;
-    ctx.moveTo(tox, toy);
-    ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
-    ctx.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
-    ctx.lineTo(tox, toy);
-    ctx.fill();
-  }
-
-  function renderSwerve() {
-    sCtx.clearRect(0,0,400,400);
-    const cx = 200, cy = 200;
-    const scale = 150; // pixels per physical meter
-    
-    // Draw Chassis
-    sCtx.strokeStyle = '#333';
-    sCtx.lineWidth = 2;
-    sCtx.strokeRect(cx - (W/2)*scale, cy - (L/2)*scale, W*scale, L*scale);
-    
-    // Front marks
-    sCtx.fillStyle = 'rgba(179,36,22,0.3)';
-    sCtx.fillRect(cx - (W/2)*scale, cy - (L/2)*scale, W*scale, 10);
-    
-    const v_x = parseFloat(vxSlider.value); // Chassis Forward (m/s)
-    const v_y = parseFloat(vySlider.value); // Chassis Left (m/s)
-    const omega = parseFloat(omegaSlider.value); // Chassis CCW Rotation (rad/s)
-    
-    // Front Left:  +X, +Y
-    // Front Right: +X, -Y
-    // Back Left:   -X, +Y
-    // Back Right:  -X, -Y
-    const modules = [
-      { name: "FL", wx: cx - (W/2)*scale, wy: cy - (L/2)*scale, x: L/2, y: W/2 },
-      { name: "FR", wx: cx + (W/2)*scale, wy: cy - (L/2)*scale, x: L/2, y: -W/2 },
-      { name: "BL", wx: cx - (W/2)*scale, wy: cy + (L/2)*scale, x: -L/2, y: W/2 },
-      { name: "BR", wx: cx + (W/2)*scale, wy: cy + (L/2)*scale, x: -L/2, y: -W/2 }
-    ];
-    
-    // Draw modules & vectors
-    modules.forEach(m => {
-      // Background wheel unit
-      sCtx.fillStyle = '#222';
-      sCtx.fillRect(m.wx - 10, m.wy - 10, 20, 20);
-      
-      // True 2D Rigid Body Kinematics (WPILib Standard)
-      const mod_v_x = v_x - omega * m.y; // Forward velocity depends on Left/Right offset
-      const mod_v_y = v_y + omega * m.x; // Left velocity depends on Forward/Back offset
-      
-      // Map to Canvas Coordinates
-      // Screen X (+Right) = Physical Right (-mod_v_y)
-      // Screen Y mathematical plane (+Up) = Physical Forward (mod_v_x)
-      const wheel_vx = -mod_v_y;
-      const wheel_vy = mod_v_x;
-      
-      const speed = Math.sqrt(wheel_vx*wheel_vx + wheel_vy*wheel_vy);
-      const angle = Math.atan2(wheel_vy, wheel_vx);
-      
-      // Draw Vector Line (Scaled mapping: 1 m/s = 20px)
-      const maxVecL = 20 * speed;
-      const tX = m.wx + Math.cos(angle) * maxVecL;
-      const tY = m.wy - Math.sin(angle) * maxVecL; // invert y for canvas drawing
-      
-      if(speed > 0.01) {
-          drawArrow(sCtx, m.wx, m.wy, tX, tY, '#29b6f6');
-      }
-      
-      // Draw Wheel Angle
-      sCtx.save();
-      sCtx.translate(m.wx, m.wy);
-      sCtx.rotate(Math.PI/2 - angle); 
-      sCtx.fillStyle = '#B32416';
-      sCtx.fillRect(-5, -15, 10, 30);
-      sCtx.restore();
-      
-      // Speed text
-      sCtx.fillStyle = '#999';
-      sCtx.font = '10px JetBrains Mono';
-      sCtx.fillText(speed.toFixed(1) + 'm/s', m.wx + 15, m.wy + 15);
-    });
-    
-    // Draw Center Vector (Chassis Vel)
-    const chSpeed = Math.sqrt(v_x*v_x + v_y*v_y);
-    if(chSpeed > 0.01) {
-       const wheel_vx_center = -v_y;
-       const wheel_vy_center = v_x;
-       const chAngle = Math.atan2(wheel_vy_center, wheel_vx_center);
-       const cxT = cx + Math.cos(chAngle) * chSpeed * 20;
-       const cyT = cy - Math.sin(chAngle) * chSpeed * 20;
-       drawArrow(sCtx, cx, cy, cxT, cyT, 'rgba(255,255,255,0.3)');
-    }
-
-    requestAnimationFrame(renderSwerve);
-  }
-  
-  renderSwerve();
-</script>
-
-<h2>2. MegaTag 2.0 Integration</h2>
-<p>Limelight 4's MegaTag 2.0 system relies heavily on the IMU Yaw rates to compensate for camera latency. Because we process the Pigeon 2.0 data at 250Hz, our gyro-seeding to the Limelight is incredibly precise, allowing for flawless localization even while spinning and traversing the Bump.</p>
-
-<pre><code class="language-java">// Asynchronously injecting vision without locking the thread
+  <pre><code class="language-java">// Asynchronously injecting vision without locking the thread
 public void addVisionMeasurement(Pose2d visionPose, double timestamp, Matrix<N3, N1> stdDevs) {
     poseEstimator.addVisionMeasurement(visionPose, timestamp, stdDevs);
 }</code></pre>
 
-<h2>3. Heading-Aware Traction Control</h2>
-<p>With high-frequency data, we can implement micro-adjustments in real-time. If the IMU detects that the robot is physically slipping or skidding (comparing commanded chassis speeds to actual integrated acceleration), MARSLib's traction control algorithm will temporarily limit the torque current applied to the Kraken X60 drive motors to regain grip.</p>
+  <h2>3. Heading-Aware Traction Control</h2>
+  <p>With high-frequency data, we can implement micro-adjustments in real-time. If the IMU detects that the robot is physically slipping or skidding, MARSLib's traction control algorithm will temporarily limit the torque current applied to the Kraken X60 drive motors to regain grip.</p>
+</main>
 
-<footer>
-  <p style="text-align: center; margin-top: 60px; font-size: 0.9rem;">&copy; 2026 Mountaineer Area RoboticS — FRC Team 2614 — FRC 2026: REBUILT</p>
-</footer>
+<div id="footer-placeholder"></div>
 
+<script src="assets/js/common.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+<script>
+    const sCanvas = document.getElementById('swerveCanvas');
+    const sCtx = sCanvas.getContext('2d');
+    const vxSlider = document.getElementById('vx');
+    const vySlider = document.getElementById('vy');
+    const omegaSlider = document.getElementById('omega');
+    
+    const updateLabels = () => {
+      document.getElementById('vx-val').innerText = parseFloat(vxSlider.value).toFixed(1);
+      document.getElementById('vy-val').innerText = parseFloat(vySlider.value).toFixed(1);
+      document.getElementById('omega-val').innerText = parseFloat(omegaSlider.value).toFixed(1);
+    };
+    
+    vxSlider.oninput = updateLabels;
+    vySlider.oninput = updateLabels;
+    omegaSlider.oninput = updateLabels;
+    
+    document.getElementById('resetSwerve').onclick = () => {
+        vxSlider.value = 0; vySlider.value = 0; omegaSlider.value = 0;
+        updateLabels();
+    };
+
+    const L = 0.6; 
+    const W = 0.6; 
+
+    function drawArrow(ctx, fromx, fromy, tox, toy, color) {
+      var headlen = 8;
+      var dx = tox - fromx;
+      var dy = toy - fromy;
+      var angle = Math.atan2(dy, dx);
+      ctx.beginPath();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 3;
+      ctx.moveTo(fromx, fromy);
+      ctx.lineTo(tox, toy);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.fillStyle = color;
+      ctx.moveTo(tox, toy);
+      ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
+      ctx.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
+      ctx.lineTo(tox, toy);
+      ctx.fill();
+    }
+
+    function renderSwerve() {
+      sCtx.clearRect(0,0,400,400);
+      const cx = 200, cy = 200;
+      const scale = 150; 
+      sCtx.strokeStyle = '#333';
+      sCtx.lineWidth = 2;
+      sCtx.strokeRect(cx - (W/2)*scale, cy - (L/2)*scale, W*scale, L*scale);
+      sCtx.fillStyle = 'rgba(179,36,22,0.3)';
+      sCtx.fillRect(cx - (W/2)*scale, cy - (L/2)*scale, W*scale, 10);
+      const v_x = parseFloat(vxSlider.value); 
+      const v_y = parseFloat(vySlider.value); 
+      const omega = parseFloat(omegaSlider.value); 
+      const modules = [
+        { name: "FL", wx: cx - (W/2)*scale, wy: cy - (L/2)*scale, x: L/2, y: W/2 },
+        { name: "FR", wx: cx + (W/2)*scale, wy: cy - (L/2)*scale, x: L/2, y: -W/2 },
+        { name: "BL", wx: cx - (W/2)*scale, wy: cy + (L/2)*scale, x: -L/2, y: W/2 },
+        { name: "BR", wx: cx + (W/2)*scale, wy: cy + (L/2)*scale, x: -L/2, y: -W/2 }
+      ];
+      modules.forEach(m => {
+        sCtx.fillStyle = '#222';
+        sCtx.fillRect(m.wx - 10, m.wy - 10, 20, 20);
+        const mod_v_x = v_x - omega * m.y; 
+        const mod_v_y = v_y + omega * m.x; 
+        const wheel_vx = -mod_v_y;
+        const wheel_vy = mod_v_x;
+        const speed = Math.sqrt(wheel_vx*wheel_vx + wheel_vy*wheel_vy);
+        const angle = Math.atan2(wheel_vy, wheel_vx);
+        const maxVecL = 20 * speed;
+        const tX = m.wx + Math.cos(angle) * maxVecL;
+        const tY = m.wy - Math.sin(angle) * maxVecL; 
+        if(speed > 0.01) {
+            drawArrow(sCtx, m.wx, m.wy, tX, tY, '#29b6f6');
+        }
+        sCtx.save();
+        sCtx.translate(m.wx, m.wy);
+        sCtx.rotate(Math.PI/2 - angle); 
+        sCtx.fillStyle = '#B32416';
+        sCtx.fillRect(-5, -15, 10, 30);
+        sCtx.restore();
+        sCtx.fillStyle = '#999';
+        sCtx.font = '10px "JetBrains Mono"';
+        sCtx.fillText(speed.toFixed(1) + 'm/s', m.wx + 15, m.wy + 15);
+      });
+      requestAnimationFrame(renderSwerve);
+    }
+    renderSwerve();
+</script>
 </body>
 </html>

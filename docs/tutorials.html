@@ -5,105 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tutorials — MARSLib Educational Hub</title>
   <meta name="description" content="Step-by-step guides for mastering MARSLib: IO abstraction, swerve kinematics, state machines, and physics simulation.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <style>
-    /* ===== MARS Design System Root ===== */
-    :root {
-      --mars-red: #B32416;
-      --mars-red-light: #d42e1e;
-      --bg-primary: #0a0a0a;
-      --bg-secondary: #141414;
-      --bg-card: #1a1a1a;
-      --border: #2a2a2a;
-      --text-primary: #e8e8e8;
-      --text-secondary: #999999;
-      --mars-red-glow: rgba(179, 36, 22, 0.12);
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Ubuntu', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; overflow-x: hidden; }
-
-    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
-
-    /* ===== Header ===== */
-    header { padding: 60px 0; text-align: center; border-bottom: 1px solid var(--border); background: var(--bg-secondary); }
-    .back-link { display: inline-block; margin-bottom: 24px; color: var(--mars-red); text-decoration: none; font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.1em; transition: transform 0.2s; }
-    .back-link:hover { transform: translateX(-5px); }
-    h1 { font-family: 'Orbitron', sans-serif; font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 900; color: white; margin-bottom: 16px; letter-spacing: 0.05em; }
-    header p { font-size: 1.25rem; color: var(--text-secondary); max-width: 700px; margin: 0 auto; }
-
-    /* ===== Tutorial Grid ===== */
-    .tutorial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; padding: 80px 0; }
-    .tutorial-card { 
-      background: var(--bg-card); 
-      border: 1px solid var(--border); 
-      border-radius: 20px; 
-      padding: 40px; 
-      text-decoration: none; 
-      color: inherit; 
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      display: flex;
-      flex-direction: column;
-    }
-    .tutorial-card:hover { border-color: var(--mars-red); transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
-    .tutorial-card::after { content: '→'; position: absolute; top: 40px; right: 40px; font-family: 'Orbitron'; color: var(--mars-red); font-size: 1.5rem; opacity: 0.5; transition: opacity 0.3s; }
-    .tutorial-card:hover::after { opacity: 1; }
-
-    .card-tag { 
-      font-family: 'Orbitron', sans-serif; 
-      font-size: 0.7rem; 
-      background: var(--mars-red-glow); 
-      color: var(--mars-red-light); 
-      padding: 4px 12px; 
-      border-radius: 4px; 
-      align-self: flex-start;
-      margin-bottom: 24px;
-      letter-spacing: 0.1em;
-      border: 1px solid rgba(179, 36, 22, 0.3);
-    }
-
-    h3 { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; color: white; margin-bottom: 12px; }
-    .tutorial-card p { color: var(--text-secondary); font-size: 1rem; line-height: 1.6; }
-
-    /* ===== Footer ===== */
-    footer { padding: 40px 0; text-align: center; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.9rem; }
-  </style>
+  <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
-<header>
-  <div class="container">
-    <a href="index.html" class="back-link">← BACK TO HOME</a>
-    <h1>RECRUIT TRAINING</h1>
-    <p>Step-by-step guides for students and mentors to master the MARSLib framework architecture.</p>
-  </div>
-</header>
+<div id="header-placeholder"></div>
 
-<main class="container">
+<main class="container" style="padding-top: 100px; padding-bottom: 80px;">
+  <div style="text-align: center; margin-bottom: 60px;">
+    <h1>Recruit Training</h1>
+    <p style="font-size: 1.25rem; color: var(--text-secondary); max-width: 700px; margin: 0 auto;">Step-by-step guides for students and mentors to master the MARSLib framework architecture.</p>
+  </div>
 
   <div style="margin-top: 60px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
     <h2 style="font-family: 'Orbitron', sans-serif; color: var(--mars-red);">Onboarding &amp; Getting Started</h2>
     <p style="color: var(--text-secondary);">Essential setup and telemetry mastery for new recruits.</p>
   </div>
   <div class="tutorial-grid" style="padding: 40px 0;">
-    <!-- Getting Started -->
     <a href="tutorial-getting-started.html" class="tutorial-card">
       <span class="card-tag">ENVIRONMENT</span>
       <h3>Software Setup &amp; Git</h3>
       <p>Install Git, WPILib, and clone the MARSLib framework repository to your machine. Set up the GitHub PAT for the log autouploader.</p>
     </a>
     
-    <!-- Telemetry -->
     <a href="tutorial-telemetry.html" class="tutorial-card">
       <span class="card-tag">TELEMETRY</span>
       <h3>AdvantageKit &amp; Scope</h3>
       <p>Master log replay, visualize Swerve in 3D, configure NetworkTables, and import MARS custom layout templates.</p>
     </a>
 
-    <!-- CI/CD Introduction -->
     <a href="tutorial-ci.html" class="tutorial-card">
       <span class="card-tag">PIPELINE</span>
       <h3>Intro to CI/CD &amp; Testing</h3>
@@ -116,60 +46,52 @@
     <p style="color: var(--text-secondary);">Advanced architecture guides and physics implementations.</p>
   </div>
   <div class="tutorial-grid" style="padding-top: 40px;">
-    <!-- IO Abstraction -->
     <a href="tutorial-io-layer.html" class="tutorial-card">
       <span class="card-tag">CORE ARCHITECTURE</span>
       <h3>The IO Layer Pattern</h3>
       <p>Learn why we separate hardware from logic and how to implement the AdvantageKit pattern for bit-perfect log replay.</p>
     </a>
 
-    <!-- Swerve -->
     <a href="tutorial-swerve.html" class="tutorial-card">
       <span class="card-tag">DRIVETRAIN</span>
       <h3>Swerve Drive Persistence</h3>
       <p>Configure Phoenix 6 modules, implement 250Hz high-frequency odometry, and tune your drift compensation.</p>
     </a>
 
-    <!-- State Machines -->
     <a href="tutorial-state-machines.html" class="tutorial-card">
       <span class="card-tag">LOGIC & CONTROL</span>
-      <h3>Crowning states</h3>
+      <h3>Crowning States</h3>
       <p>Use MARSStateMachine to coordinate complex mechanisms and visualize live flowcharts in AdvantageScope.</p>
     </a>
 
-    <!-- SOTM -->
     <a href="tutorial-sotm.html" class="tutorial-card">
       <span class="card-tag">ADVANCED MATH</span>
       <h3>Elite Shooting (SOTM)</h3>
       <p>Master the iterative physics solver for shooting fuel balls while pulling high-speed swerve maneuvers.</p>
     </a>
 
-    <!-- Simulation & Testing -->
     <a href="tutorial-simulation.html" class="tutorial-card">
       <span class="card-tag">VIRTUAL ROBOT &amp; TESTING</span>
       <h3>Physics-First Dev &amp; Testing</h3>
-      <p>Leverage Dyn4j to test your robot code offline. Spawn fuel balls, test collisions, and write deterministic JUnit CI/CD tests against real physics without mocks.</p>
+      <p>Leverage Dyn4j to test your robot code offline. Spawn fuel balls, test collisions, and write deterministic JUnit CI/CD tests.</p>
     </a>
 
-    <!-- Vision Systems -->
     <a href="tutorial-vision.html" class="tutorial-card">
       <span class="card-tag">LOCALIZATION</span>
       <h3>Vision Fusion & Filtation</h3>
-      <p>Explore strict 254-style hallucination rejection filters, Megatag multi-camera confidence scaling, and hardware latency compensation.</p>
+      <p>Explore strict hallucination rejection filters, Megatag confidence scaling, and hardware latency compensation.</p>
     </a>
 
-    <!-- Control Theory -->
     <a href="tutorial-control-theory.html" class="tutorial-card">
       <span class="card-tag">KINEMATICS</span>
       <h3>Control Theory Mastery</h3>
       <p>Move past basic PID. Demystify feedforwards, state space models, discrete math, and continuous SysId tuning.</p>
     </a>
 
-    <!-- System Identification -->
     <a href="tutorial-sysid.html" class="tutorial-card">
       <span class="card-tag">CHARACTERIZATION</span>
       <h3>System Identification</h3>
-      <p>Stop guessing PID constants. Automate your characterization using WPILib SysId to generate perfect kP, kD, kV, and kA constants mathematically.</p>
+      <p>Stop guessing PID constants. Automate your characterization using WPILib SysId to generate perfect constants mathematically.</p>
     </a>
   </div>
 
@@ -179,39 +101,34 @@
   </div>
 
   <div class="tutorial-grid" style="padding-top: 0;">
-    <!-- Zero-Allocation -->
     <a href="tutorial-zero-allocation.html" class="tutorial-card">
       <span class="card-tag">DETERMINISM</span>
       <h3>Zero-Allocation Systems</h3>
       <p>Eliminate JVM Garbage Collection spikes entirely using pre-allocated Ephemeral Structs and mutable proxy references.</p>
     </a>
 
-    <!-- Power Shedding -->
     <a href="tutorial-power-shedding.html" class="tutorial-card">
       <span class="card-tag">ELECTRICAL</span>
       <h3>Dynamic Power Shedding</h3>
-      <p>Configure MARSPowerManager to actively monitor battery voltage and throttle non-essential mechanism ceilings to prevent RoboRIO brownouts.</p>
+      <p>Configure MARSPowerManager to actively monitor battery voltage and throttle non-essential mechanism ceilings.</p>
     </a>
 
-    <!-- Code Mining -->
     <a href="tutorial-code-mining.html" class="tutorial-card">
       <span class="card-tag">FRAMEWORK</span>
       <h3>Architecture Mining</h3>
-      <p>How we leverage AI skills to extract mathematical models from 254 and 1690 repositories without corrupting the MARSLib IO Abstraction.</p>
+      <p>How we leverage AI skills to extract mathematical models from elite repositories without corrupting the MARSLib IO Abstraction.</p>
     </a>
 
-    <!-- Hardware Telemetry -->
     <a href="tutorial-uploader.html" class="tutorial-card">
       <span class="card-tag">TELEMETRY</span>
       <h3>Automated Log Uploader</h3>
-      <p>Configure MARSLib's asynchronous daemon thread to automatically upload AdvantageKit hardware logs directly to GitHub Releases upon tethering.</p>
+      <p>Configure MARSLib's asynchronous daemon thread to automatically upload AdvantageKit hardware logs directly to GitHub.</p>
     </a>
   </div>
 </main>
 
-<footer>
-  <p>&copy; 2026 Mountaineer Area RoboticS — FRC Team 2614 — FIRST Hall of Fame Class of 2017</p>
-</footer>
+<div id="footer-placeholder"></div>
 
+<script src="assets/js/common.js"></script>
 </body>
 </html>

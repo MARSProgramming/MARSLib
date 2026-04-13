@@ -4,112 +4,119 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Telemetry Mastery — MARSLib</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
   <style>
-    :root {
-      --mars-red: #B32416;
-      --mars-red-light: #d42e1e;
-      --bg-primary: #0a0a0a;
-      --bg-secondary: #141414;
-      --bg-card: #1a1a1a;
-      --border: #2a2a2a;
-      --text-primary: #e8e8e8;
-      --text-secondary: #999999;
-      --ai-cyan: #29b6f6;
+    pre { 
+      background: #111; 
+      border: 1px solid var(--border); 
+      padding: 20px; 
+      border-radius: 12px; 
+      overflow-x: auto; 
+      margin-bottom: 30px; 
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Ubuntu', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; padding: 60px 20px; max-width: 900px; margin: auto; }
-    
-    .back-link { display: inline-block; margin-bottom: 40px; color: var(--mars-red); text-decoration: none; font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.1em; }
-    .back-link:hover { transform: translateX(-5px); }
-    
-    h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: white; margin-bottom: 20px; letter-spacing: 0.05em; }
-    h1 { font-size: clamp(2rem, 5vw, 3rem); text-align: center; color: var(--mars-red); margin-bottom: 40px; }
-    h2 { font-size: 1.8rem; margin-top: 50px; border-left: 4px solid var(--mars-red); padding-left: 20px; }
-    h3 { font-size: 1.2rem; color: var(--ai-cyan); margin-top: 20px; }
-    
-    p { margin-bottom: 20px; color: var(--text-secondary); font-size: 1.1rem; }
-    ul, ol { margin-bottom: 20px; padding-left: 30px; color: var(--text-secondary); }
-    li { margin-bottom: 15px; }
-
-    code { font-family: 'JetBrains Mono', monospace; background: #222; padding: 2px 6px; border-radius: 4px; color: #ffab91; }
-    pre { background: #111; border: 1px solid var(--border); padding: 20px; border-radius: 12px; overflow-x: auto; margin-bottom: 30px; }
-    pre code { background: transparent; padding: 0; color: #e8e8e8; font-size: 0.9rem; }
-    
-    .callout { background: rgba(41, 182, 246, 0.1); border: 1px solid var(--ai-cyan); padding: 24px; border-radius: 12px; margin: 30px 0; }
-    .callout h4 { font-family: 'Orbitron', sans-serif; color: var(--ai-cyan); margin-bottom: 10px; text-transform: uppercase; font-size: 0.9rem; }
-    .callout-warning { background: rgba(179, 36, 22, 0.1); border: 1px solid var(--mars-red); }
-    .callout-warning h4 { color: var(--mars-red-light); }
+    pre code { 
+      background: transparent !important; 
+      padding: 0 !important; 
+      color: #e8e8e8; 
+      font-size: 0.9rem; 
+      font-family: 'JetBrains Mono', monospace !important;
+    }
+    h2 { 
+      font-size: 1.8rem; 
+      margin-top: 50px; 
+      border-left: 4px solid var(--mars-red); 
+      padding-left: 20px; 
+    }
+    h3 { 
+      font-size: 1.2rem; 
+      color: var(--ai-cyan); 
+      margin-top: 20px; 
+    }
+    .callout { 
+      background: rgba(41, 182, 246, 0.05); 
+      border: 1px solid var(--ai-cyan); 
+      padding: 24px; 
+      border-radius: 12px; 
+      margin: 30px 0; 
+    }
+    .callout h4 { 
+      font-family: 'Orbitron', sans-serif; 
+      color: var(--ai-cyan); 
+      margin-bottom: 10px; 
+      text-transform: uppercase; 
+      font-size: 0.9rem; 
+      letter-spacing: 1px;
+    }
   </style>
 </head>
 <body>
 
-<a href="tutorials.html" class="back-link">← BACK TO TUTORIALS</a>
+<div id="header-placeholder"></div>
 
-<h1>AdvantageKit &amp; Scope</h1>
+<main class="container" style="padding-top: 100px; padding-bottom: 80px;">
+  <div style="text-align: center; margin-bottom: 40px;">
+    <a href="tutorials.html" class="back-link">← BACK TO TUTORIALS</a>
+    <h1>Telemetry Mastery</h1>
+  </div>
 
-<p>Driving blindly is a thing of the past. In MARSLib, we use Mechanical Advantage's AdvantageKit, which guarantees a structurally clean decoupling of hardware states, ensuring deterministic Replay of any past FRC match. All of this telemetry data is then visualized dynamically in AdvantageScope.</p>
+  <p>Driving blindly is a thing of the past. In MARSLib, we use Mechanical Advantage's AdvantageKit, which guarantees a structurally clean decoupling of hardware states, ensuring deterministic Replay of any past FRC match. All of this telemetry data is then visualized dynamically in AdvantageScope.</p>
 
-<h2>1. AdvantageKit Basics</h2>
-<p>Every real hardware output (e.g. TalonFX ticks, Pigeon2 yaw, or CANdle states) must be logged through an `IO` abstraction layer using an `AutoLogged` object.</p>
+  <h2>1. AdvantageKit Basics</h2>
+  <p>Every real hardware output (e.g. TalonFX ticks, Pigeon2 yaw, or CANdle states) must be logged through an `IO` abstraction layer using an `AutoLogged` object.</p>
 
-<p>When you add a variable like <code>public double motorCurrentAmps = 0.0;</code> inside an IO struct, AdvantageKit immediately picks it up and pushes it to NetworkTables dynamically. The `Robot.java` loop uses this logged struct identically, whether running in physical competition or in Replay mode.</p>
+  <p>When you add a variable like <code>public double motorCurrentAmps = 0.0;</code> inside an IO struct, AdvantageKit immediately picks it up and pushes it to NetworkTables dynamically. The `Robot.java` loop uses this logged struct identically, whether running in physical competition or in Replay mode.</p>
 
-<h2>2. AdvantageScope vs. Shuffleboard</h2>
-<p>While MARSLib fundamentally relies on <strong>AdvantageScope</strong> for sophisticated 3D visualizations, log replay, and time-series graphing, we still utilize <strong>Shuffleboard</strong> for certain live operations.</p>
-<p>Shuffleboard is typically reserved for simple boolean toggles (like selecting auto routines from the driver station), sending basic string configurations prior to a match, or when rapid drag-and-drop dashboarding is required without setting up rigid JSON layouts. However, for in-depth mechanism tuning or 3D swerve analysis, AdvantageScope is mandatory.</p>
+  <h2>2. AdvantageScope vs. Shuffleboard</h2>
+  <p>While MARSLib fundamentally relies on <strong>AdvantageScope</strong> for sophisticated 3D visualizations, log replay, and time-series graphing, we still utilize <strong>Shuffleboard</strong> for certain live operations.</p>
+  <p>Shuffleboard is typically reserved for simple boolean toggles (like selecting auto routines from the driver station), sending basic string configurations prior to a match, or when rapid drag-and-drop dashboarding is required without setting up rigid JSON layouts.</p>
 
-<h3>Installing AdvantageScope</h3>
+  <h3>Installing AdvantageScope</h3>
+  <ol style="margin-bottom: 20px; padding-left: 30px; color: var(--text-secondary);">
+    <li style="margin-bottom: 15px;">Navigate to the official <a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases" target="_blank" style="color: var(--ai-cyan);">AdvantageScope Releases</a> page.</li>
+    <li style="margin-bottom: 15px;">Download the installer specifically for your operative system.</li>
+    <li style="margin-bottom: 15px;">Install and open the application. When on the robot network, set the Data Source to <code>NetworkTables</code>.</li>
+  </ol>
 
-<ol>
-  <li>Navigate to the <a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases" target="_blank" style="color: var(--ai-cyan);">AdvantageScope Releases</a> page.</li>
-  <li>Download the installer specifically for your operative system.</li>
-  <li>Install and open the application. When on the robot network, set the Data Source to <code>NetworkTables</code>.</li>
-</ol>
+  <h2>3. Importing MARS Layout Templates</h2>
+  <p>AdvantageScope utilizes <code>layout.json</code> files that arrange tabs specifically to enhance driver feedback. To avoid creating views from scratch every time, import our central template!</p>
 
-<h2>3. Importing MARS Layout Templates</h2>
-<p>AdvantageScope utilizes <code>layout.json</code> files that arrange tabs (e.g., Swerve 3D, Driver Cam, SOTM Scatterplots) specifically to enhance driver feedback. To avoid creating views from scratch every time, import our central template!</p>
+  <div class="callout">
+    <h4>Swerve &amp; Mechanisms Template</h4>
+    <p>Our agentic skills dynamically generate the <code>MARS_Standard_Layout.json</code> layout file for the 2614 layout. You can find this inside the root directory under <code>.agents/layouts/</code>.</p>
+  </div>
 
-<div class="callout">
-  <h4>Swerve &amp; Mechanisms Template</h4>
-  <p>Our agentic skills dynamically generate the <code>MARS_Standard_Layout.json</code> layout file for the 2614 layout. You can find this inside the root directory under <code>.agents/layouts/</code>.</p>
-</div>
+  <ol style="margin-bottom: 20px; padding-left: 30px; color: var(--text-secondary);">
+    <li style="margin-bottom: 15px;">In AdvantageScope, go to the upper right Layouts icon and select <strong>Import Layout...</strong></li>
+    <li style="margin-bottom: 15px;">Locate the <code>layouts</code> folder in the root of the MARSLib directory you cloned earlier.</li>
+    <li style="margin-bottom: 15px;">Select <code>MARS_Standard_Layout.json</code> to load a unified driver and debugging UI explicitly designed for 2614.</li>
+  </ol>
 
-<ol>
-  <li>In AdvantageScope, go to the upper right Layouts icon and select <strong>Import Layout...</strong></li>
-  <li>Locate the <code>layouts</code> folder in the root of the MARSLib directory you cloned earlier.</li>
-  <li>Select <code>MARS_Standard_Layout.json</code> to load a unified driver and debugging UI explicitly designed for 2614.</li>
-</ol>
+  <h2>4. Replay Mode &amp; Diagnostics</h2>
+  <p>Did a mechanism break during a match? No problem. We have a bit-perfect replay of the software logic.</p>
 
-<h2>4. Replay Mode &amp; Diagnostics</h2>
-<p>Did a mechanism break during a local Einstein finals match? No problem. We have a bit-perfect replay of the software logic.</p>
-
-<ul>
-  <li>Download the <code>.wpilog</code> natively from the Robot using the Log Auto-Uploader (see Getting Started) or AdvantageScope's file downloader.</li>
-  <li>Open AdvantageScope locally, change the Source down arrow over to <strong>Log File</strong>, and target your `.wpilog` file.</li>
-  <li>You can scrub back and forward using the slider—you'll see exactly what angles the Swerve modules were targeting right as the error occurred.</li>
-</ul>
-
-<h2>5. Advanced Log Replay &amp; Live Tuning</h2>
-<p>AdvantageKit provides an unparalleled workflow called <strong>Simulation Replay</strong>. Because all sensor inputs are completely decoupled from control logic, you can execute a physically recorded log, but inject modified robot logic <em>while the log replays</em>.</p>
-
-<div class="callout">
-  <h4>Vision Tuning Example</h4>
-  <p>Imagine your robot missed several shots during an autonomous routine because the Vision hallucination rejection filter failed to discard ghost tags. Instead of guessing parameters and restarting the code repeatedly on the live robot:</p>
-  <ul>
-    <li>Download the <code>.wpilog</code> from the match where the errors occurred.</li>
-    <li>Boot MARSLib in <code>SimReplay</code> mode and target the log file.</li>
-    <li>The framework will ingest the exact raw tracking data and Megatag ambiguity outputs from the past.</li>
-    <li>You can alter your Pose Estimation code locally (e.g., tightening the strictness of the ambiguity threshold), rebuild the code, and watch the exact match play out with your newly tuned vision filters.</li>
+  <ul style="margin-bottom: 20px; padding-left: 30px; color: var(--text-secondary);">
+    <li style="margin-bottom: 15px;">Download the <code>.wpilog</code> natively from the Robot using the Log Auto-Uploader or AdvantageScope's file downloader.</li>
+    <li style="margin-bottom: 15px;">Open AdvantageScope locally, change the Source down arrow over to <strong>Log File</strong>, and target your `.wpilog` file.</li>
+    <li style="margin-bottom: 15px;">You can scrub back and forward using the slider—you'll see exactly what angles the Swerve modules were targeting right as the error occurred.</li>
   </ul>
-</div>
-<p>This approach allows engineers to endlessly tweak feedforward loops, vision confidence tuning, and superstructure kinematic logic using a single match's data until it's perfected—without ever turning on the physical robot.</p>
 
-<footer>
-  <p style="text-align: center; margin-top: 60px; font-size: 0.9rem;">&copy; 2026 Mountaineer Area RoboticS — FRC Team 2614 — FRC 2026: REBUILT</p>
-</footer>
+  <h2>5. Simulation Replay Tuning</h2>
+  <p>AdvantageKit provides an unparalleled workflow called <strong>Simulation Replay</strong>. Because all sensor inputs are completely decoupled from control logic, you can execute a recorded log, but inject modified robot logic <em>while the log replays</em>.</p>
 
+  <div class="callout" style="border-left: 4px solid var(--mars-red); background: rgba(179, 36, 22, 0.05);">
+    <h4 style="color: var(--mars-red-light);">Elite Tuning Workflow</h4>
+    <p>Imagine your robot missed several shots because the Vision hallucination rejection filter failed. Instead of guessing parameters on the live robot:</p>
+    <ul>
+      <li>Download the <code>.wpilog</code> from the match.</li>
+      <li>Boot MARSLib in <code>SimReplay</code> mode and target the log file.</li>
+      <li>Alter your Pose Estimation code locally, rebuild, and watch the exact match play out with your newly tuned vision filters.</li>
+    </ul>
+  </div>
+  <p>This approach allows engineers to endlessly tweak feedforward loops, vision confidence tuning, and superstructure kinematic logic using a single match's data until it's perfected—without ever turning on the physical robot.</p>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="assets/js/common.js"></script>
 </body>
 </html>

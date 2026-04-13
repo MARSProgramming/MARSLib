@@ -4,90 +4,138 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Elite Playbook: Zero-Allocation — MARSLib</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
   <style>
-    :root {
-      --mars-red: #B32416;
-      --mars-red-light: #d42e1e;
-      --bg-primary: #0a0a0a;
-      --bg-secondary: #141414;
-      --bg-card: #1a1a1a;
-      --border: #2a2a2a;
-      --text-primary: #e8e8e8;
-      --text-secondary: #999999;
-      --ai-cyan: #29b6f6;
+    pre { 
+      background: #111; 
+      border: 1px solid var(--border); 
+      padding: 20px; 
+      border-radius: 12px; 
+      overflow-x: auto; 
+      margin-bottom: 30px; 
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Ubuntu', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; padding: 60px 20px; max-width: 900px; margin: auto; }
-    
-    .back-link { display: inline-block; margin-bottom: 40px; color: var(--mars-red); text-decoration: none; font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.1em; }
-    .back-link:hover { transform: translateX(-5px); }
-    
-    h1, h2, h3 { font-family: 'Orbitron', sans-serif; color: white; margin-bottom: 20px; letter-spacing: 0.05em; }
-    h1 { font-size: clamp(2rem, 5vw, 3rem); text-align: center; color: var(--mars-red); margin-bottom: 40px; }
-    h2 { font-size: 1.8rem; margin-top: 50px; border-left: 4px solid var(--mars-red); padding-left: 20px; }
-    h3 { font-size: 1.2rem; color: var(--ai-cyan); margin-top: 20px; }
-    
-    p { margin-bottom: 20px; color: var(--text-secondary); font-size: 1.1rem; }
-    ul, ol { margin-bottom: 20px; padding-left: 30px; color: var(--text-secondary); }
-    li { margin-bottom: 15px; }
-
-    code { font-family: 'JetBrains Mono', monospace; background: #222; padding: 2px 6px; border-radius: 4px; color: #ffab91; }
-    pre { background: #111; border: 1px solid var(--border); padding: 20px; border-radius: 12px; overflow-x: auto; margin-bottom: 30px; }
-    pre code { background: transparent; padding: 0; color: #e8e8e8; font-size: 0.9rem; }
-    
-    .callout { background: rgba(41, 182, 246, 0.1); border: 1px solid var(--ai-cyan); padding: 24px; border-radius: 12px; margin: 30px 0; }
-    .callout h4 { font-family: 'Orbitron', sans-serif; color: var(--ai-cyan); margin-bottom: 10px; text-transform: uppercase; font-size: 0.9rem; }
-    .callout-warning { background: rgba(179, 36, 22, 0.1); border: 1px solid var(--mars-red); }
-    .callout-warning h4 { color: var(--mars-red-light); }
+    pre code { 
+      background: transparent !important; 
+      padding: 0 !important; 
+      color: #e8e8e8; 
+      font-size: 0.9rem; 
+      font-family: 'JetBrains Mono', monospace !important;
+    }
+    h2 { 
+      font-size: 1.8rem; 
+      margin-top: 50px; 
+      border-left: 4px solid var(--mars-red); 
+      padding-left: 20px; 
+    }
+    h3 { 
+      font-size: 1.2rem; 
+      color: var(--ai-cyan); 
+      margin-top: 20px; 
+    }
+    .callout { 
+      background: rgba(41, 182, 246, 0.05); 
+      border: 1px solid var(--ai-cyan); 
+      padding: 24px; 
+      border-radius: 12px; 
+      margin: 30px 0; 
+    }
+    .callout h4 { 
+      font-family: 'Orbitron', sans-serif; 
+      color: var(--ai-cyan); 
+      margin-bottom: 10px; 
+      text-transform: uppercase; 
+      font-size: 0.9rem; 
+      letter-spacing: 1px;
+    }
+    .callout-warning { 
+      background: rgba(179, 36, 22, 0.05); 
+      border: 1px solid var(--mars-red); 
+    }
+    .callout-warning h4 { 
+      color: var(--mars-red-light); 
+    }
   </style>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
 </head>
 <body>
 
-<a href="tutorials.html" class="back-link">← BACK TO TUTORIALS</a>
+<div id="header-placeholder"></div>
 
-<h1>Zero-Allocation Engineering</h1>
-
-<p>The single greatest threat to determinism in a Java-based FRC robot is the JVM's Garbage Collector (GC). Every time you use the <code>new</code> keyword to instantiate an object inside your 50Hz or 250Hz loops, memory is allocated on the heap. Eventually, the JVM pauses the entire robot to clean it up. This causes a sudden, violent 20-30ms spike where your PID loops stall and your odometry misses critical sensor updates.</p>
-
-<div id="gc-sim" style="background: #050505; border: 1px solid var(--border); border-radius: 12px; margin: 30px 0; display: flex; flex-direction: column; overflow: hidden; box-shadow: inset 0 0 40px rgba(0,0,0,0.8);">
-  <div style="display: flex; gap: 20px; padding: 16px 20px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border); align-items: center; justify-content: space-between; flex-wrap: wrap;">
-    <div style="display: flex; gap: 10px; width: 100%;">
-      <button id="btnStd" style="flex:1; background:#222; color:#fff; border:1px solid #444; padding:12px; border-radius:6px; cursor:pointer; font-family:'Orbitron'; font-weight:700; transition:0.2s;">STANDARD FRC (Allocating)</button>
-      <button id="btnMars" style="flex:1; background:var(--ai-cyan); color:#000; border:none; padding:12px; border-radius:6px; cursor:pointer; font-family:'Orbitron'; font-weight:700; transition:0.2s;">MARSLIB (Zero-Allocation)</button>
-    </div>
+<main class="container" style="padding-top: 100px; padding-bottom: 80px;">
+  <div style="text-align: center; margin-bottom: 40px;">
+    <a href="tutorials.html" class="back-link">← BACK TO TUTORIALS</a>
+    <h1>Zero-Allocation Engineering</h1>
   </div>
-  <div style="display: flex; padding: 20px; gap: 20px; align-items: stretch; height: 250px;">
-    <!-- Loop Time Graph -->
-    <div style="flex: 1; position: relative;">
-      <canvas id="loopCanvas" style="width: 100%; height: 100%; display: block; border: 1px solid #333; background: #111; border-radius: 6px;"></canvas>
-      <div style="position:absolute; top:10px; left:15px; font-family:'JetBrains Mono'; font-size:11px; color:#e8e8e8;">
-        LOOP TIME: <span id="loopTxt" style="color:var(--ai-cyan)">20.0ms</span>
+
+  <p>The single greatest threat to determinism in a Java-based FRC robot is the JVM's Garbage Collector (GC). Every time you allocate memory inside your 50Hz or 250Hz loops, memory is allocated on the heap. Eventually, the JVM pauses the entire robot to clean it up.</p>
+
+  <div id="gc-sim" style="background: #050505; border: 1px solid var(--border); border-radius: 12px; margin: 30px 0; display: flex; flex-direction: column; overflow: hidden; box-shadow: inset 0 0 40px rgba(0,0,0,0.8);">
+    <div style="display: flex; gap: 20px; padding: 16px 20px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border); align-items: center; justify-content: space-between; flex-wrap: wrap;">
+      <div style="display: flex; gap: 10px; width: 100%;">
+        <button id="btnStd" style="flex:1; background:#222; color:#fff; border:1px solid #444; padding:12px; border-radius:6px; cursor:pointer; font-family:'Orbitron'; font-weight:700; transition:0.2s;">STANDARD FRC (Allocating)</button>
+        <button id="btnMars" style="flex:1; background:var(--ai-cyan); color:#000; border:none; padding:12px; border-radius:6px; cursor:pointer; font-family:'Orbitron'; font-weight:700; transition:0.2s;">MARSLIB (Zero-Allocation)</button>
       </div>
-      <div style="position:absolute; top:10px; right:15px; font-family:'Orbitron'; font-size:10px; color:var(--mars-red-light); letter-spacing: 1px;">20MS CONTROL LOOP</div>
     </div>
-    <!-- Heap Profiler -->
-    <div style="flex: 0 0 100px; display: flex; flex-direction: column; position: relative;">
-      <canvas id="heapCanvas" style=" flex: 1; display: block; border: 1px solid #333; background: #111; border-radius: 6px;"></canvas>
-      <div style="text-align: center; font-family:'JetBrains Mono'; font-size:10px; color:#999; margin-top: 5px;">JVM HEAP</div>
+    <div style="display: flex; padding: 20px; gap: 20px; align-items: stretch; height: 250px;">
+      <div style="flex: 1; position: relative;">
+        <canvas id="loopCanvas" style="width: 100%; height: 100%; display: block; border: 1px solid #333; background: #111; border-radius: 6px;"></canvas>
+        <div style="position:absolute; top:10px; left:15px; font-family:'JetBrains Mono'; font-size:11px; color:#e8e8e8;">
+          LOOP TIME: <span id="loopTxt" style="color:var(--ai-cyan)">20.0ms</span>
+        </div>
+      </div>
+      <div style="flex: 0 0 100px; display: flex; flex-direction: column; position: relative;">
+        <canvas id="heapCanvas" style=" flex: 1; display: block; border: 1px solid #333; background: #111; border-radius: 6px;"></canvas>
+        <div style="text-align: center; font-family:'JetBrains Mono'; font-size:10px; color:#999; margin-top: 5px;">JVM HEAP</div>
+      </div>
     </div>
   </div>
-</div>
 
+  <h2>1. The 'Ephemeral Struct' Pattern</h2>
+  <p>To eliminate GC spikes, MARSLib enforces a strict zero-allocation architecture. We achieve this using pre-allocated <strong>Mutable Proxy References</strong>.</p>
+
+  <pre><code class="language-java">// BAD: Allocates 250 objects per second!
+public void periodic() {
+    Pose2d currentPose = new Pose2d(x, y, new Rotation2d(theta));
+    updatePose(currentPose);
+}
+
+// GOOD: Pre-allocated Ephemeral Structs mutated in place
+private final Pose2d mutablePose = new Pose2d();
+private final Rotation2d mutableRotation = new Rotation2d();
+
+public void periodic() {
+    mutableRotation.setRadians(theta);
+    mutablePose.set(x, y, mutableRotation);
+    updatePose(mutablePose);
+}</code></pre>
+
+  <h2>2. The Pointer Danger</h2>
+  <p>When you pass a mutable proxy reference into another class, you are passing the <em>memory pointer</em>. Overwriting it next tick will affect any class holding that pointer.</p>
+
+  <div class="callout callout-warning">
+    <h4>The Clone Rule</h4>
+    <p>If a downstream class requires a persistent snapshot or history of data, it must explicitly <strong>clone</strong> the proxy object. Assume any struct reference is poisoned once the function returns.</p>
+  </div>
+
+  <h2>3. Static Array Caching</h2>
+  <p>In Swerve Kinematics, we frequently convert <code>ChassisSpeeds</code> into arrays. MARSLib uses static pre-allocated array caches, mutating elements in place to save thousands of heap allocations per minute.</p>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="assets/js/common.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
 <script>
   const lCanvas = document.getElementById('loopCanvas');
   const lCtx = lCanvas.getContext('2d');
   const hCanvas = document.getElementById('heapCanvas');
   const hCtx = hCanvas.getContext('2d');
-  
   const btnStd = document.getElementById('btnStd');
   const btnMars = document.getElementById('btnMars');
   const loopTxt = document.getElementById('loopTxt');
   
-  let mode = "MARS"; // MARS or STD
+  let mode = "MARS";
   btnStd.onclick = () => { mode = "STD"; btnStd.style.background = "var(--mars-red)"; btnStd.style.color="#fff"; btnStd.style.border="none"; btnMars.style.background = "#222"; btnMars.style.color="#fff"; btnMars.style.border="1px solid #444"; };
   btnMars.onclick = () => { mode = "MARS"; btnMars.style.background = "var(--ai-cyan)"; btnMars.style.color="#000"; btnMars.style.border="none"; btnStd.style.background = "#222"; btnStd.style.color="#fff"; btnStd.style.border="1px solid #444"; };
   
@@ -103,152 +151,64 @@
   resize();
 
   let loopTimes = [];
-  let heapFill = 0; // 0.0 to 1.0
+  let heapFill = 0;
 
   function simulate() {
-    let loopMs = 20.0 + (Math.random() * 0.8 - 0.4); // Jitter
+    let loopMs = 20.0 + (Math.random() * 0.8 - 0.4);
     let isGC = false;
-
     if (mode === "STD") {
-        heapFill += 0.008; // Allocate 'new Pose2d()'
-        if (heapFill >= 1.0) {
-            heapFill = 0;
-            isGC = true;
-            loopMs = 50.0 + Math.random() * 20.0; // GC Pause Spike
-        }
-    } else {
-        // Zero-Allocation
-        heapFill = 0.15; // static cache size
-    }
-
+        heapFill += 0.008;
+        if (heapFill >= 1.0) { heapFill = 0; isGC = true; loopMs = 50.0 + Math.random() * 20.0; }
+    } else { heapFill = 0.15; }
     loopTimes.push({ ts: loopMs, gc: isGC });
     if(loopTimes.length > 250) loopTimes.shift();
-
     draw();
-    
     loopTxt.innerText = loopMs.toFixed(1) + "ms";
-    if(isGC) {
-        loopTxt.style.color = "var(--mars-red)";
-        loopTxt.innerText += " (GC SPIKE)";
-    } else {
-        loopTxt.style.color = "var(--ai-cyan)";
-    }
-
-    // Recursively execute simulation respecting the physical loop time
-    // If there is a GC spike, the visualizer WILL actually lag!
+    if(isGC) { loopTxt.style.color = "var(--mars-red)"; loopTxt.innerText += " (GC SPIKE)"; }
+    else { loopTxt.style.color = "var(--ai-cyan)"; }
     setTimeout(simulate, loopMs);
   }
 
   function draw() {
-    // 1. Draw Loop Graph
     lCtx.clearRect(0, 0, lCanvas.width, lCanvas.height);
-    const lw = lCanvas.width;
-    const lh = lCanvas.height;
-    
-    // Grid (20ms target line)
+    const lw = lCanvas.width, lh = lCanvas.height;
     const targetY = lh - (20 / 80) * lh;
     lCtx.strokeStyle = 'rgba(41, 182, 246, 0.3)';
     lCtx.setLineDash([5,5]);
     lCtx.beginPath(); lCtx.moveTo(0, targetY); lCtx.lineTo(lw, targetY); lCtx.stroke();
     lCtx.setLineDash([]);
-    
     const slice = lw / 250;
-    
-    // Fill under curve
-    lCtx.beginPath();
-    lCtx.moveTo(0, lh);
+    lCtx.beginPath(); lCtx.moveTo(0, lh);
     for(let i=0; i<loopTimes.length; i++) {
         let y = lh - (loopTimes[i].ts / 80) * lh;
-        if(y < 0) y = 0;
-        lCtx.lineTo(i*slice, y);
+        lCtx.lineTo(i*slice, Math.max(0, y));
     }
     lCtx.lineTo((loopTimes.length-1)*slice, lh);
     lCtx.fillStyle = 'rgba(255,255,255,0.05)';
     lCtx.fill();
-    
-    // Draw actual line
     lCtx.beginPath();
     for(let i=0; i<loopTimes.length; i++) {
         let y = lh - (loopTimes[i].ts / 80) * lh;
-        if(y < 0) y = 0;
-        if(i===0) lCtx.moveTo(i*slice, y);
-        else lCtx.lineTo(i*slice, y);
+        if(i===0) lCtx.moveTo(i*slice, Math.max(0, y));
+        else lCtx.lineTo(i*slice, Math.max(0, y));
     }
-    lCtx.strokeStyle = '#e8e8e8';
-    lCtx.lineWidth = 2;
-    lCtx.stroke();
-    
-    // Highlight GC Spikes
+    lCtx.strokeStyle = '#e8e8e8'; lCtx.lineWidth = 2; lCtx.stroke();
     for(let i=0; i<loopTimes.length; i++) {
         if(loopTimes[i].gc) {
             let y = lh - (loopTimes[i].ts / 80) * lh;
-            if(y < 0) y = 0;
-            lCtx.beginPath();
-            lCtx.arc(i*slice, y, 4, 0, Math.PI*2);
-            lCtx.fillStyle = '#B32416';
-            lCtx.fill();
+            lCtx.beginPath(); lCtx.arc(i*slice, Math.max(0,y), 4, 0, Math.PI*2);
+            lCtx.fillStyle = '#B32416'; lCtx.fill();
         }
     }
-
-    // 2. Draw Heap Bar
     hCtx.clearRect(0,0, hCanvas.width, hCanvas.height);
-    const hw = hCanvas.width;
-    const hh = hCanvas.height;
-    
+    const hw = hCanvas.width, hh = hCanvas.height;
     const fillH = heapFill * hh;
-    hCtx.fillStyle = '#333';
-    hCtx.fillRect(0, 0, hw, hh);
-    
+    hCtx.fillStyle = '#333'; hCtx.fillRect(0, 0, hw, hh);
     hCtx.fillStyle = heapFill > 0.9 ? '#B32416' : '#29b6f6';
     hCtx.fillRect(0, hh - fillH, hw, fillH);
-    
-    // Warnings
-    if(heapFill > 0.9) {
-        hCtx.fillStyle = '#fff';
-        hCtx.font = '12px Orbitron';
-        hCtx.fillText("GC!", hw/2 - 10, 20);
-    }
+    if(heapFill > 0.9) { hCtx.fillStyle = '#fff'; hCtx.font = '12px "Orbitron"'; hCtx.fillText("GC!", hw/2 - 10, 20); }
   }
-
   simulate();
 </script>
-
-<h2>1. The 'Ephemeral Struct' Pattern</h2>
-<p>To eliminate these GC spikes, MARSLib enforces a strict zero-allocation architecture across hot loops. We achieve this using pre-allocated <strong>Mutable Proxy References</strong>, governed strictly by our Agentic AI skill parameters.</p>
-
-<pre><code class="language-java">// BAD: Allocates 250 objects per second inside the Odometry Thread!
-public void periodic() {
-    Pose2d currentPose = new Pose2d(x, y, new Rotation2d(theta));
-    updatePose(currentPose);
-}
-
-// GOOD: Pre-allocated Ephemeral Structs that are mutated in place
-private final Pose2d mutablePose = new Pose2d();
-private final Rotation2d mutableRotation = new Rotation2d();
-
-public void periodic() {
-    // No 'new' keyword. Pure mathematical mutation.
-    mutableRotation.setRadians(theta);
-    mutablePose.set(x, y, mutableRotation);
-    updatePose(mutablePose);
-}</code></pre>
-
-<h2>2. The Pointer Danger</h2>
-<p>When you pass a mutable proxy reference into another class (like a trajectory follower), you are passing the <em>memory pointer</em>. When the 20ms loop executes again next tick, it will overwrite the internal values of that exact same object!</p>
-
-<div class="callout callout-warning">
-  <h4>The Clone Rule</h4>
-  <p>If a downstream class requires a persistent snapshot or history of data across multiple ticks (like calculating derivative error over time), it must explicitly <strong>clone</strong> the proxy object. Our rule is: "Assume any struct reference passed into a function is mathematically poisoned the moment the function returns."</p>
-</div>
-
-<h2>3. Static Array Caching</h2>
-<p>In Swerve Kinematics, we frequently convert <code>ChassisSpeeds</code> into arrays of <code>SwerveModuleState[]</code>. WPILib's native <code>toSwerveModuleStates()</code> allocates a new array every call. MARSLib overrides this with a static pre-allocated array cache, mutating the array elements in place to save thousands of heap allocations a minute.</p>
-
-<footer>
-  <p style="text-align: center; margin-top: 60px; font-size: 0.9rem;">&copy; 2026 Mountaineer Area RoboticS — FRC Team 2614 — FRC 2026: REBUILT</p>
-</footer>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
 </body>
 </html>

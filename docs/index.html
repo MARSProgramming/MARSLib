@@ -8,747 +8,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <style>
-    /* ===== Reset & Base ===== */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      /* MARS Brand Colors */
-      --mars-red: #B32416;
-      --mars-red-light: #d42e1e;
-      --mars-red-bright: #ef4435;
-      --mars-red-glow: rgba(179, 36, 22, 0.12);
-      --mars-red-deep: #8a1c10;
-
-      /* Dark Theme */
-      --bg-primary: #0a0a0a;
-      --bg-secondary: #141414;
-      --bg-card: #1a1a1a;
-      --bg-card-hover: #222222;
-      --border: #2a2a2a;
-
-      /* Supporting */
-      --blue: #6ba3d6;
-      --green: #4caf50;
-      --purple: #9c7bcc;
-      --yellow: #d4a017;
-
-      /* Text */
-      --text-primary: #e8e8e8;
-      --text-secondary: #999999;
-      --text-muted: #666666;
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'Ubuntu', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      -webkit-font-smoothing: antialiased;
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-
-    /* ===== Animated Background ===== */
-    .stars {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .stars::before, .stars::after {
-      content: '';
-      position: absolute;
-      width: 2px; height: 2px;
-      border-radius: 50%;
-      background: white;
-      box-shadow:
-        120px 80px 0 0 rgba(255,255,255,0.3),
-        340px 200px 0 0 rgba(255,255,255,0.2),
-        560px 120px 0 0 rgba(255,255,255,0.15),
-        780px 300px 0 0 rgba(255,255,255,0.25),
-        200px 400px 0 0 rgba(255,255,255,0.1),
-        900px 50px 0 0 rgba(255,255,255,0.3),
-        1100px 250px 0 0 rgba(255,255,255,0.2),
-        50px 600px 0 0 rgba(255,255,255,0.15),
-        400px 550px 0 0 rgba(255,255,255,0.25),
-        700px 450px 0 0 rgba(255,255,255,0.1),
-        1300px 100px 0 0 rgba(255,255,255,0.2),
-        1000px 500px 0 0 rgba(255,255,255,0.15),
-        250px 150px 0 0 rgba(255,255,255,0.2),
-        650px 350px 0 0 rgba(255,255,255,0.1),
-        1200px 400px 0 0 rgba(255,255,255,0.25);
-      animation: drift 60s linear infinite;
-    }
-
-    .stars::after {
-      width: 1px; height: 1px;
-      animation-duration: 90s;
-      animation-direction: reverse;
-      opacity: 0.6;
-    }
-
-    @keyframes drift {
-      from { transform: translateY(0) translateX(0); }
-      to { transform: translateY(-200px) translateX(100px); }
-    }
-
-    /* ===== Layout ===== */
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
-
-    /* ===== Nav ===== */
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(10, 10, 10, 0.85);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border-bottom: 1px solid var(--border);
-      padding: 0 24px;
-    }
-
-    nav .container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 64px;
-    }
-
-    .nav-brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-    }
-
-    .nav-brand img {
-      height: 40px;
-      width: auto;
-      border-radius: 50%;
-    }
-
-    .nav-logo {
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 800;
-      font-size: 1.25rem;
-      color: var(--mars-red);
-      text-decoration: none;
-      letter-spacing: 0.04em;
-    }
-
-    .nav-logo span { color: var(--text-primary); }
-
-    .nav-links { 
-      display: flex; 
-      gap: 24px; 
-      list-style: none; 
-      align-items: center; 
-      flex-wrap: nowrap;
-    }
-
-    .nav-links li {
-      flex-shrink: 0;
-      white-space: nowrap;
-    }
-
-    .nav-links a {
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 500;
-      transition: color 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .nav-links a:hover { color: var(--text-primary); }
-
-    .nav-links .btn-primary {
-      background: var(--mars-red);
-      color: white;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 600;
-      font-size: 0.8rem;
-      letter-spacing: 0.04em;
-      transition: background 0.2s, transform 0.15s;
-      white-space: nowrap;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .nav-links .btn-primary:hover {
-      background: var(--mars-red-light);
-      transform: translateY(-1px);
-    }
-
-    /* ===== Hero ===== */
-    .hero {
-      text-align: center;
-      padding: 100px 0 60px;
-      position: relative;
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -100px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 800px;
-      height: 600px;
-      background: radial-gradient(ellipse, var(--mars-red-glow) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .hero-logo {
-      display: block;
-      width: 140px;
-      height: 140px;
-      border-radius: 50%;
-      margin: 0 auto 24px;
-      box-shadow: 0 0 40px rgba(179, 36, 22, 0.25), 0 0 80px rgba(179, 36, 22, 0.1);
-      animation: logoPulse 4s ease-in-out infinite;
-    }
-
-    @keyframes logoPulse {
-      0%, 100% { box-shadow: 0 0 40px rgba(179, 36, 22, 0.25), 0 0 80px rgba(179, 36, 22, 0.1); }
-      50% { box-shadow: 0 0 60px rgba(179, 36, 22, 0.4), 0 0 120px rgba(179, 36, 22, 0.15); }
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 6px 16px;
-      font-size: 0.85rem;
-      color: var(--mars-red);
-      font-weight: 600;
-      margin-bottom: 24px;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 0.7rem;
-      letter-spacing: 0.06em;
-    }
-
-    .hero h1 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: clamp(3rem, 7vw, 5rem);
-      font-weight: 900;
-      line-height: 1.1;
-      letter-spacing: 0.02em;
-      margin-bottom: 20px;
-      color: var(--mars-red);
-    }
-
-    .hero h1 span {
-      color: var(--text-primary);
-    }
-
-    .hero p {
-      max-width: 640px;
-      margin: 0 auto 40px;
-      font-size: 1.2rem;
-      color: var(--text-secondary);
-      line-height: 1.7;
-    }
-
-    .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-
-    /* ===== Hall of Fame Banner ===== */
-    .hof-banner {
-      background: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(179, 36, 22, 0.06) 100%);
-      border: 1px solid rgba(212, 175, 55, 0.2);
-      border-radius: 16px;
-      padding: 32px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 24px;
-      margin: 40px auto;
-      max-width: 800px;
-      transition: border-color 0.3s;
-    }
-
-    .hof-banner:hover {
-      border-color: rgba(212, 175, 55, 0.4);
-    }
-
-    .hof-banner img {
-      height: 64px;
-      width: auto;
-      filter: brightness(1.1);
-    }
-
-    .hof-text {
-      text-align: left;
-    }
-
-    .hof-text h3 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      color: #d4af37;
-      margin-bottom: 4px;
-    }
-
-    .hof-text p {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      margin: 0;
-      line-height: 1.5;
-    }
-
-    .hof-year {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 2rem;
-      font-weight: 900;
-      color: #d4af37;
-      opacity: 0.7;
-      letter-spacing: 0.04em;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 14px 28px;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.2s ease;
-      cursor: pointer;
-      border: none;
-    }
-
-    .btn-accent {
-      background: var(--mars-red);
-      color: white;
-      box-shadow: 0 4px 20px rgba(179, 36, 22, 0.3);
-      font-family: 'Orbitron', sans-serif;
-      font-size: 0.85rem;
-      letter-spacing: 0.04em;
-    }
-
-    .btn-accent:hover {
-      background: var(--mars-red-light);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(179, 36, 22, 0.4);
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--text-primary);
-      border: 1px solid var(--border);
-    }
-
-    .btn-outline:hover {
-      border-color: var(--mars-red);
-      background: var(--mars-red-glow);
-    }
-
-    /* ===== Stats Bar ===== */
-    .stats {
-      display: flex;
-      justify-content: center;
-      gap: 48px;
-      padding: 40px 0;
-      flex-wrap: wrap;
-    }
-
-    .stat { text-align: center; }
-
-    .stat-value {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 2.5rem;
-      font-weight: 800;
-      color: var(--mars-red);
-      letter-spacing: 0.02em;
-    }
-
-    .stat-label {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-top: 4px;
-    }
-
-    /* ===== Section ===== */
-    section { padding: 80px 0; }
-
-    .section-header {
-      text-align: center;
-      margin-bottom: 60px;
-    }
-
-    .section-header h2 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 2.2rem;
-      font-weight: 800;
-      letter-spacing: 0.02em;
-      margin-bottom: 12px;
-    }
-
-    .section-header p {
-      color: var(--text-secondary);
-      font-size: 1.1rem;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    /* ===== Feature Grid ===== */
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-      gap: 24px;
-    }
-
-    .feature-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 32px;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .feature-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
-      height: 3px;
-      background: linear-gradient(90deg, var(--mars-red), var(--mars-red-light));
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
-    .feature-card:hover {
-      border-color: var(--mars-red);
-      transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-    }
-
-    .feature-card:hover::before { opacity: 1; }
-
-    .feature-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      margin-bottom: 20px;
-    }
-
-    .feature-card h3 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1rem;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      margin-bottom: 10px;
-    }
-
-    .feature-card p {
-      color: var(--text-secondary);
-      font-size: 0.95rem;
-      line-height: 1.6;
-    }
-
-    /* Icon background colors */
-    .icon-perf { background: rgba(179, 36, 22, 0.15); }
-    .icon-sim { background: rgba(156, 123, 204, 0.15); }
-    .icon-log { background: rgba(107, 163, 214, 0.15); }
-    .icon-fault { background: rgba(179, 36, 22, 0.25); }
-    .icon-shot { background: rgba(212, 160, 23, 0.15); }
-    .icon-test { background: rgba(76, 175, 80, 0.15); }
-
-    /* ===== Coverage Section ===== */
-    .coverage-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
-    }
-
-    .coverage-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 28px;
-    }
-
-    .coverage-card h4 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .progress-bar {
-      width: 100%;
-      height: 8px;
-      background: var(--bg-primary);
-      border-radius: 4px;
-      overflow: hidden;
-      margin-bottom: 8px;
-    }
-
-    .progress-fill {
-      height: 100%;
-      border-radius: 4px;
-      transition: width 1s ease;
-    }
-
-    .coverage-meta {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    /* ===== Architecture Section ===== */
-    .arch-diagram {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 48px;
-      text-align: center;
-      overflow-x: auto;
-    }
-
-    .arch-diagram pre {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85rem;
-      color: var(--text-primary);
-      line-height: 1.8;
-      display: inline-block;
-      text-align: left;
-    }
-
-    /* ===== Package Table ===== */
-    .package-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: var(--bg-card);
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-    }
-
-    .package-table th {
-      background: var(--bg-secondary);
-      padding: 16px 20px;
-      text-align: left;
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 600;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
-      border-bottom: 2px solid var(--mars-red);
-    }
-
-    .package-table td {
-      padding: 14px 20px;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.95rem;
-    }
-
-    .package-table tr:last-child td { border-bottom: none; }
-
-    .package-table tr:hover td { background: var(--mars-red-glow); }
-
-    .package-table code {
-      background: var(--bg-primary);
-      padding: 3px 8px;
-      border-radius: 4px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85rem;
-      color: var(--mars-red-light);
-    }
-
-    /* ===== Partner Badges ===== */
-    .partner-grid {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    .partner-badge {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      background: rgba(255,255,255,0.03);
-      padding: 10px 18px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      color: var(--text-primary);
-      font-family: 'Orbitron', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 600;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      backdrop-filter: blur(10px);
-    }
-
-    .partner-badge:hover {
-      background: rgba(179, 36, 22, 0.08);
-      border-color: var(--mars-red);
-      transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-    }
-
-    .partner-logo {
-      height: 24px;
-      width: auto;
-      filter: grayscale(100%) opacity(0.7);
-      transition: all 0.3s ease;
-    }
-
-    .partner-badge:hover .partner-logo {
-      filter: grayscale(0%) opacity(1);
-    }
-
-    /* ===== Footer ===== */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 48px 0;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
-
-    footer a { color: var(--mars-red); text-decoration: none; }
-    footer a:hover { color: var(--mars-red-light); text-decoration: underline; }
-
-    .footer-links {
-      display: flex;
-      justify-content: center;
-      gap: 32px;
-      margin-bottom: 16px;
-      list-style: none;
-    }
-
-    /* ===== Responsive ===== */
-    @media (max-width: 768px) {
-      .nav-links { gap: 16px; }
-      .stats { gap: 24px; }
-      .stat-value { font-size: 2rem; }
-      .hero { padding: 80px 0 60px; }
-      .feature-grid { grid-template-columns: 1fr; }
-    }
-
-    /* ===== Search Bar ===== */
-    .search-container {
-      position: relative;
-      margin-right: 16px;
-    }
-
-    .search-input {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border);
-      color: var(--text-primary);
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85rem;
-      width: 240px;
-      transition: all 0.2s;
-    }
-
-    .search-input:focus {
-      outline: none;
-      border-color: var(--mars-red);
-      background: rgba(179, 36, 22, 0.05);
-      width: 280px;
-    }
-
-    .search-results {
-      display: none;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      width: 100%;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      margin-top: 8px;
-      list-style: none;
-      z-index: 100;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-      max-height: 300px;
-      overflow-y: auto;
-    }
-
-    .search-results li a {
-      display: block;
-      padding: 10px 16px;
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-size: 0.85rem;
-      transition: background 0.2s, color 0.2s;
-    }
-
-    .search-results li a:hover {
-      background: var(--mars-red-glow);
-      color: var(--mars-red-light);
-    }
-  </style>
-  <!-- Google tag (gtag.js) Placeholder: Replace G-XXXXXXXXXX with your actual GA4 Measurement ID -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-XXXXXXXXXX');
-  </script>
+  <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
-<div class="stars"></div>
+<div id="header-placeholder"></div>
 
-<nav>
-  <div class="container">
-    <a href="index.html" class="nav-brand">
-      <img src="assets/mars-logo.png" alt="MARS Logo">
-      <span class="nav-logo">MARS<span>Lib</span></span>
-    </a>
-    <ul class="nav-links">
-      <li>
-        <div class="search-container">
-          <input type="text" id="search-input" class="search-input" placeholder="Quick search..." autocomplete="off">
-          <ul id="search-results" class="search-results"></ul>
-        </div>
-      </li>
-      <li><a href="standards.html">Standards</a></li>
-      <li><a href="tutorials.html">Tutorials</a></li>
-      <li><a href="#features">Features</a></li>
-      <li><a href="#architecture">Architecture</a></li>
-      <li><a href="#packages">Packages</a></li>
-      <li><a href="#coverage">Testing</a></li>
-      <li><a href="javadoc/index.html" class="btn-primary">API DOCS &rarr;</a></li>
-    </ul>
-  </div>
-</nav>
 
 <!-- Hero -->
 <section class="hero">
@@ -1060,74 +325,92 @@
     </div>
     <div class="feature-grid">
       <a href="tutorials.html" style="text-decoration: none; color: inherit;">
-        <div class="feature-card" style="border: 1px solid var(--ai-cyan);">
-          <div class="feature-icon icon-sim">🎓</div>
+        <div class="feature-card" style="border: 1px solid var(--mars-red);">
+          <div class="feature-icon">
+            <img src="assets/mars-logo.png" alt="MARSLib">
+          </div>
           <h3>MARSLIB TUTORIALS</h3>
           <p>Interactive guides covering Swerve kinematics, zero-allocation structures, power shedding, and collision-safe state machines.</p>
-          <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--ai-cyan); letter-spacing: 0.06em;">INTERACTIVE LEARNING →</span>
+          <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--mars-red-light); letter-spacing: 0.06em;">INTERACTIVE LEARNING →</span>
         </div>
       </a>
       <a href="https://docs.advantagekit.org" target="_blank" style="text-decoration: none; color: inherit;">
         <div class="feature-card">
-          <div class="feature-icon icon-log">📘</div>
+          <div class="feature-icon">
+            <img src="assets/logos/advantagekit.png" alt="AdvantageKit">
+          </div>
           <h3>ADVANTAGEKIT DOCS</h3>
-          <p>Official AdvantageKit documentation — IO layer patterns, deterministic log replay, recording inputs/outputs, and template projects.</p>
+          <p>Official AdvantageKit documentation — IO layer patterns, deterministic log replay, and recording inputs/outputs.</p>
           <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--blue); letter-spacing: 0.06em;">CORE FRAMEWORK →</span>
         </div>
       </a>
       <a href="https://docs.advantagescope.org" target="_blank" style="text-decoration: none; color: inherit;">
         <div class="feature-card">
-          <div class="feature-icon icon-sim">📊</div>
+          <div class="feature-icon">
+            <img src="assets/logos/advantagescope.png" alt="AdvantageScope">
+          </div>
           <h3>ADVANTAGESCOPE</h3>
-          <p>Robot telemetry visualization — 3D field view, mechanism editors, joystick overlays, and log analysis. Essential for debugging autonomous paths.</p>
+          <p>Robot telemetry visualization — 3D field view, mechanism editors, joystick overlays, and log analysis.</p>
           <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--purple); letter-spacing: 0.06em;">TELEMETRY →</span>
         </div>
       </a>
       <a href="https://docs.wpilib.org/en/2025/" target="_blank" style="text-decoration: none; color: inherit;">
         <div class="feature-card">
-          <div class="feature-icon icon-test">📚</div>
+          <div class="feature-icon">
+            <img src="assets/logos/wpilib.svg" alt="WPILib">
+          </div>
           <h3>WPILIB DOCS</h3>
-          <p>The official FRC programming guide — command-based architecture, hardware APIs, simulation, networking, and deployment to the roboRIO.</p>
+          <p>The official FRC programming guide — command-based architecture, hardware APIs, and simulation.</p>
           <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--green); letter-spacing: 0.06em;">FRC FOUNDATION →</span>
         </div>
       </a>
       <a href="https://pathplanner.dev/home.html" target="_blank" style="text-decoration: none; color: inherit;">
         <div class="feature-card">
-          <div class="feature-icon icon-shot">🗺️</div>
+          <div class="feature-icon">
+            <img src="https://raw.githubusercontent.com/mjansen4857/pathplanner/main/images/icon.png" alt="PathPlanner">
+          </div>
           <h3>PATHPLANNER</h3>
-          <p>Path planning GUI and library — create autonomous trajectories, configure holonomic drive controllers, and build auto routines with named commands.</p>
+          <p>Path planning GUI and library — create autonomous trajectories and build auto routines with named commands.</p>
           <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--yellow); letter-spacing: 0.06em;">AUTONOMOUS →</span>
         </div>
       </a>
       <a href="https://v6.docs.ctr-electronics.com/" target="_blank" style="text-decoration: none; color: inherit;">
         <div class="feature-card">
-          <div class="feature-icon icon-perf">⚙️</div>
+          <div class="feature-icon">
+            <img src="assets/logos/ctre.png" alt="CTRE">
+          </div>
           <h3>CTRE PHOENIX 6</h3>
-          <p>TalonFX, CANcoder, and Pigeon2 documentation — motion control, signal API, device configuration, and high-frequency CAN FD.</p>
+          <p>TalonFX, CANcoder, and Pigeon2 documentation — motion control, signal API, and high-frequency CAN FD.</p>
           <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--mars-red-light); letter-spacing: 0.06em;">HARDWARE →</span>
         </div>
       </a>
       <a href="https://docs.revrobotics.com/brushless/revlib" target="_blank" style="text-decoration: none; color: inherit;">
         <div class="feature-card">
-          <div class="feature-icon icon-fault">🔧</div>
+          <div class="feature-icon">
+            <img src="assets/logos/rev.png" alt="REV">
+          </div>
           <h3>REV ROBOTICS</h3>
-          <p>REVLib documentation for SPARK MAX/Flex motor controllers, through-bore encoders, and the REV Control Hub ecosystem.</p>
+          <p>REVLib documentation for SPARK MAX/Flex motor controllers and the REV Control Hub ecosystem.</p>
           <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--mars-red-light); letter-spacing: 0.06em;">HARDWARE →</span>
         </div>
       </a>
       <a href="https://docs.limelightvision.io/" target="_blank" style="text-decoration: none; color: inherit;">
         <div class="feature-card">
-          <div class="feature-icon icon-sim">📷</div>
+          <div class="feature-icon">
+            <img src="assets/logos/limelight.png" alt="Limelight">
+          </div>
           <h3>LIMELIGHT</h3>
-          <p>Limelight smart camera documentation — AprilTag pipelines, MegaTag localization, neural network object detection, and REST/NetworkTables APIs.</p>
+          <p>Limelight smart camera documentation — AprilTag pipelines, MegaTag localization, and neural network detection.</p>
           <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--green); letter-spacing: 0.06em;">VISION →</span>
         </div>
       </a>
       <a href="https://docs.photonvision.org/" target="_blank" style="text-decoration: none; color: inherit;">
         <div class="feature-card">
-          <div class="feature-icon icon-test">🎯</div>
+          <div class="feature-icon">
+            <img src="assets/logos/photonvision.png" alt="PhotonVision">
+          </div>
           <h3>PHOTONVISION</h3>
-          <p>Open-source vision processing — AprilTag pose estimation, multi-camera support, hardware calibration, and PhotonLib integration for Java/C++.</p>
+          <p>Open-source vision processing — AprilTag pose estimation, hardware calibration, and PhotonLib integration.</p>
           <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--green); letter-spacing: 0.06em;">VISION →</span>
         </div>
       </a>
@@ -1156,7 +439,7 @@
         Dyn4j
       </a>
       <a href="https://pathplanner.dev/" target="_blank" class="partner-badge">
-        <img src="assets/logos/pathplanner.png" alt="PathPlanner" class="partner-logo">
+        <img src="https://raw.githubusercontent.com/mjansen4857/pathplanner/main/images/icon.png" alt="PathPlanner" class="partner-logo">
         PathPlanner
       </a>
       <a href="https://photonvision.org/" target="_blank" class="partner-badge">
@@ -1168,11 +451,11 @@
         CTRE
       </a>
       <a href="https://www.revrobotics.com/" target="_blank" class="partner-badge">
-        <img src="assets/logos/rev.svg" alt="REV" class="partner-logo">
+        <img src="assets/logos/rev.png" alt="REV" class="partner-logo">
         REV
       </a>
       <a href="https://shenzhen-robotics-alliance.github.io/maple-sim/rebuilt/" target="_blank" class="partner-badge">
-        <img src="assets/logos/maple-sim.png" alt="MapleSim" class="partner-logo">
+        <img src="assets/logos/maplesim.png" alt="MapleSim" class="partner-logo">
         MapleSim
       </a>
     </div>
@@ -1180,23 +463,7 @@
 </section>
 
 <!-- Footer -->
-<footer>
-  <div class="container">
-    <div style="margin-bottom: 20px;">
-      <img src="assets/mars-logo.png" alt="MARS" style="height: 60px; border-radius: 50%; opacity: 0.8;">
-    </div>
-    <ul class="footer-links">
-      <li><a href="javadoc/index.html">API Docs</a></li>
-      <li><a href="https://github.com/MARSProgramming/MARSLib">GitHub</a></li>
-      <li><a href="https://www.thebluealliance.com/team/2614">TBA Profile</a></li>
-      <li><a href="https://marsfirst.org">marsfirst.org</a></li>
-      <li><a href="https://www.firsthalloffame.org">Hall of Fame</a></li>
-      <li><a href="CONTROLLER_MAPPINGS.html">Controller Mappings</a></li>
-    </ul>
-    <p>&copy; 2026 Mountaineer Area RoboticS &mdash; FRC Team 2614 &mdash; FIRST Hall of Fame Class of 2017</p>
-    <p style="margin-top: 8px; font-size: 0.8rem;">Built with AdvantageKit, Dyn4j, and PathPlanner.</p>
-  </div>
-</footer>
+<div id="footer-placeholder"></div>
 
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
@@ -1206,6 +473,7 @@
     fontFamily: 'Orbitron'
   });
 </script>
+<script src="assets/js/common.js"></script>
 <script src="assets/search.js"></script>
 </body>
 </html>
