@@ -18,14 +18,14 @@ function injectHeader() {
       <!-- LEFT: Brand & Links -->
       <div style="display: flex; align-items: center; gap: 30px;">
         <a href="index.html" class="nav-brand">
-          <img src="media/team_logo.png" alt="MARS Logo">
+          <img src="assets/mars-logo.png" alt="MARS Logo">
           <div class="nav-logo">MARS<span>Lib</span></div>
         </a>
-        <ul class="nav-links" style="margin: 0; padding: 0;">
-          <li><a href="index.html" class="nav-link-text">Home</a></li>
-          <li><a href="tutorials.html" class="nav-link-text">Tutorials</a></li>
-          <li><a href="standards.html" class="nav-link-text">Standards</a></li>
-        </ul>
+        <div class="nav-links" style="margin: 0; padding: 0;">
+          <a href="index.html" class="nav-link-text">Home</a>
+          <a href="tutorials.html" class="nav-link-text">Tutorials</a>
+          <a href="standards.html" class="nav-link-text">Standards</a>
+        </div>
       </div>
 
       <!-- CENTER: Search -->
