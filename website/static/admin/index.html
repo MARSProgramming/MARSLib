@@ -8,5 +8,51 @@
   <body>
     <!-- Sveltia CMS Script -->
     <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
+
+    <script>
+      // Docusaurus Custom Admonition Widget
+      CMS.registerEditorComponent({
+        id: "admonition",
+        label: "Callout / Admonition",
+        fields: [
+          { name: 'type', label: 'Type', widget: 'select', options: ['note', 'tip', 'info', 'warning', 'danger'] },
+          { name: 'title', label: 'Title (Optional)', widget: 'string', required: false },
+          { name: 'body', label: 'Body', widget: 'markdown' }
+        ],
+        pattern: /^:::([A-Za-z]+)(?:\s+(.*))?\n([\s\S]*?)\n:::$/m,
+        fromBlock: function(match) {
+          return {
+            type: match[1],
+            title: match[2],
+            body: match[3]
+          };
+        },
+        toBlock: function(obj) {
+          return `:::${obj.type || 'info'}${obj.title ? ` ${obj.title}` : ''}\n${obj.body}\n:::`;
+        },
+        toPreview: function(obj) {
+          const colors = { note: '#f5f6f7', tip: '#00a400', info: '#54c7ec', warning: '#ffba00', danger: '#fa383e' };
+          return `<div style="border-left: 5px solid ${colors[obj.type] || '#54c7ec'}; padding: 15px; margin: 15px 0; background: #f9f9f9;">
+            <strong>${obj.title || obj.type.toUpperCase()}</strong><br/>
+            ${obj.body}
+          </div>`;
+        }
+      });
+      
+      // Docusaurus PhysicsSim Component
+      CMS.registerEditorComponent({
+        id: "physicssim",
+        label: "Physics Simulator",
+        fields: [
+          { name: 'dummy', label: 'Info', widget: 'text', default: 'This renders the interactive physics sandbox.', required: false }
+        ],
+        pattern: /^<PhysicsSim \/>$/m,
+        fromBlock: function(match) { return {}; },
+        toBlock: function(obj) { return `<PhysicsSim />`; },
+        toPreview: function(obj) {
+          return `<div style="padding: 20px; background: #e0e0e0; text-align: center; border: 2px dashed #999;">🎮 Interactive Physics Simulator Placeholder</div>`;
+        }
+      });
+    </script>
   </body>
 </html>

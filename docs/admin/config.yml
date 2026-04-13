@@ -12,9 +12,9 @@ public_folder: "/img"
 # logo_url: "https://your-logo-url-here.png"
 
 collections:
-  - name: "docs"
-    label: "Documentation"
-    folder: "website/docs"
+  - name: "setup_tutorials"
+    label: "🚀 Setup & Install"
+    folder: "website/docs/tutorials/setup"
     create: true
     extension: "mdx"
     format: "frontmatter"
@@ -24,9 +24,33 @@ collections:
       - { label: "ID", name: "id", widget: "string", required: false }
       - { label: "Body", name: "body", widget: "markdown" }
 
-  - name: "tutorials"
-    label: "Tutorials (Nested)"
-    folder: "website/docs/tutorials"
+  - name: "framework_tutorials"
+    label: "🧠 Framework Features"
+    folder: "website/docs/tutorials/framework"
+    create: true
+    extension: "mdx"
+    format: "frontmatter"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Sidebar Position", name: "sidebar_position", widget: "number", required: false }
+      - { label: "ID", name: "id", widget: "string", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "elite_tutorials"
+    label: "🏆 Elite Systems"
+    folder: "website/docs/tutorials/elite"
+    create: true
+    extension: "mdx"
+    format: "frontmatter"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Sidebar Position", name: "sidebar_position", widget: "number", required: false }
+      - { label: "ID", name: "id", widget: "string", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "zero_to_hero"
+    label: "🐣 Zero to Hero"
+    folder: "website/docs/tutorials/zero-to-hero"
     create: true
     extension: "mdx"
     format: "frontmatter"
