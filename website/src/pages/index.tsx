@@ -73,7 +73,7 @@ export default function Home() {
               </a>
 
               {/* Card 3: Mechanism Abstraction */}
-              <a href="/MARSLib/docs/tutorials/framework/hardware-abstraction" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <a href="/MARSLib/docs/tutorials/framework/io-layer" style={{ textDecoration: 'none', color: 'inherit' }}>
                 <div className="feature-card" style={{ borderTop: '4px solid var(--orange)' }}>
                   <h3>🦾 Mechanism Abstraction</h3>
                   <p>Implement `RotaryMechanismIO` and `LinearMechanismIO` to dramatically speed up standard mechanism development.</p>
@@ -97,7 +97,7 @@ export default function Home() {
               </a>
               
               {/* Card 6: AI Agents */}
-              <a href="/MARSLib/docs/agent-skills" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <a href="/MARSLib/docs/agent-skills/intro" style={{ textDecoration: 'none', color: 'inherit' }}>
                 <div className="feature-card" style={{ borderTop: '4px solid var(--ai-cyan)' }}>
                   <h3>🤖 AI Agents & Skills</h3>
                   <p>Integrate `.agent` Markdown skills into your IDE to autonomously scaffold subsystems, fix WPILib PID errors, and write unit tests.</p>
