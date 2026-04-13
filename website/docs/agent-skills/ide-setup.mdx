@@ -27,14 +27,11 @@ The system will automatically `view_file` on `SKILL.md` inside that directory an
 
 ## 2. Cursor
 
-Cursor features a native **Rules for AI** system (`.cursorrules`) that can map external markdown files as universal context.
+Cursor features a native **Rules for AI** system (`.cursorrules`). MARSLib ships with an optimized `.cursorrules` file pre-bundled in the repository root.
 
 1. Open your MARSLib project in Cursor.
-2. Press `Ctrl + L` (or `Cmd + L`) to open the Cursor Chat.
-3. Use the `@Files` or `@Folders` targeting system.
-4. Type `@.agents/skills/marslib-swerve` into the context window before asking a kinematics question.
-
-**Pro-Tip:** You can compile multiple skills into a master `.cursorrules` file to permanently enforce MARS programming conventions on every chat window automatically.
+2. The AI will automatically index the `SKILL.md` documents thanks to our `.cursorrules` injection logic.
+3. For specific inquiries, you can still type `@.agents/skills/marslib-swerve` into the context window to force priority kinematics.
 
 ---
 
@@ -52,12 +49,11 @@ Anthropic's `claude-code` CLI is excellent for headless CI/CD operations or rapi
 
 ## 4. GitHub Copilot 
 
-GitHub Copilot Chat inside VS Code now supports workspace mapping and file referencing.
+GitHub Copilot Chat inside VS Code naturally parses the `.github/copilot-instructions.md` file! We have pre-configured this file in the MARSLib root directory.
 
-1. Open the **Copilot Chat Sidebar**.
-2. Start your prompt with `#file` and point it at the relevant skill:
-   > `#file .agents/skills/marslib-control-theory/SKILL.md Generate a feedforward voltage calculation for my Arm using this specific MARSLib convention.`
-3. Ensure you have the `github.copilot.advanced` settings enabled for local workspace parsing if you want Copilot to index the entire skills array automatically.
+1. Simply open the **Copilot Chat Sidebar**.
+2. Mention your goal (e.g. "Build an elevator subsystem"). Copilot will automatically read the `.github/copilot-instructions.md` routing table, locate `.agents/skills/marslib-mechanisms`, and begin writing code adhering to the zero-allocation templates!
+3. Ensure you have the `github.copilot.advanced` settings enabled for local workspace parsing if your client isn't automatically indexing the instruction file natively.
 
 ---
 
