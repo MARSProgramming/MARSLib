@@ -29,14 +29,11 @@ Tutorials should break complex topics down elegantly:
 
 ## 4. The Agentic Skill Architecture
 When documenting the framework itself, ensure users understand that MARSLib is co-developed alongside Agentic AI. Refer to `.agents/skills` as the "Agentic Skill Architecture" which enforces FRC best practices programmatically.
-## 5. Docusaurus React Migrations & Simulators
-When porting or authoring interactive simulators in the Docusaurus React architecture:
-- **Canvas Operations**: Always encapsulate DOM manipulations (<canvas>) inside React .tsx components within the website/src/components/ directory.
-- **Hook Architecture**: Use useRef for mutable animation state (score, loop timers) and useEffect with equestAnimationFrame and cleanup logic to prevent React hydration or unmount loop memory leaks.
-- **MDX Formatting Strictness**: When injecting React component tags like <SotmSim /> into .mdx files, you must ensure:
-  1. The import statement rests at the parent un-indented block level.
-  2. A blank line separates the import and the component tag to prevent the Docusaurus Acorn MDX parser from crashing.
-  3. External static paths like `/javadoc/index.html` MUST use Docusaurus explicit bypass routing (e.g. `href: 'pathname:///MARSLib/javadoc/index.html'`) to avoid React Router SPA interception generating 404s.
+## 5. Astro "Islands" Migrations & Simulators
+When porting or authoring interactive simulators in the Astro Starlight architecture:
+- **Canvas Operations**: Always encapsulate DOM manipulations (<canvas>) inside React .tsx components within the `src/components/` directory.
+- **Client Hydration**: When injecting React component tags like `<SotmSim client:visible />` into `.mdx` files, you MUST use an Astro client directive (`client:load`, `client:visible`, or `client:idle`) to ensure the interactive logic executes, as Astro ships zero JavaScript by default.
+- **Hybrid Deployment**: Rely on Astro's `hybrid` output strictly tied to the `@astrojs/cloudflare` serverless edge adapter. Any Keystatic components like `[...params].ts` will organically handle oauth routes without static bypass hacks.
 
-## 6. Intro.mdx Navigation Synchronization
-Whenever you create, delete, or rename tutorial `.mdx` files or structural sidebar categories inside the `tutorials/` or `agent-skills/` documentation folders, you **must natively update `docs/intro.mdx`** to ensure the visual feature card grids matches the Docusaurus sidebar mapping perfectly. Missing this step renders tutorial links orphaned or broken.
+## 6. Keystatic Navigation Synchronization
+Whenever you author new tutorial `.mdx` files inside `src/content/docs/tutorials/*`, do not generate raw files. Use Astro Starlight's sidebar autogeneration by ensuring `sidebar: { order: X }` is populated in the frontmatter, and Keystatic will automatically map it to the Cloudflare UI.
