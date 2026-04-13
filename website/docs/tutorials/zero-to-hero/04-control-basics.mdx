@@ -24,6 +24,10 @@ title: "4. Control Theory Crash Course"
     <p>If you set your <strong>kP</strong> arbitrarily high, the motor will push brutally hard even for a small error. It will violently fly past the target, realize it overshot, and violently fly backwards. This causes horrific mechanical "Oscillation" and will rapidly shake your physical robot to pieces.</p>
   </div>
 
+import ElevatorPidSim from '@site/src/components/ElevatorPidSim';
+
+<ElevatorPidSim />
+
   <h2>2. FeedForward (FF)</h2>
   <p>PID is reactive. It only applies voltage if there is an existing Error. Why is this bad? If an elevator needs 1 Volt just to hold its heavy weight against gravity, a pure PID loop will droop down, generate Error, push up, reach the target, cut power, droop down... bouncing forever!</p>
   <p>Instead, we proactively "Feed Forward" physics math into the motor before PID even calculates:</p>
@@ -38,7 +42,7 @@ title: "4. Control Theory Crash Course"
 
   <p><strong>This is where MARSLib steps in.</strong> MARSLib abstracts these mathematical concepts. You write your control loops and tune your `kP` values, but MARSLib intercepts the voltage and pipes it into a highly-accurate virtual physics engine (Dyn4j / AdvantageScope) instead. You can tune your mechanisms, watch them oscillate or break gracefully on your laptop screen, and perfect your constants <em>before</em> we ever place the robot on the FRC carpet.</p>
 
-  <p>Ready to leverage the framework? Start the <a href="/MARSLib/docs/tutorials/setup/getting-started">MARSLib Setup Guide</a>.</p>
+  <p>Ready to leverage the framework? Start the <a href="/MARSLib/docs/tutorials/setup/getting-started">MARSLib Setup Guide</a>, or dive into complex state space modeling and Continuous SysId in our <a href="/MARSLib/docs/tutorials/framework/control-theory">Advanced Control Theory Architecture guide</a>.</p>
 
   <hr style={{ margin: '40px 0' }} />
   <h2>📖 Further Reading & External Resources</h2>
