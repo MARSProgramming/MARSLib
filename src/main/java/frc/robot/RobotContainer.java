@@ -1,6 +1,5 @@
 package frc.robot;
 
-import com.marslib.hmi.LEDIOAddressable;
 import com.marslib.hmi.LEDManager;
 import com.marslib.mechanisms.FlywheelIO;
 import com.marslib.mechanisms.FlywheelIOSim;
@@ -396,7 +395,10 @@ public class RobotContainer {
                   "Feeder",
                   com.marslib.util.ReplayIOFactory.createProxy(FlywheelIO.class),
                   powerManager);
-          ledManager = new LEDManager(new LEDIOAddressable(0, LEDConstants.LENGTH), powerManager);
+          ledManager =
+              new LEDManager(
+                  com.marslib.util.ReplayIOFactory.createProxy(com.marslib.hmi.LEDIO.class),
+                  powerManager);
 
           vision =
               new MARSVision(swerveDrive, java.util.List.of(), java.util.List.of(), visionConfig);

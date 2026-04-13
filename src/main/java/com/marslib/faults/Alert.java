@@ -6,7 +6,6 @@
  */
 package com.marslib.faults;
 
-import edu.wpi.first.wpilibj.Timer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +49,7 @@ public class Alert {
    */
   public void set(boolean active) {
     if (active && !this.active) {
-      activeStartTime = Timer.getFPGATimestamp();
+      activeStartTime = Logger.getTimestamp() / 1e6;
       if (type == AlertType.CRITICAL) {
         MARSFaultManager.registerCriticalFault();
       }

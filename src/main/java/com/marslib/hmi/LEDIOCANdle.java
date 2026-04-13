@@ -9,7 +9,7 @@ package com.marslib.hmi;
 import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.RGBWColor;
-import edu.wpi.first.wpilibj.Timer;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * LED IO layer using the CTRE CANdle (Connected via CAN bus). The CANdle supports addressable LED
@@ -65,7 +65,7 @@ public class LEDIOCANdle implements LEDIO {
     switch (currentState) {
       case CRITICAL_FAULT:
         // Flash red at ~5Hz by toggling based on FPGA timestamp
-        if (((int) (Timer.getFPGATimestamp() * 10)) % 2 == 0) {
+        if (((int) (Logger.getTimestamp() / 100000)) % 2 == 0) {
           candle.setControl(solidColorRequest.withColor(new RGBWColor(255, 0, 0)));
         } else {
           candle.setControl(solidColorRequest.withColor(new RGBWColor(0, 0, 0)));

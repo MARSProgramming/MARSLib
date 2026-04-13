@@ -8,7 +8,7 @@ package com.marslib.hmi;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.Timer;
+import org.littletonrobotics.junction.Logger;
 
 /** Hardware IO implementation for driving WS2812B Addressable LEDs via a PWM port. */
 public class LEDIOAddressable implements LEDIO {
@@ -63,7 +63,7 @@ public class LEDIOAddressable implements LEDIO {
   }
 
   private void flashRed() {
-    if (((int) (Timer.getFPGATimestamp() * 10)) % 2 == 0) {
+    if (((int) (Logger.getTimestamp() / 100000)) % 2 == 0) {
       setAll(255, 0, 0);
     } else {
       setAll(0, 0, 0);
