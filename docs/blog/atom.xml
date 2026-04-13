@@ -6,7 +6,7 @@
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://MARSProgramming.github.io/MARSLib/blog"/>
     <subtitle>MARSLib Blog</subtitle>
-    <icon>https://MARSProgramming.github.io/MARSLib/img/favicon.ico</icon>
+    <icon>https://MARSProgramming.github.io/MARSLib/assets/mars-logo.png</icon>
     <entry>
         <title type="html"><![CDATA[Welcome]]></title>
         <id>https://MARSProgramming.github.io/MARSLib/blog/welcome</id>
