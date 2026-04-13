@@ -8,11 +8,11 @@ title: "Vision Fusion & Filtration"
 
 
 
-<main class="container" >
-  <div >
 
-    <h1>Vision Fusion & Filtration</h1>
-  </div>
+  
+
+    
+  
 
   <p>In the FRC 2026: <strong>REBUILT</strong> game, absolute field localization is critical. MARSLib's <code>MARSVision</code> subsystem combines data from multiple cameras and strictly filters out "hallucinations" using techniques pioneered by elite teams. We utilize <strong><a href="https://docs.wpilib.org/en/stable/docs/software/vision-processing/apriltag/apriltag-intro.html" target="_blank">AprilTags</a></strong> as the primary landmarks for global pose estimation.</p>
 
@@ -40,7 +40,7 @@ import VisionSim from '@site/src/components/VisionSim';
   <div class="callout">
     <h4>MegaTag / Multi-Tag Boost</h4>
     <p>When multiple AprilTags are visible, geometric ambiguity essentially drops to zero. Our code automatically scales down standard deviations by <code>x0.1</code>, dramatically tightening the Pose Estimator's trust.</p>
-  </div>
+  
 
   <h2>3. Simulating Imperfection</h2>
   <p>To ensure tuning works globally, the <code>AprilTagVisionIOSim</code> in MARSLib purposefully injects:</p>
@@ -56,4 +56,4 @@ import VisionSim from '@site/src/components/VisionSim';
     <li><a href="https://www.youtube.com/watch?v=_eP941oXGow">Limelight MegaTag 2.0 Breakdown</a> - Understanding how FRC 1690 style IMU yaw-seeding rejects rapid AprilTag noise variations.</li>
     <li><a href="https://docs.photonvision.org/en/latest/">PhotonVision Hardware Guide</a> - Best practices for illuminating targets globally.</li>
   </ul>
-  </main>
+  

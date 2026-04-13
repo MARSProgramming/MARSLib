@@ -8,11 +8,11 @@ title: "Automated Log Uploader"
 
 
 
-<main class="container" >
-  <div >
 
-    <h1>Automated Log Uploader</h1>
-  </div>
+  
+
+    
+  
 
   <p>Manually retrieving USB drives from the <a href="https://www.ni.com/en/shop/hardware/products/roborio.html" target="_blank">RoboRIO</a> is tedious. MARSLib introduces the <code>LogUploader</code>, an asynchronous daemon thread that quietly runs in the background. If it detects a tethered internet connection, it automatically pushes all new <a href="https://github.com/Mechanical-Advantage/AdvantageKit" target="_blank">AdvantageKit</a> <code>.wpilog</code> files directly to your team's <a href="https://github.com/" target="_blank">GitHub</a> repository!</p>
 
@@ -42,7 +42,7 @@ public final class LogUploader {
   <div class="callout callout-warning">
     <h4>Robot Security</h4>
     <p>Never hardcode your PAT into Java! The <code>LogUploader</code> explicitly reads the token from a local text file that is ignored by Git.</p>
-  </div>
+  
 
   <h2>4. Deploying the PAT</h2>
   <p>You must place your token inside the RoboRIO's deploy directory. Create a new file locally in your project:</p>
@@ -63,4 +63,4 @@ src/main/deploy/github_pat.txt
     <li><a href="https://github.com/Mechanical-Advantage/AdvantageKit">AdvantageKit Architecture</a> - The core repository governing deterministic replay loops on the RIO.</li>
     <li><a href="https://github.com/Mechanical-Advantage/AdvantageScope">AdvantageScope Documentation</a> - Visualizing 3D logs natively in real-time.</li>
   </ul>
-  </main>
+  

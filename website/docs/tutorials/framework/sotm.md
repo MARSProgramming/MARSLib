@@ -4,11 +4,11 @@ id: sotm
 title: "Shooting On The Move"
 ---
 
-<main class="container" >
-  <div >
 
-    <h1>Shooting On The Move (SOTM)</h1>
-  </div>
+  
+
+    
+  
 
   <p>Stopping the robot to aim is a 2-second penalty on your cycle time. In modern high-level play, the robot must be capable of calculating a solution and firing while traversing the field at 4+ m/s. MARSLib uses a high-fidelity <strong>Iterative Kinematic Solver</strong> to find these solutions in real-time.</p>
 
@@ -18,7 +18,7 @@ title: "Shooting On The Move"
   <div class="callout callout-warning">
       <h4>Relative Frames of Reference</h4>
       <p>The math requires calculating an "Intercept Point." This depends on your Current Robot Velocity, the Game Piece Exit Velocity, and the physical distance to the goal. MARSLib handles these vector transformations automatically using <strong><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/index.html" target="_blank">WPILib Geometry</a></strong>.</p>
-  </div>
+  
 
   <h2>2. Iterative Convergence</h2>
   <p>There is no closed-form algebraic solution for shooting on the move because the ball's travel time depends on the exit angle, and the exit angle depends on the robot's future position. MARSLib solves this using a <strong>3-pass Iterative Solver</strong>:</p>
@@ -39,4 +39,4 @@ title: "Shooting On The Move"
     <li><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/index.html">WPILib: Geometry & Kinematics</a> - Underlying vector and transform math.</li>
     <li><a href="https://www.chiefdelphi.com/t/team-1690-orbit-2024-code-release/464817">1690 Code Release</a> - The definitive implementation of high-accuracy shooter interpolation.</li>
   </ul>
-  </main>
+  

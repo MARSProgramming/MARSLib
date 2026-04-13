@@ -8,11 +8,11 @@ import ElevatorPidSim from '@site/src/components/ElevatorPidSim';
 import FlywheelKvSim from '@site/src/components/FlywheelKvSim';
 import ArmKgSim from '@site/src/components/ArmKgSim';
 
-<main class="container" >
-  <div >
 
-    <h1>Control Theory Mastery</h1>
-  </div>
+  
+
+    
+  
 
   <p>Basic PID loops are reacting to the past. To achieve World Championship fidelity, your mechanisms must predict the future. MARSLib employs advanced control theory algorithms, including <strong>Feedforwards</strong> and <strong>State Space Models</strong>.</p>
 
@@ -76,7 +76,7 @@ motor.setVoltage(ffVoltage + pidVoltage);
   <div class="callout" >
     <h4>Looking for SysId?</h4>
     <p>MARSLib recommends mathematically automating all kS, kV, and kA calculations. If you want to skip manual tuning and let WPILib calculate perfection, check out our dedicated <a href="/MARSLib/docs/tutorials/framework/sysid" >SysId Characterization Tutorial</a>!</p>
-  </div>
+  
 
   <br /><hr /><br />
   <h2>📖 Further Reading & External Resources</h2>
@@ -85,4 +85,4 @@ motor.setVoltage(ffVoltage + pidVoltage);
     <li><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-feedforward.html">WPILib: Introduction to Feedforward</a> - Modeling the physics of your robot mechanisms.</li>
     <li><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-intro.html">WPILib: Introduction to State-Space</a> - Modern control theory using matrix-based state models.</li>
   </ul>
-  </main>
+  

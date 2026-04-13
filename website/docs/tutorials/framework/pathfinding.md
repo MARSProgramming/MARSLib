@@ -6,10 +6,10 @@ title: "Pathfinding & Autonomous"
 
 import AutoSim from '@site/src/components/AutoSim';
 
-<main class="container" >
-  <div >
-    <h1>Pathfinding & Autonomous</h1>
-  </div>
+
+  
+    
+  
 
   <p>To win on Einstein, a robot cannot simply drive straight lines from point A to point B in the autonomous period. The field is littered with obstacles, standard trajectories lack fluidity, and sudden game piece collisions require dynamic recalculations. MARSLib integrates deeply with <strong>PathPlanner</strong> to bring seamless, holistic pathfinding to the FRC field.</p>
 
@@ -36,7 +36,7 @@ import AutoSim from '@site/src/components/AutoSim';
   <div class="callout callout-warning">
     <h4>Avoid On-RIO A* Calculation</h4>
     <p>Calculating an entire field NavGrid requires traversing a massive 2D array graph. Executing this on the core RoboRIO thread can cause devastating loop overruns (exceeding 20ms). Always offload advanced Pathfinding math to the <strong>Driver Station Laptop</strong> or a dedicated coprocessor.</p>
-  </div>
+  
 
   <h2>3. Fusing Vision with Odometry</h2>
   <p>Path execution relies 100% on where the robot *thinks* it is on the field. Without AprilTags, the wheel encoders slowly drift over time. This implies that your Autonomous Splines will gradually shift away from their hardcoded positions as the match progresses.</p>
@@ -55,4 +55,4 @@ import AutoSim from '@site/src/components/AutoSim';
     <li><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/system-identification/index.html">WPILib System Identification (SysId)</a> - Advanced mathematical breakdowns of Quasistatic friction and Dynamic OLS regression curves.</li>
     <li><a href="https://github.com/Team364/BaseFalconSwerve">Team 364 BaseFalconSwerve</a> - The historic FRC architecture that inspired modern template geometries.</li>
   </ul>
-  </main>
+  

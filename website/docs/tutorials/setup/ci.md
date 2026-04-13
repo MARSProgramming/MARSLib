@@ -8,11 +8,11 @@ title: "Intro to CI/CD & Testing"
 
 
 
-<main class="container" >
-  <div >
 
-    <h1>Intro to CI/CD &amp; Testing</h1>
-  </div>
+  
+
+    
+  
 
   <p>If you're new to software engineering, you might think the only way to know if your code works is to put the robot on a carpet, cross your fingers, and hit "Enable". In reality, the professional software industry—and MARSLib—uses a system called <strong>CI/CD</strong> to guarantee our code is safe <em>before</em> we ever touch the physical machine.</p>
 
@@ -43,11 +43,11 @@ title: "Intro to CI/CD & Testing"
   <div class="callout">
     <h4>You are supported!</h4>
     <p>Don't be afraid of the CI failing your code—it's supposed to! A failed CI run isn't a bad grade; it is a vital safety net ensuring you feel confident when deploying your logic to the actual 2614 competition robot.</p>
-  </div>
+  
 
   <br /><hr /><br />
   <h2>📖 Further Reading & External Resources</h2>
   <ul>
     <li><a href="https://docs.wpilib.org/en/stable/">WPILib Official Documentation</a> - The definitive baseline resource.</li>
   </ul>
-  </main>
+  

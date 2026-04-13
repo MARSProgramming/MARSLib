@@ -6,8 +6,8 @@ title: "4. Control Theory Crash Course"
 
 <main class="container">
   <div>
-    <h1>Control Systems Theory</h1>
-  </div>
+    
+  
 
   <p>If you tell an elevator motor, "Go up at 6 Volts," when does it know to stop? If it reaches the target and instantly cuts voltage to zero, gravity will pull the heavy elevator right back down. We need <strong>Closed-Loop Control</strong>.</p>
 
@@ -22,7 +22,7 @@ title: "4. Control Theory Crash Course"
   <div class="callout callout-warning">
     <h4>Overcompensation</h4>
     <p>If you set your <strong>kP</strong> arbitrarily high, the motor will push brutally hard even for a small error. It will violently fly past the target, realize it overshot, and violently fly backwards. This causes horrific mechanical "Oscillation" and will rapidly shake your physical robot to pieces.</p>
-  </div>
+  
 
 import ElevatorPidSim from '@site/src/components/ElevatorPidSim';
 
@@ -52,4 +52,4 @@ import ElevatorPidSim from '@site/src/components/ElevatorPidSim';
     <li><a href="https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/introduction.html">WPILib: Physics Simulation</a> - How to model mechanisms in code.</li>
     <li><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/system-identification/index.html">WPILib System Identification (SysId)</a> - Characterizing your robot's physical constants.</li>
   </ul>
-  </main>
+  

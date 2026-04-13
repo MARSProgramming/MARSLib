@@ -8,11 +8,11 @@ title: "Elite Architecture Mining"
 
 
 
-<main class="container" >
-  <div >
 
-    <h1>Elite Architecture Mining</h1>
-  </div>
+  
+
+    
+  
 
   <p>Every year, Chief Delphi lights up with the source code drops from World Champions like Team <strong><a href="https://github.com/Team1690" target="_blank">1690</a></strong>, <strong><a href="https://github.com/Team254" target="_blank">254</a></strong>, <strong><a href="https://github.com/Mechanical-Advantage" target="_blank">6328</a></strong>, and <strong><a href="https://github.com/SwerveDriveSpecialties" target="_blank">2910</a></strong>. Every year, hundreds of teams attempt to copy-paste their advanced time-of-flight models or trajectory solvers. And every year, their robots break due to architectural bloat and corrupted state variables.</p>
 
@@ -26,7 +26,7 @@ title: "Elite Architecture Mining"
   <div class="callout callout-warning">
     <h4>AI Agent Enforcement</h4>
     <p>MARSLib natively enforces this boundary via the <code>marslib-elite-mining</code> skill. Lead engineers can command the AI to ingest a target repository file, extract the discrete state-space models, and map them purely into our AdvantageKit <code>IO</code> layer paradigm. The AI is forbidden from ingesting the hardware implementations of rival teams.</p>
-  </div>
+  
 
   <h2>2. Telemetry Rewiring</h2>
   <p>Elite teams often use complex Dashboard configurations or raw `SmartDashboard` calls. When bringing this logic into MARSLib, all telemetry calls must be gutted and replaced explicitly with AdvantageKit <code>Logger.recordOutput(...)</code> arrays, preserving determinism.</p>
@@ -40,4 +40,4 @@ title: "Elite Architecture Mining"
     <li><a href="https://docs.wpilib.org/en/stable/">WPILib Official Documentation</a> - The definitive baseline resource.</li>
     <li><a href="https://www.chiefdelphi.com/t/team-1690-orbit-2024-code-release/464817">1690 Code Release (Chief Delphi)</a> - Case study in advanced trajectory interpolation.</li>
   </ul>
-  </main>
+  

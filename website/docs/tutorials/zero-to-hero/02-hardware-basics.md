@@ -6,8 +6,8 @@ title: "2. The Hardware Paradigm"
 
 <main class="container">
   <div>
-    <h1>The Hardware Paradigm</h1>
-  </div>
+    
+  
 
   <p>To program a physical FRC mechanism effectively, you must understand the constraints of the electrical signals traveling exactly underneath your code. In FRC, code doesn't just run; it actively bridges power systems and data packets.</p>
 
@@ -21,7 +21,7 @@ title: "2. The Hardware Paradigm"
     <h4>FMS vs Pit Strategy</h4>
     <p>When you are in the Pit or at home, you configure the Radio to emit a standard 5GHz WiFi signal or you plug an Ethernet/USB-B cord directly into the RoboRIO to deploy code.</p>
     <p>At official competitions, you must use the <strong>Radio Kiosk</strong>. This physically rewrites your Radio's firmware to bind directly to the official <strong>Field Management System (FMS)</strong>. Once hooked to FMS, your laptop connects via Ethernet to a Driver Station pedestal on the field boundary, ensuring extreme security.</p>
-  </div>
+  
 
   <h2>3. The CAN Bus (The Nervous System)</h2>
   <p>The RoboRIO does not directly spin motors. Instead, it "talks" to them using a protocol called <strong><a href="https://docs.wpilib.org/en/stable/docs/software/can-devices/index.html" target="_blank">CAN</a></strong> (Controller Area Network).</p>
@@ -44,4 +44,4 @@ title: "2. The Hardware Paradigm"
     <li><a href="https://www.youtube.com/watch?v=8319J1BEHwM">FRC 0 to Auto Youtube Series</a> - Outstanding video tutorials exploring command-based programming for novices.</li>
     <li><a href="https://docs.wpilib.org/en/stable/docs/software/commandbased/index.html">WPILib Command-Based Documentation</a> - Deep dive into Subsystem and Command scheduling architecture.</li>
   </ul>
-  </main>
+  

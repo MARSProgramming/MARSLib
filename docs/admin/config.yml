@@ -22,7 +22,7 @@ collections:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Sidebar Position", name: "sidebar_position", widget: "number", required: false }
       - { label: "ID", name: "id", widget: "string", required: false }
-      - { label: "Body", name: "body", widget: "code", default_language: "markdown" }
+      - { label: "Body", name: "body", widget: "markdown" }
 
   - name: "framework_tutorials"
     label: "🧠 Framework Features"
@@ -34,7 +34,7 @@ collections:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Sidebar Position", name: "sidebar_position", widget: "number", required: false }
       - { label: "ID", name: "id", widget: "string", required: false }
-      - { label: "Body", name: "body", widget: "code", default_language: "markdown" }
+      - { label: "Body", name: "body", widget: "markdown" }
 
   - name: "elite_tutorials"
     label: "🏆 Elite Systems"
@@ -46,7 +46,7 @@ collections:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Sidebar Position", name: "sidebar_position", widget: "number", required: false }
       - { label: "ID", name: "id", widget: "string", required: false }
-      - { label: "Body", name: "body", widget: "code", default_language: "markdown" }
+      - { label: "Body", name: "body", widget: "markdown" }
 
   - name: "zero_to_hero"
     label: "🐣 Zero to Hero"
@@ -58,4 +58,4 @@ collections:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Sidebar Position", name: "sidebar_position", widget: "number", required: false }
       - { label: "ID", name: "id", widget: "string", required: false }
-      - { label: "Body", name: "body", widget: "code", default_language: "markdown" }
+      - { label: "Body", name: "body", widget: "markdown" }

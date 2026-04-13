@@ -8,11 +8,11 @@ title: "Telemetry Mastery"
 
 
 
-<main class="container" >
-  <div >
 
-    <h1>Telemetry Mastery</h1>
-  </div>
+  
+
+    
+  
 
   <p>Driving blindly is a thing of the past. In MARSLib, we use Mechanical Advantage's <strong><a href="https://github.com/Mechanical-Advantage/AdvantageKit" target="_blank">AdvantageKit</a></strong>, which guarantees a structurally clean decoupling of hardware states, ensuring deterministic Replay of any past FRC match. All of this telemetry data is then visualized dynamically in <strong><a href="https://github.com/Mechanical-Advantage/AdvantageScope" target="_blank">AdvantageScope</a></strong>.</p>
 
@@ -38,7 +38,7 @@ title: "Telemetry Mastery"
   <div class="callout">
     <h4>Swerve &amp; Mechanisms Template</h4>
     <p>Our agentic skills dynamically generate the <code>MARS_Standard_Layout.json</code> layout file for the 2614 layout. You can find this inside the root directory under <code>.agents/layouts/</code>.</p>
-  </div>
+  
 
   <ol >
     <li >In AdvantageScope, go to the upper right Layouts icon and select <strong>Import Layout...</strong></li>
@@ -66,7 +66,7 @@ title: "Telemetry Mastery"
       <li>Boot MARSLib in <code>SimReplay</code> mode and target the log file.</li>
       <li>Alter your Pose Estimation code locally, rebuild, and watch the exact match play out with your newly tuned vision filters.</li>
     </ul>
-  </div>
+  
   <p>This approach allows engineers to endlessly tweak feedforward loops, vision confidence tuning, and superstructure kinematic logic using a single match's data until it's perfected—without ever turning on the physical robot.</p>
 
   <br /><hr /><br />
@@ -76,4 +76,4 @@ title: "Telemetry Mastery"
     <li><a href="https://github.com/Mechanical-Advantage/AdvantageKit">AdvantageKit Architecture</a> - The core repository governing deterministic replay loops on the RIO.</li>
     <li><a href="https://github.com/Mechanical-Advantage/AdvantageScope">AdvantageScope Documentation</a> - Visualizing 3D logs natively in real-time.</li>
   </ul>
-  </main>
+  

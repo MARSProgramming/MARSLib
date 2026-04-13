@@ -8,11 +8,11 @@ title: "Dynamic Power Shedding"
 
 
 
-<main class="container" >
-  <div >
 
-    <h1>Dynamic Power Shedding</h1>
-  </div>
+  
+
+    
+  
 
   <p>Modern FRC hardware—specifically <a href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/talonfx.html" target="_blank">Krakens</a> and <a href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/talonfx.html" target="_blank">Falcons</a>—can physically pull more power than the <a href="https://www.ni.com/en/shop/hardware/products/roborio.html" target="_blank">RoboRIO</a> and a 12V battery can safely provide. If your Swerve Drive engages in a massive pushing match while the Intake is stalled on a stuck <strong>Fuel Ball</strong>, the battery voltage will dip below 7V, the RoboRIO will reset, and you will lose the match.</p>
 
@@ -50,7 +50,7 @@ import PowerSheddingSim from '@site/src/components/PowerSheddingSim';
   <div class="callout callout-warning">
     <h4>Simulation Parity</h4>
     <p>You can test your power shedding algorithms entirely in Dyn4j. The <code>MARSPhysicsWorld</code> natively simulates voltage sag as the sum of all simulated motor torque output increases, allowing you to trigger brownout scenarios in your JUnit tests and ensure your shedding algorithm functions correctly. See the <strong><a href="https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/introduction.html" target="_blank">WPILib Brownout Documentation</a></strong> for more on hardware behavior.</p>
-  </div>
+  
 
   <br /><hr /><br />
   <h2>📖 Further Reading & External Resources</h2>
@@ -58,4 +58,4 @@ import PowerSheddingSim from '@site/src/components/PowerSheddingSim';
     <li><a href="https://docs.wpilib.org/en/stable/docs/software/roborio-info/roborio-brownouts.html">WPILib: RoboRIO Brownout Protection</a> - Detailed hardware specifications for voltage thresholds.</li>
     <li><a href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/actuator-limits.html">CTRE: Actuator Limits</a> - Configuring stator and supply current limits on TalonFX.</li>
   </ul>
-  </main>
+  
