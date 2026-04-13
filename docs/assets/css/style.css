@@ -607,3 +607,87 @@ footer {
   background: var(--bg-card);
   box-shadow: 0 0 20px rgba(179, 36, 22, 0.15);
 }
+
+.search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  list-style: none;
+  padding: 8px 0;
+  margin: 8px 0 0 0;
+  display: none;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.search-results li a {
+  display: block;
+  padding: 10px 20px;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: all 0.2s;
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 0.95rem;
+}
+
+.search-results li a:hover {
+  background: var(--mars-red-glow);
+  color: var(--mars-red-light);
+}
+
+/* Nav Search Integration */
+.nav-search {
+  position: relative;
+  margin: 0 15px;
+  width: 200px;
+}
+
+.nav-search .search-input {
+  padding: 8px 16px 8px 36px;
+  font-size: 0.85rem;
+  border-radius: 20px;
+}
+
+.nav-search::before {
+  content: '🔍';
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.8rem;
+  opacity: 0.5;
+  z-index: 1;
+}
+
+/* Partner Logo Scaling Fixes */
+.partner-logo {
+  max-height: 28px;
+  max-width: 140px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  filter: grayscale(1) brightness(0.8);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.partner-badge:hover .partner-logo {
+  filter: grayscale(0) brightness(1);
+  transform: scale(1.05);
+}
+
+.feature-icon img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover .feature-icon img {
+  transform: scale(1.1);
+}

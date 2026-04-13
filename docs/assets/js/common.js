@@ -22,7 +22,10 @@ function injectHeader() {
         <li><a href="index.html#features">Features</a></li>
         <li><a href="tutorials.html">Tutorials</a></li>
         <li><a href="standards.html">Standards</a></li>
-        <li><a href="index.html#resources">Resources</a></li>
+        <li class="nav-search">
+          <input type="text" id="search-input" class="search-input" placeholder="Search MARSLib...">
+          <ul id="search-results" class="search-results"></ul>
+        </li>
         <li><a href="${editUrl}" target="_blank" class="nav-edit">Edit</a></li>
         <li><a href="javadoc/index.html" target="_blank" class="nav-cta">API Docs</a></li>
       </ul>
@@ -62,7 +65,7 @@ function injectFooter() {
 }
 
 function getEditUrl() {
-  const repoRoot = "https://github.com/MARSProgramming/MARSLib/edit/main/docs/";
+  const repoRoot = "https://github.com/MARSProgramming/MARSLib/edit/master/docs/";
   let path = window.location.pathname.split('/').pop();
   if (!path || path === "" || path === "docs") path = "index.html";
   return repoRoot + path;
