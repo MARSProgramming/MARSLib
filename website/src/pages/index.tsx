@@ -70,7 +70,7 @@ export default function Home() {
       250Hz odometry, and shot-on-the-move kinematics.
     </p>
     <div class="hero-actions">
-      <a href="/MARSLib/tutorials" class="btn btn-accent" style="box-shadow: 0 4px 20px rgba(179, 36, 22, 0.4);">🎓 TUTORIALS</a>
+      <a href="/MARSLib/docs/intro" class="btn btn-accent" style="box-shadow: 0 4px 20px rgba(179, 36, 22, 0.4);">🎓 TUTORIALS</a>
       <a href="/MARSLib/standards" class="btn btn-accent" style="box-shadow: 0 4px 20px rgba(179, 36, 22, 0.4);">📖 CORE STANDARDS</a>
       <a href="/MARSLib/javadoc/index.html" class="btn btn-accent" style="box-shadow: 0 4px 20px rgba(179, 36, 22, 0.4);">BROWSE API DOCS</a>
     </div>
@@ -134,7 +134,7 @@ export default function Home() {
           <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--mars-red-light); letter-spacing: 0.06em;">LEARN MORE →</span>
         </div>
       </a>
-      <a href="/MARSLib/tutorials" style="text-decoration: none; color: inherit;">
+      <a href="/MARSLib/docs/intro" style="text-decoration: none; color: inherit;">
         <div class="feature-card">
           <div class="feature-icon" style="background: rgba(41, 182, 246, 0.15);"><img src="assets/mars-logo.png" alt="MARS Logo"></div>
           <h3>ROBOT ONBOARDING</h3>
@@ -342,7 +342,7 @@ export default function Home() {
       <p>Interactive guides for MARSLib and essential learning materials for our core dependencies.</p>
     </div>
     <div class="feature-grid">
-      <a href="/MARSLib/tutorials" style="text-decoration: none; color: inherit;">
+      <a href="/MARSLib/docs/intro" style="text-decoration: none; color: inherit;">
         <div class="feature-card" style="border: 1px solid var(--mars-red);">
           <div class="feature-icon">
             <img src="assets/mars-logo.png" alt="MARSLib">
