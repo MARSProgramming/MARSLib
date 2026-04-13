@@ -6,11 +6,10 @@ title: "Fault Resilience"
 
 import FaultSim from '@site/src/components/FaultSim';
 
-
-  
-    
+  <div >
+    <h1>Fault Resilience</h1>
     <p>High-fidelity health monitoring and driver alerting systems.</p>
-  
+  </div>
 
   <p>On Einstein or at the Championship level, a single wire coming loose can lose a match. MARSLib features a military-grade <strong>Two-Layer Fault System</strong> designed to detect failures, protect the hardware, and immediately notify the driver before the match is compromised.</p>
 
@@ -28,7 +27,7 @@ import FaultSim from '@site/src/components/FaultSim';
 
       <h4 >Layer 2: User-Facing Alerts</h4>
       <p>This layer propagates errors to the human team. Active faults are configured using persistent <strong><a href="https://docs.wpilib.org/en/stable/docs/software/dashboards/shuffleboard/advanced-usage/sending-data.html#using-the-alert-class" target="_blank">Alert</a></strong> objects and broadcast directly to AdvantageScope or the Driver Station.</p>
-  
+  </div>
 
   <h2>2. The Alert System</h2>
   <p>Instead of relying on easy-to-miss `System.out.println` statements or generic SmartDashboard booleans, MARSLib uses the <strong>Alert</strong> class to trigger specific warnings that light up uniquely defined UI widgets.</p>
@@ -60,7 +59,7 @@ import FaultSim from '@site/src/components/FaultSim';
   <div class="callout callout-info">
       <h4>Safety Shutdowns</h4>
       <p>If a critical error is detected during diagnostic scans (like an over-current spike), MARSLib's high-level fault controllers will automatically block enabling or scale back voltage limits to prevent permanent motor burnout on the field.</p>
-  
+  </div>
 
   <br /><hr /><br />
   <h2>📖 Further Reading & External Resources</h2>
@@ -68,4 +67,3 @@ import FaultSim from '@site/src/components/FaultSim';
     <li><a href="https://docs.wpilib.org/en/stable/docs/software/roborio-info/roborio-brownouts.html">WPILib: RoboRIO Brownout Protection</a> - Understanding how hardware handles low voltage.</li>
     <li><a href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/actuator-limits.html">CTRE: Phoenix 6 Actuator Limits</a> - Implementing hardware-level current and voltage clamping.</li>
   </ul>
-  

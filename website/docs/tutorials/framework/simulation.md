@@ -4,16 +4,6 @@ id: simulation
 title: "Physics-First Development"
 ---
 
-
-
-
-
-
-  
-
-    
-  
-
   <p>Waiting for a physical robot to be built is the #1 cause of losing FRC competitions. MARSLib uses <strong>Dyn4j</strong>, a 2D physics engine, to create a high-fidelity virtual world where you can develop 100% of your code before the metal is even cut.</p>
 
   <h2>1. The Physics World</h2>
@@ -47,7 +37,7 @@ import PhysicsSim from '@site/src/components/PhysicsSim';
   <div class="callout callout-warning">
     <h4>Realistic Power Modeling</h4>
     <p>MARSLib doesn't just sim motion; it sims electrical draw. If your elevator hits a mechanical limit and stalls, the <code>MARSPowerManager</code> will calculate the voltage drop, which might cause your "virtual" Rio to brown out! This allows you to tune current limits safely in offline code.</p>
-  
+  </div>
 
   <h2>4. Visualizing with AdvantageScope</h2>
   <p>You can't "see" physics math, so we export all body positions to AdvantageScope. By dragging the <code>PhysicsWorld/GamePieces</code> field into the 3D Field view, you can watch your robot interact with Fuel Balls and the Hub in real-time.</p>
@@ -55,7 +45,7 @@ import PhysicsSim from '@site/src/components/PhysicsSim';
   <div class="callout">
     <h4>Student Pro-Tip</h4>
     <p>Run your PathPlanner autonomous paths in simulation with <strong>Efficiency Mode OFF</strong> to test how physical collisions with obstacle walls might knock your robot off path. If your pathing breaks here, it will definitely break on the real field.</p>
-  
+  </div>
 
   <h2>5. Offline Log Replay and Auto-Tuning</h2>
   <p>Because MARSLib strictly abstracts hardware out with the AdvantageKit IO layer, simulation isn't just about the physics engineâ€”it natively supports <strong>Log Replay</strong>. You can pull an active <code>.wpilog</code> file from a real match and feed it straight back into the robot code on your laptop.</p>
@@ -106,7 +96,7 @@ assertEquals(1.5, elevator.getPosition().in(Meters), 0.05);
   <div class="callout callout-warning">
     <h4>Beware the 20ms Loop</h4>
     <p>Never advance the clock by more than <code>0.02</code> seconds (20ms) at a time. The PID controllers assume a 50Hz execution cycle. Bypassing this will cause your integrators to explode.</p>
-  
+  </div>
 
   <h3>6.3 Testing Autonomous Paths</h3>
   <p>Because we have <code>IOSim</code> and Dyn4j, you can actually test a full PathPlanner macro in JUnit!</p>
@@ -137,4 +127,3 @@ assertEquals(4, GameField.getScoredHubCount());
     <li><a href="https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/introduction.html">WPILib: Robot Simulation</a> - Official guide to physics-backed development.</li>
     <li><a href="https://github.com/Mechanical-Advantage/AdvantageKit/blob/main/docs/RECORDING-AND-REPLAY.md">AdvantageKit: Recording and Replay</a> - Detailed breakdown of the replay engine.</li>
   </ul>
-

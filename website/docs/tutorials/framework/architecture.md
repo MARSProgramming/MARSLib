@@ -49,9 +49,9 @@ Core framework packages and their responsibilities.
 | `frc.robot` | Competition logic: RobotContainer, commands | `RobotContainer`, `MARSSuperstructure` |
 
 
-  ---
-  ## ?? Further Reading & External Resources
-  
-    - [Limelight MegaTag 2.0 Breakdown](https://www.youtube.com/watch?v=_eP941oXGow) - Understanding how FRC 1690 style IMU yaw-seeding rejects rapid AprilTag noise variations.
-    - [PhotonVision Hardware Guide](https://docs.photonvision.org/en/latest/) - Best practices for illuminating targets globally.
-  
+  <br /><hr /><br />
+  <h2>?? Further Reading & External Resources</h2>
+  <ul>
+    <li><a href="https://www.youtube.com/watch?v=_eP941oXGow">Limelight MegaTag 2.0 Breakdown</a> - Understanding how FRC 1690 style IMU yaw-seeding rejects rapid AprilTag noise variations.</li>
+    <li><a href="https://docs.photonvision.org/en/latest/">PhotonVision Hardware Guide</a> - Best practices for illuminating targets globally.</li>
+  </ul>

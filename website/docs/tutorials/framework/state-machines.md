@@ -4,16 +4,6 @@ id: state-machines
 title: "State Machine Logic"
 ---
 
-
-
-
-
-
-  
-
-    
-  
-
   <p>Coordinating multiple mechanisms (like an intake, a pivot, and a shooter) is incredibly complex. If you use simple if-statements, you'll eventually end up with "spaghetti code" where the robot crashes into itself. MARSLib uses <code>MARSStateMachine</code> within the overarching <code>MARSSuperstructure</code> to manage these transitions safely.</p>
 
   <h2>1. Defining Your States</h2>
@@ -45,7 +35,7 @@ stateMachine.addWildcardTo(STOW); // Can always go back to STOW in an emergency
   <div class="callout callout-warning">
     <h4>Pre-Match Diagnostics Mandatory</h4>
     <p>Before ever running a physical state machine transition on the field, the involved subsystems must pass their <code>SystemTestable</code> pre-match assertions. Ensure the hardware actually works via <code>MARSFaultManager</code> sweeps to prevent hardware collisions.</p>
-  
+  </div>
 
   <h2>3. Entry & Exit Actions</h2>
   <p>Often, you want something to happen exactly once when a state changes. For example, when entering <code>INTAKING_FLOOR</code>, you want to deploy the pivot.</p>
@@ -71,11 +61,10 @@ import StateMachineSim from '@site/src/components/StateMachineSim';
   <div class="callout">
     <h4>Visual Debugging</h4>
     <p>Open the "Mermaid" tab in AdvantageScope and drag the <code>Superstructure/StateMachine/MermaidGraph</code> field into it. You will see a live diagram where the current state is highlighted in glowing green.</p>
-  
+  </div>
 
   <br /><hr /><br />
   <h2>📖 Further Reading & External Resources</h2>
   <ul>
     <li><a href="https://docs.wpilib.org/en/stable/">WPILib Official Documentation</a> - The definitive baseline resource.</li>
   </ul>
-  

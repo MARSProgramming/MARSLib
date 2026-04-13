@@ -4,11 +4,6 @@ id: command-based
 title: "3. Command-Based Paradigm"
 ---
 
-<main class="container">
-  <div>
-    
-  
-
   <p>If you've built simple robots before, you might have written all your code linearly: "Wait 2 seconds, drive forward, spin the intake, stop." In FRC, <strong>this is lethal.</strong> Blocking the main thread for even a single second violates the FRC networking envelope and crashes the robot.</p>
   <p>To ensure code is evaluated safely every 20ms, WPILib enforces the <strong><a href="https://docs.wpilib.org/en/stable/docs/software/commandbased/index.html" target="_blank">Command-Based Paradigm</a></strong>.</p>
 
@@ -16,7 +11,7 @@ title: "3. Command-Based Paradigm"
   <div class="callout callout-info">
     <h4>Persistent Wrappers</h4>
     <p>A <a href="https://docs.wpilib.org/en/stable/docs/software/commandbased/subsystems.html" target="_blank">Subsystem</a> represents physical hardware on the robot (e.g., <code>ElevatorSubsystem</code>, <code>ShooterSubsystem</code>). It is instantiated exactly once on boot and persists forever.</p>
-  
+  </div>
   <ul>
     <li>Subsystems own the physical motors and CAN IDs.</li>
     <li>They provide methods like <code>setVoltage(12.0)</code> or <code>getDistance()</code>.</li>
@@ -56,4 +51,3 @@ title: "3. Command-Based Paradigm"
     <li><a href="https://www.youtube.com/watch?v=8319J1BEHwM">FRC 0 to Auto Youtube Series</a> - Outstanding video tutorials exploring command-based programming for novices.</li>
     <li><a href="https://docs.wpilib.org/en/stable/docs/software/commandbased/index.html">WPILib Command-Based Documentation</a> - Deep dive into Subsystem and Command scheduling architecture.</li>
   </ul>
-  

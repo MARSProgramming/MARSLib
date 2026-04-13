@@ -4,18 +4,13 @@ id: landscape
 title: "1. The Dev Ecosystem"
 ---
 
-<main class="container">
-  <div>
-    
-  
-
   <p>Before we touch a single line of Java or look at a physical robot, you must understand the toolchain we use to build, track, and deploy code. FRC development is uniquely complex because it relies heavily on offline-capable environments and cross-platform utilities.</p>
 
   <h2>1. Version Control (Git & GitHub)</h2>
   <div class="callout callout-info">
     <h4>What is Git?</h4>
     <p><a href="https://git-scm.com/" target="_blank">Git</a> is a "Time Machine" for your code. It tracks exactly who changed which lines in a file, allowing multiple robot programmers to safely write code simultaneously without accidentally deleting each other's work.</p>
-  
+  </div>
 
   <p><strong><a href="https://github.com/" target="_blank">GitHub</a></strong> is the website where our Git time machine is stored. The typical workflow:</p>
   <ol>
@@ -51,4 +46,3 @@ title: "1. The Dev Ecosystem"
     <li><a href="https://www.youtube.com/watch?v=8319J1BEHwM">FRC 0 to Auto Youtube Series</a> - Outstanding video tutorials exploring command-based programming for novices.</li>
     <li><a href="https://docs.wpilib.org/en/stable/docs/software/commandbased/index.html">WPILib Command-Based Documentation</a> - Deep dive into Subsystem and Command scheduling architecture.</li>
   </ul>
-  

@@ -4,12 +4,6 @@ id: sysid
 title: "Continuous SysId"
 ---
 
-
-  
-
-    
-  
-
   <p>Static System Identification (running specific "quasistatic" tests in the pits) is the industry standard. However, mechanism friction changes as the robot's gears wear down or get dirty throughout a 3-day competition. MARSLib introduces <strong>Continuous SysId</strong>, which passively identifies your <code>kV</code> and <code>kA</code> constants during real matches.</p>
 
   <h2>1. The Logging Advantage</h2>
@@ -36,4 +30,3 @@ SysIdManager.getInstance().registerMechanism(
     <li><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/system-identification/index.html">WPILib: System Identification (SysId)</a> - Characterize your robot with automated experiments.</li>
     <li><a href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/control-requests.html">CTRE Phoenix 6: Signal Logging</a> - Best practices for high-speed telemetry in characterization.</li>
   </ul>
-  

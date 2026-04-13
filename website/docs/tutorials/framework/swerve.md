@@ -4,16 +4,6 @@ id: swerve
 title: "High-Frequency Swerve"
 ---
 
-
-
-
-
-
-  
-
-    
-  
-
   <p>A standard FRC robot executes its control loop every 20ms (50Hz). This is fine for moving an elevator, but it is <strong>unacceptably slow</strong> for Swerve Odometry. If a robot moving at 5 m/s only calculates its position 50 times a second, the math inherently creates a "drift" of several centimeters per second.</p>
 
   <p>MARSLib solves this by utilizing the <strong>PhoenixOdometryThread</strong>.</p>
@@ -24,7 +14,7 @@ title: "High-Frequency Swerve"
   <div class="callout callout-warning">
     <h4>Zero-Allocation (GC) Danger</h4>
     <p>Because this thread runs 250 times a second, if you instantiate an object inside this loop, you will instantly crash the RoboRIO due to massive Garbage Collection pressure. This is why our Agentic Skills strictly enforce the <strong>Ephemeral Struct</strong> proxy architecture across the Swerve subsystem.</p>
-  
+  </div>
 
 import SwerveSim from '@site/src/components/SwerveSim';
 
@@ -53,4 +43,3 @@ public void addVisionMeasurement(Pose2d visionPose, double timestamp, Matrix<N3,
     <li><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/system-identification/index.html">WPILib System Identification (SysId)</a> - Advanced mathematical breakdowns of Quasistatic friction and Dynamic OLS regression curves.</li>
     <li><a href="https://github.com/Team364/BaseFalconSwerve">Team 364 BaseFalconSwerve</a> - The historic FRC architecture that inspired modern template geometries.</li>
   </ul>
-  
