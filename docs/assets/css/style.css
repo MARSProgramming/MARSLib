@@ -888,3 +888,28 @@ pre code { background: transparent; padding: 0; color: #e8e8e8; font-size: 0.9re
 .arch-diagram { background: #111; padding: 30px; border-radius: 12px; border: 1px solid var(--border); overflow-x: auto; margin: 40px auto; max-width: 800px; }
 .arch-diagram pre { color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; line-height: 1.5; margin: 0; padding: 0; background: transparent; border: none; }
 .arch-diagram b { color: var(--mars-red-light); }
+
+/* ===== Code Comparison Cards (Standards) ===== */
+.rule-section { margin-bottom: 60px; padding-bottom: 40px; border-bottom: 1px solid var(--border); }
+.rule-section:last-child { border-bottom: none; }
+
+.rule-num { 
+  background: var(--mars-red-glow); 
+  color: var(--mars-red-light); 
+  padding: 4px 12px; 
+  border-radius: 8px; 
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.1rem; 
+  font-weight: 700;
+  border: 1px solid rgba(179, 36, 22, 0.3); 
+  display: inline-block;
+  margin-right: 12px;
+}
+
+.code-comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 30px 0; }
+@media (max-width: 768px) { .code-comparison { grid-template-columns: 1fr; } }
+
+.code-card { background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+.code-header { font-family: 'Orbitron', sans-serif; padding: 12px 20px; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; border-bottom: 1px solid var(--border); }
+.code-bad .code-header { background: rgba(179, 36, 22, 0.1); color: var(--mars-red-light); border-bottom-color: rgba(179, 36, 22, 0.3); }
+.code-good .code-header { background: rgba(41, 182, 246, 0.1); color: var(--ai-cyan); border-bottom-color: rgba(41, 182, 246, 0.3); }
