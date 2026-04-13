@@ -91,7 +91,7 @@ loadScripts(document, 'script');</script>
  could cause collisions or damage. The FSM tracks ticks spent in each state for timeout-based
  logic.
 
- <p>Students: Use this class to coordinate multi-step mechanisms (e.g., intake â†’ score sequences).
+ <p>Students: Use this class to coordinate multi-step mechanisms (e.g., intake → score sequences).
  Register allowed transitions with <a href="#addValidTransition(S,S)"><code>addValidTransition(S, S)</code></a>, then call <a href="#requestTransition(S)"><code>requestTransition(S)</code></a> to move between states safely.</div>
 </section>
 <section class="summary">
@@ -429,7 +429,7 @@ loadScripts(document, 'script');</script>
 <h3>update</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">update</span>()</div>
 <div class="block">Increments the tick counter for the current state. Must be called once per subsystem periodic
- loop â€” if omitted, <a href="#getTicksInCurrentState()"><code>getTicksInCurrentState()</code></a> will not advance and timeout-based logic
+ loop — if omitted, <a href="#getTicksInCurrentState()"><code>getTicksInCurrentState()</code></a> will not advance and timeout-based logic
  will break.</div>
 </section>
 </li>

@@ -87,9 +87,9 @@ loadScripts(document, 'script');</script>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Thread.html" title="class or interface in java.lang" class="external-link">Thread</a></span></div>
 <div class="block">High-frequency CAN bus polling thread for CTRE Phoenix 6 odometry signals.
 
- <p>This singleton thread runs at <a href="../../../frc/robot/constants/DriveConstants.html#ODOMETRY_HZ"><code>DriveConstants.ODOMETRY_HZ</code></a> Hz,
- continuously sampling drive/turn encoder positions and gyro yaw from TalonFX and Pigeon2 devices.
- Samples are buffered in thread-safe <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/BlockingQueue.html" title="class or interface in java.util.concurrent" class="external-link"><code>BlockingQueue</code></a>s and drained by <a href="SwerveDrive.html#periodic()"><code>SwerveDrive.periodic()</code></a> each robot loop iteration.
+ <p>This singleton thread runs at a configurable odometry Hz (typically 250Hz), continuously
+ sampling drive/turn encoder positions and gyro yaw from TalonFX and Pigeon2 devices. Samples are
+ buffered in thread-safe <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/BlockingQueue.html" title="class or interface in java.util.concurrent" class="external-link"><code>BlockingQueue</code></a>s and drained by <a href="SwerveDrive.html#periodic()"><code>SwerveDrive.periodic()</code></a> each robot loop iteration.
 
  <p><b>Thread Safety:</b> All signal registration and data access is guarded by a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/locks/ReentrantLock.html" title="class or interface in java.util.concurrent.locks" class="external-link"><code>ReentrantLock</code></a>. The queues use a fixed capacity of 50 to bound memory usage.
 
@@ -183,13 +183,15 @@ loadScripts(document, 'script');</script>
 <div class="block">Drains all buffered odometry samples for a specific module since the last call.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#registerGyro(com.ctre.phoenix6.BaseStatusSignal)" class="member-name-link">registerGyro</a><wbr>(com.ctre.phoenix6.BaseStatusSignal&nbsp;yawPos)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#registerGyro(com.ctre.phoenix6.BaseStatusSignal,double)" class="member-name-link">registerGyro</a><wbr>(com.ctre.phoenix6.BaseStatusSignal&nbsp;yawPos,
+ double&nbsp;odometryHz)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Registers the gyro yaw signal for high-frequency sampling alongside module signals.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#registerModule(com.ctre.phoenix6.BaseStatusSignal,com.ctre.phoenix6.BaseStatusSignal)" class="member-name-link">registerModule</a><wbr>(com.ctre.phoenix6.BaseStatusSignal&nbsp;drivePosition,
- com.ctre.phoenix6.BaseStatusSignal&nbsp;turnPosition)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#registerModule(com.ctre.phoenix6.BaseStatusSignal,com.ctre.phoenix6.BaseStatusSignal,double)" class="member-name-link">registerModule</a><wbr>(com.ctre.phoenix6.BaseStatusSignal&nbsp;drivePosition,
+ com.ctre.phoenix6.BaseStatusSignal&nbsp;turnPosition,
+ double&nbsp;odometryHz)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Registers a swerve module's drive and turn position signals for high-frequency sampling.</div>
 </div>
@@ -277,15 +279,17 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="registerModule(com.ctre.phoenix6.BaseStatusSignal,com.ctre.phoenix6.BaseStatusSignal)">
+<section class="detail" id="registerModule(com.ctre.phoenix6.BaseStatusSignal,com.ctre.phoenix6.BaseStatusSignal,double)">
 <h3>registerModule</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">registerModule</span><wbr><span class="parameters">(com.ctre.phoenix6.BaseStatusSignal&nbsp;drivePosition,
- com.ctre.phoenix6.BaseStatusSignal&nbsp;turnPosition)</span></div>
+ com.ctre.phoenix6.BaseStatusSignal&nbsp;turnPosition,
+ double&nbsp;odometryHz)</span></div>
 <div class="block">Registers a swerve module's drive and turn position signals for high-frequency sampling.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>drivePosition</code> - The drive motor's position <code>BaseStatusSignal</code>.</dd>
 <dd><code>turnPosition</code> - The turn motor's position <code>BaseStatusSignal</code>.</dd>
+<dd><code>odometryHz</code> - The required update frequency for these signals.</dd>
 <dt>Returns:</dt>
 <dd>The module ID used to retrieve synchronized data via <a href="#getSyncData(int)"><code>getSyncData(int)</code></a>.</dd>
 </dl>
@@ -299,10 +303,10 @@ loadScripts(document, 'script');</script>
 
  <p><b>Zero-allocation:</b> Returns a pre-allocated <a href="PhoenixOdometryThread.SyncData.html" title="class in com.marslib.swerve"><code>PhoenixOdometryThread.SyncData</code></a> with fixed-capacity arrays.
  Check <a href="PhoenixOdometryThread.SyncData.html#validCount"><code>PhoenixOdometryThread.SyncData.validCount</code></a> for the number of populated entries. The returned object is
- reused â€” do not store references across ticks.</div>
+ reused — do not store references across ticks.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>moduleId</code> - The module ID returned by <a href="#registerModule(com.ctre.phoenix6.BaseStatusSignal,com.ctre.phoenix6.BaseStatusSignal)"><code>registerModule(com.ctre.phoenix6.BaseStatusSignal, com.ctre.phoenix6.BaseStatusSignal)</code></a>.</dd>
+<dd><code>moduleId</code> - The module ID returned by <a href="#registerModule(com.ctre.phoenix6.BaseStatusSignal,com.ctre.phoenix6.BaseStatusSignal,double)"><code>registerModule(com.ctre.phoenix6.BaseStatusSignal, com.ctre.phoenix6.BaseStatusSignal, double)</code></a>.</dd>
 <dt>Returns:</dt>
 <dd>A pre-allocated <a href="PhoenixOdometryThread.SyncData.html" title="class in com.marslib.swerve"><code>PhoenixOdometryThread.SyncData</code></a> containing synchronized drive/turn positions and
      timestamps.</dd>
@@ -310,13 +314,15 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="registerGyro(com.ctre.phoenix6.BaseStatusSignal)">
+<section class="detail" id="registerGyro(com.ctre.phoenix6.BaseStatusSignal,double)">
 <h3>registerGyro</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">registerGyro</span><wbr><span class="parameters">(com.ctre.phoenix6.BaseStatusSignal&nbsp;yawPos)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">registerGyro</span><wbr><span class="parameters">(com.ctre.phoenix6.BaseStatusSignal&nbsp;yawPos,
+ double&nbsp;odometryHz)</span></div>
 <div class="block">Registers the gyro yaw signal for high-frequency sampling alongside module signals.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>yawPos</code> - The Pigeon2 yaw position <code>BaseStatusSignal</code>.</dd>
+<dd><code>odometryHz</code> - The required update frequency.</dd>
 </dl>
 </section>
 </li>
@@ -328,7 +334,7 @@ loadScripts(document, 'script');</script>
 
  <p><b>Zero-allocation:</b> Returns a pre-allocated <a href="PhoenixOdometryThread.GyroYawData.html" title="class in com.marslib.swerve"><code>PhoenixOdometryThread.GyroYawData</code></a> with a fixed-capacity
  array. Check <a href="PhoenixOdometryThread.GyroYawData.html#validCount"><code>PhoenixOdometryThread.GyroYawData.validCount</code></a> for the number of populated entries. The returned
- object is reused â€” do not store references across ticks.</div>
+ object is reused — do not store references across ticks.</div>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>Pre-allocated container with yaw positions (rotations) accumulated since the last

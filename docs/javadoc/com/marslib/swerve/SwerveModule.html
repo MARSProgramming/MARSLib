@@ -95,8 +95,9 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(int,com.marslib.swerve.SwerveModuleIO)" class="member-name-link">SwerveModule</a><wbr>(int&nbsp;index,
- <a href="SwerveModuleIO.html" title="interface in com.marslib.swerve">SwerveModuleIO</a>&nbsp;io)</code></div>
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(int,com.marslib.swerve.SwerveModuleIO,com.marslib.swerve.SwerveConfig)" class="member-name-link">SwerveModule</a><wbr>(int&nbsp;index,
+ <a href="SwerveModuleIO.html" title="interface in com.marslib.swerve">SwerveModuleIO</a>&nbsp;io,
+ <a href="SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a>&nbsp;config)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Constructs a generic Swerve Module boundary structure.</div>
 </div>
@@ -202,15 +203,17 @@ loadScripts(document, 'script');</script>
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(int,com.marslib.swerve.SwerveModuleIO)">
+<section class="detail" id="&lt;init&gt;(int,com.marslib.swerve.SwerveModuleIO,com.marslib.swerve.SwerveConfig)">
 <h3>SwerveModule</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">SwerveModule</span><wbr><span class="parameters">(int&nbsp;index,
- <a href="SwerveModuleIO.html" title="interface in com.marslib.swerve">SwerveModuleIO</a>&nbsp;io)</span></div>
+ <a href="SwerveModuleIO.html" title="interface in com.marslib.swerve">SwerveModuleIO</a>&nbsp;io,
+ <a href="SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a>&nbsp;config)</span></div>
 <div class="block">Constructs a generic Swerve Module boundary structure.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>index</code> - The ID/Index (0=FL, 1=FR, 2=BL, 3=BR) for structural AdvantageKit logging keys.</dd>
 <dd><code>io</code> - The implementation-specific IO layer (TalonFX or Sim).</dd>
+<dd><code>config</code> - The global swerve configuration.</dd>
 </dl>
 </section>
 </li>
@@ -272,7 +275,7 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>A cached <code>SwerveModuleState</code> tracking linear velocity (m/s) and angular heading.
-     The returned object is reused â€” do not store references across ticks.</dd>
+     The returned object is reused — do not store references across ticks.</dd>
 </dl>
 </section>
 </li>
