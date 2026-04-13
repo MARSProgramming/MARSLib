@@ -39,4 +39,13 @@ title: "4. Control Theory Crash Course"
   <p><strong>This is where MARSLib steps in.</strong> MARSLib abstracts these mathematical concepts. You write your control loops and tune your `kP` values, but MARSLib intercepts the voltage and pipes it into a highly-accurate virtual physics engine (Dyn4j / AdvantageScope) instead. You can tune your mechanisms, watch them oscillate or break gracefully on your laptop screen, and perfect your constants <em>before</em> we ever place the robot on the FRC carpet.</p>
 
   <p>Ready to leverage the framework? Start the <a href="/MARSLib/docs/tutorials/setup/getting-started">MARSLib Setup Guide</a>.</p>
-</main>
+
+  <hr style={{ margin: '40px 0' }} />
+  <h2>📖 Further Reading & External Resources</h2>
+  <ul>
+    <li><a href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/control-requests.html">CTRE Phoenix 6 Control Requests</a> - Explaining 250Hz frequency CANivore utilization.</li>
+    <li><a href="https://pathplanner.dev/">PathPlanner Documentation</a> - Standardized GUI usage for creating 2D autonomous splines.</li>
+    <li><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/system-identification/index.html">WPILib System Identification (SysId)</a> - Advanced mathematical breakdowns of Quasistatic friction and Dynamic OLS regression curves.</li>
+    <li><a href="https://github.com/Team364/BaseFalconSwerve">Team 364 BaseFalconSwerve</a> - The historic FRC architecture that inspired modern template geometries.</li>
+  </ul>
+  </main>

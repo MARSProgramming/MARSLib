@@ -36,4 +36,12 @@ title: "2. The Hardware Paradigm"
   <p>An FRC battery supplies ~12V of DC electricity. However, when 14 different high-torque motors try to pull max acceleration simultaneously, the physical laws of electric load cause the battery voltage to momentarily crash down toward 6.0V.</p>
   <p>If the voltage drops below 6.3V, the RoboRIO forcefully severs all motor connection to prevent the main CPU from dying. This is known as a <strong>Brownout</strong>. In MARSLib, we must dynamically shed power and strictly enforce motor current caps to avoid stalling the battery.</p>
 
-</main>
+
+  <hr style={{ margin: '40px 0' }} />
+  <h2>📖 Further Reading & External Resources</h2>
+  <ul>
+    <li><a href="https://docs.wpilib.org/en/stable/docs/zero-to-robot/introduction.html">WPILib "Zero to Robot" Guide</a> - The official foundational pipeline for FRC control systems.</li>
+    <li><a href="https://www.youtube.com/watch?v=8319J1BEHwM">FRC 0 to Auto Youtube Series</a> - Outstanding video tutorials exploring command-based programming for novices.</li>
+    <li><a href="https://docs.wpilib.org/en/stable/docs/software/commandbased/index.html">WPILib Command-Based Documentation</a> - Deep dive into Subsystem and Command scheduling architecture.</li>
+  </ul>
+  </main>

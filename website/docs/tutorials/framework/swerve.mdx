@@ -44,7 +44,16 @@ public void addVisionMeasurement(Pose2d visionPose, double timestamp, Matrix<N3,
   <p>Standard WPILib implementations apply independent <code>SlewRateLimiters</code> to the X and Y joystick axes. However, if the driver pushes diagonally, the robot attempts to accelerate at <b>1.41x</b> the limit, instantly breaking carpet friction.</p> 
   
   <p>To solve this, MARSLib uses a unified <code>TractionControlLimiter</code> that calculates the magnitude of the requested 2D acceleration vector and strictly caps it below the kinetic slipping envelope of the FRC carpet (approx 1.1g, or 10.78 m/s&sup2;). This guarantees the swerve drive never breaks static friction natively, preserving your odometry perfectly!</p>
-</main>
+
+  <hr style={{ margin: '40px 0' }} />
+  <h2>📖 Further Reading & External Resources</h2>
+  <ul>
+    <li><a href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/control-requests.html">CTRE Phoenix 6 Control Requests</a> - Explaining 250Hz frequency CANivore utilization.</li>
+    <li><a href="https://pathplanner.dev/">PathPlanner Documentation</a> - Standardized GUI usage for creating 2D autonomous splines.</li>
+    <li><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/system-identification/index.html">WPILib System Identification (SysId)</a> - Advanced mathematical breakdowns of Quasistatic friction and Dynamic OLS regression curves.</li>
+    <li><a href="https://github.com/Team364/BaseFalconSwerve">Team 364 BaseFalconSwerve</a> - The historic FRC architecture that inspired modern template geometries.</li>
+  </ul>
+  </main>
 
 
 
