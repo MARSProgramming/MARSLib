@@ -1,0 +1,36 @@
+backend:
+  name: github
+  repo: MARSProgramming/MARSLib
+  branch: master
+
+# Specify media paths
+media_folder: "website/static/img"
+public_folder: "/img"
+
+# Optional: Add logo to the login screen
+# logo_url: "https://your-logo-url-here.png"
+
+collections:
+  - name: "docs"
+    label: "Documentation"
+    folder: "website/docs"
+    create: true
+    extension: "mdx"
+    format: "frontmatter"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Sidebar Position", name: "sidebar_position", widget: "number", required: false }
+      - { label: "ID", name: "id", widget: "string", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "tutorials"
+    label: "Tutorials (Nested)"
+    folder: "website/docs/tutorials"
+    create: true
+    extension: "mdx"
+    format: "frontmatter"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Sidebar Position", name: "sidebar_position", widget: "number", required: false }
+      - { label: "ID", name: "id", widget: "string", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
