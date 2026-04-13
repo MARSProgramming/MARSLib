@@ -1,59 +1,43 @@
-﻿---
-sidebar_position: 11
-id: zero-allocation
-title: "Zero-Allocation Engineering"
 ---
-
-<main className="container" >
-  <div >
-    <h1>Zero-Allocation Engineering</h1>
-  </div>
-
-  <p>The single greatest threat to determinism in a Java-based FRC robot is the JVM's Garbage Collector (GC). Every time you allocate memory inside your 50Hz or 250Hz loops, memory is allocated on the heap. Eventually, the JVM pauses the entire robot to clean it up.</p>
+sidebar_position: 8
+id: zero-allocation
+title: "Strict Zero-Allocation"
+---
 
 import ZeroAllocationSim from '@site/src/components/ZeroAllocationSim';
 
-<ZeroAllocationSim />
-
-
-  <h2>1. The 'Ephemeral Struct' Pattern</h2>
-  <p>To eliminate GC spikes, MARSLib enforces a strict zero-allocation architecture. We achieve this using pre-allocated <strong>Mutable Proxy References</strong>.</p>
-
-  ```java
-// BAD: Allocates 250 objects per second!
-public void periodic() {
-    Pose2d currentPose = new Pose2d(x, y, new Rotation2d(theta));
-    updatePose(currentPose);
-}
-
-// GOOD: Pre-allocated Ephemeral Structs mutated in place
-private final Pose2d mutablePose = new Pose2d();
-private final Rotation2d mutableRotation = new Rotation2d();
-
-public void periodic() {
-    mutableRotation.setRadians(theta);
-    mutablePose.set(x, y, mutableRotation);
-    updatePose(mutablePose);
-}
-  ```
-
-  <h2>2. The Pointer Danger</h2>
-  <p>When you pass a mutable proxy reference into another class, you are passing the <em>memory pointer</em>. Overwriting it next tick will affect any class holding that pointer.</p>
-
-  <div className="callout callout-warning">
-    <h4>The Clone Rule</h4>
-    <p>If a downstream class requires a persistent snapshot or history of data, it must explicitly <strong>clone</strong> the proxy object. Assume any struct reference is poisoned once the function returns.</p>
+<main className="container" >
+  <div >
+    
+    <h1>Strict Zero-Allocation</h1>
   </div>
 
-  <h2>3. Static Array Caching</h2>
-  <p>In Swerve Kinematics, we frequently convert <code>ChassisSpeeds</code> into arrays. MARSLib uses static pre-allocated array caches, mutating elements in place to save thousands of heap allocations per minute.</p>
+  <p>In high-frequency robotics (250Hz+), the #1 cause of sudden, non-deterministic jitter is the Java Garbage Collector (GC). Every time you use the <code>new</code> keyword inside a loop, you are creating a tiny bit of "trash" that the CPU eventually has to stop everything and clean up.</p>
+
+  <div className="callout callout-warning">
+      <h4>The 20ms Deadline</h4>
+      <p>If the GC triggers during a critical autonomous spline, your 20ms control loop might stretch to 40ms. This causes the robot's pose estimator to miss reality, leading to a missed shot or a collision.</p>
+  </div>
+
+  <h2>1. The Ephemeral Proxy Pattern</h2>
+  <p>MARSLib enforces zero-allocation using <strong>Ephemeral Proxies</strong>. Instead of creating new <code>Translation2d</code> objects every loop for math, we reuse static, pre-allocated memory buffers.</p>
+
+  <p>Try clicking <strong>ALLOCATE OBJECT</strong> in the simulator below to see how heavy object creation "spikes" the loop time and forces the GC to halt the robot!</p>
+
+  <ZeroAllocationSim />
+
+  <h2>2. MARSLib Constraints</h2>
+  <p>The <code>marslib-audit</code> skill strictly forbids the following patterns in "Hot Paths" (periodic loops):</p>
+  <ul>
+      <li><strong>No <code>new</code>:</strong> Use <code>Inputs</code> structs or static caches.</li>
+      <li><strong>No Lambdas:</strong> Use pre-defined <code>Runnable</code> or <code>Consumer</code> fields.</li>
+      <li><strong>No String Building:</strong> Use the <code>Logger.recordOutput</code> raw numeric overloads.</li>
+  </ul>
 
   <hr style={{ margin: '40px 0' }} />
   <h2>📖 Further Reading & External Resources</h2>
   <ul>
-    <li><a href="https://www.youtube.com/watch?v=yYn9NqJ6kXU">FRC Log Replay and Simulation</a> - Mechanical Advantage's definitive 2024 Championship presentation on the why behind the IO-Layer abstraction.</li>
-    <li><a href="https://github.com/Mechanical-Advantage/AdvantageKit">AdvantageKit Architecture</a> - The core repository governing deterministic replay loops on the RIO.</li>
-    <li><a href="https://github.com/Mechanical-Advantage/AdvantageScope">AdvantageScope Documentation</a> - Visualizing 3D logs natively in real-time.</li>
+    <li><a href="https://github.com/Mechanical-Advantage/AdvantageKit/blob/main/docs/RECORDING-AND-REPLAY.md">AdvantageKit: Performance & Benchmarking</a> - Technical specifications for zero-allocation logging.</li>
+    <li><a href="https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/">Java Garbage Collection Tuning</a> - Understanding the impact of object allocation on real-time systems.</li>
   </ul>
   </main>
-

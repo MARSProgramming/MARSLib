@@ -1,101 +1,39 @@
 ---
-sidebar_position: 12
+sidebar_position: 14
 id: sysid
-title: "System Identification"
+title: "Continuous SysId"
 ---
-
-
-
-
 
 <main className="container" >
   <div >
     
-    <h1>System Identification</h1>
+    <h1>Continuous SysId</h1>
   </div>
 
-  <p>Instead of manually guessing your <code>kS</code>, <code>kV</code>, <code>kA</code>, and <code>kP</code> constants, we let mathematical regression do the work. MARSLib integrates natively with WPILib's <strong>SysId</strong> tool to algorithmically calculate the perfect constants for your drivetrain, arms, elevators, and shooters.</p>
+  <p>Static System Identification (running specific "quasistatic" tests in the pits) is the industry standard. However, mechanism friction changes as the robot's gears wear down or get dirty throughout a 3-day competition. MARSLib introduces <strong>Continuous SysId</strong>, which passively identifies your <code>kV</code> and <code>kA</code> constants during real matches.</p>
 
-  <h2>1. The SysId Process</h2>
-  <p>SysId uses two distinct types of tests to build a State Space model of your mechanism. You will run each test in both the Forward and Reverse directions.</p>
+  <h2>1. The Logging Advantage</h2>
+  <p>Because every motor voltage and velocity is logged at high frequency through <strong><a href="https://github.com/Mechanical-Advantage/AdvantageKit" target="_blank">AdvantageKit</a></strong>, we don't need dedicated tests. The <code>MARSSysIdManager</code> runs an <strong>Ordinary Least Squares (OLS)</strong> regression against the log data every time the robot is disabled.</p>
 
-  <ul >
-    <li ><strong>Quasistatic Test:</strong> Voltage slowly ramps up continuously at 1 volt per second. This precisely maps your mechanism's <code>kS</code> (Static Friction) and <code>kV</code> (Velocity constant).</li>
-    <li ><strong>Dynamic Test:</strong> Applies an instant voltage step (e.g. jump to 6 volts). This maps <code>kA</code> (Acceleration) and calculates optimal <code>kP</code> and <code>kD</code> gains based on inertia.</li>
-  </ul>
-
-import SysIdSim from '@site/src/components/SysIdSim';
-
-  <SysIdSim />
-
-  <div className="callout callout-warning">
-    <h4>Data Logging</h4>
-    <p>MARSLib leverages AdvantageKit. All SysId tests automatically dump telemetry directly into the <code>.wpilog</code> file. MARSLib also features an Automated Log Uploaderâ€”if the robot detects an active internet connection, it will automatically push your SysId logs to the team's GitHub repository.</p>
-  </div>
-
-  <h2>2. Running SysId</h2>
-  <p>Swerve Drives require their own tuning sequence because the wheels must all be aligned correctly first. We map the controller bindings to automatically trigger SysId in <code>RobotBindings.java</code>.</p>
-  ```java
-// Inside configureDriverBindings()
-driver.a().whileTrue(swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-driver.b().whileTrue(swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-driver.x().whileTrue(swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-driver.y().whileTrue(swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-```
-
-  <h2>3. Mechanism Integration</h2>
-  <p>MARSLib's structural <code>LinearMechanismIO</code> and <code>RotaryMechanismIO</code> abstractions automatically have SysId hooked into them! You just have to instantiate a <code>SysIdRoutine</code> object in the Subsystem and pass it your IO methods.</p>
+  <h2>2. Implementation</h2>
+  <p>To enable passive characterization, you must register your subsystem's IO with the manager.</p>
 
   ```java
-SysIdRoutine routine = new SysIdRoutine(
-  new SysIdRoutine.Config(),
-  new SysIdRoutine.Mechanism(
-    (Volts volts) -> io.setVoltage(volts.in(Volts)),
-    null, // AdvantageKit logs natively
-    this // The subsystem
-  )
+// Inside RobotContainer.java
+SysIdManager.getInstance().registerMechanism(
+    "Shooter", 
+    flywheel::getVoltage, 
+    flywheel::getVelocityRadPerSec
 );
 ```
 
-  <div className="callout" >
-    <h4 >Safety Notice</h4>
-    <p>Be extremely careful when running SysId on elevators or arms, as there are <strong>no soft limits</strong> enforced during SysId ramps (by definition, it disables PID restrictions).</p>
-  </div>
-
-  <h2>4. Analyzing the Log</h2>
-  <ol >
-    <li >Retrieve your <code>.wpilog</code> file from the USB drive or GitHub Actions.</li>
-    <li >Open WPILib VSCode -> Start Tool -> <strong>SysId</strong>.</li>
-    <li >Open the <code>.wpilog</code> file and select the mechanism under test.</li>
-    <li >Drag your sliders to fit the feedback noise. The UI will instantly spit out your <code>kS</code>, <code>kV</code>, <code>kA</code>, and <code>kP</code> values!</li>
-  </ol>
-
-  <h2>5. Continuous SysId (Online Estimator)</h2>
-  <p>What if the robot learned its own constants while the driver was practicing? MARSLib features an <strong>Online Feedforward Estimator</strong> built directly into its subsystems.</p>
-
-  <p>A zero-allocation, sliding-window Ordinary Least Squares (OLS) regression algorithm continuously monitors mechanism telemetry during normal Teleop driving. It dynamically computes empirical <code>kV</code> and <code>kA</code> constants in zero-GC real-time.</p>
-
-  ```java
-// Inside periodic()
-double currentVelocity = inputs.velocityRadPerSec;
-double currentAccel = (currentVelocity - lastVelocity) / 0.020;
-estimator.addMeasurement(inputs.appliedVolts, currentVelocity, currentAccel);
-```
+  <h2>3. Viewing the Results</h2>
+  <p>The calculated <code>kV</code> (Volts per Unit/s) and <code>kA</code> (Volts per Unit/s&sup2;) are pushed to NetworkTables. If the passion-identified kV differs from your hardcoded constant by more than 15%, a <strong>Fault Alert</strong> will trigger, notifying the pit crew that a mechanism is experiencing unexpected friction.</p>
 
   <hr style={{ margin: '40px 0' }} />
   <h2>📖 Further Reading & External Resources</h2>
   <ul>
-    <li><a href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/control-requests.html">CTRE Phoenix 6 Control Requests</a> - Explaining 250Hz frequency CANivore utilization.</li>
-    <li><a href="https://pathplanner.dev/">PathPlanner Documentation</a> - Standardized GUI usage for creating 2D autonomous splines.</li>
-    <li><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/system-identification/index.html">WPILib System Identification (SysId)</a> - Advanced mathematical breakdowns of Quasistatic friction and Dynamic OLS regression curves.</li>
-    <li><a href="https://github.com/Team364/BaseFalconSwerve">Team 364 BaseFalconSwerve</a> - The historic FRC architecture that inspired modern template geometries.</li>
+    <li><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/system-identification/index.html">WPILib: System Identification (SysId)</a> - Characterize your robot with automated experiments.</li>
+    <li><a href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/control-requests.html">CTRE Phoenix 6: Signal Logging</a> - Best practices for high-speed telemetry in characterization.</li>
   </ul>
   </main>
-
-
-
-
-
-
-
-

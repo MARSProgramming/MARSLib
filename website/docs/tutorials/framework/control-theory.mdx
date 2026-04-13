@@ -8,9 +8,6 @@ import ElevatorPidSim from '@site/src/components/ElevatorPidSim';
 import FlywheelKvSim from '@site/src/components/FlywheelKvSim';
 import ArmKgSim from '@site/src/components/ArmKgSim';
 
-
-
-
 <main className="container" >
   <div >
     
@@ -20,7 +17,7 @@ import ArmKgSim from '@site/src/components/ArmKgSim';
   <p>Basic PID loops are reacting to the past. To achieve World Championship fidelity, your mechanisms must predict the future. MARSLib employs advanced control theory algorithms, including <strong>Feedforwards</strong> and <strong>State Space Models</strong>.</p>
 
   <h2>1. Feedforward: Predicting the Physics</h2>
-  <p>A PID loop only acts when there is an error. A <strong>Feedforward (FF)</strong> model <em>anticipates</em> the physical energy required to reach a state. For a heavy elevator (like the <strong>Ladder</strong> climber), gravity is always pulling it down. A <code>ElevatorFeedforward</code> calculates the exact voltage needed to counteract gravity (kG) before the PID even kicks in.</p>
+  <p>A PID loop only acts when there is an error. A <strong><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-feedforward.html" target="_blank">Feedforward (FF)</a></strong> model <em>anticipates</em> the physical energy required to reach a state. For a heavy elevator (like the <strong>Ladder</strong> climber), gravity is always pulling it down. A <code>ElevatorFeedforward</code> calculates the exact voltage needed to counteract gravity (kG) before the PID even kicks in.</p>
 
   ```java
 // kS (Static Friction), kG (Gravity), kV (Velocity), kA (Acceleration)
@@ -78,26 +75,14 @@ motor.setVoltage(ffVoltage + pidVoltage);
 
   <div className="callout" >
     <h4>Looking for SysId?</h4>
-    <p>MARSLib recommends mathematically automating all kS, kV, and kA calculations. If you want to skip manual tuning and let WPILib calculate perfection, check out our dedicated <a href="/MARSLib/tutorial-sysid" >SysId Characterization Tutorial</a>!</p>
+    <p>MARSLib recommends mathematically automating all kS, kV, and kA calculations. If you want to skip manual tuning and let WPILib calculate perfection, check out our dedicated <a href="/MARSLib/docs/tutorials/framework/sysid" >SysId Characterization Tutorial</a>!</p>
   </div>
 
   <hr style={{ margin: '40px 0' }} />
   <h2>📖 Further Reading & External Resources</h2>
   <ul>
-    <li><a href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/control-requests.html">CTRE Phoenix 6 Control Requests</a> - Explaining 250Hz frequency CANivore utilization.</li>
-    <li><a href="https://pathplanner.dev/">PathPlanner Documentation</a> - Standardized GUI usage for creating 2D autonomous splines.</li>
-    <li><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/system-identification/index.html">WPILib System Identification (SysId)</a> - Advanced mathematical breakdowns of Quasistatic friction and Dynamic OLS regression curves.</li>
-    <li><a href="https://github.com/Team364/BaseFalconSwerve">Team 364 BaseFalconSwerve</a> - The historic FRC architecture that inspired modern template geometries.</li>
+    <li><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-pid.html">WPILib: Introduction to PID</a> - Deep dive into proportional-integral-derivative control.</li>
+    <li><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-feedforward.html">WPILib: Introduction to Feedforward</a> - Modeling the physics of your robot mechanisms.</li>
+    <li><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-intro.html">WPILib: Introduction to State-Space</a> - Modern control theory using matrix-based state models.</li>
   </ul>
   </main>
-
-
-
-
-
-
-
-
-
-
-

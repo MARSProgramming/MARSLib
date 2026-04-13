@@ -21,13 +21,13 @@ import FaultSim from '@site/src/components/FaultSim';
       <h4 >Layer 1: IO-Level Health</h4>
       <p>This layer lives inside the Hardware Wrapper (e.g., <code>ArmIOKraken</code>). It monitors the lowest level sensor data for "Red Flags":</p>
       <ul>
-          <li><strong>CAN Timeouts</strong>: Detecting disconnected motors or CANivro buses.</li>
+          <li><strong>CAN Timeouts</strong>: Detecting disconnected motors or <a href="https://v6.docs.ctr-electronics.com/en/stable/docs/canivore/canivore-intro.html" target="_blank">CANivore</a> buses.</li>
           <li><strong>Current Spikes</strong>: Detecting stalled mechanisms or carpet snags.</li>
           <li><strong>Stale Data</strong>: Detecting encoder/IMU disconnects.</li>
       </ul>
 
       <h4 >Layer 2: User-Facing Alerts</h4>
-      <p>This layer propagates errors to the human team. Active faults are configured using persistent <code>Alert</code> objects from WPILib web components and broadcast directly to AdvantageScope or the Driver Station.</p>
+      <p>This layer propagates errors to the human team. Active faults are configured using persistent <strong><a href="https://docs.wpilib.org/en/stable/docs/software/dashboards/shuffleboard/advanced-usage/sending-data.html#using-the-alert-class" target="_blank">Alert</a></strong> objects and broadcast directly to AdvantageScope or the Driver Station.</p>
   </div>
 
   <h2>2. The Alert System</h2>
@@ -65,7 +65,7 @@ import FaultSim from '@site/src/components/FaultSim';
   <hr style={{ margin: '40px 0' }} />
   <h2>📖 Further Reading & External Resources</h2>
   <ul>
-    <li><a href="https://www.youtube.com/watch?v=_eP941oXGow">Limelight MegaTag 2.0 Breakdown</a> - Understanding how FRC 1690 style IMU yaw-seeding rejects rapid AprilTag noise variations.</li>
-    <li><a href="https://docs.photonvision.org/en/latest/">PhotonVision Hardware Guide</a> - Best practices for illuminating targets globally.</li>
+    <li><a href="https://docs.wpilib.org/en/stable/docs/software/roborio-info/roborio-brownouts.html">WPILib: RoboRIO Brownout Protection</a> - Understanding how hardware handles low voltage.</li>
+    <li><a href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/actuator-limits.html">CTRE: Phoenix 6 Actuator Limits</a> - Implementing hardware-level current and voltage clamping.</li>
   </ul>
   </main>
