@@ -722,7 +722,7 @@ task updateDocsCoverage {
 
         def fmt = java.text.NumberFormat.getNumberInstance(java.util.Locale.US)
 
-        def indexFile = file("docs/index.html")
+        def indexFile = new File(projectDirCaptured, "docs/index.html")
         if (indexFile.exists()) {
             def content = indexFile.getText('UTF-8')
 
