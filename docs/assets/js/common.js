@@ -19,6 +19,7 @@ function injectHeader() {
         <div class="nav-logo">MARS<span>Lib</span></div>
       </a>
       <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
         <li><a href="index.html#features">Features</a></li>
         <li><a href="tutorials.html">Tutorials</a></li>
         <li><a href="standards.html">Standards</a></li>
