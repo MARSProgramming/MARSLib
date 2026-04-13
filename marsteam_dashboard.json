@@ -172,6 +172,143 @@
               "controllerUUID": "80rqt7midks2kl7z360ey9hpsulhfj6f",
               "renderer": null,
               "controlsHeight": 0
+            },
+            {
+              "type": 1,
+              "title": "System Health",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "/RealOutputs/System/LoopRunTime_ms",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ffff"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "/RealOutputs/System/BatteryVoltage",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "/RealOutputs/System/CANBusUtilization",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff8c00"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "/RealOutputs/System/CANivoreUtilization",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff4500"
+                    }
+                  }
+                ],
+                "discreteSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Teleop/NaNDetected",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff0000"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "dashsyshealth77201abc",
+              "renderer": null,
+              "controlsHeight": 0
+            },
+            {
+              "type": 4,
+              "title": "Fault Alerts",
+              "controller": [
+                "/RealOutputs/Alerts/Critical",
+                "/RealOutputs/Alerts/Warning",
+                "/RealOutputs/Alerts/Info"
+              ],
+              "controllerUUID": "dashfaultalerts99xyz",
+              "renderer": null,
+              "controlsHeight": 0
+            },
+            {
+              "type": 1,
+              "title": "Power Draw",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "/RealOutputs/Power/TotalCurrentDraw_A",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff0000"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "/RealOutputs/System/BatteryVoltage",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/System/BrownoutVoltage",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#ffff00"
+                    }
+                  }
+                ],
+                "discreteSources": [],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "dashpowerdraw88abc",
+              "renderer": null,
+              "controlsHeight": 0
             }
           ]
         }

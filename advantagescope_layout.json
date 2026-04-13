@@ -271,6 +271,170 @@
               "controllerUUID": "tunetab12345aaddvance",
               "renderer": null,
               "controlsHeight": 0
+            },
+            {
+              "type": 1,
+              "title": "System Health",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "/RealOutputs/System/LoopRunTime_ms",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ffff"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "/RealOutputs/System/BatteryVoltage",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "/RealOutputs/System/CANBusUtilization",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff8c00"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "/RealOutputs/System/CANivoreUtilization",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff4500"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "/RealOutputs/SwerveDrive/OdometryTrustMultiplier",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#9370db"
+                    }
+                  }
+                ],
+                "discreteSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/Teleop/NaNDetected",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff0000"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/System/WatchdogActive",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "syshlt8972ahealth01",
+              "renderer": null,
+              "controlsHeight": 0
+            },
+            {
+              "type": 4,
+              "title": "Fault Alerts",
+              "controller": [
+                "/RealOutputs/Alerts/Critical",
+                "/RealOutputs/Alerts/Warning",
+                "/RealOutputs/Alerts/Info"
+              ],
+              "controllerUUID": "faultalerts12345abc",
+              "renderer": null,
+              "controlsHeight": 0
+            },
+            {
+              "type": 1,
+              "title": "Power Draw",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "/RealOutputs/Power/TotalCurrentDraw_A",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff0000"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "/RealOutputs/PhysicsWorld/FrameCurrentDraw_A",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff8c00"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "/RealOutputs/System/BatteryVoltage",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/System/BrownoutVoltage",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#ffff00"
+                    }
+                  }
+                ],
+                "discreteSources": [],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "pwrdraw99887amorph",
+              "renderer": null,
+              "controlsHeight": 0
             }
           ]
         }
