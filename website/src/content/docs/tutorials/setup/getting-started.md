@@ -1,0 +1,86 @@
+---
+sidebar:
+  order: 2
+id: getting-started
+title: "Software Setup & Git"
+---
+
+# Software Setup & Git
+
+Before you can begin programming the robot, you need to configure your local development environment. MARSLib uses industry-standard tooling alongside specific WPILib architecture to deploy its advanced zero-allocation simulations. Follow these steps meticulously to get started. Note this is still a work in progress.
+
+## 1. WPILib Installation
+
+WPILib is the official library for FIRST Robotics. It comes bundled with a custom version of Visual Studio Code, a localized JDK, and the necessary Gradle toolchains to compile FRC robot code.
+
+1. Navigate to the official [WPILib GitHub Releases](https://github.com/wpilibsuite/allwpilib/releases) page.
+2. Download the installer corresponding to your operating system (.iso for Windows, .tar.gz for macOS/Linux).
+3. Run the installer. When prompted, select **"Install for All Users"** and **"Download VS Code"** if you don't already have the WPILib VS Code.
+4. Do not use a standard VS Code installation. You must use the **WPILib VS Code** app installed on your desktop.
+
+## 2. Installing Git & Authentication
+
+MARSLib relies on Git for version control and deploying to our team servers. If you aren't familiar with Git, you should start by downloading it.
+
+1. Download Git from [git-scm.com](https://git-scm.com/downloads) locally.
+2. Open a new command prompt and configure your global identity so your commits are tracked to you:
+```bash
+git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+```
+3. We highly recommend installing GitHub Desktop or using the built-in Git GUI within VS Code to manage your commits visually.
+
+
+## 3. Project Creation & Installation
+
+Now that your environment is ready, you should create a new empty WPILib project and install the library vendordeps. MARSLib heavily relies on AdvantageKit for logging.
+
+### Generating the Project
+1. Open WPILib VS Code.
+2. Press `Ctrl` + `Shift` + `P` to open the command palette.
+3. Type **WPILib: Create a new project** and press Enter.
+4. Select **Template** -> **Java** -> **Command Robot**.
+5. Choose a project folder, enter your team number, and click **Generate Project**.
+
+### Installing AdvantageKit
+Because MARSLib forces deterministic Zero-Allocation telemetry, you MUST install AdvantageKit first.
+1. Open the command palette (`Ctrl` + `Shift` + `P`).
+2. Type **WPILib: Manage Vendor Libraries** and press Enter.
+3. Select **Install new library (online)**.
+4. Paste the official AdvantageKit JSON URL (check [their documentation](https://github.com/Mechanical-Advantage/AdvantageKit) for the latest version link).
+
+### Installing MARSLib
+With AdvantageKit installed, you can now inject MARSLib into your codebase.
+1. Open the command palette (`Ctrl` + `Shift` + `P`).
+2. Select **WPILib: Manage Vendor Libraries**
+3. Select **Install new library (online)**.
+4. Paste the stable MARSLib JSON link:
+   `https://marsprogramming.github.io/MARSLib/MARSLib.json`
+
+### Editing `build.gradle`
+Finally, update your `build.gradle` to configure AdvantageKit's annotation processor and to allow Gradle to resolve MARSLib's native Maven repository on GitHub Pages. Open your `build.gradle` and ensure you add the repository:
+
+```groovy
+repositories {
+    mavenCentral()
+    maven { url "https://marsprogramming.github.io/MARSLib/maven" }
+}
+```
+
+## 4. Configuring the Log Auto-Uploader
+
+MARSLib includes an automated script that securely uploads AdvantageKit `.wpilog` files directly to our private GitHub servers over the 2614 radio network. To authorize your robot to push to our network, you must configure a PAT.
+
+1. Go to your GitHub Settings -> Developer Settings -> Personal Access Tokens (Fine-Grained).
+2. Generate a new token with `Read/Write` access directly to the `LogDatabase` repository.
+3. Create a new file called `github_pat.txt` directly in the root directory of your MARSLib project.
+4. Paste your raw token into this file. **Do not worry—this file is tracked by our `.gitignore` and won't be pushed publicly.**
+5. When you build the code to deploy to the RoboRIO (`./gradlew deploy`), this file will be SCP'd into the robot's flash automatically!
+  <br /><hr /><br />
+  <h2>?? Further Reading & External Resources</h2>
+  <ul>
+    <li><a href="https://docs.wpilib.org/en/stable/docs/zero-to-robot/introduction.html">WPILib "Zero to Robot" Guide</a> - The official foundational pipeline for FRC control systems.</li>
+    <li><a href="https://www.youtube.com/watch?v=8319J1BEHwM">FRC 0 to Auto Youtube Series</a> - Outstanding video tutorials exploring command-based programming for novices.</li>
+    <li><a href="https://docs.wpilib.org/en/stable/docs/software/commandbased/index.html">WPILib Command-Based Documentation</a> - Deep dive into Subsystem and Command scheduling architecture.</li>
+  </ul>
+

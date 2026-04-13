@@ -1,0 +1,83 @@
+---
+sidebar:
+  order: 11
+id: control-theory
+title: "Control Theory Mastery"
+---
+
+import ElevatorPidSim from '../../../components/ElevatorPidSim';
+import FlywheelKvSim from '../../../components/FlywheelKvSim';
+import ArmKgSim from '../../../components/ArmKgSim';
+
+  <p>Basic PID loops are reacting to the past. To achieve World Championship fidelity, your mechanisms must predict the future. MARSLib employs advanced control theory algorithms, including <strong>Feedforwards</strong> and <strong>State Space Models</strong>.</p>
+
+  <h2>1. Feedforward: Predicting the Physics</h2>
+  <p>A PID loop only acts when there is an error. A <strong><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-feedforward.html" target="_blank">Feedforward (FF)</a></strong> model <em>anticipates</em> the physical energy required to reach a state. For a heavy elevator (like the <strong>Ladder</strong> climber), gravity is always pulling it down. A <code>ElevatorFeedforward</code> calculates the exact voltage needed to counteract gravity (kG) before the PID even kicks in.</p>
+
+  ```java
+// kS (Static Friction), kG (Gravity), kV (Velocity), kA (Acceleration)
+ElevatorFeedforward ff = new ElevatorFeedforward(0.1, 0.4, 1.2, 0.05);
+
+// Calculate voltage required to hold steady, PLUS voltage to reach target velocity
+double ffVoltage = ff.calculate(currentVelocity, targetVelocity);
+double pidVoltage = pid.calculate(currentPosition, targetPosition);
+
+motor.setVoltage(ffVoltage + pidVoltage);
+```
+
+  <ElevatorPidSim />
+
+  <h2>2. Manual Tuning Guide</h2>
+  <p>If you cannot run SysId, you must manually tune your Feedforwards and PID loops. Always tune Feedforward (FF) first, as PID should only be correcting minor disturbances, not doing the heavy lifting.</p>
+  <ol>
+    <li><strong>Set everything to Zero:</strong> <code>kP = 0, kI = 0, kD = 0, kS = 0, kV = 0, kG = 0, kA = 0</code>.</li>
+    <li><strong>Tune kS (Static Friction):</strong> Slowly increase <code>kS</code> until the mechanism *just barely* starts to twitch or overcome friction.</li>
+    <li><strong>Tune kG (Gravity):</strong> For vertical elevators, increase <code>kG</code> until the elevator holds its current position without falling. For rotary arms, position the arm perfectly horizontal (where gravity is strongest) and tune <code>kG</code> until it holds steady.</li>
+    <li><strong>Tune kV (Velocity):</strong> Command the mechanism to run at a consistent voltage (e.g. 6v). Log the resulting steady-state velocity (e.g. 5 rad/s). Your <code>kV = 6.0 / 5.0 = 1.2</code>.</li>
+    <li><strong>Tune kP (Proportional):</strong> Now that the FF model handles the physics, increase <code>kP</code> to snap the mechanism quickly to its target. Stop increasing when it starts oscillating around the setpoint.</li>
+    <li><strong>Tune kD (Derivative):</strong> If you have slight overshoot or oscillation, increase <code>kD</code> to act as a dampener to slow the system down as it approaches the target.</li>
+  </ol>
+
+  <h2>3. Flywheel Inertia Recovery Simulator</h2>
+  <p>Flywheels do not fight gravity, but they require massive energy to accelerate (Inertia) and maintain high speeds (Friction/Air Drag). When a game piece enters the shooter, it rapidly saps energy from the wheel. <code>kV</code> keeps the wheel spinning, while <code>kP</code> and <code>kD</code> are crucial for <strong>Recovery Time</strong>.</p>
+
+  <FlywheelKvSim />
+
+  <p><strong>How to manually tune a Flywheel:</strong></p>
+  <ol>
+    <li>Set <strong>kP = 0, kI = 0, kD = 0</strong>. Adjust the <strong>kV</strong> slider until the Actual velocity (red) perfectly tracks the Setpoint velocity (blue) in steady state (e.g. at 80 rad/s). In this simulator, that happens around <code>kV = 0.12</code>.</li>
+    <li>Once the wheel holds its setpoint on its own, click <strong>INJECT BALL</strong> to introduce a massive physical drag disturbance.</li>
+    <li>Notice the horrific recovery time using only kV? Increase <strong>kP</strong> to aggressively spike voltage during the disturbance to violently snap the wheel back to the setpoint!</li>
+    <li>Use <strong>kD (Derivative)</strong> if your kP is causing the wheel to overshoot past 80 rad/s. A small kD acts like a parachute, slowing down the acceleration as the error rate rapidly shrinks.</li>
+    <li>Use <strong>kI (Integral)</strong> sparingly if the velocity gets "stuck" right underneath the setpoint (e.g. 78 rad/s) because kP isn't strong enough. In systems with high friction, the integral mathematically "builds up" over time, forcing that last 2 rad/s error to zero.</li>
+  </ol>
+
+  <h2>4. Rotating Arm (Cosine Feedforward)</h2>
+  <p>Unlike an Elevator where gravity pulls equally at all times, a rotating <strong>Arm</strong> or <strong>Intake Pivot</strong> experiences gravity differently depending on its angle. When perfectly horizontal (0&deg;), gravity exerts maximum torque. When perfectly vertical (90&deg; or -90&deg;), the center of mass aligns with the fulcrum, meaning gravity exerts <strong>zero torque</strong>.</p>
+  <p>An <code>ArmFeedforward</code> recalculates gravity every 20ms using <code>kG * Math.cos(angle)</code>. Try moving the arm to 90&deg; below to see the required kG voltage drop to zero!</p>
+
+  <ArmKgSim />
+
+  <p><strong>How to manually tune an Arm:</strong></p>
+  <ol>
+    <li>Change the <strong>Target Angle</strong> to exactly <code>0&deg;</code> (Horizontal). This is where gravity pulls the hardest.</li>
+    <li>Set <strong>kP = 0, kI = 0, kD = 0</strong> to disable PID. Adjust <strong>kG</strong> until the FF Voltage precisely counters the physical drop and holds the arm perfectly level.</li>
+    <li>With FF holding the arm up perfectly against gravity, increase <strong>kP</strong> to help the arm quickly snap to new angles.</li>
+    <li>If the arm oscillates (wobbles back and forth) before settling, add a small amount of <strong>kD (Derivative)</strong>. It will act like a shock absorber, damping the motion as it approaches the target.</li>
+    <li>If the arm gets stuck incredibly close to its target (e.g. 88&deg; when asking for 90&deg;), use a small <strong>kI (Integral)</strong> to wind up enough voltage to clear the final friction barrier.</li>
+    <li>Move the Target Angle to <code>90&deg;</code> (straight up). Watch the kG voltage organically shrink to zero and the arm stabilize effortlessly without PID fighting!</li>
+  </ol>
+
+  <div class="callout" >
+    <h4>Looking for SysId?</h4>
+    <p>MARSLib recommends mathematically automating all kS, kV, and kA calculations. If you want to skip manual tuning and let WPILib calculate perfection, check out our dedicated <a href="/MARSLib/docs/tutorials/framework/sysid" >SysId Characterization Tutorial</a>!</p>
+  </div>
+
+  <br /><hr /><br />
+  <h2>📖 Further Reading & External Resources</h2>
+  <ul>
+    <li><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-pid.html">WPILib: Introduction to PID</a> - Deep dive into proportional-integral-derivative control.</li>
+    <li><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-feedforward.html">WPILib: Introduction to Feedforward</a> - Modeling the physics of your robot mechanisms.</li>
+    <li><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-intro.html">WPILib: Introduction to State-Space</a> - Modern control theory using matrix-based state models.</li>
+  </ul>
+

@@ -75,22 +75,24 @@ jobs:
       if: github.ref == 'refs/heads/master' && github.event_name == 'push'
       uses: actions/setup-node@v4
       with:
-        node-version: 20
+        node-version: 22
         cache: 'npm'
         cache-dependency-path: website/package-lock.json
 
-    - name: Build Docusaurus Website
+    - name: Build Astro Website
       if: github.ref == 'refs/heads/master' && github.event_name == 'push'
       run: |
         cd website
-        npm ci
+        npm install
         npm run build
 
     - name: Deploy docs to master branch
       if: github.ref == 'refs/heads/master' && github.event_name == 'push'
       run: |
-        cp -a website/build/. docs/
+        # Wipe old documentation files but strictly preserve javadoc, maven, and the MARSLib vendordep JSON
+        find docs -mindepth 1 -maxdepth 1 ! -name 'javadoc' ! -name 'maven' ! -name 'MARSLib.json' -exec rm -rf {} +
+        cp -a website/dist/. docs/
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
-        git add docs/ -f
-        git diff --cached --quiet && echo "No docs changes" || (git commit -m "docs: auto-update generated site [skip ci]" && git push)
+        git add docs/ -A
+        git diff --cached --quiet && echo "No docs changes" || (git commit -m "docs: auto-deploy Astro site [skip ci]" && git push)

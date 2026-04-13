@@ -1,0 +1,59 @@
+---
+sidebar:
+  order: 12
+id: architecture
+title: "Core Architecture"
+---
+
+MARSLib is designed with a strict zero-allocation abstraction layer. The framework shields deterministic physics processing and automated logging from the hardware implementations to guarantee consistency across physical and simulated robots.
+
+## Architecture Diagram
+
+```mermaid
+graph TD
+    Z["User Project<br><i>RobotContainer.java</i>"] -->|Depends On| A("MARSLib Framework<br><i>Vendor Dependency</i>")
+    A --> C[Swerve Subsystem]
+    A --> D[Mechanisms]
+    A --> E[System Utilities]
+    C <--> F{"IO Abstraction Layer"}
+    D <--> F
+    E <--> F
+    F <-->|Hardware Mode| G["IOReal<br><i>TalonFX, Pigeon2</i>"]
+    F <-->|Simulation Mode| H["IOSim<br><i>Dyn4j Physics</i>"]
+    G --> I[("(AdvantageKit Log)")]
+    H --> I
+    style Z fill:#0a0a0a,stroke:#2a2a2a,stroke-width:2px,color:#e8e8e8
+    style A fill:#141414,stroke:#B32416,stroke-width:2px,color:#e8e8e8
+    style C fill:#1a1a1a,stroke:#2a2a2a,stroke-width:1px,color:#e8e8e8
+    style D fill:#1a1a1a,stroke:#2a2a2a,stroke-width:1px,color:#e8e8e8
+    style E fill:#1a1a1a,stroke:#2a2a2a,stroke-width:1px,color:#e8e8e8
+    style F fill:#B32416,stroke:#d42e1e,stroke-width:2px,color:#fff
+    style G fill:#2a2a2a,stroke:#1a1a1a,stroke-width:1px,color:#29b6f6
+    style H fill:#2a2a2a,stroke:#1a1a1a,stroke-width:1px,color:#9c7bcc
+    style I fill:#0a0a0a,stroke:#6ba3d6,stroke-width:2px,color:#6ba3d6
+```
+
+## Package Reference
+
+Core framework packages and their responsibilities.
+
+| Package | Description | Key Classes |
+|---------|-------------|-------------|
+| [`com.marslib.swerve`](pathname:///javadoc/com/marslib/swerve/package-summary.html) | 250Hz odometry, swerve kinematics, traction control | `SwerveDrive`, `SwerveModule`, `PhoenixOdometryThread` |
+| [`com.marslib.vision`](pathname:///javadoc/com/marslib/vision/package-summary.html) | AprilTag localization with MegaTag 2.0 fusion | `MARSVision`, `VisionIO` |
+| [`com.marslib.mechanisms`](pathname:///javadoc/com/marslib/mechanisms/package-summary.html) | Generic IO abstractions | `RotaryMechanismIO`, `LinearMechanismIO` |
+| [`com.marslib.faults`](pathname:///javadoc/com/marslib/faults/package-summary.html) | Thread-safe fault reporting | `MARSFaultManager`, `Alert` |
+| [`com.marslib.simulation`](pathname:///javadoc/com/marslib/simulation/package-summary.html) | Dyn4j physics world, game piece spawning | `MARSPhysicsWorld`, `GamePieceBody` |
+| [`com.marslib.power`](pathname:///javadoc/com/marslib/power/package-summary.html) | Voltage load-shedding and stator monitoring | `MARSPowerManager` |
+| [`com.marslib.util`](pathname:///javadoc/com/marslib/util/package-summary.html) | State machines, tunable numbers, shot math | `MARSStateMachine`, `EliteShooterMath` |
+| [`com.marslib.auto`](pathname:///javadoc/com/marslib/auto/package-summary.html) | PathPlanner integration, alignment commands | `MARSAutoBuilder` |
+| `frc.robot` | Competition logic: RobotContainer, commands | `RobotContainer`, `MARSSuperstructure` |
+
+
+  <br /><hr /><br />
+  <h2>?? Further Reading & External Resources</h2>
+  <ul>
+    <li><a href="https://www.youtube.com/watch?v=_eP941oXGow">Limelight MegaTag 2.0 Breakdown</a> - Understanding how FRC 1690 style IMU yaw-seeding rejects rapid AprilTag noise variations.</li>
+    <li><a href="https://docs.photonvision.org/en/latest/">PhotonVision Hardware Guide</a> - Best practices for illuminating targets globally.</li>
+  </ul>
+

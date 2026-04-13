@@ -1,0 +1,72 @@
+---
+sidebar:
+  order: 7
+id: state-machines
+title: "State Machine Logic"
+---
+
+  <p>Coordinating multiple mechanisms (like an intake, a pivot, and a shooter) is incredibly complex. If you use simple if-statements, you'll eventually end up with "spaghetti code" where the robot crashes into itself. MARSLib uses <code>MARSStateMachine</code> within the overarching <code>MARSSuperstructure</code> to manage these transitions safely.</p>
+
+  <h2>1. Defining Your States</h2>
+  <p>Start by creating an enum that represents every possible state of your superstructure for the 2026 game.</p>
+
+  ```java
+public enum SuperstructureState {
+  STOW,
+  INTAKING_FLOOR,
+  LOADED_FUEL_BALL,
+  HUB_SCORE,
+  UNJAMMING
+}
+```
+
+  <h2>2. The Transition Table</h2>
+  <p>In your Subsystem's constructor, you define which transitions are legal. This prevents the robot from trying to shoot into the Hub if it hasn't successfully acquired a Fuel Ball yet!</p>
+
+  ```java
+stateMachine = new MARSStateMachine<>("Superstructure", SuperstructureState.class, SuperstructureState.STOW);
+
+// Setup the table
+stateMachine.addTransition(STOW, INTAKING_FLOOR);
+stateMachine.addTransition(INTAKING_FLOOR, LOADED_FUEL_BALL);
+stateMachine.addBidirectional(LOADED_FUEL_BALL, HUB_SCORE);
+stateMachine.addWildcardTo(STOW); // Can always go back to STOW in an emergency
+```
+
+  <div class="callout callout-warning">
+    <h4>Pre-Match Diagnostics Mandatory</h4>
+    <p>Before ever running a physical state machine transition on the field, the involved subsystems must pass their <code>SystemTestable</code> pre-match assertions. Ensure the hardware actually works via <code>MARSFaultManager</code> sweeps to prevent hardware collisions.</p>
+  </div>
+
+  <h2>3. Entry & Exit Actions</h2>
+  <p>Often, you want something to happen exactly once when a state changes. For example, when entering <code>INTAKING_FLOOR</code>, you want to deploy the pivot.</p>
+
+  ```java
+stateMachine.setEntryAction(INTAKING_FLOOR, () -> {
+  pivot.setGoal(IntakeConstants.DEPLOY_POS);
+  intakeWheels.run(1.0);
+});
+
+stateMachine.setExitAction(INTAKING_FLOOR, () -> {
+  pivot.setGoal(IntakeConstants.STOW_POS);
+});
+```
+
+import StateMachineSim from '../../../components/StateMachineSim';
+
+<StateMachineSim />
+
+  <h2>4. Live Mermaid Visualization</h2>
+  <p>One of the most powerful features of <code>MARSStateMachine</code> is that it automatically generates a <strong><a href="https://mermaid.js.org/" target="_blank">Mermaid.js flowchart</a></strong>. This graph is sent over telemetry and can be viewed live in <strong><a href="https://github.com/Mechanical-Advantage/AdvantageScope" target="_blank">AdvantageScope</a></strong>.</p>
+
+  <div class="callout">
+    <h4>Visual Debugging</h4>
+    <p>Open the "Mermaid" tab in AdvantageScope and drag the <code>Superstructure/StateMachine/MermaidGraph</code> field into it. You will see a live diagram where the current state is highlighted in glowing green.</p>
+  </div>
+
+  <br /><hr /><br />
+  <h2>📖 Further Reading & External Resources</h2>
+  <ul>
+    <li><a href="https://docs.wpilib.org/en/stable/">WPILib Official Documentation</a> - The definitive baseline resource.</li>
+  </ul>
+
