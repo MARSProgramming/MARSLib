@@ -5,7 +5,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: 'MARSLib',
   tagline: 'Championship-tier FRC software framework with zero-allocation performance, dyn4j physics simulation, and AdvantageKit deterministic logging.',
-  favicon: 'img/favicon.ico',
+  favicon: 'assets/mars-logo.png',
 
   url: 'https://MARSProgramming.github.io',
   baseUrl: '/MARSLib/',
