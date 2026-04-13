@@ -30,20 +30,41 @@ git config --global user.email "your.email@example.com"
 3. We highly recommend installing GitHub Desktop or using the built-in Git GUI within VS Code to manage your commits visually.
 
 
-## 3. Cloning the Codebase
+## 3. Project Creation & Installation
 
-Now that your environment is ready, it is time to clone the MARSLib framework repository.
+Now that your environment is ready, you should create a new empty WPILib project and install the library vendordeps. MARSLib heavily relies on AdvantageKit for logging.
 
-> **SSH Preferred**  
-> If you have an SSH key configured with GitHub, we strongly advise using SSH to clone the repository to avoid continuous credential prompts.
+### Generating the Project
+1. Open WPILib VS Code.
+2. Press `Ctrl` + `Shift` + `P` to open the command palette.
+3. Type **WPILib: Create a new project** and press Enter.
+4. Select **Template** -> **Java** -> **Command Robot**.
+5. Choose a project folder, enter your team number, and click **Generate Project**.
 
-1. Open the WPILib VS Code instance.
-2. Open terminal (`Ctrl` + `~`) and navigate to your `Documents` or preferred Workspace folder.
-3. Run the clone command:
-```bash
-git clone https://github.com/MARSProgramming/MARSLib.git
+### Installing AdvantageKit
+Because MARSLib forces deterministic Zero-Allocation telemetry, you MUST install AdvantageKit first.
+1. Open the command palette (`Ctrl` + `Shift` + `P`).
+2. Type **WPILib: Manage Vendor Libraries** and press Enter.
+3. Select **Install new library (online)**.
+4. Paste the official AdvantageKit JSON URL (check [their documentation](https://github.com/Mechanical-Advantage/AdvantageKit) for the latest version link).
+
+### Installing MARSLib
+With AdvantageKit installed, you can now inject MARSLib into your codebase.
+1. Open the command palette (`Ctrl` + `Shift` + `P`).
+2. Select **WPILib: Manage Vendor Libraries**
+3. Select **Install new library (online)**.
+4. Paste the stable MARSLib JSON link:
+   `https://marsprogramming.github.io/MARSLib/MARSLib.json`
+
+### Editing `build.gradle`
+Finally, update your `build.gradle` to configure AdvantageKit's annotation processor and to allow Gradle to resolve MARSLib's native Maven repository on GitHub Pages. Open your `build.gradle` and ensure you add the repository:
+
+```groovy
+repositories {
+    mavenCentral()
+    maven { url "https://marsprogramming.github.io/MARSLib/maven" }
+}
 ```
-4. Open the folder directly in VS Code: **File > Open Folder > MARSLib**.
 
 ## 4. Configuring the Log Auto-Uploader
 

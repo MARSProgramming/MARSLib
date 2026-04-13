@@ -26,6 +26,9 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Remove hardcoded local Java home
+      run: sed -i '/org.gradle.java.home/d' gradle.properties || true
+
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
@@ -67,9 +70,9 @@ jobs:
         min-coverage-changed-files: 80
         title: "Test Coverage Report"
 
-    - name: Generate Documentation Site
+    - name: Generate Documentation Site and Publish Maven
       if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-      run: ./gradlew generateDocs -Pskip-inspector-wrapper -Dorg.gradle.java.home=$JAVA_HOME
+      run: ./gradlew generateDocs publish -Pskip-inspector-wrapper -Dorg.gradle.java.home=$JAVA_HOME
 
     - name: Setup Node.js
       if: github.ref == 'refs/heads/master' && github.event_name == 'push'

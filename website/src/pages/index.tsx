@@ -2,19 +2,19 @@ import React, { useEffect, useRef } from 'react';
 import Layout from '@theme/Layout';
 
 const MERMAID_CHART = `graph TD
-    A[Robot.java<br><i>TimedRobot Loop</i>] -->|20ms| B(RobotContainer<br><i>Subsystem Binding</i>)
-    B --> C[SwerveDrive]
-    B --> D[Shooter]
-    B --> E[MARSSuperstructure]
-    C <--> F{IO Interface Layer}
+    Z[User Project<br><i>RobotContainer.java</i>] -->|Depends On| A(MARSLib Framework<br><i>Vendor Dependency</i>)
+    A --> C[Swerve Subsystem]
+    A --> D[Mechanisms]
+    A --> E[System Utilities]
+    C <--> F{IO Abstraction Layer}
     D <--> F
     E <--> F
     F <-->|Hardware Mode| G[IOReal<br><i>TalonFX, Pigeon2</i>]
     F <-->|Simulation Mode| H[IOSim<br><i>Dyn4j Physics</i>]
     G --> I[(AdvantageKit Log)]
     H --> I
-    style A fill:#0a0a0a,stroke:#2a2a2a,stroke-width:2px,color:#e8e8e8
-    style B fill:#141414,stroke:#B32416,stroke-width:2px,color:#e8e8e8
+    style Z fill:#0a0a0a,stroke:#2a2a2a,stroke-width:2px,color:#e8e8e8
+    style A fill:#141414,stroke:#B32416,stroke-width:2px,color:#e8e8e8
     style C fill:#1a1a1a,stroke:#2a2a2a,stroke-width:1px,color:#e8e8e8
     style D fill:#1a1a1a,stroke:#2a2a2a,stroke-width:1px,color:#e8e8e8
     style E fill:#1a1a1a,stroke:#2a2a2a,stroke-width:1px,color:#e8e8e8

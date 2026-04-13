@@ -8,6 +8,7 @@ plugins {
     id "net.ltgt.errorprone" version "5.1.0"
     id "com.adarshr.test-logger" version "4.0.0"
     id "com.github.ben-manes.versions" version "0.53.0"
+    id "maven-publish"
 }
 
 testlogger {
@@ -773,3 +774,29 @@ task updateDocsCoverage {
     }
 }
 jacocoTestReport.finalizedBy updateDocsCoverage
+
+java {
+    withSourcesJar()
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPagesRepo"
+            url = "${projectDir}/website/static/maven"
+        }
+    }
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            groupId = 'com.marslib'
+            artifactId = 'MARSLib'
+            version = '1.0.0'
+            
+            pom {
+                name = 'MARSLib'
+                description = 'Zero-allocation FRC framework with dyn4j and AdvantageKit'
+            }
+        }
+    }
+}
