@@ -12,7 +12,7 @@ title: "4. Control Theory Crash Course"
   <p>If you tell an elevator motor, "Go up at 6 Volts," when does it know to stop? If it reaches the target and instantly cuts voltage to zero, gravity will pull the heavy elevator right back down. We need <strong>Closed-Loop Control</strong>.</p>
 
   <h2>1. PID Control</h2>
-  <p>The standard algorithm for reaching a target is <strong>PID</strong> (Proportional, Integral, Derivative).</p>
+  <p>The standard algorithm for reaching a target is <strong><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-pid.html" target="_blank">PID</a></strong> (Proportional, Integral, Derivative).</p>
 
   <ul>
     <li><strong>kP (Proportional)</strong>: This measures your "Error" (Target minus Current Position). The further you are from the target, the harder it pushes. If the target is 10 meters away, push with 12 Volts. If it's 1 meter away, push gently with 1 Volt.</li>
@@ -30,7 +30,7 @@ import ElevatorPidSim from '@site/src/components/ElevatorPidSim';
 
   <h2>2. FeedForward (FF)</h2>
   <p>PID is reactive. It only applies voltage if there is an existing Error. Why is this bad? If an elevator needs 1 Volt just to hold its heavy weight against gravity, a pure PID loop will droop down, generate Error, push up, reach the target, cut power, droop down... bouncing forever!</p>
-  <p>Instead, we proactively "Feed Forward" physics math into the motor before PID even calculates:</p>
+  <p>Instead, we proactively "Feed Forward" physics math into the motor before PID even calculates. We use the <strong><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-feedforward.html" target="_blank">WPILib Feedforward</a></strong> classes to model these behaviors:</p>
   <ul>
     <li><strong>kS (Static Friction)</strong>: Motors are sticky. It might take 0.5 Volts just to overcome the friction of the physical gears before movement even begins.</li>
     <li><strong>kG (Gravity)</strong>: We calculate the physical weight of the arm/elevator and permanently apply exactly enough voltage to make it weightless in the air.</li>
@@ -47,9 +47,9 @@ import ElevatorPidSim from '@site/src/components/ElevatorPidSim';
   <hr style={{ margin: '40px 0' }} />
   <h2>📖 Further Reading & External Resources</h2>
   <ul>
-    <li><a href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/control-requests.html">CTRE Phoenix 6 Control Requests</a> - Explaining 250Hz frequency CANivore utilization.</li>
-    <li><a href="https://pathplanner.dev/">PathPlanner Documentation</a> - Standardized GUI usage for creating 2D autonomous splines.</li>
-    <li><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/system-identification/index.html">WPILib System Identification (SysId)</a> - Advanced mathematical breakdowns of Quasistatic friction and Dynamic OLS regression curves.</li>
-    <li><a href="https://github.com/Team364/BaseFalconSwerve">Team 364 BaseFalconSwerve</a> - The historic FRC architecture that inspired modern template geometries.</li>
+    <li><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-pid.html">WPILib: Introduction to PID</a> - A deep dive into proportional-integral-derivative control.</li>
+    <li><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-feedforward.html">WPILib: Introduction to Feedforward</a> - Modeling the physics of your robot.</li>
+    <li><a href="https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/introduction.html">WPILib: Physics Simulation</a> - How to model mechanisms in code.</li>
+    <li><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/system-identification/index.html">WPILib System Identification (SysId)</a> - Characterizing your robot's physical constants.</li>
   </ul>
   </main>

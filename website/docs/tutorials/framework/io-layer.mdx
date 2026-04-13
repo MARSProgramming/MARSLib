@@ -14,7 +14,7 @@ title: "The IO Layer Pattern"
     <h1>The IO Layer Pattern</h1>
   </div>
 
-  <p>The most important architectural rule in MARSLib is the **separation of hardware from logic**. We use the AdvantageKit IO abstraction pattern to ensure that our robot code is deterministic, testable, and capable of bit-perfect log replay.</p>
+  <p>The most important architectural rule in MARSLib is the **separation of hardware from logic**. We use the <strong><a href="https://github.com/Mechanical-Advantage/AdvantageKit" target="_blank">AdvantageKit</a></strong> IO abstraction pattern to ensure that our robot code is deterministic, testable, and capable of bit-perfect log replay.</p>
 
   <div className="callout">
     <h4>Architectural Immunity</h4>
@@ -22,7 +22,7 @@ title: "The IO Layer Pattern"
   </div>
 
   <h2>1. The Interface</h2>
-  <p>First, we define an interface that lists all inputs the subsystem needs from the hardware. We use <code>@AutoLog</code> to automatically generate the logging boilerplate.</p>
+  <p>First, we define an interface that lists all inputs the subsystem needs from the hardware. We use <code>@AutoLog</code> from <strong><a href="https://github.com/Mechanical-Advantage/AdvantageKit" target="_blank">AdvantageKit</a></strong> to automatically generate the logging boilerplate.</p>
 
   ```java
 public interface FlywheelIO {
@@ -44,7 +44,7 @@ public interface FlywheelIO {
 
   ```java
 public class FlywheelIOTalonFX implements FlywheelIO {
-  private final TalonFX motor;
+  private final <a href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/talonfx.html" target="_blank">TalonFX</a> motor;
 
   public FlywheelIOTalonFX(int id) {
     motor = new TalonFX(id);
@@ -64,7 +64,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 ```
 
   <h2>3. Physics Implementation</h2>
-  <p>The "Sim" implementation uses math to calculate how a motor would behave. MARSLib uses <code>DCMotorSim</code> and <code>dyn4j</code> for high-fidelity physics.</p>
+  <p>The "Sim" implementation uses math to calculate how a motor would behave. MARSLib uses <strong><a href="https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/introduction.html" target="_blank">WPILib Physics Sims</a></strong> (like <code>DCMotorSim</code>) and <strong><a href="https://marsprogramming.github.io/MARSLib/docs/tutorials/framework/simulation">MARSPhysicsWorld</a></strong> for high-fidelity physics.</p>
 
   ```java
 public class FlywheelIOSim implements FlywheelIO {

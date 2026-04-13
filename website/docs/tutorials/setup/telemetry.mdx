@@ -1,7 +1,7 @@
 ---
 sidebar_position: 3
 id: telemetry
-title: "Telemetry Mastery"
+4: title: "Telemetry Mastery"
 ---
 
 
@@ -14,15 +14,15 @@ title: "Telemetry Mastery"
     <h1>Telemetry Mastery</h1>
   </div>
 
-  <p>Driving blindly is a thing of the past. In MARSLib, we use Mechanical Advantage's AdvantageKit, which guarantees a structurally clean decoupling of hardware states, ensuring deterministic Replay of any past FRC match. All of this telemetry data is then visualized dynamically in AdvantageScope.</p>
+  <p>Driving blindly is a thing of the past. In MARSLib, we use Mechanical Advantage's <strong><a href="https://github.com/Mechanical-Advantage/AdvantageKit" target="_blank">AdvantageKit</a></strong>, which guarantees a structurally clean decoupling of hardware states, ensuring deterministic Replay of any past FRC match. All of this telemetry data is then visualized dynamically in <strong><a href="https://github.com/Mechanical-Advantage/AdvantageScope" target="_blank">AdvantageScope</a></strong>.</p>
 
   <h2>1. AdvantageKit Basics</h2>
-  <p>Every real hardware output (e.g. TalonFX ticks, Pigeon2 yaw, or CANdle states) must be logged through an \`IO\` abstraction layer using an \`AutoLogged\` object.</p>
+  <p>Every real hardware output (e.g. TalonFX ticks, Pigeon2 yaw, or CANdle states) must be logged through an `IO` abstraction layer using an `AutoLogged` object.</p>
 
-  <p>When you add a variable like <code>public double motorCurrentAmps = 0.0;</code> inside an IO struct, AdvantageKit immediately picks it up and pushes it to NetworkTables dynamically. The \`Robot.java\` loop uses this logged struct identically, whether running in physical competition or in Replay mode.</p>
+  <p>When you add a variable like <code>public double motorCurrentAmps = 0.0;</code> inside an IO struct, AdvantageKit immediately picks it up and pushes it to NetworkTables dynamically. The `Robot.java` loop uses this logged struct identically, whether running in physical competition or in Replay mode.</p>
 
   <h2>2. AdvantageScope vs. Shuffleboard</h2>
-  <p>While MARSLib fundamentally relies on <strong>AdvantageScope</strong> for sophisticated 3D visualizations, log replay, and time-series graphing, we still utilize <strong>Shuffleboard</strong> for certain live operations.</p>
+  <p>While MARSLib fundamentally relies on <strong><a href="https://github.com/Mechanical-Advantage/AdvantageScope" target="_blank">AdvantageScope</a></strong> for sophisticated 3D visualizations, log replay, and time-series graphing, we still utilize <strong><a href="https://docs.wpilib.org/en/stable/docs/software/dashboards/shuffleboard/index.html" target="_blank">Shuffleboard</a></strong> for certain live operations.</p>
   <p>Shuffleboard is typically reserved for simple boolean toggles (like selecting auto routines from the driver station), sending basic string configurations prior to a match, or when rapid drag-and-drop dashboarding is required without setting up rigid JSON layouts.</p>
 
   <h3>Installing AdvantageScope</h3>
@@ -51,7 +51,7 @@ title: "Telemetry Mastery"
 
   <ul >
     <li >Download the <code>.wpilog</code> natively from the Robot using the Log Auto-Uploader or AdvantageScope's file downloader.</li>
-    <li >Open AdvantageScope locally, change the Source down arrow over to <strong>Log File</strong>, and target your \`.wpilog\` file.</li>
+    <li >Open AdvantageScope locally, change the Source down arrow over to <strong>Log File</strong>, and target your `.wpilog` file.</li>
     <li >You can scrub back and forward using the slider—you'll see exactly what angles the Swerve modules were targeting right as the error occurred.</li>
   </ul>
 
@@ -62,7 +62,7 @@ title: "Telemetry Mastery"
     <h4 >Elite Tuning Workflow</h4>
     <p>Imagine your robot missed several shots because the Vision hallucination rejection filter failed. Instead of guessing parameters on the live robot:</p>
     <ul>
-      <li>Download the <code>.wpilog</code> from the match.</li>
+      <li>Download the `.wpilog` from the match.</li>
       <li>Boot MARSLib in <code>SimReplay</code> mode and target the log file.</li>
       <li>Alter your Pose Estimation code locally, rebuild, and watch the exact match play out with your newly tuned vision filters.</li>
     </ul>
@@ -77,8 +77,3 @@ title: "Telemetry Mastery"
     <li><a href="https://github.com/Mechanical-Advantage/AdvantageScope">AdvantageScope Documentation</a> - Visualizing 3D logs natively in real-time.</li>
   </ul>
   </main>
-
-
-
-
-

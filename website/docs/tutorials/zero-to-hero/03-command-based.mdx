@@ -10,12 +10,12 @@ title: "3. Command-Based Paradigm"
   </div>
 
   <p>If you've built simple robots before, you might have written all your code linearly: "Wait 2 seconds, drive forward, spin the intake, stop." In FRC, <strong>this is lethal.</strong> Blocking the main thread for even a single second violates the FRC networking envelope and crashes the robot.</p>
-  <p>To ensure code is evaluated safely every 20ms, WPILib enforces the <strong>Command-Based Paradigm</strong>.</p>
+  <p>To ensure code is evaluated safely every 20ms, WPILib enforces the <strong><a href="https://docs.wpilib.org/en/stable/docs/software/commandbased/index.html" target="_blank">Command-Based Paradigm</a></strong>.</p>
 
   <h2>1. Subsystems (The Nouns)</h2>
   <div className="callout callout-info">
     <h4>Persistent Wrappers</h4>
-    <p>A Subsystem represents physical hardware on the robot (e.g., <code>ElevatorSubsystem</code>, <code>ShooterSubsystem</code>). It is instantiated exactly once on boot and persists forever.</p>
+    <p>A <a href="https://docs.wpilib.org/en/stable/docs/software/commandbased/subsystems.html" target="_blank">Subsystem</a> represents physical hardware on the robot (e.g., <code>ElevatorSubsystem</code>, <code>ShooterSubsystem</code>). It is instantiated exactly once on boot and persists forever.</p>
   </div>
   <ul>
     <li>Subsystems own the physical motors and CAN IDs.</li>
@@ -24,14 +24,14 @@ title: "3. Command-Based Paradigm"
   </ul>
 
   <h2>2. Commands (The Verbs)</h2>
-  <p>Commands are discrete actions (e.g., <code>FireShooterCommand</code>, <code>ScoreAmpCommand</code>).</p>
+  <p><a href="https://docs.wpilib.org/en/stable/docs/software/commandbased/commands.html" target="_blank">Commands</a> are discrete actions (e.g., <code>FireShooterCommand</code>, <code>ScoreAmpCommand</code>).</p>
   <ul>
     <li>Commands are <strong>ephemeral</strong>. They are instantiated, executed, and then die.</li>
     <li>Every Command must <em>Require</em> a Subsystem. If <code>FireShooterCommand</code> requires the Shooter Subsystem, it locks it. If another routine tries to touch the Shooter, the original Command is forcefully interrupted!</li>
   </ul>
 
   <h2>3. The RobotContainer (The Glue)</h2>
-  <p>You cannot blindly command motors in FRC directly from driver inputs. We use the <code>RobotContainer.java</code> class as a strict wiring harness.</p>
+  <p>You cannot blindly command motors in FRC directly from driver inputs. We use the <strong><a href="https://docs.wpilib.org/en/stable/docs/software/commandbased/structuring-command-based-project.html#robotcontainer" target="_blank">RobotContainer.java</a></strong> class as a strict wiring harness.</p>
   
   ```java
   // In RobotContainer.java

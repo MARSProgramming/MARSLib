@@ -14,7 +14,7 @@ title: "Automated Log Uploader"
     <h1>Automated Log Uploader</h1>
   </div>
 
-  <p>Manually retrieving USB drives from the RoboRIO is tedious. MARSLib introduces the <code>LogUploader</code>, an asynchronous daemon thread that quietly runs in the background. If it detects a tethered internet connection, it automatically pushes all new AdvantageKit <code>.wpilog</code> files directly to your team's GitHub repository!</p>
+  <p>Manually retrieving USB drives from the <a href="https://www.ni.com/en/shop/hardware/products/roborio.html" target="_blank">RoboRIO</a> is tedious. MARSLib introduces the <code>LogUploader</code>, an asynchronous daemon thread that quietly runs in the background. If it detects a tethered internet connection, it automatically pushes all new <a href="https://github.com/Mechanical-Advantage/AdvantageKit" target="_blank">AdvantageKit</a> <code>.wpilog</code> files directly to your team's <a href="https://github.com/" target="_blank">GitHub</a> repository!</p>
 
   <h2>1. Dedicated Log Repository</h2>
   <p>Do not upload logs directly into your main robot code repository! Telemetry logs are massive binary files and will quickly bloat your Git history. Create a brand new, empty repository solely for telemetry.</p>
@@ -34,7 +34,7 @@ public final class LogUploader {
   <h2>3. Personal Access Token</h2>
   <p>The RoboRIO needs permission to upload directly to your team's GitHub organization.</p>
   <ol >
-    <li >Navigate to: <em>Settings</em> &rarr; <em>Developer Settings</em> &rarr; <em>Personal Access Tokens</em>.</li>
+    <li >Navigate to: <em>Settings</em> &rarr; <em>Developer Settings</em> &rarr; <em><a href="https://github.com/settings/tokens" target="_blank">Personal Access Tokens</a></em>.</li>
     <li >Generate a new token with <strong>Read &amp; Write</strong> access to <strong>Contents</strong>.</li>
     <li >Copy the exact token string (it will start with <code>github_pat_</code>).</li>
   </ol>
@@ -64,10 +64,3 @@ src/main/deploy/github_pat.txt
     <li><a href="https://github.com/Mechanical-Advantage/AdvantageScope">AdvantageScope Documentation</a> - Visualizing 3D logs natively in real-time.</li>
   </ul>
   </main>
-
-
-
-
-
-
-
