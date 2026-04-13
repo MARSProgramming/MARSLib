@@ -1,492 +1,156 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import Layout from '@theme/Layout';
-
-const MERMAID_CHART = `graph TD
-    Z[User Project<br><i>RobotContainer.java</i>] -->|Depends On| A(MARSLib Framework<br><i>Vendor Dependency</i>)
-    A --> C[Swerve Subsystem]
-    A --> D[Mechanisms]
-    A --> E[System Utilities]
-    C <--> F{IO Abstraction Layer}
-    D <--> F
-    E <--> F
-    F <-->|Hardware Mode| G[IOReal<br><i>TalonFX, Pigeon2</i>]
-    F <-->|Simulation Mode| H[IOSim<br><i>Dyn4j Physics</i>]
-    G --> I[(AdvantageKit Log)]
-    H --> I
-    style Z fill:#0a0a0a,stroke:#2a2a2a,stroke-width:2px,color:#e8e8e8
-    style A fill:#141414,stroke:#B32416,stroke-width:2px,color:#e8e8e8
-    style C fill:#1a1a1a,stroke:#2a2a2a,stroke-width:1px,color:#e8e8e8
-    style D fill:#1a1a1a,stroke:#2a2a2a,stroke-width:1px,color:#e8e8e8
-    style E fill:#1a1a1a,stroke:#2a2a2a,stroke-width:1px,color:#e8e8e8
-    style F fill:#B32416,stroke:#d42e1e,stroke-width:2px,color:#fff
-    style G fill:#2a2a2a,stroke:#1a1a1a,stroke-width:1px,color:#29b6f6
-    style H fill:#2a2a2a,stroke:#1a1a1a,stroke-width:1px,color:#9c7bcc
-    style I fill:#0a0a0a,stroke:#6ba3d6,stroke-width:2px,color:#6ba3d6`;
-
-function MermaidDiagram() {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const tryRender = () => {
-      if (typeof (window as any).mermaid !== 'undefined' && ref.current) {
-        ref.current.innerHTML = MERMAID_CHART;
-        ref.current.removeAttribute('data-processed');
-        (window as any).mermaid.run({ nodes: [ref.current] });
-      } else {
-        setTimeout(tryRender, 300);
-      }
-    };
-    tryRender();
-  }, []);
-
-  return (
-    <div
-      ref={ref}
-      className="mermaid"
-      style={{ background: 'transparent', textAlign: 'center', padding: '24px' }}
-    />
-  );
-}
+import SwerveSim from '../components/SwerveSim';
 
 export default function Home() {
   return (
-    <Layout title="Index">
+    <Layout title="Home" description="MARSLib: Championship-tier FRC framework">
       <div className="legacy-mars">
-        <div dangerouslySetInnerHTML={{ __html: `
-
-
-
-
-<!-- Hero -->
-<section class="hero">
-  <div class="container">
-    <a href="https://www.marsfirst.org/" target="_blank" style="display: block; text-decoration: none;">
-      <img src="assets/mars-logo.png" alt="MARS Team 2614 Logo" class="hero-logo">
-    </a>
-    <div class="hero-badge">MOUNTAINEER AREA ROBOTICS — TEAM 2614</div>
-    <h1>MARS<span>Lib</span></h1>
-    <p>
-      A zero-allocation, physics-simulated FRC framework with deterministic AdvantageKit logging,
-      250Hz odometry, and shot-on-the-move kinematics.
-    </p>
-    <div class="hero-actions">
-      <a href="/MARSLib/docs/intro" class="btn btn-accent" style="box-shadow: 0 4px 20px rgba(179, 36, 22, 0.4);">🎓 TUTORIALS</a>
-      <a href="/MARSLib/standards" class="btn btn-accent" style="box-shadow: 0 4px 20px rgba(179, 36, 22, 0.4);">📖 CORE STANDARDS</a>
-      <a href="/MARSLib/javadoc/index.html" class="btn btn-accent" style="box-shadow: 0 4px 20px rgba(179, 36, 22, 0.4);">BROWSE API DOCS</a>
-    </div>
-  </div>
-</section>
-
-<!-- Hall of Fame -->
-<div class="container">
-  <a href="https://www.firsthalloffame.org" target="_blank" style="text-decoration: none;">
-    <div class="hof-banner">
-      <img src="assets/hall-of-fame.png" alt="FIRST Hall of Fame">
-      <div class="hof-text">
-        <h3>FIRST HALL OF FAME INDUCTEE</h3>
-        <p>Championship Chairman's Award Winner — recognized for transforming the culture of STEM in West Virginia.</p>
-      </div>
-      <div class="hof-year">2017</div>
-    </div>
-  </a>
-</div>
-
-<!-- Stats -->
-<div class="container">
-  <div class="stats">
-    <div class="stat">
-      <div class="stat-value">93</div>
-      <div class="stat-label">Source Files</div>
-    </div>
-    <div class="stat">
-      <div class="stat-value">145</div>
-      <div class="stat-label">Unit Tests</div>
-    </div>
-    <div class="stat">
-      <div class="percentage">72%</div>
-      <div class="stat-label">Instruction Coverage</div>
-      <div class="instruction-count">13,666 / 19,004 instructions covered</div>
-    </div>
-    <div class="stat">
-      <div class="stat-value">250Hz</div>
-      <div class="stat-label">Odometry Rate</div>
-    </div>
-    <div class="stat">
-      <div class="stat-value">0</div>
-      <div class="stat-label">Hot-Path Allocs</div>
-    </div>
-  </div>
-</div>
-
-<!-- Features -->
-<section id="features">
-  <div class="container">
-    <div class="section-header">
-      <h2>Framework Features</h2>
-      <p>Every system is designed for deterministic, replay-safe operation under competition stress.</p>
-    </div>
-    <div class="feature-grid">
-      <a href="/MARSLib/feature-zero-allocation" style="text-decoration: none; color: inherit;">
-        <div class="feature-card">
-          <div class="feature-icon"><img src="assets/mars-logo.png" alt="MARS"></div>
-          <h3>ZERO-ALLOCATION HOT PATH</h3>
-          <p>Pre-allocated odometry buffers, cached module states, and static velocity constants ensure the 20ms control loop runs with zero garbage collection pressure.</p>
-          <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--mars-red-light); letter-spacing: 0.06em;">LEARN MORE →</span>
-        </div>
-      </a>
-      <a href="/MARSLib/docs/intro" style="text-decoration: none; color: inherit;">
-        <div class="feature-card">
-          <div class="feature-icon" style="background: rgba(41, 182, 246, 0.15);"><img src="assets/mars-logo.png" alt="MARS Logo"></div>
-          <h3>ROBOT ONBOARDING</h3>
-          <p>Complete step-by-step guidance for installing WPILib, Git, cloning the framework, and setting up AdvantageScope layouts for telemetry mastery.</p>
-          <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: #29b6f6; letter-spacing: 0.06em;">START LEARNING →</span>
-        </div>
-      </a>
-      <a href="/MARSLib/feature-simulation" style="text-decoration: none; color: inherit;">
-        <div class="feature-card">
-          <div class="feature-icon"><img src="assets/logos/dyn4j.png" alt="Dyn4j"></div>
-          <h3>PHYSICS SIMULATION & TESTING</h3>
-          <p>Full 2D Dyn4j rigid-body simulation powering 89+ offline CI/CD tests. Develop control loops and autonomous paths without mocking or a physical robot.</p>
-          <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--purple); letter-spacing: 0.06em;">LEARN MORE →</span>
-        </div>
-      </a>
-      <a href="/MARSLib/feature-logging" style="text-decoration: none; color: inherit;">
-        <div class="feature-card">
-          <div class="feature-icon"><img src="assets/logos/advantagekit.png" alt="AdvantageKit"></div>
-          <h3>ADVANTAGEKIT LOGGING</h3>
-          <p>Every input is recorded, every output is reproducible. Replay any match in AdvantageScope with bit-perfect algorithm reproduction through the IO abstraction.</p>
-          <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--blue); letter-spacing: 0.06em;">LEARN MORE →</span>
-        </div>
-      </a>
-      <a href="/MARSLib/feature-faults" style="text-decoration: none; color: inherit;">
-        <div class="feature-card">
-          <div class="feature-icon"><img src="assets/mars-logo.png" alt="MARS Logo"></div>
-          <h3>THREAD-SAFE FAULT MANAGEMENT</h3>
-          <p>ConcurrentHashMap-backed fault tracking with atomic counters. CAN bus dropouts trigger LED alerts, controller rumble, and automatic dead-reckoning fallback.</p>
-          <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--mars-red-light); letter-spacing: 0.06em;">LEARN MORE →</span>
-        </div>
-      </a>
-      <a href="/MARSLib/feature-sotm" style="text-decoration: none; color: inherit;">
-        <div class="feature-card">
-          <div class="feature-icon"><img src="assets/mars-logo.png" alt="MARS Logo"></div>
-          <h3>SHOT-ON-THE-MOVE SOLVER</h3>
-          <p>Quadratic time-of-flight interception with Magnus lift compensation. Accurate shooting while pulling full-speed swerve maneuvers.</p>
-          <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--yellow); letter-spacing: 0.06em;">LEARN MORE →</span>
-        </div>
-      </a>
-      
-      <a href="/MARSLib/feature-skills" style="text-decoration: none; color: inherit;">
-        <div class="feature-card">
-          <div class="feature-icon" style="background: rgba(41, 182, 246, 0.15);"><img src="assets/mars-logo.png" alt="MARS Logo"></div>
-          <h3>AGENTIC SKILL ARCHITECTURE</h3>
-          <p>The first robot framework co-developed with AI. Specialized skills enforce elite architectural patterns, ensuring all code maintains zero-allocation metrics.</p>
-          <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: #29b6f6; letter-spacing: 0.06em;">LEARN MORE →</span>
-        </div>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- Architecture -->
-<section id="architecture">
-  <div class="container">
-    <div class="section-header">
-      <h2>Architecture</h2>
-      <p>Strict AdvantageKit dependency injection isolates logic from hardware.</p>
-    </div>
-    <div class="arch-diagram" style="padding: 24px; text-align: center;">
-` }} />
-        <MermaidDiagram />
-        <div dangerouslySetInnerHTML={{ __html: `
-    </div>
-  </div>
-</section>
-
-<!-- Packages -->
-<section id="packages">
-  <div class="container">
-    <div class="section-header">
-      <h2>Package Reference</h2>
-      <p>Core framework packages and their responsibilities.</p>
-    </div>
-    <table class="package-table">
-      <thead>
-        <tr>
-          <th>Package</th>
-          <th>Description</th>
-          <th>Key Classes</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><a href="/MARSLib/javadoc/com/marslib/swerve/package-summary.html" style="text-decoration: none; color: inherit;"><code>com.marslib.swerve</code></a></td>
-          <td>250Hz odometry, swerve kinematics, traction control, and teleop math</td>
-          <td>
-            <a href="/MARSLib/javadoc/com/marslib/swerve/SwerveDrive.html" style="color: var(--mars-red-light); text-decoration: none;">SwerveDrive</a>, 
-            <a href="/MARSLib/javadoc/com/marslib/swerve/SwerveModule.html" style="color: var(--mars-red-light); text-decoration: none;">SwerveModule</a>, 
-            <a href="/MARSLib/javadoc/com/marslib/swerve/PhoenixOdometryThread.html" style="color: var(--mars-red-light); text-decoration: none;">PhoenixOdometryThread</a>
-          </td>
-        </tr>
-        <tr>
-          <td><a href="/MARSLib/javadoc/com/marslib/vision/package-summary.html" style="text-decoration: none; color: inherit;"><code>com.marslib.vision</code></a></td>
-          <td>AprilTag localization with MegaTag 2.0 fusion and ambiguity rejection</td>
-          <td>
-            <a href="/MARSLib/javadoc/com/marslib/vision/MARSVision.html" style="color: var(--mars-red-light); text-decoration: none;">MARSVision</a>, 
-            <a href="/MARSLib/javadoc/com/marslib/vision/VisionIO.html" style="color: var(--mars-red-light); text-decoration: none;">VisionIO</a>, 
-            <a href="/MARSLib/javadoc/com/marslib/vision/VisionConstants.html" style="color: var(--mars-red-light); text-decoration: none;">VisionConstants</a>
-          </td>
-        </tr>
-        <tr>
-          <td><a href="/MARSLib/javadoc/com/marslib/mechanisms/package-summary.html" style="text-decoration: none; color: inherit;"><code>com.marslib.mechanisms</code></a></td>
-          <td>Generic IO abstractions for linear, rotary, and flywheel mechanisms</td>
-          <td>
-            <a href="/MARSLib/javadoc/com/marslib/mechanisms/RotaryMechanismIO.html" style="color: var(--mars-red-light); text-decoration: none;">RotaryMechanismIO</a>, 
-            <a href="/MARSLib/javadoc/com/marslib/mechanisms/LinearMechanismIO.html" style="color: var(--mars-red-light); text-decoration: none;">LinearMechanismIO</a>
-          </td>
-        </tr>
-        <tr>
-          <td><a href="/MARSLib/javadoc/com/marslib/faults/package-summary.html" style="text-decoration: none; color: inherit;"><code>com.marslib.faults</code></a></td>
-          <td>Thread-safe fault reporting, LED alerts, and diagnostic commands</td>
-          <td>
-            <a href="/MARSLib/javadoc/com/marslib/faults/MARSFaultManager.html" style="color: var(--mars-red-light); text-decoration: none;">MARSFaultManager</a>, 
-            <a href="/MARSLib/javadoc/com/marslib/faults/Alert.html" style="color: var(--mars-red-light); text-decoration: none;">Alert</a>
-          </td>
-        </tr>
-        <tr>
-          <td><a href="/MARSLib/javadoc/com/marslib/simulation/package-summary.html" style="text-decoration: none; color: inherit;"><code>com.marslib.simulation</code></a></td>
-          <td>Dyn4j physics world, game piece spawning, and field obstacle meshes</td>
-          <td>
-            <a href="/MARSLib/javadoc/com/marslib/simulation/MARSPhysicsWorld.html" style="color: var(--mars-red-light); text-decoration: none;">MARSPhysicsWorld</a>, 
-            <a href="/MARSLib/javadoc/com/marslib/simulation/GamePieceBody.html" style="color: var(--mars-red-light); text-decoration: none;">GamePieceBody</a>
-          </td>
-        </tr>
-        <tr>
-          <td><a href="/MARSLib/javadoc/com/marslib/power/package-summary.html" style="text-decoration: none; color: inherit;"><code>com.marslib.power</code></a></td>
-          <td>Voltage load-shedding and stator current monitoring</td>
-          <td>
-            <a href="/MARSLib/javadoc/com/marslib/power/MARSPowerManager.html" style="color: var(--mars-red-light); text-decoration: none;">MARSPowerManager</a>
-          </td>
-        </tr>
-        <tr>
-          <td><a href="/MARSLib/javadoc/com/marslib/util/package-summary.html" style="text-decoration: none; color: inherit;"><code>com.marslib.util</code></a></td>
-          <td>State machines, tunable numbers, shot math, and feedforward estimation</td>
-          <td>
-            <a href="/MARSLib/javadoc/com/marslib/util/MARSStateMachine.html" style="color: var(--mars-red-light); text-decoration: none;">MARSStateMachine</a>, 
-            <a href="/MARSLib/javadoc/com/marslib/util/EliteShooterMath.html" style="color: var(--mars-red-light); text-decoration: none;">EliteShooterMath</a>, 
-            <a href="/MARSLib/javadoc/com/marslib/util/LoggedTunableNumber.html" style="color: var(--mars-red-light); text-decoration: none;">LoggedTunableNumber</a>
-          </td>
-        </tr>
-        <tr>
-          <td><a href="/MARSLib/javadoc/com/marslib/auto/package-summary.html" style="text-decoration: none; color: inherit;"><code>com.marslib.auto</code></a></td>
-          <td>PathPlanner integration, alignment commands, and diagnostic checks</td>
-          <td>
-            <a href="/MARSLib/javadoc/com/marslib/auto/MARSAutoBuilder.html" style="color: var(--mars-red-light); text-decoration: none;">MARSAutoBuilder</a>, 
-            <a href="/MARSLib/javadoc/com/marslib/auto/MARSDiagnosticCheck.html" style="color: var(--mars-red-light); text-decoration: none;">MARSDiagnosticCheck</a>
-          </td>
-        </tr>
-        <tr>
-          <td><code>frc.robot</code></td>
-          <td>Competition logic: RobotContainer, commands, constants, and bindings</td>
-          <td>RobotContainer, MARSSuperstructure, ShootOnTheMoveCommand</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<!-- Coverage -->
-<section id="coverage">
-  <div class="container">
-    <div class="section-header">
-      <h2>Test Coverage</h2>
-      <p>JaCoCo-measured coverage across 44 test files and 145 test cases.</p>
-    </div>
-    <div class="coverage-grid">
-      <div class="coverage-card">
-        <h4>📏 Line Coverage</h4>
-        <div class="progress-bar">
-          <div class="progress-fill" style="width: 71%; background: linear-gradient(90deg, var(--mars-red), var(--yellow));"></div>
-        </div>
-        <div class="coverage-meta">2,742 / 3,878 lines covered (71%)</div>
-      </div>
-      <div class="coverage-card">
-        <h4>🌿 Branch Coverage</h4>
-        <div class="progress-bar">
-          <div class="progress-fill" style="width: 56%; background: linear-gradient(90deg, var(--green), var(--blue));"></div>
-        </div>
-        <div class="coverage-meta">487 / 865 branches covered (56%)</div>
-      </div>
-      <div class="coverage-card">
-        <h4>⚙️ Instruction Coverage</h4>
-        <div class="progress-bar">
-          <div class="progress-fill" style="width: 72%; background: linear-gradient(90deg, var(--purple), var(--blue));"></div>
-        </div>
-        <div class="coverage-meta">13,666 / 19,004 instructions covered (72%)</div>
-      </div>
-      <div class="coverage-card">
-        <h4>🏗️ Class Coverage</h4>
-        <div class="progress-bar">
-          <div class="progress-fill" style="width: 75%; background: linear-gradient(90deg, var(--green), var(--mars-red));"></div>
-        </div>
-        <div class="coverage-meta">91 / 121 classes covered (75%)</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Resources & Training -->
-<section id="resources">
-  <div class="container">
-    <div class="section-header">
-      <h2>Resources &amp; Training</h2>
-      <p>Interactive guides for MARSLib and essential learning materials for our core dependencies.</p>
-    </div>
-    <div class="feature-grid">
-      <a href="/MARSLib/docs/intro" style="text-decoration: none; color: inherit;">
-        <div class="feature-card" style="border: 1px solid var(--mars-red);">
-          <div class="feature-icon">
-            <img src="assets/mars-logo.png" alt="MARSLib">
+        
+        {/* Hero Section */}
+        <section className="hero" style={{ paddingBottom: '30px' }}>
+          <div className="container">
+            <a href="https://www.marsfirst.org/" target="_blank" style={{ display: 'block', textDecoration: 'none' }}>
+              <img src="/MARSLib/assets/mars-logo.png" alt="MARS Team 2614 Logo" className="hero-logo" />
+            </a>
+            <div className="hero-badge">MOUNTAINEER AREA ROBOTICS — TEAM 2614</div>
+            <h1>MARS<span>Lib</span></h1>
+            <p>
+              A zero-allocation, physics-simulated FRC framework with deterministic AdvantageKit logging,
+              250Hz odometry, and shot-on-the-move kinematics.
+            </p>
+            <div className="hero-actions">
+              <a href="/MARSLib/docs/intro" className="btn btn-accent" style={{ boxShadow: '0 4px 20px rgba(179, 36, 22, 0.4)' }}>🎓 TUTORIALS</a>
+              <a href="/MARSLib/standards" className="btn btn-accent" style={{ boxShadow: '0 4px 20px rgba(179, 36, 22, 0.4)' }}>📖 CORE STANDARDS</a>
+              <a href="/MARSLib/javadoc/index.html" className="btn btn-accent" style={{ boxShadow: '0 4px 20px rgba(179, 36, 22, 0.4)' }}>BROWSE API DOCS</a>
+            </div>
+            
+            {/* Swerve Simulator Embedded in Hero */}
+            <div style={{ maxWidth: '800px', margin: '40px auto 0 auto', borderRadius: '8px', boxShadow: '0 8px 32px rgba(0,0,0,0.5)', overflow: 'hidden' }}>
+                <SwerveSim />
+            </div>
           </div>
-          <h3>MARSLIB TUTORIALS</h3>
-          <p>Interactive guides covering Swerve kinematics, zero-allocation structures, power shedding, and collision-safe state machines.</p>
-          <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--mars-red-light); letter-spacing: 0.06em;">INTERACTIVE LEARNING →</span>
-        </div>
-      </a>
-      <a href="https://docs.advantagekit.org" target="_blank" style="text-decoration: none; color: inherit;">
-        <div class="feature-card">
-          <div class="feature-icon">
-            <img src="assets/logos/advantagekit.png" alt="AdvantageKit">
-          </div>
-          <h3>ADVANTAGEKIT DOCS</h3>
-          <p>Official AdvantageKit documentation — IO layer patterns, deterministic log replay, and recording inputs/outputs.</p>
-          <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--blue); letter-spacing: 0.06em;">CORE FRAMEWORK →</span>
-        </div>
-      </a>
-      <a href="https://docs.advantagescope.org" target="_blank" style="text-decoration: none; color: inherit;">
-        <div class="feature-card">
-          <div class="feature-icon">
-            <img src="assets/logos/advantagescope.png" alt="AdvantageScope">
-          </div>
-          <h3>ADVANTAGESCOPE</h3>
-          <p>Robot telemetry visualization — 3D field view, mechanism editors, joystick overlays, and log analysis.</p>
-          <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--purple); letter-spacing: 0.06em;">TELEMETRY →</span>
-        </div>
-      </a>
-      <a href="https://docs.wpilib.org/en/2025/" target="_blank" style="text-decoration: none; color: inherit;">
-        <div class="feature-card">
-          <div class="feature-icon">
-            <img src="assets/logos/wpilib.svg" alt="WPILib">
-          </div>
-          <h3>WPILIB DOCS</h3>
-          <p>The official FRC programming guide — command-based architecture, hardware APIs, and simulation.</p>
-          <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--green); letter-spacing: 0.06em;">FRC FOUNDATION →</span>
-        </div>
-      </a>
-      <a href="https://pathplanner.dev/home.html" target="_blank" style="text-decoration: none; color: inherit;">
-        <div class="feature-card">
-          <div class="feature-icon">
-            <img src="assets/logos/pathplanner.png" alt="PathPlanner">
-          </div>
-          <h3>PATHPLANNER</h3>
-          <p>Path planning GUI and library — create autonomous trajectories and build auto routines with named commands.</p>
-          <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--yellow); letter-spacing: 0.06em;">AUTONOMOUS →</span>
-        </div>
-      </a>
-      <a href="https://v6.docs.ctr-electronics.com/" target="_blank" style="text-decoration: none; color: inherit;">
-        <div class="feature-card">
-          <div class="feature-icon">
-            <img src="assets/logos/ctre.png" alt="CTRE">
-          </div>
-          <h3>CTRE PHOENIX 6</h3>
-          <p>TalonFX, CANcoder, and Pigeon2 documentation — motion control, signal API, and high-frequency CAN FD.</p>
-          <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--mars-red-light); letter-spacing: 0.06em;">HARDWARE →</span>
-        </div>
-      </a>
-      <a href="https://docs.revrobotics.com/brushless/revlib" target="_blank" style="text-decoration: none; color: inherit;">
-        <div class="feature-card">
-          <div class="feature-icon">
-            <img src="assets/logos/rev.png" alt="REV">
-          </div>
-          <h3>REV ROBOTICS</h3>
-          <p>REVLib documentation for SPARK MAX/Flex motor controllers and the REV Control Hub ecosystem.</p>
-          <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--mars-red-light); letter-spacing: 0.06em;">HARDWARE →</span>
-        </div>
-      </a>
-      <a href="https://docs.limelightvision.io/" target="_blank" style="text-decoration: none; color: inherit;">
-        <div class="feature-card">
-          <div class="feature-icon">
-            <img src="assets/logos/limelight.svg" alt="Limelight">
-          </div>
-          <h3>LIMELIGHT</h3>
-          <p>Limelight smart camera documentation — AprilTag pipelines, MegaTag localization, and neural network detection.</p>
-          <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--green); letter-spacing: 0.06em;">VISION →</span>
-        </div>
-      </a>
-      <a href="https://docs.photonvision.org/" target="_blank" style="text-decoration: none; color: inherit;">
-        <div class="feature-card">
-          <div class="feature-icon">
-            <img src="assets/logos/photonvision.png" alt="PhotonVision">
-          </div>
-          <h3>PHOTONVISION</h3>
-          <p>Open-source vision processing — AprilTag pose estimation, hardware calibration, and PhotonLib integration.</p>
-          <span style="display: inline-block; margin-top: 12px; font-size: 0.75rem; font-family: 'Orbitron', sans-serif; color: var(--green); letter-spacing: 0.06em;">VISION →</span>
-        </div>
-      </a>
-    </div>
-  </div>
-</section>
+        </section>
 
-<!-- Open Source Acknowledgments -->
-<section id="acknowledgments" style="padding: 60px 0; background: var(--bg-secondary); border-top: 1px solid var(--border);">
-  <div class="container" style="text-align: center;">
-    <div style="font-family: 'Orbitron', sans-serif; color: var(--text-primary); font-size: 1.5rem; letter-spacing: 0.1em; margin-bottom: 20px;">BUILT ON OPEN SOURCE</div>
-    <p style="color: var(--text-secondary); max-width: 800px; margin: 0 auto 40px; font-size: 1.1rem; line-height: 1.8;">
-      MARSLib stands upon the shoulders of giants. We extend our deepest gratitude to the <b>MapleSim</b> project for their groundbreaking simulation patterns, and to the incredible open-source maintainers, corporate sponsors, and the FIRST community for making modern FRC software possible. 
-    </p>
-    <div class="partner-grid">
-      <a href="https://github.com/wpilibsuite/allwpilib" target="_blank" class="partner-badge">
-        <img src="assets/logos/wpilib.svg" alt="WPILib" class="partner-logo">
-        WPILib
-      </a>
-      <a href="https://github.com/Mechanical-Advantage" target="_blank" class="partner-badge">
-        <img src="assets/logos/advantagekit.png" alt="AdvantageKit" class="partner-logo">
-        AdvantageKit
-      </a>
-      <a href="https://dyn4j.org/" target="_blank" class="partner-badge">
-        <img src="assets/logos/dyn4j.png" alt="Dyn4j" class="partner-logo">
-        Dyn4j
-      </a>
-      <a href="https://pathplanner.dev/" target="_blank" class="partner-badge">
-        <img src="assets/logos/pathplanner.png" alt="PathPlanner" class="partner-logo">
-        PathPlanner
-      </a>
-      <a href="https://photonvision.org/" target="_blank" class="partner-badge">
-        <img src="assets/logos/photonvision.png" alt="PhotonVision" class="partner-logo">
-        PhotonVision
-      </a>
-      <a href="https://store.ctr-electronics.com/" target="_blank" class="partner-badge">
-        <img src="assets/logos/ctre.png" alt="CTRE" class="partner-logo">
-        CTRE
-      </a>
-      <a href="https://www.revrobotics.com/" target="_blank" class="partner-badge">
-        <img src="assets/logos/rev.png" alt="REV" class="partner-logo">
-        REV
-      </a>
-      <a href="https://shenzhen-robotics-alliance.github.io/maple-sim/rebuilt/" target="_blank" class="partner-badge">
-        <img src="assets/logos/maplesim.png" alt="MapleSim" class="partner-logo">
-        MapleSim
-      </a>
-    </div>
-  </div>
-</section>
+        {/* Hall of Fame */}
+        <div className="container">
+          <a href="https://www.firsthalloffame.org" target="_blank" style={{ textDecoration: 'none' }}>
+            <div className="hof-banner">
+              <img src="/MARSLib/assets/hall-of-fame.png" alt="FIRST Hall of Fame" />
+              <div className="hof-text">
+                <h3>FIRST HALL OF FAME INDUCTEE</h3>
+                <p>Championship Chairman's Award Winner — recognized for transforming the culture of STEM in West Virginia.</p>
+              </div>
+              <div className="hof-year">2017</div>
+            </div>
+          </a>
+        </div>
 
-<!-- Footer -->
+        {/* Modular Documentation Categories (WPILib Style) */}
+        <section id="categories" style={{ paddingTop: '60px' }}>
+          <div className="container">
+            <div className="section-header">
+              <h2>Documentation Hub</h2>
+              <p>Explore the framework conceptually or dig right into tutorials.</p>
+            </div>
+            
+            <div className="feature-grid">
+              
+              {/* Card 1: Zero to MARS */}
+              <a href="/MARSLib/docs/tutorials/setup/getting-started" style={{ textDecoration: 'none', color: 'inherit' }}>
+                <div className="feature-card" style={{ borderTop: '4px solid var(--green)' }}>
+                  <h3>🚀 Zero to MARS</h3>
+                  <p>Start here! Configure Vendordeps, construct your first `RobotContainer`, and scaffold a generic subsystem with MARSLib bindings.</p>
+                </div>
+              </a>
+              
+              {/* Card 2: Core Architecture */}
+              <a href="/MARSLib/docs/tutorials/framework/architecture" style={{ textDecoration: 'none', color: 'inherit' }}>
+                <div className="feature-card" style={{ borderTop: '4px solid var(--mars-red)' }}>
+                  <h3>🏗️ Core Architecture</h3>
+                  <p>Learn the IO Layer AdvantageKit abstraction pattern, thread-safe fault management, and strict zero-allocation loop rules.</p>
+                </div>
+              </a>
 
+              {/* Card 3: Mechanism Abstraction */}
+              <a href="/MARSLib/docs/tutorials/framework/hardware-abstraction" style={{ textDecoration: 'none', color: 'inherit' }}>
+                <div className="feature-card" style={{ borderTop: '4px solid var(--orange)' }}>
+                  <h3>🦾 Mechanism Abstraction</h3>
+                  <p>Implement `RotaryMechanismIO` and `LinearMechanismIO` to dramatically speed up standard mechanism development.</p>
+                </div>
+              </a>
 
+              {/* Card 4: Control Theory */}
+              <a href="/MARSLib/docs/tutorials/framework/control-theory" style={{ textDecoration: 'none', color: 'inherit' }}>
+                <div className="feature-card" style={{ borderTop: '4px solid var(--yellow)' }}>
+                  <h3>🎮 Control Theory</h3>
+                  <p>Dive into Shoot-on-the-Move (SOTM) math, `EliteShooterMath`, Feedforwards, and WPILib SysId tuning integration.</p>
+                </div>
+              </a>
 
+              {/* Card 5: Simulation & Telemetry */}
+              <a href="/MARSLib/docs/tutorials/framework/simulation" style={{ textDecoration: 'none', color: 'inherit' }}>
+                <div className="feature-card" style={{ borderTop: '4px solid var(--purple)' }}>
+                  <h3>🖥️ Simulation & Telemetry</h3>
+                  <p>Configure Dyn4j 2D physics integration, AdvantageScope 3D field layouts, and automated GitHub log offloading.</p>
+                </div>
+              </a>
+              
+              {/* Card 6: AI Agents */}
+              <a href="/MARSLib/agent-skills" style={{ textDecoration: 'none', color: 'inherit' }}>
+                <div className="feature-card" style={{ borderTop: '4px solid var(--ai-cyan)' }}>
+                  <h3>🤖 AI Agents & Skills</h3>
+                  <p>Integrate `.agent` Markdown skills into your IDE to autonomously scaffold subsystems, fix WPILib PID errors, and write unit tests.</p>
+                </div>
+              </a>
+              
+            </div>
+            <div style={{ textAlign: 'center', marginTop: '40px' }}>
+                 <a href="/MARSLib/docs/resources" className="btn btn-primary" style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)', border: '1px solid var(--border)' }}>🔗 View External Resources & Acknowledgments</a>
+            </div>
+          </div>
+        </section>
 
+        {/* Coverage - Kept for Dashboard functionality */}
+        <section id="coverage" style={{ paddingTop: '60px', paddingBottom: '40px' }}>
+          <div className="container">
+            <div className="section-header">
+              <h2>Build Dashboard</h2>
+              <p>JaCoCo-measured coverage tracking across 44 test files.</p>
+            </div>
+            <div className="coverage-grid">
+              <div className="coverage-card">
+                <h4>📏 Line Coverage</h4>
+                <div className="progress-bar">
+                  <div className="progress-fill" style={{ width: '71%', background: 'linear-gradient(90deg, var(--mars-red), var(--yellow))' }}></div>
+                </div>
+                <div className="coverage-meta">2,742 / 3,878 lines covered (71%)</div>
+              </div>
+              <div className="coverage-card">
+                <h4>🌿 Branch Coverage</h4>
+                <div className="progress-bar">
+                  <div className="progress-fill" style={{ width: '56%', background: 'linear-gradient(90deg, var(--green), var(--blue))' }}></div>
+                </div>
+                <div className="coverage-meta">487 / 865 branches covered (56%)</div>
+              </div>
+              <div className="coverage-card">
+                <h4>⚙️ Instruction</h4>
+                <div className="progress-bar">
+                  <div className="progress-fill" style={{ width: '72%', background: 'linear-gradient(90deg, var(--purple), var(--blue))' }}></div>
+                </div>
+                <div className="coverage-meta">13,666 / 19,004 insts (72%)</div>
+              </div>
+              <div className="coverage-card">
+                <h4>🏗️ Class Coverage</h4>
+                <div className="progress-bar">
+                  <div className="progress-fill" style={{ width: '75%', background: 'linear-gradient(90deg, var(--green), var(--mars-red))' }}></div>
+                </div>
+                <div className="coverage-meta">91 / 121 classes covered (75%)</div>
+              </div>
+            </div>
+          </div>
+        </section>
 
-` }} />
       </div>
     </Layout>
   );
