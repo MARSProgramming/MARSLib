@@ -3,13 +3,14 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "node create-keystatic-route.cjs && astro dev",
-    "start": "npm run dev",
-    "build": "node remove-keystatic-route.cjs && astro build",
-    "preview": "node remove-keystatic-route.cjs && astro preview",
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^13.1.9",
     "@astrojs/markdoc": "^1.0.3",
     "@astrojs/react": "^5.0.3",
     "@astrojs/starlight": "^0.38.3",

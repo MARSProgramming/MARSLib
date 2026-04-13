@@ -71,28 +71,12 @@ jobs:
       if: github.ref == 'refs/heads/master' && github.event_name == 'push'
       run: ./gradlew generateDocs publish -Pskip-inspector-wrapper -Dorg.gradle.java.home=$JAVA_HOME
 
-    - name: Setup Node.js
-      if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-      uses: actions/setup-node@v4
-      with:
-        node-version: 22
-        cache: 'npm'
-        cache-dependency-path: website/package-lock.json
-
-    - name: Build Astro Website
+    - name: Deploy Java Artifacts to master branch
       if: github.ref == 'refs/heads/master' && github.event_name == 'push'
       run: |
-        cd website
-        npm install
-        npm run build
-
-    - name: Deploy docs to master branch
-      if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-      run: |
-        # Wipe old documentation files but strictly preserve javadoc, maven, and the MARSLib vendordep JSON
+        # Wipe old Astro documentation files from Github Pages to clean repository
         find docs -mindepth 1 -maxdepth 1 ! -name 'javadoc' ! -name 'maven' ! -name 'MARSLib.json' -exec rm -rf {} +
-        cp -a website/dist/. docs/
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
         git add docs/ -A
-        git diff --cached --quiet && echo "No docs changes" || (git commit -m "docs: auto-deploy Astro site [skip ci]" && git push)
+        git diff --cached --quiet && echo "No docs changes" || (git commit -m "docs: auto-deploy Java Artifacts [skip ci]" && git push)

@@ -4,11 +4,12 @@ import starlight from '@astrojs/starlight';
 import react from '@astrojs/react';
 import markdoc from '@astrojs/markdoc';
 import keystatic from '@keystatic/astro';
-
-const isDev = process.argv.includes('dev');
+import cloudflare from '@astrojs/cloudflare';
 
 // https://astro.build/config
 export default defineConfig({
+	output: 'hybrid',
+	adapter: cloudflare(),
 	integrations: [
 		starlight({
 			title: 'My Docs',
@@ -32,6 +33,6 @@ export default defineConfig({
 		}),
 		react(),
 		markdoc(),
-		...(isDev ? [keystatic()] : [])
+		keystatic()
 	],
 });
