@@ -97,7 +97,7 @@ export default function Home() {
               </a>
               
               {/* Card 6: AI Agents */}
-              <a href="/MARSLib/agent-skills" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <a href="/MARSLib/docs/agent-skills" style={{ textDecoration: 'none', color: 'inherit' }}>
                 <div className="feature-card" style={{ borderTop: '4px solid var(--ai-cyan)' }}>
                   <h3>🤖 AI Agents & Skills</h3>
                   <p>Integrate `.agent` Markdown skills into your IDE to autonomously scaffold subsystems, fix WPILib PID errors, and write unit tests.</p>

@@ -1,0 +1,61 @@
+---
+sidebar_position: 1
+id: intro
+title: "MARSLib AI Skills"
+---
+
+MARSLib is the world's first FRC software framework specifically architected for **Agentic Co-Development**. 
+
+Embedded within the framework is a suite of 26 curated `.agent` markdown skill files. Instead of manually scaffolding standard subsystems or memorizing WPILib physics nuances, you can interface these skills directly into your IDE. AI agents (like Claude Code, Cursor, or Antigravity) will read these strict rulesets to autonomously write, audit, and refactor code conforming perfectly to MARSLib's championship-grade constraints.
+
+## Why Use Agent Skills?
+
+Every framework has unspoken rules. MARSLib's primary rule is the **Zero-Allocation Hot Path**. By providing your agent with explicit `.agent` files natively, it understands the overarching philosophy of the 20ms physics tick without needing human correction.
+
+- **Automates the Boilerplate:** Inject properly mapped `LinearMechanismIO` interfaces across Simulation and Real Hardware hardware with zero human typing.
+- **Enforces Determinism:** Agents are strictly instructed to avoid `new` keywords in continuous execution blocks.
+- **Auditing Automation:** Run `marslib-audit` to execute a comprehensive code review checking against world-champion FRC patterns.
+
+---
+
+## Featured Capabilities
+
+While there are over 20+ specialized skills in the `.agents/skills` repository, here are the most critical tools to elevate your workflow:
+
+<div className="feature-grid" style={{ marginTop: '20px' }}>
+  <a href="https://github.com/MARSProgramming/MARSLib/tree/master/.agents/skills/marslib-elite-mining" target="_blank" style={{ textDecoration: 'none', color: 'inherit' }}>
+    <div className="feature-card" style={{ borderTop: '4px solid var(--purple)' }}>
+      <h3>⛏️ Elite Mining</h3>
+      <p><code>marslib-elite-mining</code></p>
+      <p>Instructs the agent how to port elite code from top-tier repositories (1690, 254, 6328) into MARSLib's exact structure.</p>
+    </div>
+  </a>
+
+  <a href="https://github.com/MARSProgramming/MARSLib/tree/master/.agents/skills/marslib-audit" target="_blank" style={{ textDecoration: 'none', color: 'inherit' }}>
+    <div className="feature-card" style={{ borderTop: '4px solid var(--mars-red-light)' }}>
+      <h3>🛡️ Zero-Allocation Audit</h3>
+      <p><code>marslib-audit</code></p>
+      <p>Performs a championship-grade codebase audit prioritizing loop determinism, garbage collection pressure, and concurrency.</p>
+    </div>
+  </a>
+
+  <a href="https://github.com/MARSProgramming/MARSLib/tree/master/.agents/skills/marslib-mechanisms" target="_blank" style={{ textDecoration: 'none', color: 'inherit' }}>
+    <div className="feature-card" style={{ borderTop: '4px solid var(--orange)' }}>
+      <h3>🦾 Mechanism Scaffolder</h3>
+      <p><code>marslib-mechanisms</code></p>
+      <p>Generates Subsystems, generic IO interfaces, IOSim stubs, and IOReal adapters aligned perfectly to AdvantageKit.</p>
+    </div>
+  </a>
+
+  <a href="https://github.com/MARSProgramming/MARSLib/tree/master/.agents/skills/marslib-swerve" target="_blank" style={{ textDecoration: 'none', color: 'inherit' }}>
+    <div className="feature-card" style={{ borderTop: '4px solid var(--green)' }}>
+      <h3>🏎️ Swerve Architect</h3>
+      <p><code>marslib-swerve</code></p>
+      <p>Expert-level agent instructions for adding odometry sources, tweaking Phoenix 6 kinematics, and setting up AutoBuilder.</p>
+    </div>
+  </a>
+</div>
+
+## Getting Started
+
+To learn how to connect these skills to your local environment, continue to the [IDE & AI Integration Guide](./ide-setup).
