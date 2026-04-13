@@ -25,7 +25,7 @@ title: "2. The Hardware Paradigm"
 
   <h2>3. The CAN Bus (The Nervous System)</h2>
   <p>The RoboRIO does not directly spin motors. Instead, it "talks" to them using a protocol called <strong><a href="https://docs.wpilib.org/en/stable/docs/software/can-devices/index.html" target="_blank">CAN</a></strong> (Controller Area Network).</p>
-  
+
   <ul>
     <li>The CAN Bus is a literal yellow and green wire daisy-chained sequentially through every motor controller.</li>
     <li>Because data flows serially, every motor requires a unique <strong>CAN ID</strong> (a number from 1 to 60) so the RoboRIO can target exactly who to command.</li>

@@ -10,7 +10,7 @@ title: "Telemetry Mastery"
 
 <main className="container" >
   <div >
-    
+
     <h1>Telemetry Mastery</h1>
   </div>
 

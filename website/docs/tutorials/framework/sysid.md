@@ -6,7 +6,7 @@ title: "Continuous SysId"
 
 <main className="container" >
   <div >
-    
+
     <h1>Continuous SysId</h1>
   </div>
 
@@ -21,8 +21,8 @@ title: "Continuous SysId"
   ```java
 // Inside RobotContainer.java
 SysIdManager.getInstance().registerMechanism(
-    "Shooter", 
-    flywheel::getVoltage, 
+    "Shooter",
+    flywheel::getVoltage,
     flywheel::getVelocityRadPerSec
 );
 ```

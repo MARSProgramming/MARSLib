@@ -10,7 +10,7 @@ title: "Intro to CI/CD & Testing"
 
 <main className="container" >
   <div >
-    
+
     <h1>Intro to CI/CD &amp; Testing</h1>
   </div>
 
@@ -51,8 +51,3 @@ title: "Intro to CI/CD & Testing"
     <li><a href="https://docs.wpilib.org/en/stable/">WPILib Official Documentation</a> - The definitive baseline resource.</li>
   </ul>
   </main>
-
-
-
-
-

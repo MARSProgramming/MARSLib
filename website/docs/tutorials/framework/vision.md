@@ -10,7 +10,7 @@ title: "Vision Fusion & Filtration"
 
 <main className="container" >
   <div >
-    
+
     <h1>Vision Fusion & Filtration</h1>
   </div>
 

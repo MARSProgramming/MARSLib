@@ -10,7 +10,7 @@ title: "The IO Layer Pattern"
 
 <main className="container" >
   <div >
-    
+
     <h1>The IO Layer Pattern</h1>
   </div>
 
@@ -105,11 +105,3 @@ subsystem = new FlywheelSubsystem(io);
     <li><a href="https://github.com/Mechanical-Advantage/AdvantageScope">AdvantageScope Documentation</a> - Visualizing 3D logs natively in real-time.</li>
   </ul>
   </main>
-
-
-
-
-
-
-
-

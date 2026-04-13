@@ -32,7 +32,7 @@ title: "3. Command-Based Paradigm"
 
   <h2>3. The RobotContainer (The Glue)</h2>
   <p>You cannot blindly command motors in FRC directly from driver inputs. We use the <strong><a href="https://docs.wpilib.org/en/stable/docs/software/commandbased/structuring-command-based-project.html#robotcontainer" target="_blank">RobotContainer.java</a></strong> class as a strict wiring harness.</p>
-  
+
   ```java
   // In RobotContainer.java
   joystick.a().onTrue(new FireShooterCommand(shooterSubsystem));

@@ -8,7 +8,7 @@ import ZeroAllocationSim from '@site/src/components/ZeroAllocationSim';
 
 <main className="container" >
   <div >
-    
+
     <h1>Strict Zero-Allocation</h1>
   </div>
 

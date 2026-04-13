@@ -10,7 +10,7 @@ title: "Dynamic Power Shedding"
 
 <main className="container" >
   <div >
-    
+
     <h1>Dynamic Power Shedding</h1>
   </div>
 

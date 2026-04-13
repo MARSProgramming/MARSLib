@@ -10,7 +10,7 @@ title: "Elite Architecture Mining"
 
 <main className="container" >
   <div >
-    
+
     <h1>Elite Architecture Mining</h1>
   </div>
 

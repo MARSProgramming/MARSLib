@@ -10,7 +10,7 @@ title: "State Machine Logic"
 
 <main className="container" >
   <div >
-    
+
     <h1>State Machine Logic</h1>
   </div>
 

@@ -6,7 +6,7 @@ title: "Shooting On The Move"
 
 <main className="container" >
   <div >
-    
+
     <h1>Shooting On The Move (SOTM)</h1>
   </div>
 

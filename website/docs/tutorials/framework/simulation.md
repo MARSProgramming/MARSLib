@@ -10,7 +10,7 @@ title: "Physics-First Development"
 
 <main className="container" >
   <div >
-    
+
     <h1>Physics-First Development</h1>
   </div>
 
@@ -138,8 +138,3 @@ assertEquals(4, GameField.getScoredHubCount());
     <li><a href="https://github.com/Mechanical-Advantage/AdvantageKit/blob/main/docs/RECORDING-AND-REPLAY.md">AdvantageKit: Recording and Replay</a> - Detailed breakdown of the replay engine.</li>
   </ul>
 </main>
-
-
-
-
-

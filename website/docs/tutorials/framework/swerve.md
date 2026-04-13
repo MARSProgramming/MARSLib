@@ -10,7 +10,7 @@ title: "High-Frequency Swerve"
 
 <main className="container" >
   <div >
-    
+
     <h1>High-Frequency Swerve</h1>
   </div>
 
@@ -41,8 +41,8 @@ public void addVisionMeasurement(Pose2d visionPose, double timestamp, Matrix<N3,
 ```
 
   <h2>3. 2D Kinematic Traction Control</h2>
-  <p>Standard <a href="https://docs.wpilib.org/en/stable/index.html" target="_blank">WPILib</a> implementations apply independent <code>SlewRateLimiters</code> to the X and Y joystick axes. However, if the driver pushes diagonally, the robot attempts to accelerate at <b>1.41x</b> the limit, instantly breaking carpet friction.</p> 
-  
+  <p>Standard <a href="https://docs.wpilib.org/en/stable/index.html" target="_blank">WPILib</a> implementations apply independent <code>SlewRateLimiters</code> to the X and Y joystick axes. However, if the driver pushes diagonally, the robot attempts to accelerate at <b>1.41x</b> the limit, instantly breaking carpet friction.</p>
+
   <p>To solve this, MARSLib uses a unified <code>TractionControlLimiter</code> that calculates the magnitude of the requested 2D acceleration vector and strictly caps it below the kinetic slipping envelope of the FRC carpet (approx 1.1g, or 10.78 m/s²). This guarantees the swerve drive never breaks static friction natively, preserving your odometry perfectly!</p>
 
   <br /><hr /><br />

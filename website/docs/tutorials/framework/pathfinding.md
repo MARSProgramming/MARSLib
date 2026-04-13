@@ -22,14 +22,14 @@ import AutoSim from '@site/src/components/AutoSim';
 
   <h2>2. A* NavGrid Traversal</h2>
   <p>During the tele-op period, the driver may need to command the robot to auto-align or traverse from the Loading Zone directly to the Hub. MARSLib uses a NavGrid A* solver running on the Driver Station (or Coprocessor) to intelligently weave a safe path around the Stage/Ladder obstacles.</p>
-  
+
   ```java
   // Dynamically request a path to a scoring node safely avoiding the Stage
   Command autoScoreCmd = AutoBuilder.pathfindToPose(
       new Pose2d(14.5, 5.5, Rotation2d.fromDegrees(180)),
       new PathConstraints(3.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720)),
-      0.0, 
-      0.0 
+      0.0,
+      0.0
   );
   ```
 
@@ -40,9 +40,9 @@ import AutoSim from '@site/src/components/AutoSim';
 
   <h2>3. Fusing Vision with Odometry</h2>
   <p>Path execution relies 100% on where the robot *thinks* it is on the field. Without AprilTags, the wheel encoders slowly drift over time. This implies that your Autonomous Splines will gradually shift away from their hardcoded positions as the match progresses.</p>
-  
+
   <p>Path execution relies 100% on where the robot *thinks* it is on the field. Without <a href="https://docs.wpilib.org/en/stable/docs/software/vision-processing/apriltag/index.html">AprilTags</a>, the wheel encoders slowly drift over time. This implies that your Autonomous Splines will gradually shift away from their hardcoded positions as the match progresses.</p>
-  
+
   <p>To guarantee mm-perfect precision, we feed the <a href="https://limelightvision.io/">Limelight 4's</a> MegaTag 2.0 poses directly into the <code>SwerveDrivePoseEstimator</code>. This organically corrects the internal map as the robot drives, ensuring PathPlanner always knows the true distance remaining to the next Spline knot!</p>
 
 

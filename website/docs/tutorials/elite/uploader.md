@@ -10,7 +10,7 @@ title: "Automated Log Uploader"
 
 <main className="container" >
   <div >
-    
+
     <h1>Automated Log Uploader</h1>
   </div>
 

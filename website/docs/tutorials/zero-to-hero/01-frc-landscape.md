@@ -16,7 +16,7 @@ title: "1. The Dev Ecosystem"
     <h4>What is Git?</h4>
     <p><a href="https://git-scm.com/" target="_blank">Git</a> is a "Time Machine" for your code. It tracks exactly who changed which lines in a file, allowing multiple robot programmers to safely write code simultaneously without accidentally deleting each other's work.</p>
   </div>
-  
+
   <p><strong><a href="https://github.com/" target="_blank">GitHub</a></strong> is the website where our Git time machine is stored. The typical workflow:</p>
   <ol>
     <li>Pull the latest code from GitHub to your laptop via a <code>git pull</code>.</li>

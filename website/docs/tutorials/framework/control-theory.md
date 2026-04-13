@@ -10,7 +10,7 @@ import ArmKgSim from '@site/src/components/ArmKgSim';
 
 <main className="container" >
   <div >
-    
+
     <h1>Control Theory Mastery</h1>
   </div>
 
