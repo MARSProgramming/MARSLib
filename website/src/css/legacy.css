@@ -8,6 +8,7 @@
   --mars-red-glow: rgba(179, 36, 22, 0.12);
   --mars-red-deep: #8a1c10;
 
+
   /* Dark Theme */
   --bg-primary: #0a0a0a;
   --bg-secondary: #141414;
@@ -26,6 +27,14 @@
   --text-primary: #e8e8e8;
   --text-secondary: #999999;
   --text-muted: #666666;
+}
+
+[data-theme='dark'] {
+  /* Docusaurus Dark Mode Overrides */
+  --ifm-background-color: #0a0a0a !important;
+  --ifm-background-surface-color: #141414 !important;
+  --ifm-navbar-background-color: #0a0a0a !important;
+  --ifm-footer-background-color: #141414 !important;
 }
 
 /* ===== Reset & Base ===== */

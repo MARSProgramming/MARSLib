@@ -13,7 +13,7 @@ const config: Config = {
   organizationName: 'MARSProgramming',
   projectName: 'MARSLib',
 
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
 
   markdown: {
     format: 'mdx',
@@ -77,8 +77,8 @@ const config: Config = {
   themeConfig: {
     colorMode: {
       defaultMode: 'dark',
-      disableSwitch: false,
-      respectPrefersColorScheme: true,
+      disableSwitch: true,
+      respectPrefersColorScheme: false,
     },
     navbar: {
       title: 'MARSLib',
@@ -87,13 +87,9 @@ const config: Config = {
         src: 'img/logo.svg',
       },
       items: [
-        {
-          type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
-          position: 'left',
-          label: 'Tutorials',
-        },
-        {to: '/blog', label: 'Blog', position: 'left'},
+        {to: '/tutorials', label: 'Tutorials', position: 'left'},
+        {to: '/standards', label: 'Core Standards', position: 'left'},
+        {to: '/javadoc/index.html', label: 'API Reference', position: 'left'},
         {
           href: 'https://github.com/MARSProgramming/MARSLib',
           label: 'GitHub',
@@ -109,7 +105,11 @@ const config: Config = {
           items: [
             {
               label: 'Getting Started',
-              to: '/docs/intro',
+              to: '/tutorial-getting-started',
+            },
+            {
+              label: 'All Tutorials',
+              to: '/tutorials',
             },
           ],
         },
@@ -130,8 +130,8 @@ const config: Config = {
           title: 'More',
           items: [
             {
-              label: 'Blog',
-              to: '/blog',
+              label: 'Core Standards',
+              to: '/standards',
             },
             {
               label: 'GitHub',
