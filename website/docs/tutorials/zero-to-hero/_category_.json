@@ -1,0 +1,8 @@
+{
+  "label": "Zero-to-Hero (Start Here)",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "An absolute beginner's tutorial track covering FRC basics, hardware, and WPILib Command-based concepts."
+  }
+}

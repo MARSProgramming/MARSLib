@@ -1,0 +1,39 @@
+---
+sidebar_position: 2
+id: hardware
+title: "2. The Hardware Paradigm"
+---
+
+<main className="container">
+  <div>
+    <h1>The Hardware Paradigm</h1>
+  </div>
+
+  <p>To program a physical FRC mechanism effectively, you must understand the constraints of the electrical signals traveling exactly underneath your code. In FRC, code doesn't just run; it actively bridges power systems and data packets.</p>
+
+  <h2>1. The RoboRIO (The Brain)</h2>
+  <p>The <strong>NI RoboRIO 2.0</strong> is an embedded Linux computer. This is where your compiled Java code actually lives and executes. Every 20 milliseconds, the RoboRIO evaluates your code, parses sensor data, and issues torque commands outward.</p>
+
+  <h2>2. The FRC Radio (The Network)</h2>
+  <p>The RoboRIO does not have native WiFi. A separate module—the Radio (like the Vivid-Hosting VH-109 or OpenMesh)—must be physically ethernet-connected to the RIO. Your laptop talks securely to the Radio, which then pipelines the connection.</p>
+
+  <div className="callout callout-warning">
+    <h4>FMS vs Pit Strategy</h4>
+    <p>When you are in the Pit or at home, you configure the Radio to emit a standard 5GHz WiFi signal or you plug an Ethernet/USB-B cord directly into the RoboRIO to deploy code.</p>
+    <p>At official competitions, you must use the <strong>Radio Kiosk</strong>. This physically rewrites your Radio's firmware to bind directly to the official <strong>Field Management System (FMS)</strong>. Once hooked to FMS, your laptop connects via Ethernet to a Driver Station pedestal on the field boundary, ensuring extreme security.</p>
+  </div>
+
+  <h2>3. The CAN Bus (The Nervous System)</h2>
+  <p>The RoboRIO does not directly spin motors. Instead, it "talks" to them using a protocol called <strong>CAN</strong> (Controller Area Network).</p>
+  
+  <ul>
+    <li>The CAN Bus is a literal yellow and green wire daisy-chained sequentially through every motor controller.</li>
+    <li>Because data flows serially, every motor requires a unique <strong>CAN ID</strong> (a number from 1 to 60) so the RoboRIO can target exactly who to command.</li>
+    <li><strong>The CANivore</strong>: MARSLib utilizes CTRE hardware heavily. Standard RoboRIO CAN processing becomes bogged down around 50% utilization. We route all drivetrain components into a separate USB <strong>CANivore</strong> card, isolating high-bandwidth torque streams and speeding up loop times substantially.</li>
+  </ul>
+
+  <h2>4. Power Shedding & Brownouts</h2>
+  <p>An FRC battery supplies ~12V of DC electricity. However, when 14 different high-torque motors try to pull max acceleration simultaneously, the physical laws of electric load cause the battery voltage to momentarily crash down toward 6.0V.</p>
+  <p>If the voltage drops below 6.3V, the RoboRIO forcefully severs all motor connection to prevent the main CPU from dying. This is known as a <strong>Brownout</strong>. In MARSLib, we must dynamically shed power and strictly enforce motor current caps to avoid stalling the battery.</p>
+
+</main>

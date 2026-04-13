@@ -36,4 +36,7 @@ When porting or authoring interactive simulators in the Docusaurus React archite
 - **MDX Formatting Strictness**: When injecting React component tags like <SotmSim /> into .mdx files, you must ensure:
   1. The import statement rests at the parent un-indented block level.
   2. A blank line separates the import and the component tag to prevent the Docusaurus Acorn MDX parser from crashing.
-  3. External static paths like /javadoc/index.html MUST use Docusaurus explicit bypass routing (e.g. href: 'pathname:///MARSLib/javadoc/index.html') to avoid React Router Single Page Application (SPA) intercepting it as a soft-nav and generating a 404 page.
+  3. External static paths like `/javadoc/index.html` MUST use Docusaurus explicit bypass routing (e.g. `href: 'pathname:///MARSLib/javadoc/index.html'`) to avoid React Router SPA interception generating 404s.
+
+## 6. Intro.mdx Navigation Synchronization
+Whenever you create, delete, or rename tutorial `.mdx` files or structural sidebar categories inside the `tutorials/` or `agent-skills/` documentation folders, you **must natively update `docs/intro.mdx`** to ensure the visual feature card grids matches the Docusaurus sidebar mapping perfectly. Missing this step renders tutorial links orphaned or broken.

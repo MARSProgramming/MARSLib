@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+﻿import React, { useEffect, useRef, useState, useCallback } from 'react';
 
 export default function ElevatorPidSim() {
   const eCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -148,19 +148,19 @@ export default function ElevatorPidSim() {
             <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'monospace', fontSize: '12px', color: '#ccc', marginBottom: '5px' }}>
                 <span>kP (Proportional)</span><span>{kp.toFixed(2)}</span>
             </div>
-            <input type="range" min="0" max="1" step="0.01" value={kp} onChange={e => setKp(parseFloat(e.target.value))} style={{ width: '100%' }} />
+            <input type="range" min="0" max="25" step="0.01" value={kp} onChange={e => setKp(parseFloat(e.target.value))} style={{ width: '100%' }} />
         </div>
         <div style={{ flex: 1, minWidth: '150px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'monospace', fontSize: '12px', color: '#ccc', marginBottom: '5px' }}>
                 <span>kI (Integral)</span><span>{ki.toFixed(2)}</span>
             </div>
-            <input type="range" min="0" max="1" step="0.01" value={ki} onChange={e => setKi(parseFloat(e.target.value))} style={{ width: '100%' }} />
+            <input type="range" min="0" max="25" step="0.01" value={ki} onChange={e => setKi(parseFloat(e.target.value))} style={{ width: '100%' }} />
         </div>
         <div style={{ flex: 1, minWidth: '150px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'monospace', fontSize: '12px', color: '#ccc', marginBottom: '5px' }}>
                 <span>kD (Derivative)</span><span>{kd.toFixed(2)}</span>
             </div>
-            <input type="range" min="0" max="1" step="0.01" value={kd} onChange={e => setKd(parseFloat(e.target.value))} style={{ width: '100%' }} />
+            <input type="range" min="0" max="25" step="0.01" value={kd} onChange={e => setKd(parseFloat(e.target.value))} style={{ width: '100%' }} />
         </div>
         <div style={{ flex: 1, minWidth: '150px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'monospace', fontSize: '12px', color: '#ccc', marginBottom: '5px' }}>
@@ -183,8 +183,8 @@ export default function ElevatorPidSim() {
         <div style={{ flex: 1, position: 'relative' }}>
           <canvas ref={gCanvasRef} width="100" height="260" style={{ display: 'block', width: '100%', background: '#1a1a1a', borderRadius: '4px' }} />
           <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', gap: '15px', fontFamily: '"Orbitron", sans-serif', fontSize: '12px' }}>
-            <span style={{ color: '#29b6f6' }}>■ Setpoint</span>
-            <span style={{ color: '#B32416' }}>■ Actual</span>
+            <span style={{ color: '#29b6f6' }}>â–  Setpoint</span>
+            <span style={{ color: '#B32416' }}>â–  Actual</span>
           </div>
         </div>
       </div>
