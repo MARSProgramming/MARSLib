@@ -45,7 +45,7 @@ public void addVisionMeasurement(Pose2d visionPose, double timestamp, Matrix<N3,
   
   <p>To solve this, MARSLib uses a unified <code>TractionControlLimiter</code> that calculates the magnitude of the requested 2D acceleration vector and strictly caps it below the kinetic slipping envelope of the FRC carpet (approx 1.1g, or 10.78 m/s²). This guarantees the swerve drive never breaks static friction natively, preserving your odometry perfectly!</p>
 
-  <hr style={{ margin: '40px 0' }} />
+  <br /><hr /><br />
   <h2>📖 Further Reading & External Resources</h2>
   <ul>
     <li><a href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/control-requests.html">CTRE Phoenix 6 Control Requests</a> - Explaining 250Hz frequency CANivore utilization.</li>

@@ -71,7 +71,7 @@ import PhysicsSim from '@site/src/components/PhysicsSim';
 Robot.setUseReplayMode(true, "C:/logs/einstein_finals_m1.wpilog");
 ```
 
-  <hr style={{ margin: '40px 0' }} />
+  <br /><hr /><br />
   <h2>6. Physics-Backed Testing</h2>
   <p>Most FRC unit tests simply "mock" the hardware. They verify that a motor was told to run, but they never verify if the robot actually moves. In MARSLib, we run <strong>Physics-Backed Unit Tests</strong> that integrate tightly with Dyn4j, ensuring that our software actually solves real-world physics problems during Continuous Integration.</p>
 
@@ -130,7 +130,7 @@ assertEquals(4, GameField.getScoredHubCount());
   <h3>6.4 CI/CD Validation</h3>
   <p>Every time you push to GitHub, a GitHub Actions workflow executes <code>./gradlew test</code>. If a math commit accidentally breaks the chassis kinematics, the trajectory tests will fail, and the PR will be blocked. This is true Einstein-level safety.</p>
 
-  <hr style={{ margin: '40px 0' }} />
+  <br /><hr /><br />
   <h2>📖 Further Reading & External Resources</h2>
   <ul>
     <li><a href="https://dyn4j.org/">Dyn4j Physics Engine</a> - The core library powering MARSLib simulation.</li>
