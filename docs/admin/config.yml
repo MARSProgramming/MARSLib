@@ -2,6 +2,7 @@ backend:
   name: github
   repo: MARSProgramming/MARSLib
   branch: master
+  base_url: https://sveltia-cms-auth.david-huss.workers.dev
 
 # Specify media paths
 media_folder: "website/static/img"
