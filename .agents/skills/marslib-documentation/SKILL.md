@@ -32,7 +32,7 @@ When documenting the framework itself, ensure users understand that MARSLib is c
 ## 5. Docusaurus React Migrations & Simulators
 When porting or authoring interactive simulators in the Docusaurus React architecture:
 - **Canvas Operations**: Always encapsulate DOM manipulations (<canvas>) inside React .tsx components within the website/src/components/ directory.
-- **Hook Architecture**: Use useRef for mutable animation state (score, loop timers) and useEffect with equestAnimationFrame and cleanup logic to prevent React hydration or unmount loop memory leaks.
+- **Hook Architecture**: Use useRef for mutable animation state (score, loop timers) and useEffect with equestAnimationFrame and cleanup logic to prevent React hydration or unmount loop memory leaks.
 - **MDX Formatting Strictness**: When injecting React component tags like <SotmSim /> into .mdx files, you must ensure:
   1. The import statement rests at the parent un-indented block level.
   2. A blank line separates the import and the component tag to prevent the Docusaurus Acorn MDX parser from crashing.
