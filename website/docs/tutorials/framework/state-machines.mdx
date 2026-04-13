@@ -1,4 +1,4 @@
----
+﻿---
 sidebar_position: 7
 id: state-machines
 title: "State Machine Logic"
@@ -61,33 +61,9 @@ stateMachine.setExitAction(INTAKING_FLOOR, () -> {
 });
 ```
 
-  <div id="sm-sim" >
-    <div >Superstructure Collision Sequencer</div>
-    
-    <div >
-       <button id="smStow" >STOW</button>
-       <button id="smIntake" >INTAKING</button>
-       <button id="smScore" >HUB SCORE</button>
-    </div>
-    
-    <div >
-      {/* Active Logic Log */}
-      <div >
-        <div>
-            <div >SUPERSTRUCTURE TARGET: <span id="smTargetLbl" >STOW</span></div>
-            <div >ACTIVE CONSTRAINTS:</div>
-            <ul id="smLogList" >
-            </ul>
-        </div>
-        <div  id="smFinalLbl">✔ MECHANISMS ALIGNED</div>
-      </div>
-      
-      {/* Mechanism Canvas */}
-      <div >
-          <canvas id="smCanvas" width="250" height="200" ></canvas>
-      </div>
-    </div>
-  </div>
+import StateMachineSim from '@site/src/components/StateMachineSim';
+
+<StateMachineSim />
 
   <h2>4. Live Mermaid Visualization</h2>
   <p>One of the most powerful features of <code>MARSStateMachine</code> is that it automatically generates a <strong>Mermaid.js flowchart</strong>. This graph is sent over telemetry and can be viewed live in <strong>AdvantageScope</strong>.</p>
@@ -97,6 +73,7 @@ stateMachine.setExitAction(INTAKING_FLOOR, () -> {
     <p>Open the "Mermaid" tab in AdvantageScope and drag the <code>Superstructure/StateMachine/MermaidGraph</code> field into it. You will see a live diagram where the current state is highlighted in glowing green.</p>
   </div>
 </main>
+
 
 
 

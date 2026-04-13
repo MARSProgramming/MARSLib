@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+﻿import React, { useEffect } from 'react';
 
 export default function ControlSimulators() {
   useEffect(() => {
@@ -280,7 +280,7 @@ export default function ControlSimulators() {
     const armKpSlider = document.getElementById('arm-kp');
     if(!armSetSlider) return;
     
-    armSetSlider.oninput = () => document.getElementById('arm-set-val').innerText = armSetSlider.value + "°";
+    armSetSlider.oninput = () => document.getElementById('arm-set-val').innerText = armSetSlider.value + "Â°";
     armKgSlider.oninput = () => document.getElementById('arm-kg-val').innerText = parseFloat(armKgSlider.value).toFixed(2);
     armKpSlider.oninput = () => document.getElementById('arm-kp-val').innerText = parseFloat(armKpSlider.value).toFixed(2);
     
@@ -316,7 +316,7 @@ export default function ControlSimulators() {
         
         const elAng = document.getElementById('v-ang');
         if(elAng) {
-            elAng.innerText = armAng.toFixed(2) + "°";
+            elAng.innerText = armAng.toFixed(2) + "Â°";
             document.getElementById('v-cos-ang').innerText = armAng.toFixed(1);
             document.getElementById('v-cos-res').innerText = cosTheta.toFixed(3);
             document.getElementById('v-ffv').innerText = ffVoltage.toFixed(2) + "v";

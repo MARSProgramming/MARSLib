@@ -1,0 +1,51 @@
+﻿---
+sidebar_position: 11
+id: zero-allocation
+title: "Zero-Allocation Engineering"
+---
+
+<main className="container" >
+  <div >
+    <h1>Zero-Allocation Engineering</h1>
+  </div>
+
+  <p>The single greatest threat to determinism in a Java-based FRC robot is the JVM's Garbage Collector (GC). Every time you allocate memory inside your 50Hz or 250Hz loops, memory is allocated on the heap. Eventually, the JVM pauses the entire robot to clean it up.</p>
+
+import ZeroAllocationSim from '@site/src/components/ZeroAllocationSim';
+
+<ZeroAllocationSim />
+
+
+  <h2>1. The 'Ephemeral Struct' Pattern</h2>
+  <p>To eliminate GC spikes, MARSLib enforces a strict zero-allocation architecture. We achieve this using pre-allocated <strong>Mutable Proxy References</strong>.</p>
+
+  ```java
+// BAD: Allocates 250 objects per second!
+public void periodic() {
+    Pose2d currentPose = new Pose2d(x, y, new Rotation2d(theta));
+    updatePose(currentPose);
+}
+
+// GOOD: Pre-allocated Ephemeral Structs mutated in place
+private final Pose2d mutablePose = new Pose2d();
+private final Rotation2d mutableRotation = new Rotation2d();
+
+public void periodic() {
+    mutableRotation.setRadians(theta);
+    mutablePose.set(x, y, mutableRotation);
+    updatePose(mutablePose);
+}
+  ```
+
+  <h2>2. The Pointer Danger</h2>
+  <p>When you pass a mutable proxy reference into another class, you are passing the <em>memory pointer</em>. Overwriting it next tick will affect any class holding that pointer.</p>
+
+  <div className="callout callout-warning">
+    <h4>The Clone Rule</h4>
+    <p>If a downstream class requires a persistent snapshot or history of data, it must explicitly <strong>clone</strong> the proxy object. Assume any struct reference is poisoned once the function returns.</p>
+  </div>
+
+  <h2>3. Static Array Caching</h2>
+  <p>In Swerve Kinematics, we frequently convert <code>ChassisSpeeds</code> into arrays. MARSLib uses static pre-allocated array caches, mutating elements in place to save thousands of heap allocations per minute.</p>
+</main>
+

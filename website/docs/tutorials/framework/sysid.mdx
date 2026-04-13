@@ -1,4 +1,4 @@
----
+﻿---
 sidebar_position: 12
 id: sysid
 title: "System Identification"
@@ -26,7 +26,7 @@ title: "System Identification"
 
   <div className="callout callout-warning">
     <h4>Data Logging</h4>
-    <p>MARSLib leverages AdvantageKit. All SysId tests automatically dump telemetry directly into the <code>.wpilog</code> file. MARSLib also features an Automated Log Uploader—if the robot detects an active internet connection, it will automatically push your SysId logs to the team's GitHub repository.</p>
+    <p>MARSLib leverages AdvantageKit. All SysId tests automatically dump telemetry directly into the <code>.wpilog</code> file. MARSLib also features an Automated Log Uploaderâ€”if the robot detects an active internet connection, it will automatically push your SysId logs to the team's GitHub repository.</p>
   </div>
 
   <h2>2. Running SysId</h2>
@@ -78,6 +78,7 @@ double currentAccel = (currentVelocity - lastVelocity) / 0.020;
 estimator.addMeasurement(inputs.appliedVolts, currentVelocity, currentAccel);
 ```
 </main>
+
 
 
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+﻿import React, { useEffect, useRef } from 'react';
 
 export default function SwerveSim() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -173,7 +173,7 @@ export default function SwerveSim() {
       ctx.font = '12px "Orbitron", sans-serif';
       ctx.fillText(`X: ${x.toFixed(1)}`, 20, 30);
       ctx.fillText(`Y: ${y.toFixed(1)}`, 20, 50);
-      ctx.fillText(`θ: ${(heading * 180 / Math.PI).toFixed(1)}°`, 20, 70);
+      ctx.fillText(`Î¸: ${(heading * 180 / Math.PI).toFixed(1)}Â°`, 20, 70);
     }
     
     // Allow the div to resize before grabbing width

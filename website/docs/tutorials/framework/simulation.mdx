@@ -1,4 +1,4 @@
----
+﻿---
 sidebar_position: 9
 id: simulation
 title: "Physics-First Development"
@@ -36,21 +36,10 @@ MARSPhysicsWorld.getInstance().getDyn4jWorld().addBody(fuelBall);
 ```
 
   {/* Interactive Physics Sandbox Demo */}
-  <div className="simulator-container" >
-    <div >
-      <div>
-        <h3 >Interactive Collision Sandbox</h3>
-        <p >Drag the blue robot chassis to collide with the Fuel Balls. Hit them into the glowing goal on the left!</p>
-      </div>
-      <button id="resetSimBtn" className="btn btn-primary" >RESET WORLD</button>
-    </div>
-    
-    <canvas id="physicsCanvas" width="800" height="400" ></canvas>
-    
-    <div >
-      <div id="simLog">Physics Engine Active: 0 collisions.</div>
-    </div>
-  </div>
+import PhysicsSim from '@site/src/components/PhysicsSim';
+
+<PhysicsSim />
+
 
   <h2>3. Subsystem IO-Sim</h2>
   <p>As covered in the IO Layer tutorial, your subsystems should use <code>IOSim</code> implementations. These classes connect WPILib simulators (like <code>ElevatorSim</code>) to the physics world. The simulator provides the mathematical state, while Dyn4j provides the collision bounds.</p>
@@ -69,7 +58,7 @@ MARSPhysicsWorld.getInstance().getDyn4jWorld().addBody(fuelBall);
   </div>
 
   <h2>5. Offline Log Replay and Auto-Tuning</h2>
-  <p>Because MARSLib strictly abstracts hardware out with the AdvantageKit IO layer, simulation isn't just about the physics engine—it natively supports <strong>Log Replay</strong>. You can pull an active <code>.wpilog</code> file from a real match and feed it straight back into the robot code on your laptop.</p>
+  <p>Because MARSLib strictly abstracts hardware out with the AdvantageKit IO layer, simulation isn't just about the physics engineâ€”it natively supports <strong>Log Replay</strong>. You can pull an active <code>.wpilog</code> file from a real match and feed it straight back into the robot code on your laptop.</p>
 
   <ul>
       <li><strong>Automatically Figure Out Constants:</strong> Run a match log through the replay tool, and MARSLib's Continuous SysId will passively process the historical velocity and voltage telemetry.</li>
@@ -82,6 +71,7 @@ MARSPhysicsWorld.getInstance().getDyn4jWorld().addBody(fuelBall);
 Robot.setUseReplayMode(true, "C:/logs/einstein_finals_m1.wpilog");
 ```
 </main>
+
 
 
 

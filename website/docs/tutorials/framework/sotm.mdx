@@ -1,4 +1,4 @@
----
+﻿---
 sidebar_position: 8
 id: sotm
 title: "Elite Shooting (SOTM)"
@@ -45,36 +45,9 @@ static {
     <li>Recalculate the time of flight and repeat until convergence (usually 3 iterations).</li>
   </ol>
 
-  {/* Interactive SOTM Solver Demo */}
-  <div className="simulator-container">
-    <div >
-      <div>
-        <h3 >Interactive SOTM Solver</h3>
-        <p >Visualizing Iterative Convergence & Vector Interception</p>
-      </div>
-    </div>
-    
-    <canvas id="sotmCanvas" width="800" height="400" ></canvas>
-    
-    <div >
-      <div >
-        <label >Robot Velocity: <span id="velDisplay" >4.0 m/s</span></label>
-        <input type="range" id="botVelocity" min="0" max="8" value="4" step="0.1" autocomplete="off"  />
-      </div>
-      <div >
-        <label >Robot Heading: <span id="headDisplay" >0&deg;</span></label>
-        <input type="range" id="botHeading" min="-180" max="180" value="0" step="1" autocomplete="off"  />
-      </div>
-      <div >
-        <label >Muzzle Velocity: <span id="shotDisplay" >15.0 m/s</span></label>
-        <input type="range" id="shotSpeed" min="5" max="30" value="15" step="0.5" autocomplete="off"  />
-      </div>
-    </div>
-    
-    <div >
-      <div id="solverLog">Drag your mouse on the canvas to move the robot.</div>
-    </div>
-  </div>
+import SotmSim from '@site/src/components/SotmSim';
+
+<SotmSim />
 
   <h2>4. Aerodynamic Compensation</h2>
   <p>Fuel balls have significant air resistance and Magnus lift (if they have spin). In <code>EliteShooterMath.java</code>, you can adjust the <code>DRAG_COEFFICIENT</code> and <code>MAGNUS_CONSTANT</code>.</p>
@@ -84,6 +57,7 @@ static {
     <li>If the ball curves upwards too much, decrease the <code>BACKSPIN_RATIO</code>.</li>
   </ol>
 </main>
+
 
 
 

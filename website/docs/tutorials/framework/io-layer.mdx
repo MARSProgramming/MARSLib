@@ -1,4 +1,4 @@
----
+﻿---
 sidebar_position: 5
 id: io-layer
 title: "The IO Layer Pattern"
@@ -40,7 +40,7 @@ public interface FlywheelIO {
 ```
 
   <h2>2. Hardware Implementation</h2>
-  <p>The "Real" implementation talks to actual motors. It has no logic—it only moves data between the hardware and the Inputs object.</p>
+  <p>The "Real" implementation talks to actual motors. It has no logicâ€”it only moves data between the hardware and the Inputs object.</p>
 
   ```java
 public class FlywheelIOTalonFX implements FlywheelIO {
@@ -97,6 +97,7 @@ subsystem = new FlywheelSubsystem(io);
     <p>Always keep your IO implementations "dumb". All logic belongs in the Subsystem and Commands. If you add math to your hardware layer, you've broken the abstraction.</p>
   </div>
 </main>
+
 
 
 

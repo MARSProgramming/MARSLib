@@ -1,4 +1,4 @@
----
+﻿---
 sidebar_position: 10
 id: vision
 title: "Vision Fusion & Filtration"
@@ -27,38 +27,13 @@ title: "Vision Fusion & Filtration"
   </ul>
 
   {/* Interactive Vision Simulation Demo */}
-  <div className="simulator-container" >
-    <div >
-      <div>
-        <h3 >Interactive Vision Trust Simulator</h3>
-        <p >Visualize StdDev scaling and rejection filters in real time.</p>
-      </div>
-    </div>
-    
-    <canvas id="visionCanvas" width="800" height="400" ></canvas>
-    
-    <div >
-      <div >
-        <label >Tags Visible: <span id="tagDisplay" >1 Tag</span></label>
-        <input type="range" id="tagCount" min="1" max="2" value="1" step="1" autocomplete="off"  />
-      </div>
-      <div >
-        <label >Robot Spin Rate: <span id="yawDisplay" >0&deg;/s</span></label>
-        <input type="range" id="yawRate" min="0" max="250" value="0" step="5" autocomplete="off"  />
-      </div>
-      <div >
-        <label >Robot Pitch (Tilt): <span id="tiltDisplay" >0&deg;</span></label>
-        <input type="range" id="tiltVal" min="0" max="30" value="0" step="1" autocomplete="off"  />
-      </div>
-    </div>
-    
-    <div >
-      <div id="solverLog">Drag your robot across the field grid.</div>
-    </div>
-  </div>
+import VisionSim from '@site/src/components/VisionSim';
+
+<VisionSim />
+
 
   <h2>2. Quadratic StdDev Scaling</h2>
-  <p>Vision poses should mathematically never be trusted equally. A pose from 6 meters away is tiny on the camera sensor—1 pixel of error dramatically shifts the calculated location.</p>
+  <p>Vision poses should mathematically never be trusted equally. A pose from 6 meters away is tiny on the camera sensorâ€”1 pixel of error dramatically shifts the calculated location.</p>
 
   <p>MARSLib enforces <strong>Quadratic StdDev Scaling</strong>. Trust in vision decays <em>exponentially</em> at long range, stopping the robot from making violent odometry correction jumps based on far-away tags.</p>
 
@@ -75,6 +50,7 @@ title: "Vision Fusion & Filtration"
     <li ><strong>Latency:</strong> Simulates a 10ms-30ms phase delay offset.</li>
   </ul>
 </main>
+
 
 
 
