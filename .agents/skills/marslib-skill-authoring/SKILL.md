@@ -127,6 +127,7 @@ description: Superstructure documentation  # Too vague, no trigger phrase
 3. **Update Marketplace:** You MUST register the new skill by adding its name and relative source path to the `.agents/skills/marketplace.json` array.
 4. **Cross-reference from related skills.** If this system interacts with the superstructure, add a "See `marslib-superstructure` skill" note in the relevant section.
 5. **Add a test.** If the system has test-specific patterns (e.g., singleton resets), document them in the skill's Testing section AND in `marslib-testing`.
+6. **Update IDE Configurations:** You MUST append the newly created skill to the routing lists inside the `.cursorrules` and `.github/copilot-instructions.md` files located at the project root. This ensures Cursor and GitHub Copilot natively index the new skill.
 
 ## 8. Updating Existing Skills
 
