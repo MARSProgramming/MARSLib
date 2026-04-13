@@ -110,8 +110,9 @@ Want to analyze a bug or replay a match?
 Use our customized [GitHub Issue Templates](.github/ISSUE_TEMPLATE) to let the software leads know exactly what went wrong in your simulation or physical robot code! Whether it's a new PathPlanner routine request or an odometry jitter bug, the templates will automatically guide you through attaching your `.wpilog` telemetry data.
 
 ## ⚖️ Open Source Acknowledgements
-This mathematical architecture leverages the shoulders of giants. We explicitly attribute and bundle the following open-source resources according to their respective MIT/BSD constraints:
+This mathematical architecture leverages the shoulders of giants. We extend our deepest gratitude to the **MapleSim** project for their groundbreaking simulation patterns. We explicitly attribute and bundle the following open-source resources according to their respective MIT/BSD constraints:
 - [Mechanical Advantage (AdvantageKit)](AdvantageKit-License.md)
 - [WPILib Core](WPILib-License.md)
 - [Dyn4j Collision Physics](Dyn4j-License.md)
 - [PathPlanner](PathPlanner-License.md)
+- [MapleSim](https://shenzhen-robotics-alliance.github.io/maple-sim/rebuilt/)

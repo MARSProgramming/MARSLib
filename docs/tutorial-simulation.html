@@ -54,7 +54,7 @@
 <p>Waiting for a physical robot to be built is the #1 cause of losing FRC competitions. MARSLib uses <strong>Dyn4j</strong>, a 2D physics engine, to create a high-fidelity virtual world where you can develop 100% of your code before the metal is even cut.</p>
 
 <h2>1. The Physics World</h2>
-<p>The <code>MARSPhysicsWorld</code> is a singleton that manages all rigid bodies on the field. It handles collisions, friction, and even battery voltage sag natively alongside standard <a href="https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/index.html" style="color: var(--ai-cyan);">WPILib simulation classes</a>.</p>
+<p>The <code>MARSPhysicsWorld</code> is a singleton that manages all rigid bodies on the field (leveraging architectural patterns from <a href="https://shenzhen-robotics-alliance.github.io/maple-sim/rebuilt/" target="_blank" style="color: var(--ai-cyan);">MapleSim</a>). It handles collisions, friction, and even battery voltage sag natively alongside standard <a href="https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/index.html" style="color: var(--ai-cyan);">WPILib simulation classes</a>.</p>
 
 <pre><code class="language-java">// In simulationPeriodic()
 MARSPhysicsWorld.getInstance().update(0.020);</code></pre>

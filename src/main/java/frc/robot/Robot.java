@@ -33,7 +33,8 @@ public class Robot extends LoggedRobot {
     // Record metadata
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     Logger.recordMetadata("Framework", "MARSLib 2.0");
-    Logger.recordMetadata("Authors", "FRC Team 2614 MARS");
+    Logger.recordMetadata("Authors", "FRC Team 2614 MARS (Mountaineer Area RoboticS)");
+    Logger.recordMetadata("Website", "https://marsfirst.org");
     Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
     Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
     Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
@@ -79,8 +80,20 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
+    System.out.println("-------------------------------------------------------");
+    System.out.println("  __  __          _____   _____ _      _ _     ");
+    System.out.println(" |  \\/  |   /\\   |  __ \\ / ____| |    (_) |    ");
+    System.out.println(" | \\  / |  /  \\  | |__) | (___ | |     _| |__  ");
+    System.out.println(" | |\\/| | / /\\ \\ |  _  / \\___ \\| |    | | '_ \\ ");
+    System.out.println(" | |  | |/ ____ \\| | \\ \\ ____) | |____| | |_) |");
+    System.out.println(" |_|  |_/_/    \\_\\_|  \\_\\_____/|______|_|_.__/ ");
+    System.out.println("                                               ");
+    System.out.println(" MARSLib Core Framework - Initializing Subsystems");
+    System.out.println(" Powered by Mountaineer Area RoboticS - Team 2614");
+    System.out.println("-------------------------------------------------------");
+
     edu.wpi.first.wpilibj.DriverStation.reportWarning(
-        "[MARSLib] Framework Initialized - Made by Team 2614 MARS", false);
+        "[MARSLib] Framework Initialized - Mountaineer Area RoboticS Team 2614", false);
     robotContainer = new RobotContainer();
   }
 
