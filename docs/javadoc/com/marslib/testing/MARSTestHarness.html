@@ -79,7 +79,21 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="type-signature"><span class="modifiers">public final class </span><span class="element-name type-name-label">MARSTestHarness</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
-<div class="block">Centralized test setup utility that resets ALL MARSLib static singletons in one call.</div>
+<div class="block">Centralized test setup utility that resets ALL MARSLib static singletons in one call.
+
+ <p>MARSLib uses 5 static singletons that accumulate state across test runs. Forgetting to reset
+ ANY of them causes cross-test contamination: stacked physics bodies, stale alerts, leaked
+ commands. This class eliminates that failure mode by providing a single reset method.
+
+ <p><b>Usage:</b>
+
+ <pre><code>
+ @BeforeEach
+ public void setUp() {
+     MARSTestHarness.reset();
+     // ... construct your subsystems here
+ }
+ </code></pre></div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -96,25 +110,14 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#cleanup()" class="member-name-link">cleanup</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="../power/PowerConfig.html" title="class in com.marslib.power">PowerConfig</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createPowerConfig()" class="member-name-link">createPowerConfig</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Returns a standard PowerConfig for testing.</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="../swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createSwerveConfig()" class="member-name-link">createSwerveConfig</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Returns a standard SwerveConfig for testing.</div>
+<div class="block">Cleans up test state after a test completes.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="../vision/VisionConfig.html" title="class in com.marslib.vision">VisionConfig</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createVisionConfig()" class="member-name-link">createVisionConfig</a>()</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#reset()" class="member-name-link">reset</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Returns a standard VisionConfig for testing.</div>
+<div class="block">Resets all static singletons to a clean state for test isolation.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#reset()" class="member-name-link">reset</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -136,33 +139,28 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="reset()">
 <h3>reset</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">reset</span>()</div>
+<div class="block">Resets all static singletons to a clean state for test isolation. This MUST be called in every
+ test class's <code>@BeforeEach</code> method before constructing any subsystems.
+
+ <p>Resets the following:
+
+ <ol>
+   <li><code>HAL</code> â€” Initializes the WPILib Hardware Abstraction Layer for simulation
+   <li><code>CommandScheduler</code> â€” Cancels all commands and unregisters all subsystems
+   <li><code>MARSPhysicsWorld</code> â€” Destroys the dyn4j world and all physics bodies
+   <li><code>AprilTagVisionIOSim</code> â€” Destroys the shared VisionSystemSim
+   <li><code>Alert</code> â€” Clears all AdvantageScope alert groups
+   <li><code>MARSFaultManager</code> â€” Clears all registered faults
+   <li><code>DriverStationSim</code> â€” Sets Blue1 alliance, enables the robot, and beats heartbeat
+ </ol></div>
 </section>
 </li>
 <li>
 <section class="detail" id="cleanup()">
 <h3>cleanup</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">cleanup</span>()</div>
-</section>
-</li>
-<li>
-<section class="detail" id="createSwerveConfig()">
-<h3>createSwerveConfig</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="../swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></span>&nbsp;<span class="element-name">createSwerveConfig</span>()</div>
-<div class="block">Returns a standard SwerveConfig for testing.</div>
-</section>
-</li>
-<li>
-<section class="detail" id="createPowerConfig()">
-<h3>createPowerConfig</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="../power/PowerConfig.html" title="class in com.marslib.power">PowerConfig</a></span>&nbsp;<span class="element-name">createPowerConfig</span>()</div>
-<div class="block">Returns a standard PowerConfig for testing.</div>
-</section>
-</li>
-<li>
-<section class="detail" id="createVisionConfig()">
-<h3>createVisionConfig</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="../vision/VisionConfig.html" title="class in com.marslib.vision">VisionConfig</a></span>&nbsp;<span class="element-name">createVisionConfig</span>()</div>
-<div class="block">Returns a standard VisionConfig for testing.</div>
+<div class="block">Cleans up test state after a test completes. Call this in <code>@AfterEach</code> to prevent
+ subsystem references from leaking between tests.</div>
 </section>
 </li>
 </ul>

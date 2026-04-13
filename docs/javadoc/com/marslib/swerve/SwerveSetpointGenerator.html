@@ -138,10 +138,7 @@ loadScripts(document, 'script');</script>
  double&nbsp;f1,
  double&nbsp;maxVelStep,
  int&nbsp;maxIterations)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Computes the maximum linear acceleration scalar \( s_{max} \) for the driving vector wheel slip
- threshold.</div>
-</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected double</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#findSteeringMaxS(double,double,double,double,double,double,double,int)" class="member-name-link">findSteeringMaxS</a><wbr>(double&nbsp;x0,
  double&nbsp;y0,
@@ -151,10 +148,7 @@ loadScripts(document, 'script');</script>
  double&nbsp;f1,
  double&nbsp;maxDeviation,
  int&nbsp;maxIterations)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Computes the maximum positional scalar \( s_{max} \) for the steering rotation of a Swerve
- Module.</div>
-</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="SwerveSetpointGenerator.SwerveSetpoint.html" title="class in com.marslib.swerve">SwerveSetpointGenerator.SwerveSetpoint</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#generateSetpoint(com.marslib.swerve.SwerveSetpointGenerator.KinematicLimits,com.marslib.swerve.SwerveSetpointGenerator.SwerveSetpoint,edu.wpi.first.math.kinematics.ChassisSpeeds,double)" class="member-name-link">generateSetpoint</a><wbr>(<a href="SwerveSetpointGenerator.KinematicLimits.html" title="class in com.marslib.swerve">SwerveSetpointGenerator.KinematicLimits</a>&nbsp;limits,
  <a href="SwerveSetpointGenerator.SwerveSetpoint.html" title="class in com.marslib.swerve">SwerveSetpointGenerator.SwerveSetpoint</a>&nbsp;prevSetpoint,
@@ -203,25 +197,6 @@ loadScripts(document, 'script');</script>
  double&nbsp;f1,
  double&nbsp;maxDeviation,
  int&nbsp;maxIterations)</span></div>
-<div class="block">Computes the maximum positional scalar \( s_{max} \) for the steering rotation of a Swerve
- Module.
-
- <p>Utilizes <code>findRoot</code> to determine the exact timestamp bound where the change in module
- orientation \( d\theta \) precisely equals the physical limit <code>maxDeviation</code>. The
- equation evaluates \( f(\theta) = \text{unwrap}(\theta) - \text{offset} = 0 \).</div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>x0</code> - Prior structural X (Cosine mapping vector)</dd>
-<dd><code>y0</code> - Prior structural Y (Sine mapping vector)</dd>
-<dd><code>f0</code> - Previous rotation radians</dd>
-<dd><code>x1</code> - Desired structural X</dd>
-<dd><code>y1</code> - Desired structural Y</dd>
-<dd><code>f1</code> - Desired rotation radians</dd>
-<dd><code>maxDeviation</code> - The structural Max Steering velocity * \( dt \)</dd>
-<dd><code>maxIterations</code> - Bisection cut-off depth.</dd>
-<dt>Returns:</dt>
-<dd>The maximum safe step multiplier scale.</dd>
-</dl>
 </section>
 </li>
 <li>
@@ -235,24 +210,6 @@ loadScripts(document, 'script');</script>
  double&nbsp;f1,
  double&nbsp;maxVelStep,
  int&nbsp;maxIterations)</span></div>
-<div class="block">Computes the maximum linear acceleration scalar \( s_{max} \) for the driving vector wheel slip
- threshold.
-
- <p>Calculates the boundary threshold solving for: \( \sqrt{V_x^2 + V_y^2} - (\text{previous
- magnitude} + \text{max allowed acceleration step}) = 0 \).</div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>x0</code> - Prior magnitude X velocity</dd>
-<dd><code>y0</code> - Prior magnitude Y velocity</dd>
-<dd><code>f0</code> - Previous hypotenuse sum velocity</dd>
-<dd><code>x1</code> - Desired magnitude X velocity</dd>
-<dd><code>y1</code> - Desired magnitude Y velocity</dd>
-<dd><code>f1</code> - Desired hypotenuse sum velocity</dd>
-<dd><code>maxVelStep</code> - Absolute hardcap velocity slip threshold (\( \mu \cdot 9.81 \cdot dt \))</dd>
-<dd><code>maxIterations</code> - Limits Newton iteration overloop.</dd>
-<dt>Returns:</dt>
-<dd>A restricted translation scalar multiplier [0.0, 1.0].</dd>
-</dl>
 </section>
 </li>
 <li>

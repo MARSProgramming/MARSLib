@@ -1,0 +1,40 @@
+---
+id: code-mining
+title: "Elite Architecture Mining"
+---
+
+
+
+
+
+<main className="container" >
+  <div >
+    
+    <h1>Elite Architecture Mining</h1>
+  </div>
+
+  <p>Every year, Chief Delphi lights up with the source code drops from World Champions like Team 1690, 254, 6328, and 2910. Every year, hundreds of teams attempt to copy-paste their advanced time-of-flight models or trajectory solvers. And every year, their robots break due to architectural bloat and corrupted state variables.</p>
+
+  <p>In MARSLib, we do not copy-paste. We perform structurally rigid <strong>Architecture Mining</strong> governed by our AI Agentic Skills framework.</p>
+
+  <h2>1. The Abstraction Integrity Rule</h2>
+  <p>In 2024, Team 1690 released an incredible time-of-flight interpolation engine for shooting on the move. However, their repository was monolithic—a beautiful mess of interwoven singletons.</p>
+
+  <p>When mining this logic, you must strictly strip the target repository of its architecture and salvage <em>only the raw mathematics</em>. If the original code calls a motor controller directly inside the math solver, you must replace it with a decoupled <code>MARSMechanismTarget</code> payload.</p>
+
+  <div className="callout callout-warning">
+    <h4>AI Agent Enforcement</h4>
+    <p>MARSLib natively enforces this boundary via the <code>marslib-elite-mining</code> skill. Lead engineers can command the AI to ingest a target repository file, extract the discrete state-space models, and map them purely into our AdvantageKit <code>IO</code> layer paradigm. The AI is forbidden from ingesting the hardware implementations of rival teams.</p>
+  </div>
+
+  <h2>2. Telemetry Rewiring</h2>
+  <p>Elite teams often use complex Dashboard configurations or raw \`SmartDashboard\` calls. When bringing this logic into MARSLib, all telemetry calls must be gutted and replaced explicitly with AdvantageKit <code>Logger.recordOutput(...)</code> arrays, preserving determinism.</p>
+
+  <h2>3. Mathematical Normalization</h2>
+  <p>Team 254 uses custom <code>Twist2d</code> math. Team 2910 uses <code>ChassisSpeeds</code>. When ingesting kinematics, you must normalize the source mathematics into MARSLib's expected physical units utilizing standard WPILib geometry structs (e.g. <code>Translation2d</code> in Meters, not Inches; Radians, not Degrees). No raw sensor ticks are allowed past the IO layer interface.</p>
+</main>
+
+
+
+
+

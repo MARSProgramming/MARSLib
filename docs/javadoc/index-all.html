@@ -75,9 +75,9 @@ loadScripts(document, 'script');</script>
 <div class="block">Alias for <a href="com/marslib/util/MARSStateMachine.html#addTransition(S,S)"><code>MARSStateMachine.addTransition(Enum, Enum)</code></a>.</div>
 </dd>
 <dt><a href="com/marslib/swerve/SwerveDrive.html#addVisionMeasurement(edu.wpi.first.math.geometry.Pose2d,double,edu.wpi.first.math.Matrix)" class="member-name-link">addVisionMeasurement(Pose2d, double, Matrix&lt;N3, N1&gt;)</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="com/marslib/swerve/SwerveOdometry.html#addVisionMeasurement(edu.wpi.first.math.geometry.Pose2d,double,edu.wpi.first.math.Matrix)" class="member-name-link">addVisionMeasurement(Pose2d, double, Matrix&lt;N3, N1&gt;)</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveOdometry.html" title="class in com.marslib.swerve">SwerveOdometry</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Directly injects vision/SLAM data into the PoseEstimator pipeline.</div>
+</dd>
 <dt><a href="com/marslib/util/MARSStateMachine.html#addWildcardFrom(S)" class="member-name-link">addWildcardFrom(S)</a> - Method in class com.marslib.util.<a href="com/marslib/util/MARSStateMachine.html" title="class in com.marslib.util">MARSStateMachine</a></dt>
 <dd>
 <div class="block">Makes <code>fromState</code> able to transition to every state in the enum.</div>
@@ -116,28 +116,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/constants/AutoConstants.html#ALIGN_TRANSLATION_TOLERANCE_METERS" class="member-name-link">ALIGN_TRANSLATION_TOLERANCE_METERS</a> - Static variable in class frc.robot.constants.<a href="frc/robot/constants/AutoConstants.html" title="class in frc.robot.constants">AutoConstants</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#alignThetaIZoneRad()" class="member-name-link">alignThetaIZoneRad()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>alignThetaIZoneRad</code> record component.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#alignThetaKp()" class="member-name-link">alignThetaKp()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>alignThetaKp</code> record component.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveAutoBuilder.html#alignToPoint(com.marslib.swerve.SwerveDrive,java.util.function.Supplier)" class="member-name-link">alignToPoint(SwerveDrive, Supplier&lt;Pose2d&gt;)</a> - Static method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveAutoBuilder.html" title="class in com.marslib.swerve">SwerveAutoBuilder</a></dt>
+<dt><a href="com/marslib/swerve/SwerveDrive.html#alignToPoint(java.util.function.Supplier)" class="member-name-link">alignToPoint(Supplier&lt;Pose2d&gt;)</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a></dt>
 <dd>
 <div class="block">Generates a command that automatically paths the robot to the specified target utilizing
  PathPlanner's physics-constrained solver to avoid field obstacles dynamically.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveDrive.html#alignToPoint(java.util.function.Supplier)" class="member-name-link">alignToPoint(Supplier&lt;Pose2d&gt;)</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#alignTranslationIZoneMeters()" class="member-name-link">alignTranslationIZoneMeters()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>alignTranslationIZoneMeters</code> record component.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#alignTranslationKp()" class="member-name-link">alignTranslationKp()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>alignTranslationKp</code> record component.</div>
 </dd>
 <dt><a href="com/marslib/util/AllianceUtil.html" class="type-name-link" title="class in com.marslib.util">AllianceUtil</a> - Class in <a href="com/marslib/util/package-summary.html">com.marslib.util</a></dt>
 <dd>
@@ -153,14 +135,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Continuous scaling factor to dynamically inflate StdDev linearly based on chassis angular spin
  (deg/s).</div>
-</dd>
-<dt><a href="com/marslib/vision/VisionConfig.html#angularStdMultiplier()" class="member-name-link">angularStdMultiplier()</a> - Method in record class com.marslib.vision.<a href="com/marslib/vision/VisionConfig.html" title="class in com.marslib.vision">VisionConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>angularStdMultiplier</code> record component.</div>
-</dd>
-<dt><a href="com/marslib/vision/VisionConfig.html#angularVelocityStdMultiplier()" class="member-name-link">angularVelocityStdMultiplier()</a> - Method in record class com.marslib.vision.<a href="com/marslib/vision/VisionConfig.html" title="class in com.marslib.vision">VisionConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>angularVelocityStdMultiplier</code> record component.</div>
 </dd>
 <dt><a href="com/marslib/mechanisms/FlywheelIO.FlywheelIOInputs.html#appliedVolts" class="member-name-link">appliedVolts</a> - Variable in class com.marslib.mechanisms.<a href="com/marslib/mechanisms/FlywheelIO.FlywheelIOInputs.html" title="class in com.marslib.mechanisms">FlywheelIO.FlywheelIOInputs</a></dt>
 <dd>&nbsp;</dd>
@@ -222,22 +196,6 @@ loadScripts(document, 'script');</script>
 <dt><a href="frc/robot/Robot.html#autonomousPeriodic()" class="member-name-link">autonomousPeriodic()</a> - Method in class frc.robot.<a href="frc/robot/Robot.html" title="class in frc.robot">Robot</a></dt>
 <dd>
 <div class="block">This function is called periodically during autonomous.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#autoRotationKd()" class="member-name-link">autoRotationKd()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>autoRotationKd</code> record component.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#autoRotationKp()" class="member-name-link">autoRotationKp()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>autoRotationKp</code> record component.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#autoTranslationKd()" class="member-name-link">autoTranslationKd()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>autoTranslationKd</code> record component.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#autoTranslationKp()" class="member-name-link">autoTranslationKp()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>autoTranslationKp</code> record component.</div>
 </dd>
 <dt><a href="com/marslib/vision/AprilTagVisionIO.AprilTagVisionIOInputs.html#averageDistancesMeters" class="member-name-link">averageDistancesMeters</a> - Variable in class com.marslib.vision.<a href="com/marslib/vision/AprilTagVisionIO.AprilTagVisionIOInputs.html" title="class in com.marslib.vision">AprilTagVisionIO.AprilTagVisionIOInputs</a></dt>
 <dd>&nbsp;</dd>
@@ -303,25 +261,12 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="frc/robot/SwerveConstants.html#BUMPER_WIDTH_METERS" class="member-name-link">BUMPER_WIDTH_METERS</a> - Static variable in class frc.robot.<a href="frc/robot/SwerveConstants.html" title="class in frc.robot">SwerveConstants</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#bumperLengthMeters()" class="member-name-link">bumperLengthMeters()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>bumperLengthMeters</code> record component.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#bumperWidthMeters()" class="member-name-link">bumperWidthMeters()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>bumperWidthMeters</code> record component.</div>
-</dd>
 </dl>
 <h2 class="title" id="I:C">C</h2>
 <dl class="index">
 <dt><a href="com/marslib/swerve/TractionControlLimiter.html#calculate(edu.wpi.first.math.geometry.Translation2d)" class="member-name-link">calculate(Translation2d)</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/TractionControlLimiter.html" title="class in com.marslib.swerve">TractionControlLimiter</a></dt>
 <dd>
 <div class="block">Calculates the max achievable velocity vector without slipping tires.</div>
-</dd>
-<dt><a href="com/marslib/power/MARSPowerManager.html#calculateSheddingFactor()" class="member-name-link">calculateSheddingFactor()</a> - Method in class com.marslib.power.<a href="com/marslib/power/MARSPowerManager.html" title="class in com.marslib.power">MARSPowerManager</a></dt>
-<dd>
-<div class="block">Helper function for mechanisms to compute dynamically shedded voltage scaling based on the
- internal PowerConfig thresholds.</div>
 </dd>
 <dt><a href="com/marslib/util/EliteShooterMath.html#calculateShotOnTheMove(edu.wpi.first.math.geometry.Pose2d,edu.wpi.first.math.kinematics.ChassisSpeeds,edu.wpi.first.math.geometry.Translation3d,double,double,double,double,com.marslib.util.EliteShooterMath.EliteShooterSetpoint)" class="member-name-link">calculateShotOnTheMove(Pose2d, ChassisSpeeds, Translation3d, double, double, double, double, EliteShooterMath.EliteShooterSetpoint)</a> - Static method in class com.marslib.util.<a href="com/marslib/util/EliteShooterMath.html" title="class in com.marslib.util">EliteShooterMath</a></dt>
 <dd>
@@ -359,12 +304,6 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/constants/LEDConstants.html#CANDLE_ID" class="member-name-link">CANDLE_ID</a> - Static variable in class frc.robot.constants.<a href="frc/robot/constants/LEDConstants.html" title="class in frc.robot.constants">LEDConstants</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/power/PowerIOSim.html#canStarvationDelayMs" class="member-name-link">canStarvationDelayMs</a> - Variable in class com.marslib.power.<a href="com/marslib/power/PowerIOSim.html" title="class in com.marslib.power">PowerIOSim</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="com/marslib/power/PowerIOSim.html#canStarvationProbability" class="member-name-link">canStarvationProbability</a> - Variable in class com.marslib.power.<a href="com/marslib/power/PowerIOSim.html" title="class in com.marslib.power">PowerIOSim</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="com/marslib/swerve/GyroIOSim.html#canStarvationProbability" class="member-name-link">canStarvationProbability</a> - Variable in class com.marslib.swerve.<a href="com/marslib/swerve/GyroIOSim.html" title="class in com.marslib.swerve">GyroIOSim</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="com/marslib/power/PowerIO.PowerIOInputs.html#channelCurrentsAmps" class="member-name-link">channelCurrentsAmps</a> - Variable in class com.marslib.power.<a href="com/marslib/power/PowerIO.PowerIOInputs.html" title="class in com.marslib.power">PowerIO.PowerIOInputs</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/marslib/util/EliteShooterMath.EliteShooterSetpoint.html#chassisAngularFeedforward" class="member-name-link">chassisAngularFeedforward</a> - Variable in class com.marslib.util.<a href="com/marslib/util/EliteShooterMath.EliteShooterSetpoint.html" title="class in com.marslib.util">EliteShooterMath.EliteShooterSetpoint</a></dt>
@@ -372,7 +311,9 @@ loadScripts(document, 'script');</script>
 <dt><a href="com/marslib/swerve/SwerveSetpointGenerator.SwerveSetpoint.html#chassisSpeeds" class="member-name-link">chassisSpeeds</a> - Variable in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveSetpointGenerator.SwerveSetpoint.html" title="class in com.marslib.swerve">SwerveSetpointGenerator.SwerveSetpoint</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/marslib/testing/MARSTestHarness.html#cleanup()" class="member-name-link">cleanup()</a> - Static method in class com.marslib.testing.<a href="com/marslib/testing/MARSTestHarness.html" title="class in com.marslib.testing">MARSTestHarness</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Cleans up test state after a test completes.</div>
+</dd>
 <dt><a href="com/marslib/faults/MARSFaultManager.html#clear()" class="member-name-link">clear()</a> - Static method in class com.marslib.faults.<a href="com/marslib/faults/MARSFaultManager.html" title="class in com.marslib.faults">MARSFaultManager</a></dt>
 <dd>
 <div class="block">Resets all fault state.</div>
@@ -417,39 +358,25 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/marslib/vision/package-summary.html">com.marslib.vision</a> - package com.marslib.vision</dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/swerve/TeleopDriveMath.html#computeFieldRelativeSpeeds(double,double,double,double,double,boolean,edu.wpi.first.math.kinematics.ChassisSpeeds)" class="member-name-link">computeFieldRelativeSpeeds(double, double, double, double, double, boolean, ChassisSpeeds)</a> - Static method in class com.marslib.swerve.<a href="com/marslib/swerve/TeleopDriveMath.html" title="class in com.marslib.swerve">TeleopDriveMath</a></dt>
+<dt><a href="com/marslib/swerve/TeleopDriveMath.html#computeFieldRelativeSpeeds(double,double,double,boolean,edu.wpi.first.math.kinematics.ChassisSpeeds)" class="member-name-link">computeFieldRelativeSpeeds(double, double, double, boolean, ChassisSpeeds)</a> - Static method in class com.marslib.swerve.<a href="com/marslib/swerve/TeleopDriveMath.html" title="class in com.marslib.swerve">TeleopDriveMath</a></dt>
 <dd>
 <div class="block">Computes field-relative ChassisSpeeds from raw joystick axes BEFORE slew rate limiting.</div>
 </dd>
-<dt><a href="com/marslib/swerve/SwerveAutoBuilder.html#configure(com.marslib.swerve.SwerveDrive)" class="member-name-link">configure(SwerveDrive)</a> - Static method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveAutoBuilder.html" title="class in com.marslib.swerve">SwerveAutoBuilder</a></dt>
+<dt><a href="frc/robot/RobotBindings.html#configureBindings(frc.robot.subsystems.OperatorInterface,com.marslib.swerve.SwerveDrive,frc.robot.subsystems.MARSSuperstructure,frc.robot.subsystems.MARSClimber,frc.robot.subsystems.MARSCowl,frc.robot.subsystems.MARSShooter,frc.robot.subsystems.MARSShooter,frc.robot.subsystems.MARSShooter)" class="member-name-link">configureBindings(OperatorInterface, SwerveDrive, MARSSuperstructure, MARSClimber, MARSCowl, MARSShooter, MARSShooter, MARSShooter)</a> - Static method in class frc.robot.<a href="frc/robot/RobotBindings.html" title="class in frc.robot">RobotBindings</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/marslib/swerve/SwerveDrive.html#configurePathPlanner()" class="member-name-link">configurePathPlanner()</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a></dt>
 <dd>
 <div class="block">Configures PathPlanner's AutoBuilder for autonomous path following.</div>
 </dd>
-<dt><a href="frc/robot/RobotBindings.html#configureBindings(frc.robot.subsystems.OperatorInterface,com.marslib.swerve.SwerveDrive,com.marslib.swerve.SwerveConfig,frc.robot.subsystems.MARSSuperstructure,frc.robot.subsystems.MARSClimber,frc.robot.subsystems.MARSCowl,frc.robot.subsystems.MARSShooter,frc.robot.subsystems.MARSShooter,frc.robot.subsystems.MARSShooter)" class="member-name-link">configureBindings(OperatorInterface, SwerveDrive, SwerveConfig, MARSSuperstructure, MARSClimber, MARSCowl, MARSShooter, MARSShooter, MARSShooter)</a> - Static method in class frc.robot.<a href="frc/robot/RobotBindings.html" title="class in frc.robot">RobotBindings</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="com/marslib/swerve/SwerveDrive.html#configurePathPlanner()" class="member-name-link">configurePathPlanner()</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="com/marslib/swerve/GyroIO.GyroIOInputs.html#connected" class="member-name-link">connected</a> - Variable in class com.marslib.swerve.<a href="com/marslib/swerve/GyroIO.GyroIOInputs.html" title="class in com.marslib.swerve">GyroIO.GyroIOInputs</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/constants/CowlConstants.html" class="type-name-link" title="class in frc.robot.constants">CowlConstants</a> - Class in <a href="frc/robot/constants/package-summary.html">frc.robot.constants</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/constants/CowlConstants.html#%3Cinit%3E()" class="member-name-link">CowlConstants()</a> - Constructor for class frc.robot.constants.<a href="frc/robot/constants/CowlConstants.html" title="class in frc.robot.constants">CowlConstants</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/testing/MARSTestHarness.html#createPowerConfig()" class="member-name-link">createPowerConfig()</a> - Static method in class com.marslib.testing.<a href="com/marslib/testing/MARSTestHarness.html" title="class in com.marslib.testing">MARSTestHarness</a></dt>
-<dd>
-<div class="block">Returns a standard PowerConfig for testing.</div>
-</dd>
 <dt><a href="com/marslib/util/ReplayIOFactory.html#createProxy(java.lang.Class)" class="member-name-link">createProxy(Class&lt;T&gt;)</a> - Static method in class com.marslib.util.<a href="com/marslib/util/ReplayIOFactory.html" title="class in com.marslib.util">ReplayIOFactory</a></dt>
 <dd>
 <div class="block">Creates a dynamic proxy for the given interface type that does nothing.</div>
-</dd>
-<dt><a href="com/marslib/testing/MARSTestHarness.html#createSwerveConfig()" class="member-name-link">createSwerveConfig()</a> - Static method in class com.marslib.testing.<a href="com/marslib/testing/MARSTestHarness.html" title="class in com.marslib.testing">MARSTestHarness</a></dt>
-<dd>
-<div class="block">Returns a standard SwerveConfig for testing.</div>
-</dd>
-<dt><a href="com/marslib/testing/MARSTestHarness.html#createVisionConfig()" class="member-name-link">createVisionConfig()</a> - Static method in class com.marslib.testing.<a href="com/marslib/testing/MARSTestHarness.html" title="class in com.marslib.testing">MARSTestHarness</a></dt>
-<dd>
-<div class="block">Returns a standard VisionConfig for testing.</div>
 </dd>
 <dt><a href="com/marslib/faults/Alert.AlertType.html#CRITICAL" class="member-name-link">CRITICAL</a> - Enum constant in enum class com.marslib.faults.<a href="com/marslib/faults/Alert.AlertType.html" title="enum class in com.marslib.faults">Alert.AlertType</a></dt>
 <dd>&nbsp;</dd>
@@ -459,14 +386,6 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="frc/robot/constants/PowerConstants.html#CRITICAL_VOLTAGE" class="member-name-link">CRITICAL_VOLTAGE</a> - Static variable in class frc.robot.constants.<a href="frc/robot/constants/PowerConstants.html" title="class in frc.robot.constants">PowerConstants</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/power/PowerConfig.html#criticalVoltage()" class="member-name-link">criticalVoltage()</a> - Method in record class com.marslib.power.<a href="com/marslib/power/PowerConfig.html" title="class in com.marslib.power">PowerConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <a href="./com/marslib/power/PowerConfig.html#param-criticalVoltage"><code>criticalVoltage</code></a> record component.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#criticalVoltage()" class="member-name-link">criticalVoltage()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>criticalVoltage</code> record component.</div>
-</dd>
 <dt><a href="frc/robot/constants/ModeConstants.html#CURRENT_MODE" class="member-name-link">CURRENT_MODE</a> - Static variable in class frc.robot.constants.<a href="frc/robot/constants/ModeConstants.html" title="class in frc.robot.constants">ModeConstants</a></dt>
 <dd>
 <div class="block">Automatically detected execution mode.</div>
@@ -516,20 +435,12 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/marslib/swerve/SwerveModuleIO.SwerveModuleIOInputs.html#driveCurrentAmps" class="member-name-link">driveCurrentAmps</a> - Variable in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveModuleIO.SwerveModuleIOInputs.html" title="class in com.marslib.swerve">SwerveModuleIO.SwerveModuleIOInputs</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#driveGearRatio()" class="member-name-link">driveGearRatio()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>driveGearRatio</code> record component.</div>
-</dd>
 <dt><a href="com/marslib/swerve/PhoenixOdometryThread.SyncData.html#drivePositions" class="member-name-link">drivePositions</a> - Variable in class com.marslib.swerve.<a href="com/marslib/swerve/PhoenixOdometryThread.SyncData.html" title="class in com.marslib.swerve">PhoenixOdometryThread.SyncData</a></dt>
 <dd>
 <div class="block">Accumulated drive encoder positions (motor rotations) since the last drain.</div>
 </dd>
 <dt><a href="com/marslib/swerve/SwerveModuleIO.SwerveModuleIOInputs.html#drivePositionsRad" class="member-name-link">drivePositionsRad</a> - Variable in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveModuleIO.SwerveModuleIOInputs.html" title="class in com.marslib.swerve">SwerveModuleIO.SwerveModuleIOInputs</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#driveStatorCurrentLimit()" class="member-name-link">driveStatorCurrentLimit()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>driveStatorCurrentLimit</code> record component.</div>
-</dd>
 <dt><a href="com/marslib/swerve/SwerveModuleIO.SwerveModuleIOInputs.html#driveVelocityRadPerSec" class="member-name-link">driveVelocityRadPerSec</a> - Variable in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveModuleIO.SwerveModuleIOInputs.html" title="class in com.marslib.swerve">SwerveModuleIO.SwerveModuleIOInputs</a></dt>
 <dd>&nbsp;</dd>
 </dl>
@@ -553,30 +464,12 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/constants/SimulationConstants.html#ENABLE_VISION_OCCLUSION" class="member-name-link">ENABLE_VISION_OCCLUSION</a> - Static variable in class frc.robot.constants.<a href="frc/robot/constants/SimulationConstants.html" title="class in frc.robot.constants">SimulationConstants</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/power/PowerIOSim.html#enableCanStarvation" class="member-name-link">enableCanStarvation</a> - Variable in class com.marslib.power.<a href="com/marslib/power/PowerIOSim.html" title="class in com.marslib.power">PowerIOSim</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="com/marslib/swerve/GyroIOSim.html#enableCanStarvation" class="member-name-link">enableCanStarvation</a> - Variable in class com.marslib.swerve.<a href="com/marslib/swerve/GyroIOSim.html" title="class in com.marslib.swerve">GyroIOSim</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="com/marslib/vision/AprilTagVisionIOSim.html#enableOcclusion" class="member-name-link">enableOcclusion</a> - Variable in class com.marslib.vision.<a href="com/marslib/vision/AprilTagVisionIOSim.html" title="class in com.marslib.vision">AprilTagVisionIOSim</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="com/marslib/auto/MARSAlignmentCommand.html#end(boolean)" class="member-name-link">end(boolean)</a> - Method in class com.marslib.auto.<a href="com/marslib/auto/MARSAlignmentCommand.html" title="class in com.marslib.auto">MARSAlignmentCommand</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/marslib/auto/SmartAssistAlign.html#end(boolean)" class="member-name-link">end(boolean)</a> - Method in class com.marslib.auto.<a href="com/marslib/auto/SmartAssistAlign.html" title="class in com.marslib.auto">SmartAssistAlign</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/commands/ShootOnTheMoveCommand.html#end(boolean)" class="member-name-link">end(boolean)</a> - Method in class frc.robot.commands.<a href="frc/robot/commands/ShootOnTheMoveCommand.html" title="class in frc.robot.commands">ShootOnTheMoveCommand</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/power/PowerConfig.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in record class com.marslib.power.<a href="com/marslib/power/PowerConfig.html" title="class in com.marslib.power">PowerConfig</a></dt>
-<dd>
-<div class="block">Indicates whether some other object is "equal to" this one.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Indicates whether some other object is "equal to" this one.</div>
-</dd>
-<dt><a href="com/marslib/vision/VisionConfig.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in record class com.marslib.vision.<a href="com/marslib/vision/VisionConfig.html" title="class in com.marslib.vision">VisionConfig</a></dt>
-<dd>
-<div class="block">Indicates whether some other object is "equal to" this one.</div>
-</dd>
 <dt><a href="com/marslib/vision/AprilTagVisionIO.AprilTagVisionIOInputs.html#estimatedPoses" class="member-name-link">estimatedPoses</a> - Variable in class com.marslib.vision.<a href="com/marslib/vision/AprilTagVisionIO.AprilTagVisionIOInputs.html" title="class in com.marslib.vision">AprilTagVisionIO.AprilTagVisionIOInputs</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/marslib/vision/VIOSlamIO.VIOSlamIOInputs.html#estimatedPoses" class="member-name-link">estimatedPoses</a> - Variable in class com.marslib.vision.<a href="com/marslib/vision/VIOSlamIO.VIOSlamIOInputs.html" title="class in com.marslib.vision">VIOSlamIO.VIOSlamIOInputs</a></dt>
@@ -616,35 +509,15 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Field-level constants for the 2026 REBUILT game.</div>
 </dd>
-<dt><a href="com/marslib/vision/VisionConfig.html#fieldLengthMeters()" class="member-name-link">fieldLengthMeters()</a> - Method in record class com.marslib.vision.<a href="com/marslib/vision/VisionConfig.html" title="class in com.marslib.vision">VisionConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>fieldLengthMeters</code> record component.</div>
-</dd>
-<dt><a href="com/marslib/vision/VisionConfig.html#fieldMarginMeters()" class="member-name-link">fieldMarginMeters()</a> - Method in record class com.marslib.vision.<a href="com/marslib/vision/VisionConfig.html" title="class in com.marslib.vision">VisionConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>fieldMarginMeters</code> record component.</div>
-</dd>
-<dt><a href="com/marslib/vision/VisionConfig.html#fieldWidthMeters()" class="member-name-link">fieldWidthMeters()</a> - Method in record class com.marslib.vision.<a href="com/marslib/vision/VisionConfig.html" title="class in com.marslib.vision">VisionConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>fieldWidthMeters</code> record component.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveDiagnostics.html#finalClimbLineupCommand()" class="member-name-link">finalClimbLineupCommand()</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveDiagnostics.html" title="class in com.marslib.swerve">SwerveDiagnostics</a></dt>
+<dt><a href="com/marslib/swerve/SwerveDrive.html#finalClimbLineupCommand()" class="member-name-link">finalClimbLineupCommand()</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a></dt>
 <dd>
 <div class="block">Open-loop dead-reckoning sequence designed to precisely lock the robot onto the climb chain
  using predefined translational bump limits.</div>
 </dd>
-<dt><a href="com/marslib/swerve/SwerveDrive.html#finalClimbLineupCommand()" class="member-name-link">finalClimbLineupCommand()</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="com/marslib/swerve/SwerveSetpointGenerator.html#findDriveMaxS(double,double,double,double,double,double,double,int)" class="member-name-link">findDriveMaxS(double, double, double, double, double, double, double, int)</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveSetpointGenerator.html" title="class in com.marslib.swerve">SwerveSetpointGenerator</a></dt>
-<dd>
-<div class="block">Computes the maximum linear acceleration scalar \( s_{max} \) for the driving vector wheel slip
- threshold.</div>
-</dd>
+<dd>&nbsp;</dd>
 <dt><a href="com/marslib/swerve/SwerveSetpointGenerator.html#findSteeringMaxS(double,double,double,double,double,double,double,int)" class="member-name-link">findSteeringMaxS(double, double, double, double, double, double, double, int)</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveSetpointGenerator.html" title="class in com.marslib.swerve">SwerveSetpointGenerator</a></dt>
-<dd>
-<div class="block">Computes the maximum positional scalar \( s_{max} \) for the steering rotation of a Swerve
- Module.</div>
-</dd>
+<dd>&nbsp;</dd>
 <dt><a href="frc/robot/constants/DriveConstants.html#FL_DRIVE_ID" class="member-name-link">FL_DRIVE_ID</a> - Static variable in class frc.robot.constants.<a href="frc/robot/constants/DriveConstants.html" title="class in frc.robot.constants">DriveConstants</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/constants/DriveConstants.html#FL_TURN_ID" class="member-name-link">FL_TURN_ID</a> - Static variable in class frc.robot.constants.<a href="frc/robot/constants/DriveConstants.html" title="class in frc.robot.constants">DriveConstants</a></dt>
@@ -761,13 +634,13 @@ loadScripts(document, 'script');</script>
 <div class="block">Accesses the pre-allocated cache representing positional samples without creating arrays.</div>
 </dd>
 <dt><a href="com/marslib/swerve/SwerveDrive.html#getChassisSpeeds()" class="member-name-link">getChassisSpeeds()</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Measures the current overall chassis speeds based on the actual measured module states.</div>
+</dd>
 <dt><a href="frc/robot/constants/FieldConstants.html#getClosestClimbingPosition(edu.wpi.first.math.geometry.Pose2d)" class="member-name-link">getClosestClimbingPosition(Pose2d)</a> - Static method in class frc.robot.constants.<a href="frc/robot/constants/FieldConstants.html" title="class in frc.robot.constants">FieldConstants</a></dt>
 <dd>
 <div class="block">Returns the closest climbing position to the robot based on current alliance.</div>
 </dd>
-<dt><a href="com/marslib/swerve/SwerveDrive.html#getConfig()" class="member-name-link">getConfig()</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="frc/robot/subsystems/OperatorInterface.html#getController()" class="member-name-link">getController()</a> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/OperatorInterface.html" title="class in frc.robot.subsystems">OperatorInterface</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/subsystems/MARSSuperstructure.html#getCurrentState()" class="member-name-link">getCurrentState()</a> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/MARSSuperstructure.html" title="class in frc.robot.subsystems">MARSSuperstructure</a></dt>
@@ -806,7 +679,9 @@ loadScripts(document, 'script');</script>
 <div class="block">Retrieves the latest fully-regressed Velocity Feedforward constant.</div>
 </dd>
 <dt><a href="com/marslib/swerve/SwerveDrive.html#getGyroInputs()" class="member-name-link">getGyroInputs()</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Gets the current hardware or simulated Gyro inputs.</div>
+</dd>
 <dt><a href="com/marslib/swerve/PhoenixOdometryThread.html#getGyroYawData()" class="member-name-link">getGyroYawData()</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/PhoenixOdometryThread.html" title="class in com.marslib.swerve">PhoenixOdometryThread</a></dt>
 <dd>
 <div class="block">Drains all buffered high-frequency gyro yaw samples since the last call.</div>
@@ -834,17 +709,18 @@ loadScripts(document, 'script');</script>
 <div class="block">Returns the hardware timestamps of the high-frequency positional records.</div>
 </dd>
 <dt><a href="com/marslib/swerve/SwerveDrive.html#getPose()" class="member-name-link">getPose()</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="com/marslib/swerve/SwerveOdometry.html#getPose()" class="member-name-link">getPose()</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveOdometry.html" title="class in com.marslib.swerve">SwerveOdometry</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Returns the current highly-filtered pose from the SwerveDrivePoseEstimator.</div>
+</dd>
 <dt><a href="com/marslib/swerve/SwerveDrive.html#getPose3d()" class="member-name-link">getPose3d()</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Returns the current 3D pose of the chassis, incorporating complete 3D gyro tilt for accurate
+ physics and camera FOV rendering.</div>
+</dd>
 <dt><a href="gg/questnav/QuestNav.html#getPose3d()" class="member-name-link">getPose3d()</a> - Method in class gg.questnav.<a href="gg/questnav/QuestNav.html" title="class in gg.questnav">QuestNav</a></dt>
 <dd>
 <div class="block">Returns the latest 6-DOF pose estimate from the Quest headset.</div>
 </dd>
-<dt><a href="com/marslib/swerve/SwerveOdometry.html#getPose3d(com.marslib.swerve.GyroIOInputsAutoLogged)" class="member-name-link">getPose3d(GyroIOInputsAutoLogged)</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveOdometry.html" title="class in com.marslib.swerve">SwerveOdometry</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="frc/robot/subsystems/MARSClimber.html#getPositionMeters()" class="member-name-link">getPositionMeters()</a> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/MARSClimber.html" title="class in frc.robot.subsystems">MARSClimber</a></dt>
 <dd>
 <div class="block">Returns the current measured climber height.</div>
@@ -866,7 +742,9 @@ loadScripts(document, 'script');</script>
 <dt><a href="com/marslib/swerve/SwerveModuleIOSim.html#getSimDriveVoltage()" class="member-name-link">getSimDriveVoltage()</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveModuleIOSim.html" title="class in com.marslib.swerve">SwerveModuleIOSim</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/marslib/swerve/SwerveDrive.html#getSimPose3d()" class="member-name-link">getSimPose3d()</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Specifically returns the ground-truth 3D pose during simulation.</div>
+</dd>
 <dt><a href="com/marslib/swerve/SwerveModuleIOSim.html#getSimTurnVoltage()" class="member-name-link">getSimTurnVoltage()</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveModuleIOSim.html" title="class in com.marslib.swerve">SwerveModuleIOSim</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/marslib/simulation/MARSPhysicsWorld.html#getSimulatedVoltage()" class="member-name-link">getSimulatedVoltage()</a> - Method in class com.marslib.simulation.<a href="com/marslib/simulation/MARSPhysicsWorld.html" title="class in com.marslib.simulation">MARSPhysicsWorld</a></dt>
@@ -888,10 +766,6 @@ loadScripts(document, 'script');</script>
 <dt><a href="com/marslib/diagnostics/SystemTestable.html#getSystemCheckCommand()" class="member-name-link">getSystemCheckCommand()</a> - Method in interface com.marslib.diagnostics.<a href="com/marslib/diagnostics/SystemTestable.html" title="interface in com.marslib.diagnostics">SystemTestable</a></dt>
 <dd>
 <div class="block">Generates an autonomous, state-machine style verification routine for this subsystem.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveDiagnostics.html#getSystemCheckCommand()" class="member-name-link">getSystemCheckCommand()</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveDiagnostics.html" title="class in com.marslib.swerve">SwerveDiagnostics</a></dt>
-<dd>
-<div class="block">Verification sequence to ensure Modules are mechanically linked and not browning out.</div>
 </dd>
 <dt><a href="com/marslib/swerve/SwerveDrive.html#getSystemCheckCommand()" class="member-name-link">getSystemCheckCommand()</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a></dt>
 <dd>&nbsp;</dd>
@@ -940,7 +814,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/SwerveConstants.html#GRAVITY_M_PER_S2" class="member-name-link">GRAVITY_M_PER_S2</a> - Static variable in class frc.robot.<a href="frc/robot/SwerveConstants.html" title="class in frc.robot">SwerveConstants</a></dt>
 <dd>
-<div class="block">Standard gravitational acceleration (m/s²).</div>
+<div class="block">Standard gravitational acceleration (m/sÂ²).</div>
 </dd>
 <dt><a href="frc/robot/constants/SimulationConstants.html#GYRO_DRIFT_DEG_PER_SEC" class="member-name-link">GYRO_DRIFT_DEG_PER_SEC</a> - Static variable in class frc.robot.constants.<a href="frc/robot/constants/SimulationConstants.html" title="class in frc.robot.constants">SimulationConstants</a></dt>
 <dd>&nbsp;</dd>
@@ -958,7 +832,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Real hardware implementation of the gyro IO layer using a CTRE Pigeon2 IMU.</div>
 </dd>
-<dt><a href="com/marslib/swerve/GyroIOPigeon2.html#%3Cinit%3E(int,java.lang.String,com.marslib.swerve.SwerveConfig)" class="member-name-link">GyroIOPigeon2(int, String, SwerveConfig)</a> - Constructor for class com.marslib.swerve.<a href="com/marslib/swerve/GyroIOPigeon2.html" title="class in com.marslib.swerve">GyroIOPigeon2</a></dt>
+<dt><a href="com/marslib/swerve/GyroIOPigeon2.html#%3Cinit%3E(int,java.lang.String)" class="member-name-link">GyroIOPigeon2(int, String)</a> - Constructor for class com.marslib.swerve.<a href="com/marslib/swerve/GyroIOPigeon2.html" title="class in com.marslib.swerve">GyroIOPigeon2</a></dt>
 <dd>
 <div class="block">Constructs a Pigeon2 gyro IO layer.</div>
 </dd>
@@ -989,28 +863,12 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/marslib/swerve/SwerveModuleIO.SwerveModuleIOInputs.html#hasHardwareConnected" class="member-name-link">hasHardwareConnected</a> - Variable in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveModuleIO.SwerveModuleIOInputs.html" title="class in com.marslib.swerve">SwerveModuleIO.SwerveModuleIOInputs</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/power/PowerConfig.html#hashCode()" class="member-name-link">hashCode()</a> - Method in record class com.marslib.power.<a href="com/marslib/power/PowerConfig.html" title="class in com.marslib.power">PowerConfig</a></dt>
-<dd>
-<div class="block">Returns a hash code value for this object.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#hashCode()" class="member-name-link">hashCode()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns a hash code value for this object.</div>
-</dd>
-<dt><a href="com/marslib/vision/VisionConfig.html#hashCode()" class="member-name-link">hashCode()</a> - Method in record class com.marslib.vision.<a href="com/marslib/vision/VisionConfig.html" title="class in com.marslib.vision">VisionConfig</a></dt>
-<dd>
-<div class="block">Returns a hash code value for this object.</div>
-</dd>
 <dt><a href="com/marslib/faults/MARSFaultManager.html#hasNewCriticalFault()" class="member-name-link">hasNewCriticalFault()</a> - Static method in class com.marslib.faults.<a href="com/marslib/faults/MARSFaultManager.html" title="class in com.marslib.faults">MARSFaultManager</a></dt>
 <dd>
 <div class="block">Returns whether a new critical fault has occurred recently.</div>
 </dd>
 <dt><a href="frc/robot/constants/DriveConstants.html#HEADING_KP" class="member-name-link">HEADING_KP</a> - Static variable in class frc.robot.constants.<a href="frc/robot/constants/DriveConstants.html" title="class in frc.robot.constants">DriveConstants</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#headingKp()" class="member-name-link">headingKp()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>headingKp</code> record component.</div>
-</dd>
 <dt><a href="frc/robot/subsystems/MARSCowl.html#home()" class="member-name-link">home()</a> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/MARSCowl.html" title="class in frc.robot.subsystems">MARSCowl</a></dt>
 <dd>
 <div class="block">Homes the cowl using a standard default threshold (-2.0V, 15.0A).</div>
@@ -1085,13 +943,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Returns whether the QuestNav headset is currently connected and publishing data.</div>
 </dd>
-<dt><a href="com/marslib/power/MARSPowerManager.html#isCritical()" class="member-name-link">isCritical()</a> - Method in class com.marslib.power.<a href="com/marslib/power/MARSPowerManager.html" title="class in com.marslib.power">MARSPowerManager</a></dt>
-<dd>
-<div class="block">Returns true if the system voltage is currently below the critical threshold.</div>
-</dd>
 <dt><a href="com/marslib/auto/MARSAlignmentCommand.html#isFinished()" class="member-name-link">isFinished()</a> - Method in class com.marslib.auto.<a href="com/marslib/auto/MARSAlignmentCommand.html" title="class in com.marslib.auto">MARSAlignmentCommand</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="com/marslib/auto/SmartAssistAlign.html#isFinished()" class="member-name-link">isFinished()</a> - Method in class com.marslib.auto.<a href="com/marslib/auto/SmartAssistAlign.html" title="class in com.marslib.auto">SmartAssistAlign</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/marslib/util/AllianceUtil.html#isRed()" class="member-name-link">isRed()</a> - Static method in class com.marslib.util.<a href="com/marslib/util/AllianceUtil.html" title="class in com.marslib.util">AllianceUtil</a></dt>
 <dd>
@@ -1104,10 +956,6 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/marslib/util/EliteShooterMath.EliteShooterSetpoint.html#isValid" class="member-name-link">isValid</a> - Variable in class com.marslib.util.<a href="com/marslib/util/EliteShooterMath.EliteShooterSetpoint.html" title="class in com.marslib.util">EliteShooterMath.EliteShooterSetpoint</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/power/MARSPowerManager.html#isWarning()" class="member-name-link">isWarning()</a> - Method in class com.marslib.power.<a href="com/marslib/power/MARSPowerManager.html" title="class in com.marslib.power">MARSPowerManager</a></dt>
-<dd>
-<div class="block">Returns true if the system voltage is currently below the warning threshold.</div>
-</dd>
 </dl>
 <h2 class="title" id="I:K">K</h2>
 <dl class="index">
@@ -1204,10 +1052,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Initializes the TalonFX hardware and pre-configures Linear MotionMagic parameters.</div>
 </dd>
-<dt><a href="com/marslib/vision/VisionConfig.html#linearVelocityStdMultiplier()" class="member-name-link">linearVelocityStdMultiplier()</a> - Method in record class com.marslib.vision.<a href="com/marslib/vision/VisionConfig.html" title="class in com.marslib.vision">VisionConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>linearVelocityStdMultiplier</code> record component.</div>
-</dd>
 <dt><a href="frc/robot/constants/ShooterConstants.html#LM_MOTOR_ID" class="member-name-link">LM_MOTOR_ID</a> - Static variable in class frc.robot.constants.<a href="frc/robot/constants/ShooterConstants.html" title="class in frc.robot.constants">ShooterConstants</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/marslib/hmi/LEDIO.State.html#LOAD_SHEDDING" class="member-name-link">LOAD_SHEDDING</a> - Enum constant in enum class com.marslib.hmi.<a href="com/marslib/hmi/LEDIO.State.html" title="enum class in com.marslib.hmi">LEDIO.State</a></dt>
@@ -1229,14 +1073,6 @@ loadScripts(document, 'script');</script>
 <dt><a href="frc/robot/constants/ModeConstants.html#LOOP_PERIOD_SECS" class="member-name-link">LOOP_PERIOD_SECS</a> - Static variable in class frc.robot.constants.<a href="frc/robot/constants/ModeConstants.html" title="class in frc.robot.constants">ModeConstants</a></dt>
 <dd>
 <div class="block">The primary robot loop period in seconds (50Hz = 0.02s).</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#loopPeriodSecs()" class="member-name-link">loopPeriodSecs()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>loopPeriodSecs</code> record component.</div>
-</dd>
-<dt><a href="com/marslib/vision/VisionConfig.html#loopPeriodSecs()" class="member-name-link">loopPeriodSecs()</a> - Method in record class com.marslib.vision.<a href="com/marslib/vision/VisionConfig.html" title="class in com.marslib.vision">VisionConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>loopPeriodSecs</code> record component.</div>
 </dd>
 </dl>
 <h2 class="title" id="I:M">M</h2>
@@ -1312,7 +1148,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Subsystem responsible for monitoring the central Power Distribution Hub (PDH).</div>
 </dd>
-<dt><a href="com/marslib/power/MARSPowerManager.html#%3Cinit%3E(com.marslib.power.PowerIO,com.marslib.power.PowerConfig)" class="member-name-link">MARSPowerManager(PowerIO, PowerConfig)</a> - Constructor for class com.marslib.power.<a href="com/marslib/power/MARSPowerManager.html" title="class in com.marslib.power">MARSPowerManager</a></dt>
+<dt><a href="com/marslib/power/MARSPowerManager.html#%3Cinit%3E(com.marslib.power.PowerIO)" class="member-name-link">MARSPowerManager(PowerIO)</a> - Constructor for class com.marslib.power.<a href="com/marslib/power/MARSPowerManager.html" title="class in com.marslib.power">MARSPowerManager</a></dt>
 <dd>
 <div class="block">Initializes the Power Manager.</div>
 </dd>
@@ -1353,7 +1189,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Central aggregator for all visual and SLAM external odometry integrations.</div>
 </dd>
-<dt><a href="com/marslib/vision/MARSVision.html#%3Cinit%3E(com.marslib.swerve.SwerveDrive,java.util.List,java.util.List,com.marslib.vision.VisionConfig)" class="member-name-link">MARSVision(SwerveDrive, List&lt;AprilTagVisionIO&gt;, List&lt;VIOSlamIO&gt;, VisionConfig)</a> - Constructor for class com.marslib.vision.<a href="com/marslib/vision/MARSVision.html" title="class in com.marslib.vision">MARSVision</a></dt>
+<dt><a href="com/marslib/vision/MARSVision.html#%3Cinit%3E(com.marslib.swerve.SwerveDrive,java.util.List,java.util.List)" class="member-name-link">MARSVision(SwerveDrive, List&lt;AprilTagVisionIO&gt;, List&lt;VIOSlamIO&gt;)</a> - Constructor for class com.marslib.vision.<a href="com/marslib/vision/MARSVision.html" title="class in com.marslib.vision">MARSVision</a></dt>
 <dd>
 <div class="block">Constructs the absolute Vision mapping structure.</div>
 </dd>
@@ -1398,36 +1234,12 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Maximum acceptable Z-height offset (meters) to reject 'flying robot' hallucinations.</div>
 </dd>
-<dt><a href="com/marslib/vision/VisionConfig.html#maxAmbiguity()" class="member-name-link">maxAmbiguity()</a> - Method in record class com.marslib.vision.<a href="com/marslib/vision/VisionConfig.html" title="class in com.marslib.vision">VisionConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>maxAmbiguity</code> record component.</div>
-</dd>
-<dt><a href="com/marslib/vision/VisionConfig.html#maxAngularAccelDegPerSec2()" class="member-name-link">maxAngularAccelDegPerSec2()</a> - Method in record class com.marslib.vision.<a href="com/marslib/vision/VisionConfig.html" title="class in com.marslib.vision">VisionConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>maxAngularAccelDegPerSec2</code> record component.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#maxAngularSpeedRadPerSec()" class="member-name-link">maxAngularSpeedRadPerSec()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>maxAngularSpeedRadPerSec</code> record component.</div>
-</dd>
 <dt><a href="com/marslib/swerve/SwerveSetpointGenerator.KinematicLimits.html#maxDriveAcceleration" class="member-name-link">maxDriveAcceleration</a> - Variable in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveSetpointGenerator.KinematicLimits.html" title="class in com.marslib.swerve">SwerveSetpointGenerator.KinematicLimits</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/marslib/swerve/SwerveSetpointGenerator.KinematicLimits.html#maxDriveVelocity" class="member-name-link">maxDriveVelocity</a> - Variable in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveSetpointGenerator.KinematicLimits.html" title="class in com.marslib.swerve">SwerveSetpointGenerator.KinematicLimits</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#maxLinearSpeedMps()" class="member-name-link">maxLinearSpeedMps()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>maxLinearSpeedMps</code> record component.</div>
-</dd>
 <dt><a href="com/marslib/swerve/SwerveSetpointGenerator.KinematicLimits.html#maxSteeringVelocity" class="member-name-link">maxSteeringVelocity</a> - Variable in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveSetpointGenerator.KinematicLimits.html" title="class in com.marslib.swerve">SwerveSetpointGenerator.KinematicLimits</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/vision/VisionConfig.html#maxTiltDeg()" class="member-name-link">maxTiltDeg()</a> - Method in record class com.marslib.vision.<a href="com/marslib/vision/VisionConfig.html" title="class in com.marslib.vision">VisionConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>maxTiltDeg</code> record component.</div>
-</dd>
-<dt><a href="com/marslib/vision/VisionConfig.html#maxZHeight()" class="member-name-link">maxZHeight()</a> - Method in record class com.marslib.vision.<a href="com/marslib/vision/VisionConfig.html" title="class in com.marslib.vision">VisionConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>maxZHeight</code> record component.</div>
-</dd>
 <dt><a href="frc/robot/constants/CowlConstants.html#MIN_CURRENT_AMPS" class="member-name-link">MIN_CURRENT_AMPS</a> - Static variable in class frc.robot.constants.<a href="frc/robot/constants/CowlConstants.html" title="class in frc.robot.constants">CowlConstants</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/SwerveConstants.html#MIN_LOAD_SHED_CURRENT" class="member-name-link">MIN_LOAD_SHED_CURRENT</a> - Static variable in class frc.robot.<a href="frc/robot/SwerveConstants.html" title="class in frc.robot">SwerveConstants</a></dt>
@@ -1444,10 +1256,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Positions of each swerve module relative to robot center (FL, FR, BL, BR).</div>
 </dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#moduleLocations()" class="member-name-link">moduleLocations()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>moduleLocations</code> record component.</div>
-</dd>
 <dt><a href="com/marslib/swerve/SwerveSetpointGenerator.SwerveSetpoint.html#moduleStates" class="member-name-link">moduleStates</a> - Variable in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveSetpointGenerator.SwerveSetpoint.html" title="class in com.marslib.swerve">SwerveSetpointGenerator.SwerveSetpoint</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/constants/CowlConstants.html#MOTOR_ID" class="member-name-link">MOTOR_ID</a> - Static variable in class frc.robot.constants.<a href="frc/robot/constants/CowlConstants.html" title="class in frc.robot.constants">CowlConstants</a></dt>
@@ -1455,10 +1263,6 @@ loadScripts(document, 'script');</script>
 <dt><a href="frc/robot/constants/VisionConstants.html#MULTI_TAG_STD_MULTIPLIER" class="member-name-link">MULTI_TAG_STD_MULTIPLIER</a> - Static variable in class frc.robot.constants.<a href="frc/robot/constants/VisionConstants.html" title="class in frc.robot.constants">VisionConstants</a></dt>
 <dd>
 <div class="block">Multiplier applied to linear StdDev when multiple tags are simultaneously visible.</div>
-</dd>
-<dt><a href="com/marslib/vision/VisionConfig.html#multiTagStdMultiplier()" class="member-name-link">multiTagStdMultiplier()</a> - Method in record class com.marslib.vision.<a href="com/marslib/vision/VisionConfig.html" title="class in com.marslib.vision">VisionConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>multiTagStdMultiplier</code> record component.</div>
 </dd>
 </dl>
 <h2 class="title" id="I:N">N</h2>
@@ -1469,25 +1273,11 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="frc/robot/constants/PowerConstants.html#NOMINAL_VOLTAGE" class="member-name-link">NOMINAL_VOLTAGE</a> - Static variable in class frc.robot.constants.<a href="frc/robot/constants/PowerConstants.html" title="class in frc.robot.constants">PowerConstants</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/power/PowerConfig.html#nominalVoltage()" class="member-name-link">nominalVoltage()</a> - Method in record class com.marslib.power.<a href="com/marslib/power/PowerConfig.html" title="class in com.marslib.power">PowerConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <a href="./com/marslib/power/PowerConfig.html#param-nominalVoltage"><code>nominalVoltage</code></a> record component.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#nominalVoltage()" class="member-name-link">nominalVoltage()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>nominalVoltage</code> record component.</div>
-</dd>
 </dl>
 <h2 class="title" id="I:O">O</h2>
 <dl class="index">
-<dt><a href="com/marslib/vision/AprilTagVisionIOSim.html#occlusionDropProbability" class="member-name-link">occlusionDropProbability</a> - Variable in class com.marslib.vision.<a href="com/marslib/vision/AprilTagVisionIOSim.html" title="class in com.marslib.vision">AprilTagVisionIOSim</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="frc/robot/constants/DriveConstants.html#ODOMETRY_HZ" class="member-name-link">ODOMETRY_HZ</a> - Static variable in class frc.robot.constants.<a href="frc/robot/constants/DriveConstants.html" title="class in frc.robot.constants">DriveConstants</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#odometryHz()" class="member-name-link">odometryHz()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>odometryHz</code> record component.</div>
-</dd>
 <dt><a href="com/marslib/swerve/SwerveModuleIO.SwerveModuleIOInputs.html#odometryTimestamps" class="member-name-link">odometryTimestamps</a> - Variable in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveModuleIO.SwerveModuleIOInputs.html" title="class in com.marslib.swerve">SwerveModuleIO.SwerveModuleIOInputs</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/marslib/swerve/GyroIO.GyroIOInputs.html#odometryYawPositions" class="member-name-link">odometryYawPositions</a> - Variable in class com.marslib.swerve.<a href="com/marslib/swerve/GyroIO.GyroIOInputs.html" title="class in com.marslib.swerve">GyroIO.GyroIOInputs</a></dt>
@@ -1519,11 +1309,11 @@ loadScripts(document, 'script');</script>
 </dl>
 <h2 class="title" id="I:P">P</h2>
 <dl class="index">
-<dt><a href="com/marslib/auto/MARSAuto.html#pathfindObstacleAvoidance(com.marslib.swerve.SwerveDrive,edu.wpi.first.math.geometry.Pose2d)" class="member-name-link">pathfindObstacleAvoidance(SwerveDrive, Pose2d)</a> - Static method in class com.marslib.auto.<a href="com/marslib/auto/MARSAuto.html" title="class in com.marslib.auto">MARSAuto</a></dt>
+<dt><a href="com/marslib/auto/MARSAuto.html#pathfindObstacleAvoidance(edu.wpi.first.math.geometry.Pose2d)" class="member-name-link">pathfindObstacleAvoidance(Pose2d)</a> - Static method in class com.marslib.auto.<a href="com/marslib/auto/MARSAuto.html" title="class in com.marslib.auto">MARSAuto</a></dt>
 <dd>
 <div class="block">Utilizes PathPlanner's A* Pathfinding to navigate avoiding obstacles.</div>
 </dd>
-<dt><a href="com/marslib/auto/MARSAuto.html#pathfindThenRunChoreoTrajectory(com.marslib.swerve.SwerveDrive,java.lang.String)" class="member-name-link">pathfindThenRunChoreoTrajectory(SwerveDrive, String)</a> - Static method in class com.marslib.auto.<a href="com/marslib/auto/MARSAuto.html" title="class in com.marslib.auto">MARSAuto</a></dt>
+<dt><a href="com/marslib/auto/MARSAuto.html#pathfindThenRunChoreoTrajectory(java.lang.String)" class="member-name-link">pathfindThenRunChoreoTrajectory(String)</a> - Static method in class com.marslib.auto.<a href="com/marslib/auto/MARSAuto.html" title="class in com.marslib.auto">MARSAuto</a></dt>
 <dd>
 <div class="block">Executes a pre-planned Choreo trajectory but dynamically pathfinds to the start position first
  if the robot is off-target.</div>
@@ -1586,14 +1376,6 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/marslib/mechanisms/RotaryMechanismIO.RotaryMechanismIOInputs.html#positionRad" class="member-name-link">positionRad</a> - Variable in class com.marslib.mechanisms.<a href="com/marslib/mechanisms/RotaryMechanismIO.RotaryMechanismIOInputs.html" title="class in com.marslib.mechanisms">RotaryMechanismIO.RotaryMechanismIOInputs</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/power/PowerConfig.html" class="type-name-link" title="class in com.marslib.power">PowerConfig</a> - Record Class in <a href="com/marslib/power/package-summary.html">com.marslib.power</a></dt>
-<dd>
-<div class="block">Configuration record for the MARSPowerManager.</div>
-</dd>
-<dt><a href="com/marslib/power/PowerConfig.html#%3Cinit%3E(double,double,double)" class="member-name-link">PowerConfig(double, double, double)</a> - Constructor for record class com.marslib.power.<a href="com/marslib/power/PowerConfig.html" title="class in com.marslib.power">PowerConfig</a></dt>
-<dd>
-<div class="block">Creates an instance of a <code>PowerConfig</code> record class.</div>
-</dd>
 <dt><a href="frc/robot/constants/PowerConstants.html" class="type-name-link" title="class in frc.robot.constants">PowerConstants</a> - Class in <a href="frc/robot/constants/package-summary.html">frc.robot.constants</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/constants/PowerConstants.html#%3Cinit%3E()" class="member-name-link">PowerConstants()</a> - Constructor for class frc.robot.constants.<a href="frc/robot/constants/PowerConstants.html" title="class in frc.robot.constants">PowerConstants</a></dt>
@@ -1616,7 +1398,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Simulated implementation of the power and battery IO interface.</div>
 </dd>
-<dt><a href="com/marslib/power/PowerIOSim.html#%3Cinit%3E(com.marslib.power.PowerConfig)" class="member-name-link">PowerIOSim(PowerConfig)</a> - Constructor for class com.marslib.power.<a href="com/marslib/power/PowerIOSim.html" title="class in com.marslib.power">PowerIOSim</a></dt>
+<dt><a href="com/marslib/power/PowerIOSim.html#%3Cinit%3E()" class="member-name-link">PowerIOSim()</a> - Constructor for class com.marslib.power.<a href="com/marslib/power/PowerIOSim.html" title="class in com.marslib.power">PowerIOSim</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/constants/ShooterConstants.html#PROJECTILE_SPEED_MPS" class="member-name-link">PROJECTILE_SPEED_MPS</a> - Static variable in class frc.robot.constants.<a href="frc/robot/constants/ShooterConstants.html" title="class in frc.robot.constants">ShooterConstants</a></dt>
 <dd>&nbsp;</dd>
@@ -1660,13 +1442,13 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/constants/FieldConstants.html#RED_NEAROUTPOST_CLIMB_POSE" class="member-name-link">RED_NEAROUTPOST_CLIMB_POSE</a> - Static variable in class frc.robot.constants.<a href="frc/robot/constants/FieldConstants.html" title="class in frc.robot.constants">FieldConstants</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/swerve/PhoenixOdometryThread.html#registerGyro(com.ctre.phoenix6.BaseStatusSignal,double)" class="member-name-link">registerGyro(BaseStatusSignal, double)</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/PhoenixOdometryThread.html" title="class in com.marslib.swerve">PhoenixOdometryThread</a></dt>
+<dt><a href="com/marslib/swerve/PhoenixOdometryThread.html#registerGyro(com.ctre.phoenix6.BaseStatusSignal)" class="member-name-link">registerGyro(BaseStatusSignal)</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/PhoenixOdometryThread.html" title="class in com.marslib.swerve">PhoenixOdometryThread</a></dt>
 <dd>
 <div class="block">Registers the gyro yaw signal for high-frequency sampling alongside module signals.</div>
 </dd>
 <dt><a href="com/marslib/simulation/MARSPhysicsWorld.html#registerMechanismBody(java.lang.String,org.dyn4j.dynamics.Body)" class="member-name-link">registerMechanismBody(String, Body)</a> - Method in class com.marslib.simulation.<a href="com/marslib/simulation/MARSPhysicsWorld.html" title="class in com.marslib.simulation">MARSPhysicsWorld</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/swerve/PhoenixOdometryThread.html#registerModule(com.ctre.phoenix6.BaseStatusSignal,com.ctre.phoenix6.BaseStatusSignal,double)" class="member-name-link">registerModule(BaseStatusSignal, BaseStatusSignal, double)</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/PhoenixOdometryThread.html" title="class in com.marslib.swerve">PhoenixOdometryThread</a></dt>
+<dt><a href="com/marslib/swerve/PhoenixOdometryThread.html#registerModule(com.ctre.phoenix6.BaseStatusSignal,com.ctre.phoenix6.BaseStatusSignal)" class="member-name-link">registerModule(BaseStatusSignal, BaseStatusSignal)</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/PhoenixOdometryThread.html" title="class in com.marslib.swerve">PhoenixOdometryThread</a></dt>
 <dd>
 <div class="block">Registers a swerve module's drive and turn position signals for high-frequency sampling.</div>
 </dd>
@@ -1686,7 +1468,9 @@ loadScripts(document, 'script');</script>
 <div class="block">Attempts to transition from the current state to <code>nextState</code>.</div>
 </dd>
 <dt><a href="com/marslib/testing/MARSTestHarness.html#reset()" class="member-name-link">reset()</a> - Static method in class com.marslib.testing.<a href="com/marslib/testing/MARSTestHarness.html" title="class in com.marslib.testing">MARSTestHarness</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Resets all static singletons to a clean state for test isolation.</div>
+</dd>
 <dt><a href="com/marslib/faults/Alert.html#resetAll()" class="member-name-link">resetAll()</a> - Static method in class com.marslib.faults.<a href="com/marslib/faults/Alert.html" title="class in com.marslib.faults">Alert</a></dt>
 <dd>
 <div class="block">Clears all alert groups.</div>
@@ -1698,9 +1482,9 @@ loadScripts(document, 'script');</script>
 <div class="block">Stops the current instance and clears the singleton reference.</div>
 </dd>
 <dt><a href="com/marslib/swerve/SwerveDrive.html#resetPose(edu.wpi.first.math.geometry.Pose2d)" class="member-name-link">resetPose(Pose2d)</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="com/marslib/swerve/SwerveOdometry.html#resetPose(edu.wpi.first.math.geometry.Pose2d,com.marslib.swerve.GyroIOInputsAutoLogged,com.marslib.swerve.SwerveModule...)" class="member-name-link">resetPose(Pose2d, GyroIOInputsAutoLogged, SwerveModule...)</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveOdometry.html" title="class in com.marslib.swerve">SwerveOdometry</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Resets the absolute pose of the robot.</div>
+</dd>
 <dt><a href="com/marslib/vision/AprilTagVisionIOSim.html#resetSimulation()" class="member-name-link">resetSimulation()</a> - Static method in class com.marslib.vision.<a href="com/marslib/vision/AprilTagVisionIOSim.html" title="class in com.marslib.vision">AprilTagVisionIOSim</a></dt>
 <dd>
 <div class="block">Resets the shared VisionSystemSim singleton.</div>
@@ -1738,14 +1522,6 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/Robot.html#robotInit()" class="member-name-link">robotInit()</a> - Method in class frc.robot.<a href="frc/robot/Robot.html" title="class in frc.robot">Robot</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#robotMassKg()" class="member-name-link">robotMassKg()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>robotMassKg</code> record component.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#robotMoiKgM2()" class="member-name-link">robotMoiKgM2()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>robotMoiKgM2</code> record component.</div>
-</dd>
 <dt><a href="frc/robot/Robot.html#robotPeriodic()" class="member-name-link">robotPeriodic()</a> - Method in class frc.robot.<a href="frc/robot/Robot.html" title="class in frc.robot">Robot</a></dt>
 <dd>
 <div class="block">This function is called periodically during all modes.</div>
@@ -1788,7 +1564,9 @@ loadScripts(document, 'script');</script>
 <div class="block">Executes a pre-planned, time-optimal Choreo trajectory via PathPlannerLib.</div>
 </dd>
 <dt><a href="com/marslib/swerve/SwerveDrive.html#runVelocity(edu.wpi.first.math.kinematics.ChassisSpeeds)" class="member-name-link">runVelocity(ChassisSpeeds)</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Drives the robot at the given velocity natively.</div>
+</dd>
 </dl>
 <h2 class="title" id="I:S">S</h2>
 <dl class="index">
@@ -1937,7 +1715,9 @@ loadScripts(document, 'script');</script>
 <dt><a href="com/marslib/swerve/SwerveModuleIOSim.html#setModuleSimulation(org.ironmaple.simulation.drivesims.SwerveModuleSimulation)" class="member-name-link">setModuleSimulation(SwerveModuleSimulation)</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveModuleIOSim.html" title="class in com.marslib.swerve">SwerveModuleIOSim</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/marslib/swerve/SwerveDrive.html#setModuleStates(edu.wpi.first.math.kinematics.SwerveModuleState...)" class="member-name-link">setModuleStates(SwerveModuleState...)</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Directly commands the swerve modules to the specified states.</div>
+</dd>
 <dt><a href="com/marslib/util/MARSStateMachine.html#setOnTransition(java.util.function.BiConsumer)" class="member-name-link">setOnTransition(BiConsumer&lt;S, S&gt;)</a> - Method in class com.marslib.util.<a href="com/marslib/util/MARSStateMachine.html" title="class in com.marslib.util">MARSStateMachine</a></dt>
 <dd>
 <div class="block">Registers a callback that fires on every accepted transition, receiving the source and
@@ -2067,14 +1847,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Static standard deviation for VIO SLAM measurements (meters and radians).</div>
 </dd>
-<dt><a href="com/marslib/vision/VisionConfig.html#slamAngularStdDev()" class="member-name-link">slamAngularStdDev()</a> - Method in record class com.marslib.vision.<a href="com/marslib/vision/VisionConfig.html" title="class in com.marslib.vision">VisionConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>slamAngularStdDev</code> record component.</div>
-</dd>
-<dt><a href="com/marslib/vision/VisionConfig.html#slamStdDev()" class="member-name-link">slamStdDev()</a> - Method in record class com.marslib.vision.<a href="com/marslib/vision/VisionConfig.html" title="class in com.marslib.vision">VisionConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>slamStdDev</code> record component.</div>
-</dd>
 <dt><a href="frc/robot/SwerveConstants.html#SLIP_TRANSITION_VELOCITY_MPS" class="member-name-link">SLIP_TRANSITION_VELOCITY_MPS</a> - Static variable in class frc.robot.<a href="frc/robot/SwerveConstants.html" title="class in frc.robot">SwerveConstants</a></dt>
 <dd>
 <div class="block">Slip velocity threshold (m/s) at which static friction transitions to kinetic.</div>
@@ -2103,40 +1875,24 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/constants/SuperstructureConstants.html#%3Cinit%3E()" class="member-name-link">SuperstructureConstants()</a> - Constructor for class frc.robot.constants.<a href="frc/robot/constants/SuperstructureConstants.html" title="class in frc.robot.constants">SuperstructureConstants</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/swerve/SwerveAutoBuilder.html" class="type-name-link" title="class in com.marslib.swerve">SwerveAutoBuilder</a> - Class in <a href="com/marslib/swerve/package-summary.html">com.marslib.swerve</a></dt>
-<dd>
-<div class="block">Encapsulates the static configurations for PathPlanner's AutoBuilder.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html" class="type-name-link" title="class in com.marslib.swerve">SwerveConfig</a> - Record Class in <a href="com/marslib/swerve/package-summary.html">com.marslib.swerve</a></dt>
-<dd>
-<div class="block">Configuration record for the SwerveDrive subsystem.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#%3Cinit%3E(edu.wpi.first.math.geometry.Translation2d%5B%5D,double,double,double,double,double,double,double,double,double,double,double,double,double,double,double,double,double,double,double,double,double,double,double,double,double,double,double,double,double,double,double,double)" class="member-name-link">SwerveConfig(Translation2d[], double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double)</a> - Constructor for record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Creates an instance of a <code>SwerveConfig</code> record class.</div>
-</dd>
 <dt><a href="frc/robot/SwerveConstants.html" class="type-name-link" title="class in frc.robot">SwerveConstants</a> - Class in <a href="frc/robot/package-summary.html">frc.robot</a></dt>
 <dd>
 <div class="block">Central constants for the MARSLib swerve drivetrain.</div>
 </dd>
-<dt><a href="com/marslib/swerve/SwerveDiagnostics.html" class="type-name-link" title="class in com.marslib.swerve">SwerveDiagnostics</a> - Class in <a href="com/marslib/swerve/package-summary.html">com.marslib.swerve</a></dt>
-<dd>
-<div class="block">Diagnostic and automated alignment sequences for the Swerve Drive.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveDiagnostics.html#%3Cinit%3E(com.marslib.swerve.SwerveDrive,com.marslib.swerve.SwerveModule...)" class="member-name-link">SwerveDiagnostics(SwerveDrive, SwerveModule...)</a> - Constructor for class com.marslib.swerve.<a href="com/marslib/swerve/SwerveDiagnostics.html" title="class in com.marslib.swerve">SwerveDiagnostics</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="com/marslib/swerve/SwerveDrive.html" class="type-name-link" title="class in com.marslib.swerve">SwerveDrive</a> - Class in <a href="com/marslib/swerve/package-summary.html">com.marslib.swerve</a></dt>
 <dd>
-<div class="block">The core MARSLib SwerveDrive subsystem responsible for managing holonomic kinematics, dynamic
- PathPlanner autonomous trajectories, and active power shedding.</div>
+<div class="block">The core MARSLib SwerveDrive subsystem responsible for managing holonomic kinematics,
+ high-frequency odometry, dynamic PathPlanner autonomous trajectories, and active power shedding.</div>
 </dd>
-<dt><a href="com/marslib/swerve/SwerveDrive.html#%3Cinit%3E(com.marslib.swerve.SwerveModule%5B%5D,com.marslib.swerve.GyroIO,com.marslib.power.MARSPowerManager,com.marslib.swerve.SwerveConfig)" class="member-name-link">SwerveDrive(SwerveModule[], GyroIO, MARSPowerManager, SwerveConfig)</a> - Constructor for class com.marslib.swerve.<a href="com/marslib/swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a></dt>
-<dd>&nbsp;</dd>
+<dt><a href="com/marslib/swerve/SwerveDrive.html#%3Cinit%3E(com.marslib.swerve.SwerveModule%5B%5D,com.marslib.swerve.GyroIO,com.marslib.power.MARSPowerManager)" class="member-name-link">SwerveDrive(SwerveModule[], GyroIO, MARSPowerManager)</a> - Constructor for class com.marslib.swerve.<a href="com/marslib/swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a></dt>
+<dd>
+<div class="block">Constructs a new SwerveDrive instance.</div>
+</dd>
 <dt><a href="com/marslib/swerve/SwerveModule.html" class="type-name-link" title="class in com.marslib.swerve">SwerveModule</a> - Class in <a href="com/marslib/swerve/package-summary.html">com.marslib.swerve</a></dt>
 <dd>
 <div class="block">Represents a singular Swerve Module (e.g.</div>
 </dd>
-<dt><a href="com/marslib/swerve/SwerveModule.html#%3Cinit%3E(int,com.marslib.swerve.SwerveModuleIO,com.marslib.swerve.SwerveConfig)" class="member-name-link">SwerveModule(int, SwerveModuleIO, SwerveConfig)</a> - Constructor for class com.marslib.swerve.<a href="com/marslib/swerve/SwerveModule.html" title="class in com.marslib.swerve">SwerveModule</a></dt>
+<dt><a href="com/marslib/swerve/SwerveModule.html#%3Cinit%3E(int,com.marslib.swerve.SwerveModuleIO)" class="member-name-link">SwerveModule(int, SwerveModuleIO)</a> - Constructor for class com.marslib.swerve.<a href="com/marslib/swerve/SwerveModule.html" title="class in com.marslib.swerve">SwerveModule</a></dt>
 <dd>
 <div class="block">Constructs a generic Swerve Module boundary structure.</div>
 </dd>
@@ -2158,13 +1914,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Hardware IO implementation for a Swerve Module using CTRE TalonFX motors and a CANcoder.</div>
 </dd>
-<dt><a href="com/marslib/swerve/SwerveModuleIOTalonFX.html#%3Cinit%3E(int,int,java.lang.String,com.marslib.swerve.SwerveConfig)" class="member-name-link">SwerveModuleIOTalonFX(int, int, String, SwerveConfig)</a> - Constructor for class com.marslib.swerve.<a href="com/marslib/swerve/SwerveModuleIOTalonFX.html" title="class in com.marslib.swerve">SwerveModuleIOTalonFX</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="com/marslib/swerve/SwerveOdometry.html" class="type-name-link" title="class in com.marslib.swerve">SwerveOdometry</a> - Class in <a href="com/marslib/swerve/package-summary.html">com.marslib.swerve</a></dt>
-<dd>
-<div class="block">Encapsulates high-frequency (250Hz) odometry tracking and vision fusion.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveOdometry.html#%3Cinit%3E(edu.wpi.first.math.kinematics.SwerveDriveKinematics,com.marslib.swerve.SwerveConfig,edu.wpi.first.math.kinematics.SwerveModulePosition...)" class="member-name-link">SwerveOdometry(SwerveDriveKinematics, SwerveConfig, SwerveModulePosition...)</a> - Constructor for class com.marslib.swerve.<a href="com/marslib/swerve/SwerveOdometry.html" title="class in com.marslib.swerve">SwerveOdometry</a></dt>
+<dt><a href="com/marslib/swerve/SwerveModuleIOTalonFX.html#%3Cinit%3E(int,int,java.lang.String)" class="member-name-link">SwerveModuleIOTalonFX(int, int, String)</a> - Constructor for class com.marslib.swerve.<a href="com/marslib/swerve/SwerveModuleIOTalonFX.html" title="class in com.marslib.swerve">SwerveModuleIOTalonFX</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/marslib/swerve/SwerveSetpointGenerator.SwerveSetpoint.html#%3Cinit%3E(edu.wpi.first.math.kinematics.ChassisSpeeds,edu.wpi.first.math.kinematics.SwerveModuleState...)" class="member-name-link">SwerveSetpoint(ChassisSpeeds, SwerveModuleState...)</a> - Constructor for class com.marslib.swerve.<a href="com/marslib/swerve/SwerveSetpointGenerator.SwerveSetpoint.html" title="class in com.marslib.swerve">SwerveSetpointGenerator.SwerveSetpoint</a></dt>
 <dd>&nbsp;</dd>
@@ -2182,10 +1932,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/marslib/swerve/PhoenixOdometryThread.SyncData.html#%3Cinit%3E()" class="member-name-link">SyncData()</a> - Constructor for class com.marslib.swerve.<a href="com/marslib/swerve/PhoenixOdometryThread.SyncData.html" title="class in com.marslib.swerve">PhoenixOdometryThread.SyncData</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/swerve/SwerveDiagnostics.html#sysIdDynamic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction)" class="member-name-link">sysIdDynamic(SysIdRoutine.Direction)</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveDiagnostics.html" title="class in com.marslib.swerve">SwerveDiagnostics</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="com/marslib/swerve/SwerveDrive.html#sysIdDynamic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction)" class="member-name-link">sysIdDynamic(SysIdRoutine.Direction)</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Generates a SysId Dynamic characterization command.</div>
+</dd>
 <dt><a href="frc/robot/subsystems/MARSClimber.html#sysIdDynamic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction)" class="member-name-link">sysIdDynamic(SysIdRoutine.Direction)</a> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/MARSClimber.html" title="class in frc.robot.subsystems">MARSClimber</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/subsystems/MARSCowl.html#sysIdDynamic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction)" class="member-name-link">sysIdDynamic(SysIdRoutine.Direction)</a> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/MARSCowl.html" title="class in frc.robot.subsystems">MARSCowl</a></dt>
@@ -2198,10 +1948,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Generates a SysId Dynamic characterization command.</div>
 </dd>
-<dt><a href="com/marslib/swerve/SwerveDiagnostics.html#sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction)" class="member-name-link">sysIdQuasistatic(SysIdRoutine.Direction)</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveDiagnostics.html" title="class in com.marslib.swerve">SwerveDiagnostics</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="com/marslib/swerve/SwerveDrive.html#sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction)" class="member-name-link">sysIdQuasistatic(SysIdRoutine.Direction)</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Generates a SysId Quasistatic characterization command.</div>
+</dd>
 <dt><a href="frc/robot/subsystems/MARSClimber.html#sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction)" class="member-name-link">sysIdQuasistatic(SysIdRoutine.Direction)</a> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/MARSClimber.html" title="class in frc.robot.subsystems">MARSClimber</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/subsystems/MARSCowl.html#sysIdQuasistatic(edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction)" class="member-name-link">sysIdQuasistatic(SysIdRoutine.Direction)</a> - Method in class frc.robot.subsystems.<a href="frc/robot/subsystems/MARSCowl.html" title="class in frc.robot.subsystems">MARSCowl</a></dt>
@@ -2239,10 +1989,6 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/limelight/LimelightHelpers.PoseEstimate.html#tagSpan" class="member-name-link">tagSpan</a> - Variable in class com.limelight.<a href="com/limelight/LimelightHelpers.PoseEstimate.html" title="class in com.limelight">LimelightHelpers.PoseEstimate</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/vision/VisionConfig.html#tagStdBase()" class="member-name-link">tagStdBase()</a> - Method in record class com.marslib.vision.<a href="com/marslib/vision/VisionConfig.html" title="class in com.marslib.vision">VisionConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>tagStdBase</code> record component.</div>
-</dd>
 <dt><a href="com/marslib/mechanisms/LinearMechanismIO.LinearMechanismIOInputs.html#targetVelocityMetersPerSec" class="member-name-link">targetVelocityMetersPerSec</a> - Variable in class com.marslib.mechanisms.<a href="com/marslib/mechanisms/LinearMechanismIO.LinearMechanismIOInputs.html" title="class in com.marslib.mechanisms">LinearMechanismIO.LinearMechanismIOInputs</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/marslib/mechanisms/FlywheelIO.FlywheelIOInputs.html#targetVelocityRadPerSec" class="member-name-link">targetVelocityRadPerSec</a> - Variable in class com.marslib.mechanisms.<a href="com/marslib/mechanisms/FlywheelIO.FlywheelIOInputs.html" title="class in com.marslib.mechanisms">FlywheelIO.FlywheelIOInputs</a></dt>
@@ -2258,10 +2004,6 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/marslib/hmi/TelemetryGamepad.html#%3Cinit%3E(int,java.lang.String)" class="member-name-link">TelemetryGamepad(int, String)</a> - Constructor for class com.marslib.hmi.<a href="com/marslib/hmi/TelemetryGamepad.html" title="class in com.marslib.hmi">TelemetryGamepad</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#telemetryHz()" class="member-name-link">telemetryHz()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>telemetryHz</code> record component.</div>
-</dd>
 <dt><a href="frc/robot/constants/DriveConstants.html#TELEOP_LINEAR_ACCEL_LIMIT" class="member-name-link">TELEOP_LINEAR_ACCEL_LIMIT</a> - Static variable in class frc.robot.constants.<a href="frc/robot/constants/DriveConstants.html" title="class in frc.robot.constants">DriveConstants</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/constants/DriveConstants.html#TELEOP_OMEGA_ACCEL_LIMIT" class="member-name-link">TELEOP_OMEGA_ACCEL_LIMIT</a> - Static variable in class frc.robot.constants.<a href="frc/robot/constants/DriveConstants.html" title="class in frc.robot.constants">DriveConstants</a></dt>
@@ -2270,7 +2012,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Command to handle Teleop Swerve Driving.</div>
 </dd>
-<dt><a href="com/marslib/swerve/TeleopDriveCommand.html#%3Cinit%3E(com.marslib.swerve.SwerveDrive,com.marslib.swerve.SwerveConfig,java.util.function.DoubleSupplier,java.util.function.DoubleSupplier,java.util.function.DoubleSupplier)" class="member-name-link">TeleopDriveCommand(SwerveDrive, SwerveConfig, DoubleSupplier, DoubleSupplier, DoubleSupplier)</a> - Constructor for class com.marslib.swerve.<a href="com/marslib/swerve/TeleopDriveCommand.html" title="class in com.marslib.swerve">TeleopDriveCommand</a></dt>
+<dt><a href="com/marslib/swerve/TeleopDriveCommand.html#%3Cinit%3E(com.marslib.swerve.SwerveDrive,java.util.function.DoubleSupplier,java.util.function.DoubleSupplier,java.util.function.DoubleSupplier)" class="member-name-link">TeleopDriveCommand(SwerveDrive, DoubleSupplier, DoubleSupplier, DoubleSupplier)</a> - Constructor for class com.marslib.swerve.<a href="com/marslib/swerve/TeleopDriveCommand.html" title="class in com.marslib.swerve">TeleopDriveCommand</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/marslib/swerve/TeleopDriveMath.html" class="type-name-link" title="class in com.marslib.swerve">TeleopDriveMath</a> - Class in <a href="com/marslib/swerve/package-summary.html">com.marslib.swerve</a></dt>
 <dd>
@@ -2279,14 +2021,6 @@ loadScripts(document, 'script');</script>
 <dt><a href="frc/robot/Robot.html#teleopInit()" class="member-name-link">teleopInit()</a> - Method in class frc.robot.<a href="frc/robot/Robot.html" title="class in frc.robot">Robot</a></dt>
 <dd>
 <div class="block">This function is called once when teleop is enabled.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#teleopLinearAccelLimit()" class="member-name-link">teleopLinearAccelLimit()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>teleopLinearAccelLimit</code> record component.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#teleopOmegaAccelLimit()" class="member-name-link">teleopOmegaAccelLimit()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>teleopOmegaAccelLimit</code> record component.</div>
 </dd>
 <dt><a href="frc/robot/Robot.html#teleopPeriodic()" class="member-name-link">teleopPeriodic()</a> - Method in class frc.robot.<a href="frc/robot/Robot.html" title="class in frc.robot">Robot</a></dt>
 <dd>
@@ -2312,27 +2046,11 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/limelight/LimelightHelpers.PoseEstimate.html#timestampSeconds" class="member-name-link">timestampSeconds</a> - Variable in class com.limelight.<a href="com/limelight/LimelightHelpers.PoseEstimate.html" title="class in com.limelight">LimelightHelpers.PoseEstimate</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/power/PowerConfig.html#toString()" class="member-name-link">toString()</a> - Method in record class com.marslib.power.<a href="com/marslib/power/PowerConfig.html" title="class in com.marslib.power">PowerConfig</a></dt>
-<dd>
-<div class="block">Returns a string representation of this record class.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#toString()" class="member-name-link">toString()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns a string representation of this record class.</div>
-</dd>
-<dt><a href="com/marslib/vision/VisionConfig.html#toString()" class="member-name-link">toString()</a> - Method in record class com.marslib.vision.<a href="com/marslib/vision/VisionConfig.html" title="class in com.marslib.vision">VisionConfig</a></dt>
-<dd>
-<div class="block">Returns a string representation of this record class.</div>
-</dd>
 <dt><a href="com/marslib/power/PowerIO.PowerIOInputs.html#totalCurrentAmps" class="member-name-link">totalCurrentAmps</a> - Variable in class com.marslib.power.<a href="com/marslib/power/PowerIO.PowerIOInputs.html" title="class in com.marslib.power">PowerIO.PowerIOInputs</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/SwerveConstants.html#TRACK_WIDTH_METERS" class="member-name-link">TRACK_WIDTH_METERS</a> - Static variable in class frc.robot.<a href="frc/robot/SwerveConstants.html" title="class in frc.robot">SwerveConstants</a></dt>
 <dd>
 <div class="block">Distance between left and right module centers (meters).</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#trackWidthMeters()" class="member-name-link">trackWidthMeters()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>trackWidthMeters</code> record component.</div>
 </dd>
 <dt><a href="com/marslib/swerve/TractionControlLimiter.html" class="type-name-link" title="class in com.marslib.swerve">TractionControlLimiter</a> - Class in <a href="com/marslib/swerve/package-summary.html">com.marslib.swerve</a></dt>
 <dd>
@@ -2362,24 +2080,12 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/marslib/swerve/SwerveModuleIO.SwerveModuleIOInputs.html#turnCurrentAmps" class="member-name-link">turnCurrentAmps</a> - Variable in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveModuleIO.SwerveModuleIOInputs.html" title="class in com.marslib.swerve">SwerveModuleIO.SwerveModuleIOInputs</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#turnGearRatio()" class="member-name-link">turnGearRatio()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>turnGearRatio</code> record component.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#turnKp()" class="member-name-link">turnKp()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>turnKp</code> record component.</div>
-</dd>
 <dt><a href="com/marslib/swerve/PhoenixOdometryThread.SyncData.html#turnPositions" class="member-name-link">turnPositions</a> - Variable in class com.marslib.swerve.<a href="com/marslib/swerve/PhoenixOdometryThread.SyncData.html" title="class in com.marslib.swerve">PhoenixOdometryThread.SyncData</a></dt>
 <dd>
 <div class="block">Accumulated turn encoder positions (motor rotations) since the last drain.</div>
 </dd>
 <dt><a href="com/marslib/swerve/SwerveModuleIO.SwerveModuleIOInputs.html#turnPositionsRad" class="member-name-link">turnPositionsRad</a> - Variable in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveModuleIO.SwerveModuleIOInputs.html" title="class in com.marslib.swerve">SwerveModuleIO.SwerveModuleIOInputs</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#turnStatorCurrentLimit()" class="member-name-link">turnStatorCurrentLimit()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>turnStatorCurrentLimit</code> record component.</div>
-</dd>
 <dt><a href="com/marslib/swerve/SwerveModuleIO.SwerveModuleIOInputs.html#turnVelocityRadPerSec" class="member-name-link">turnVelocityRadPerSec</a> - Variable in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveModuleIO.SwerveModuleIOInputs.html" title="class in com.marslib.swerve">SwerveModuleIO.SwerveModuleIOInputs</a></dt>
 <dd>&nbsp;</dd>
 </dl>
@@ -2463,11 +2169,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Performs the raycast sweep around the robot and logs the hits as a 3D Point Cloud.</div>
 </dd>
-<dt><a href="com/marslib/swerve/SwerveOdometry.html#updateOdometry(com.marslib.swerve.SwerveModule%5B%5D,com.marslib.swerve.GyroIOInputsAutoLogged)" class="member-name-link">updateOdometry(SwerveModule[], GyroIOInputsAutoLogged)</a> - Method in class com.marslib.swerve.<a href="com/marslib/swerve/SwerveOdometry.html" title="class in com.marslib.swerve">SwerveOdometry</a></dt>
-<dd>
-<div class="block">Performs the high-frequency synchronous drain of the cached module vectors, updating the pose
- estimator with sub-loop accuracy.</div>
-</dd>
 </dl>
 <h2 class="title" id="I:V">V</h2>
 <dl class="index">
@@ -2547,14 +2248,6 @@ the order they are declared.</div>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/constants/SimulationConstants.html#VISION_OCCLUSION_DROP_PROBABILITY" class="member-name-link">VISION_OCCLUSION_DROP_PROBABILITY</a> - Static variable in class frc.robot.constants.<a href="frc/robot/constants/SimulationConstants.html" title="class in frc.robot.constants">SimulationConstants</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/vision/VisionConfig.html" class="type-name-link" title="class in com.marslib.vision">VisionConfig</a> - Record Class in <a href="com/marslib/vision/package-summary.html">com.marslib.vision</a></dt>
-<dd>
-<div class="block">Configuration record for the MARSVision subsystem.</div>
-</dd>
-<dt><a href="com/marslib/vision/VisionConfig.html#%3Cinit%3E(java.util.function.Supplier,double,double,java.util.function.Supplier,java.util.function.Supplier,java.util.function.Supplier,java.util.function.Supplier,java.util.function.Supplier,java.util.function.Supplier,java.util.function.Supplier,java.util.function.Supplier,java.util.function.Supplier,java.util.function.Supplier,java.util.function.Supplier,double)" class="member-name-link">VisionConfig(Supplier&lt;Double&gt;, double, double, Supplier&lt;Double&gt;, Supplier&lt;Double&gt;, Supplier&lt;Double&gt;, Supplier&lt;Double&gt;, Supplier&lt;Double&gt;, Supplier&lt;Double&gt;, Supplier&lt;Double&gt;, Supplier&lt;Double&gt;, Supplier&lt;Double&gt;, Supplier&lt;Double&gt;, Supplier&lt;Double&gt;, double)</a> - Constructor for record class com.marslib.vision.<a href="com/marslib/vision/VisionConfig.html" title="class in com.marslib.vision">VisionConfig</a></dt>
-<dd>
-<div class="block">Creates an instance of a <code>VisionConfig</code> record class.</div>
-</dd>
 <dt><a href="frc/robot/constants/VisionConstants.html" class="type-name-link" title="class in frc.robot.constants">VisionConstants</a> - Class in <a href="frc/robot/constants/package-summary.html">frc.robot.constants</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/marslib/power/PowerIO.PowerIOInputs.html#voltage" class="member-name-link">voltage</a> - Variable in class com.marslib.power.<a href="com/marslib/power/PowerIO.PowerIOInputs.html" title="class in com.marslib.power">PowerIO.PowerIOInputs</a></dt>
@@ -2588,14 +2281,6 @@ the order they are declared.</div>
 <dd>&nbsp;</dd>
 <dt><a href="frc/robot/constants/PowerConstants.html#WARNING_VOLTAGE" class="member-name-link">WARNING_VOLTAGE</a> - Static variable in class frc.robot.constants.<a href="frc/robot/constants/PowerConstants.html" title="class in frc.robot.constants">PowerConstants</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/marslib/power/PowerConfig.html#warningVoltage()" class="member-name-link">warningVoltage()</a> - Method in record class com.marslib.power.<a href="com/marslib/power/PowerConfig.html" title="class in com.marslib.power">PowerConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <a href="./com/marslib/power/PowerConfig.html#param-warningVoltage"><code>warningVoltage</code></a> record component.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#warningVoltage()" class="member-name-link">warningVoltage()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>warningVoltage</code> record component.</div>
-</dd>
 <dt><a href="frc/robot/SwerveConstants.html#WHEEL_COF_KINETIC" class="member-name-link">WHEEL_COF_KINETIC</a> - Static variable in class frc.robot.<a href="frc/robot/SwerveConstants.html" title="class in frc.robot">SwerveConstants</a></dt>
 <dd>
 <div class="block">Kinetic coefficient of friction once the wheel breaks traction (wheel slip/burnout).</div>
@@ -2607,7 +2292,7 @@ the order they are declared.</div>
 <dt><a href="frc/robot/SwerveConstants.html#WHEEL_MOI_KG_M2" class="member-name-link">WHEEL_MOI_KG_M2</a> - Static variable in class frc.robot.<a href="frc/robot/SwerveConstants.html" title="class in frc.robot">SwerveConstants</a></dt>
 <dd>
 <div class="block">Effective rotational inertia of a single driven wheel assembly including the Kraken X60 rotor
- reflected through the <a href="frc/robot/SwerveConstants.html#DRIVE_GEAR_RATIO"><code>SwerveConstants.DRIVE_GEAR_RATIO</code></a> (kg·m²).</div>
+ reflected through the <a href="frc/robot/SwerveConstants.html#DRIVE_GEAR_RATIO"><code>SwerveConstants.DRIVE_GEAR_RATIO</code></a> (kgÂ·mÂ²).</div>
 </dd>
 <dt><a href="frc/robot/SwerveConstants.html#WHEEL_RADIUS_METERS" class="member-name-link">WHEEL_RADIUS_METERS</a> - Static variable in class frc.robot.<a href="frc/robot/SwerveConstants.html" title="class in frc.robot">SwerveConstants</a></dt>
 <dd>
@@ -2616,18 +2301,6 @@ the order they are declared.</div>
 <dt><a href="frc/robot/SwerveConstants.html#WHEELBASE_METERS" class="member-name-link">WHEELBASE_METERS</a> - Static variable in class frc.robot.<a href="frc/robot/SwerveConstants.html" title="class in frc.robot">SwerveConstants</a></dt>
 <dd>
 <div class="block">Distance between front and rear module centers (meters).</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#wheelbaseMeters()" class="member-name-link">wheelbaseMeters()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>wheelbaseMeters</code> record component.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#wheelCOFStatic()" class="member-name-link">wheelCOFStatic()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>wheelCOFStatic</code> record component.</div>
-</dd>
-<dt><a href="com/marslib/swerve/SwerveConfig.html#wheelRadiusMeters()" class="member-name-link">wheelRadiusMeters()</a> - Method in record class com.marslib.swerve.<a href="com/marslib/swerve/SwerveConfig.html" title="class in com.marslib.swerve">SwerveConfig</a></dt>
-<dd>
-<div class="block">Returns the value of the <code>wheelRadiusMeters</code> record component.</div>
 </dd>
 </dl>
 <h2 class="title" id="I:Y">Y</h2>

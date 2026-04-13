@@ -1,0 +1,74 @@
+---
+id: swerve
+title: "High-Frequency Swerve"
+---
+
+
+
+
+
+<main className="container" >
+  <div >
+    
+    <h1>High-Frequency Swerve</h1>
+  </div>
+
+  <p>A standard FRC robot executes its control loop every 20ms (50Hz). This is fine for moving an elevator, but it is <strong>unacceptably slow</strong> for Swerve Odometry. If a robot moving at 5 m/s only calculates its position 50 times a second, the math inherently creates a "drift" of several centimeters per second.</p>
+
+  <p>MARSLib solves this by utilizing the <strong>PhoenixOdometryThread</strong>.</p>
+
+  <h2>1. The 250Hz Thread</h2>
+  <p>Instead of relying on the main RoboRIO thread, our swerve architecture spins up an isolated background thread that communicates directly with the CTRE CANivore bus. This thread calculates the robot's physical kinematics at 250Hz.</p>
+
+  <div className="callout callout-warning">
+    <h4>Zero-Allocation (GC) Danger</h4>
+    <p>Because this thread runs 250 times a second, if you instantiate an object inside this loop, you will instantly crash the RoboRIO due to massive Garbage Collection pressure. This is why our Agentic Skills strictly enforce the <strong>Ephemeral Struct</strong> proxy architecture across the Swerve subsystem.</p>
+  </div>
+
+  <div id="swerve-sim" >
+    <div >
+      <div >
+        <label >
+          <span>Vx (Forward/Back) <span id="vx-val" >0.0</span> m/s</span>
+          <input type="range" id="vx" min="-5" max="5" step="0.1" value="0.0" />
+        </label>
+        <label >
+          <span>Vy (Left/Right) <span id="vy-val" >0.0</span> m/s</span>
+          <input type="range" id="vy" min="-5" max="5" step="0.1" value="0.0" />
+        </label>
+        <label >
+          <span>Omega (Rotation) <span id="omega-val" >0.0</span> rad/s</span>
+          <input type="range" id="omega" min="-5" max="5" step="0.1" value="0.0" />
+        </label>
+        <button id="resetSwerve" >ZERO</button>
+      </div>
+    </div>
+    <div >
+      <div >
+        <canvas id="swerveCanvas" width="400" height="400" ></canvas>
+        <div >KINEMATICS SOLVER</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>2. MegaTag 2.0 Integration</h2>
+  <p>Limelight 4's MegaTag 2.0 system relies heavily on the IMU Yaw rates to compensate for camera latency. Because we process the Pigeon 2.0 data at 250Hz, our gyro-seeding to the Limelight is incredibly precise, allowing for flawless localization even while spinning and traversing the Bump.</p>
+
+  ```java
+// Asynchronously injecting vision without locking the thread
+public void addVisionMeasurement(Pose2d visionPose, double timestamp, Matrix<N3, N1> stdDevs) {
+    poseEstimator.addVisionMeasurement(visionPose, timestamp, stdDevs);
+}
+```
+
+  <h2>3. Heading-Aware Traction Control</h2>
+  <p>With high-frequency data, we can implement micro-adjustments in real-time. If the IMU detects that the robot is physically slipping or skidding, MARSLib's traction control algorithm will temporarily limit the torque current applied to the Kraken X60 drive motors to regain grip.</p>
+</main>
+
+
+
+
+
+
+
+

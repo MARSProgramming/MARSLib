@@ -87,11 +87,11 @@ loadScripts(document, 'script');</script>
  <p><b>Pipeline stages:</b>
 
  <ol>
-   <li>Deadband (10%) — filters stick drift
-   <li>Cubic scaling — provides fine control at small deflections
-   <li>Physical scaling — converts [-1,1] to m/s and rad/s
-   <li>WPILib sign convention — negates to convert stick-forward to +X
-   <li>Alliance flip — negates X and Y for Red alliance
+   <li>Deadband (10%) â€” filters stick drift
+   <li>Cubic scaling â€” provides fine control at small deflections
+   <li>Physical scaling â€” converts [-1,1] to m/s and rad/s
+   <li>WPILib sign convention â€” negates to convert stick-forward to +X
+   <li>Alliance flip â€” negates X and Y for Red alliance
  </ol>
 
  <p>Note: slew rate limiting and gyro-lock are stateful operations that remain in <code>
@@ -128,11 +128,9 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#computeFieldRelativeSpeeds(double,double,double,double,double,boolean,edu.wpi.first.math.kinematics.ChassisSpeeds)" class="member-name-link">computeFieldRelativeSpeeds</a><wbr>(double&nbsp;rawLeftY,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#computeFieldRelativeSpeeds(double,double,double,boolean,edu.wpi.first.math.kinematics.ChassisSpeeds)" class="member-name-link">computeFieldRelativeSpeeds</a><wbr>(double&nbsp;rawLeftY,
  double&nbsp;rawLeftX,
  double&nbsp;rawOmega,
- double&nbsp;maxLinearSpeedMps,
- double&nbsp;maxAngularSpeedRadPerSec,
  boolean&nbsp;isRedAlliance,
  edu.wpi.first.math.kinematics.ChassisSpeeds&nbsp;outSpeeds)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
@@ -179,24 +177,20 @@ loadScripts(document, 'script');</script>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="computeFieldRelativeSpeeds(double,double,double,double,double,boolean,edu.wpi.first.math.kinematics.ChassisSpeeds)">
+<section class="detail" id="computeFieldRelativeSpeeds(double,double,double,boolean,edu.wpi.first.math.kinematics.ChassisSpeeds)">
 <h3>computeFieldRelativeSpeeds</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">computeFieldRelativeSpeeds</span><wbr><span class="parameters">(double&nbsp;rawLeftY,
  double&nbsp;rawLeftX,
  double&nbsp;rawOmega,
- double&nbsp;maxLinearSpeedMps,
- double&nbsp;maxAngularSpeedRadPerSec,
  boolean&nbsp;isRedAlliance,
  edu.wpi.first.math.kinematics.ChassisSpeeds&nbsp;outSpeeds)</span></div>
 <div class="block">Computes field-relative ChassisSpeeds from raw joystick axes BEFORE slew rate limiting. This is
- the pure-math portion of the teleop pipeline: deadband → cube → scale → negate → alliance-flip.</div>
+ the pure-math portion of the teleop pipeline: deadband â†’ cube â†’ scale â†’ negate â†’ alliance-flip.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>rawLeftY</code> - Raw left stick Y axis (negative = forward per HID convention)</dd>
 <dd><code>rawLeftX</code> - Raw left stick X axis (negative = left per HID convention)</dd>
 <dd><code>rawOmega</code> - Raw right stick X axis (negative = CCW per HID convention)</dd>
-<dd><code>maxLinearSpeedMps</code> - The maximum translation speed of the robot.</dd>
-<dd><code>maxAngularSpeedRadPerSec</code> - The maximum rotation speed of the robot.</dd>
 <dd><code>isRedAlliance</code> - Whether the robot is on the Red alliance (flips translation axes)</dd>
 <dd><code>outSpeeds</code> - The pre-allocated ChassisSpeeds to populate with field-relative velocities.
      Omega is negated so that rightward stick (positive HID) produces negative (clockwise)

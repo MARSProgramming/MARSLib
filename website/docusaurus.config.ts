@@ -98,7 +98,12 @@ const config: Config = {
         src: 'assets/mars-logo.png',
       },
       items: [
-        {to: '/tutorials', label: 'Tutorials', position: 'left'},
+        {
+          type: 'docSidebar',
+          sidebarId: 'tutorialSidebar',
+          position: 'left',
+          label: 'Tutorials',
+        },
         {to: '/standards', label: 'Core Standards', position: 'left'},
         {to: '/javadoc/index.html', label: 'API Reference', position: 'left'},
         {
@@ -116,11 +121,11 @@ const config: Config = {
           items: [
             {
               label: 'Getting Started',
-              to: '/tutorial-getting-started',
+              to: '/docs/tutorials/getting-started',
             },
             {
               label: 'All Tutorials',
-              to: '/tutorials',
+              to: '/docs/intro',
             },
           ],
         },
