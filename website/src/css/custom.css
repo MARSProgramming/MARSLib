@@ -92,3 +92,62 @@ h1, h2, h3, h4, h5, h6 {
   border-left: 4px solid var(--mars-red);
   background-color: rgba(179, 36, 22, 0.05);
 }
+
+/* Tutorial Grid Layouts */
+.tutorial-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 996px) {
+  .tutorial-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .tutorial-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tutorial-card {
+  display: block;
+  background: var(--ifm-card-background-color, #1a1a1a);
+  border: 1px solid var(--border-color, #333);
+  border-radius: 8px;
+  padding: 24px;
+  text-decoration: none !important;
+  color: inherit !important;
+  transition: all 0.2s ease-in-out;
+}
+
+.tutorial-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--mars-red);
+  box-shadow: 0 8px 24px rgba(179, 36, 22, 0.15);
+}
+
+.tutorial-card .card-tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--ai-cyan);
+  margin-bottom: 12px;
+  letter-spacing: 0.1em;
+}
+
+.tutorial-card h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 1.25rem;
+  color: var(--ifm-color-white);
+}
+
+.tutorial-card p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-secondary, #999);
+}
