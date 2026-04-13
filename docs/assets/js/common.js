@@ -19,10 +19,10 @@ function injectHeader() {
         <div class="nav-logo">MARS<span>Lib</span></div>
       </a>
       <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="index.html#features">Features</a></li>
-        <li><a href="tutorials.html">Tutorials</a></li>
-        <li><a href="standards.html">Standards</a></li>
+        <li><a href="index.html" class="nav-link-text">Home</a></li>
+        <li><a href="index.html#features" class="nav-link-text">Features</a></li>
+        <li><a href="tutorials.html" class="nav-link-text">Tutorials</a></li>
+        <li><a href="standards.html" class="nav-link-text">Standards</a></li>
         <li class="nav-search">
           <input type="text" id="search-input" class="search-input" placeholder="Search MARSLib...">
           <ul id="search-results" class="search-results"></ul>
@@ -89,3 +89,53 @@ function highlightActiveLink() {
     }
   });
 }
+
+/* ===== Site Search Logic ===== */
+const searchIndex = [
+  { title: "Home", url: "index.html", snippet: "MARSLib software framework features and components" },
+  { title: "Features: AdvantageKit", url: "index.html#features", snippet: "Strict dependency injection, replay telemetry, and isolated hardware IO layers." },
+  { title: "Features: Dyn4j Simulation", url: "index.html#features", snippet: "High-fidelity 2D physics integration modeling game pieces, mass, and rigid collisions." },
+  { title: "Features: SOTM Kinematics", url: "index.html#features", snippet: "Continuous velocity-compensated shoot-on-the-move solver across all ranges." },
+  { title: "Core Design Standards", url: "standards.html", snippet: "Zero-allocation physics, mathematical contracts, deterministic memory, and architectural laws." },
+  { title: "Tutorial: Environment Setup", url: "tutorial-getting-started.html", snippet: "Installing WPILib, AdvantageScope, and configuring the dev container for MARSLib." },
+  { title: "Tutorial: Subsystem IO Layers", url: "tutorial-sotm.html", snippet: "Abstracting hardware logic to support dual real/simulated backend rendering." },
+  { title: "Tutorial: PathPlanner & Auto", url: "tutorial-ci.html", snippet: "Automated regression testing, GitHub Actions, Jenkins, and path trajectory configuration." },
+  { title: "Tutorial: Zero-Allocation Structs", url: "tutorial-zero-allocation.html", snippet: "Eliminating JVM Garbage Collector spikes from the 20ms hot-path using ephemeral proxy references." }
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+  if (!searchInput || !searchResults) return;
+
+  searchInput.addEventListener('input', (e) => {
+    const term = e.target.value.toLowerCase().trim();
+    if (term.length < 2) {
+      searchResults.classList.remove('active');
+      return;
+    }
+    
+    const matches = searchIndex.filter(item => 
+      item.title.toLowerCase().includes(term) || item.snippet.toLowerCase().includes(term)
+    );
+    
+    searchResults.innerHTML = '';
+    if (matches.length > 0) {
+      matches.forEach(m => {
+        const li = document.createElement('li');
+        li.innerHTML = `<a href="${m.url}">${m.title}<span>${m.snippet}</span></a>`;
+        searchResults.appendChild(li);
+      });
+      searchResults.classList.add('active');
+    } else {
+      searchResults.innerHTML = '<li><a href="#">No results found<span>Try a different search term</span></a></li>';
+      searchResults.classList.add('active');
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.nav-search')) {
+      searchResults.classList.remove('active');
+    }
+  });
+});
