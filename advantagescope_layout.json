@@ -11,69 +11,8 @@
           "expanded": []
         },
         "tabs": {
-          "selected": 4,
+          "selected": 0,
           "tabs": [
-            {
-              "type": 0,
-              "title": "Documentation",
-              "controller": null,
-              "controllerUUID": "givqfu7830effbmzqmmgos",
-              "renderer": "#/",
-              "controlsHeight": 0
-            },
-            {
-              "type": 1,
-              "title": "Power Bounds",
-              "controller": {
-                "leftSources": [
-                  {
-                    "type": "stepped",
-                    "logKey": "/RealOutputs/PhysicsWorld/ComputedVoltage",
-                    "logType": "Number",
-                    "visible": true,
-                    "options": {
-                      "color": "#ff00ff"
-                    }
-                  }
-                ],
-                "rightSources": [
-                  {
-                    "type": "stepped",
-                    "logKey": "/RealOutputs/PhysicsWorld/FrameCurrentDraw_A",
-                    "logType": "Number",
-                    "visible": true,
-                    "options": {
-                      "color": "#ff0000"
-                    }
-                  },
-                  {
-                    "type": "stepped",
-                    "logKey": "/RealOutputs/SwerveDrive/LoadShedLimitAmps",
-                    "logType": "Number",
-                    "visible": true,
-                    "options": {
-                      "color": "#00ff00"
-                    }
-                  }
-                ],
-                "discreteSources": [],
-                "leftLockedRange": null,
-                "rightLockedRange": null,
-                "leftUnitConversion": {
-                  "autoTarget": null,
-                  "preset": null
-                },
-                "rightUnitConversion": {
-                  "autoTarget": null,
-                  "preset": null
-                },
-                "leftFilter": 0,
-                "rightFilter": 0
-              },
-              "controllerUUID": "t8h1ecr3xyq7gq44dqt93",
-              "renderer": null,
-              "controlsHeight": 0
-            },
             {
               "type": 2,
               "title": "Odometry Fusion 2D",
@@ -117,7 +56,7 @@
                     "logType": "Pose2d",
                     "visible": true,
                     "options": {
-                      "model": "2026 KitBot"
+                      "model": "Robot"
                     }
                   },
                   {
@@ -126,7 +65,7 @@
                     "logType": "Pose2d",
                     "visible": true,
                     "options": {
-                      "model": "2026 KitBot",
+                      "model": "Robot",
                       "color": "#00ff00"
                     }
                   },
@@ -171,7 +110,7 @@
                     "logType": "Pose2d",
                     "visible": true,
                     "options": {
-                      "model": "2026 KitBot"
+                      "model": "Robot"
                     }
                   },
                   {
@@ -235,40 +174,6 @@
                 "orientation": 1
               },
               "controllerUUID": "bsq9932h1q41p04rat0gzp",
-              "renderer": null,
-              "controlsHeight": 0
-            },
-            {
-              "type": 4,
-              "title": "Tuning Table",
-              "controller": [
-                "/TunableNumbers/Shooter/kS",
-                "/TunableNumbers/Shooter/kV",
-                "/TunableNumbers/Shooter/kA",
-                "/TunableNumbers/IntakePivot/kS",
-                "/TunableNumbers/IntakePivot/kG",
-                "/TunableNumbers/IntakePivot/kV",
-                "/TunableNumbers/IntakePivot/kA",
-                "/TunableNumbers/Cowl/kS",
-                "/TunableNumbers/Cowl/kG",
-                "/TunableNumbers/Cowl/kV",
-                "/TunableNumbers/Cowl/kA",
-                "/TunableNumbers/Climber/kS",
-                "/TunableNumbers/Climber/kG",
-                "/TunableNumbers/Climber/kV",
-                "/TunableNumbers/Climber/kA",
-                "/TunableNumbers/Vision/TAG_STD_BASE",
-                "/TunableNumbers/Vision/MAX_AMBIGUITY",
-                "/TunableNumbers/Vision/MAX_Z_HEIGHT",
-                "/TunableNumbers/Vision/MAX_YAW_RATE_DEG_PER_SEC",
-                "/TunableNumbers/Vision/MAX_TILT_DEG",
-                "/TunableNumbers/Vision/FIELD_MARGIN_METERS",
-                "/TunableNumbers/Vision/MULTI_TAG_STD_MULTIPLIER",
-                "/TunableNumbers/Vision/ANGULAR_STD_MULTIPLIER",
-                "/TunableNumbers/Vision/SLAM_STD_DEV",
-                "/TunableNumbers/Vision/SLAM_ANGULAR_STD_DEV"
-              ],
-              "controllerUUID": "tunetab12345aaddvance",
               "renderer": null,
               "controlsHeight": 0
             },
@@ -363,18 +268,6 @@
               "controlsHeight": 0
             },
             {
-              "type": 4,
-              "title": "Fault Alerts",
-              "controller": [
-                "/RealOutputs/Alerts/Critical",
-                "/RealOutputs/Alerts/Warning",
-                "/RealOutputs/Alerts/Info"
-              ],
-              "controllerUUID": "faultalerts12345abc",
-              "renderer": null,
-              "controlsHeight": 0
-            },
-            {
               "type": 1,
               "title": "Power Draw",
               "controller": {
@@ -401,6 +294,15 @@
                 "rightSources": [
                   {
                     "type": "smooth",
+                    "logKey": "/RealOutputs/PhysicsWorld/ComputedVoltage",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff00ff"
+                    }
+                  },
+                  {
+                    "type": "smooth",
                     "logKey": "/RealOutputs/System/BatteryVoltage",
                     "logType": "Number",
                     "visible": true,
@@ -415,6 +317,15 @@
                     "visible": true,
                     "options": {
                       "color": "#ffff00"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/RealOutputs/SwerveDrive/LoadShedLimitAmps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00"
                     }
                   }
                 ],
@@ -434,6 +345,60 @@
               },
               "controllerUUID": "pwrdraw99887amorph",
               "renderer": null,
+              "controlsHeight": 0
+            },
+            {
+              "type": 4,
+              "title": "Fault Alerts",
+              "controller": [
+                "/RealOutputs/Alerts/Critical",
+                "/RealOutputs/Alerts/Warning",
+                "/RealOutputs/Alerts/Info"
+              ],
+              "controllerUUID": "faultalerts12345abc",
+              "renderer": null,
+              "controlsHeight": 0
+            },
+            {
+              "type": 4,
+              "title": "Tuning Table",
+              "controller": [
+                "/TunableNumbers/Shooter/kS",
+                "/TunableNumbers/Shooter/kV",
+                "/TunableNumbers/Shooter/kA",
+                "/TunableNumbers/IntakePivot/kS",
+                "/TunableNumbers/IntakePivot/kG",
+                "/TunableNumbers/IntakePivot/kV",
+                "/TunableNumbers/IntakePivot/kA",
+                "/TunableNumbers/Cowl/kS",
+                "/TunableNumbers/Cowl/kG",
+                "/TunableNumbers/Cowl/kV",
+                "/TunableNumbers/Cowl/kA",
+                "/TunableNumbers/Climber/kS",
+                "/TunableNumbers/Climber/kG",
+                "/TunableNumbers/Climber/kV",
+                "/TunableNumbers/Climber/kA",
+                "/TunableNumbers/Vision/TAG_STD_BASE",
+                "/TunableNumbers/Vision/MAX_AMBIGUITY",
+                "/TunableNumbers/Vision/MAX_Z_HEIGHT",
+                "/TunableNumbers/Vision/MAX_YAW_RATE_DEG_PER_SEC",
+                "/TunableNumbers/Vision/MAX_TILT_DEG",
+                "/TunableNumbers/Vision/FIELD_MARGIN_METERS",
+                "/TunableNumbers/Vision/MULTI_TAG_STD_MULTIPLIER",
+                "/TunableNumbers/Vision/ANGULAR_STD_MULTIPLIER",
+                "/TunableNumbers/Vision/SLAM_STD_DEV",
+                "/TunableNumbers/Vision/SLAM_ANGULAR_STD_DEV"
+              ],
+              "controllerUUID": "tunetab12345aaddvance",
+              "renderer": null,
+              "controlsHeight": 0
+            },
+            {
+              "type": 0,
+              "title": "Documentation",
+              "controller": null,
+              "controllerUUID": "givqfu7830effbmzqmmgos",
+              "renderer": "#/",
               "controlsHeight": 0
             }
           ]
