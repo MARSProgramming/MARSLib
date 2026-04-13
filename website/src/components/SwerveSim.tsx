@@ -1,7 +1,17 @@
-﻿import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 
 export default function SwerveSim() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  
+  const [vx, setVx] = useState(0);
+  const [vy, setVy] = useState(0);
+  const [omega, setOmega] = useState(0);
+
+  const stateRef = useRef({ vx: 0, vy: 0, omega: 0 });
+
+  useEffect(() => {
+    stateRef.current = { vx, vy, omega };
+  }, [vx, vy, omega]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -16,7 +26,7 @@ export default function SwerveSim() {
       const parent = canvas.parentElement;
       if (parent) {
         width = parent.clientWidth;
-        height = parent.clientHeight || 400; // default height if unspecified
+        height = parent.clientHeight - 80; // leave room for controls
         canvas.width = width;
         canvas.height = height;
       }
@@ -28,57 +38,34 @@ export default function SwerveSim() {
     let x = width / 2;
     let y = height / 2;
     let heading = 0; // radians
-    let vx = 0;
-    let vy = 0;
-    let omega = 0;
 
-    // Trajectory generation (Lissajous curve / figure 8)
-    const centerX = width / 2;
-    const centerY = height / 2;
-    const amplitudeX = Math.min(width * 0.35, 250);
-    const amplitudeY = Math.min(height * 0.35, 150);
-    
-    let time = 0;
-    
     const history: {x: number, y: number}[] = [];
-
     const dt = 0.02; // 50hz (20ms)
 
+    let animationFrameId: number;
+
     function loop() {
-      // Calculate target position on figure 8
-      const targetX = centerX + amplitudeX * Math.sin(time * 0.5);
-      const targetY = centerY + amplitudeY * Math.sin(time);
+      const { vx: curVx, vy: curVy, omega: curOmega } = stateRef.current;
       
-      const targetDX = amplitudeX * 0.5 * Math.cos(time * 0.5);
-      const targetDY = amplitudeY * Math.cos(time);
-
-      const targetHeading = Math.atan2(targetDY, targetDX);
-      
-      // Control loops (P-controller for chasing the target)
-      vx = (targetX - x) * 2.0;
-      vy = (targetY - y) * 2.0;
-      
-      let headingError = targetHeading - heading;
-      // Normalize to -PI to PI
-      while(headingError > Math.PI) headingError -= 2 * Math.PI;
-      while(headingError < -Math.PI) headingError += 2 * Math.PI;
-      
-      omega = headingError * 3.0;
-
       // Update state
-      x += vx * dt;
-      y += vy * dt;
-      heading += omega * dt;
-      time += dt;
+      x += (curVx * 10) * dt;
+      y += (-curVy * 10) * dt; // Invert y for standard cartesian vs canvas
+      heading += curOmega * dt;
+
+      // Keep in bounds
+      if (x < 0) x = width;
+      if (x > width) x = 0;
+      if (y < 0) y = height;
+      if (y > height) y = 0;
 
       history.push({x, y});
       if (history.length > 200) history.shift();
 
-      draw();
-      requestAnimationFrame(loop);
+      draw(curVx, curVy, curOmega);
+      animationFrameId = requestAnimationFrame(loop);
     }
 
-    function draw() {
+    function draw(curVx: number, curVy: number, curOmega: number) {
       ctx.clearRect(0, 0, width, height);
 
       // Draw Grid / Field
@@ -121,21 +108,21 @@ export default function SwerveSim() {
       // Modules
       const mR = 8;
       const positions = [
-        [-rbW/2, -rbH/2],
-        [rbW/2, -rbH/2],
-        [-rbW/2, rbH/2],
-        [rbW/2, rbH/2]
+        [-rbW/2, -rbH/2], // FL
+        [rbW/2, -rbH/2],  // FR
+        [-rbW/2, rbH/2],  // BL
+        [rbW/2, rbH/2]    // BR
       ];
 
       // Swerve Kinematics math for module angles
       // In chassis frame
-      const vxChassis = vx * Math.cos(-heading) - vy * Math.sin(-heading);
-      const vyChassis = vx * Math.sin(-heading) + vy * Math.cos(-heading);
+      const vxChassis = curVx * Math.cos(-heading) - (-curVy) * Math.sin(-heading);
+      const vyChassis = curVx * Math.sin(-heading) + (-curVy) * Math.cos(-heading);
 
       positions.forEach(pos => {
         // Module velocity component from chassis rotation
-        const mx = vxChassis - omega * pos[1];
-        const my = vyChassis + omega * pos[0];
+        const mx = vxChassis - curOmega * pos[1] * 0.05;
+        const my = vyChassis + curOmega * pos[0] * 0.05;
         const mAngle = Math.atan2(my, mx);
         const mSpeed = Math.sqrt(mx*mx + my*my);
 
@@ -145,17 +132,21 @@ export default function SwerveSim() {
         ctx.fillStyle = '#222';
         ctx.beginPath(); ctx.arc(0, 0, mR, 0, Math.PI * 2); ctx.fill();
         
-        ctx.rotate(mAngle);
+        // Only point direction if moving or rotating
+        if (mSpeed > 0.01) {
+            ctx.rotate(mAngle);
+        }
+        
         ctx.fillStyle = '#29b6f6'; // Cyan wheel
         ctx.fillRect(-mR, -2, mR * 2, 4);
         
         // Velocity vector
-        if (mSpeed > 10) {
+        if (mSpeed > 0.1) {
            ctx.strokeStyle = '#9c7bcc'; // Purple vector
            ctx.lineWidth = 2;
            ctx.beginPath();
            ctx.moveTo(0,0);
-           ctx.lineTo(mSpeed * 0.2, 0);
+           ctx.lineTo(mSpeed * 30, 0); // Scale up vector for visual
            ctx.stroke();
         }
 
@@ -173,7 +164,10 @@ export default function SwerveSim() {
       ctx.font = '12px "Orbitron", sans-serif';
       ctx.fillText(`X: ${x.toFixed(1)}`, 20, 30);
       ctx.fillText(`Y: ${y.toFixed(1)}`, 20, 50);
-      ctx.fillText(`Î¸: ${(heading * 180 / Math.PI).toFixed(1)}Â°`, 20, 70);
+      let deg = (heading * 180 / Math.PI);
+      while(deg < 0) deg += 360;
+      deg = deg % 360;
+      ctx.fillText(`HEAD: ${deg.toFixed(1)}°`, 20, 70);
     }
     
     // Allow the div to resize before grabbing width
@@ -184,14 +178,42 @@ export default function SwerveSim() {
 
     return () => {
       window.removeEventListener('resize', resize);
+      cancelAnimationFrame(animationFrameId);
     };
   }, []);
 
   return (
-    <div style={{ width: '100%', height: '400px', backgroundColor: '#0a0a0a', border: '1px solid #2a2a2a', borderRadius: '8px', overflow: 'hidden', position: 'relative' }}>
-      <canvas ref={canvasRef} style={{ display: 'block', width: '100%', height: '100%' }} />
-      <div style={{ position: 'absolute', bottom: '15px', right: '15px', padding: '5px 12px', background: 'rgba(179,36,22,0.8)', color: '#fff', fontSize: '10px', fontFamily: '"Orbitron", sans-serif', letterSpacing: '0.1em', borderRadius: '4px' }}>
-          LIVE ODOMETRY SIM
+    <div style={{ width: '100%', height: '480px', backgroundColor: '#0a0a0a', border: '1px solid #2a2a2a', borderRadius: '8px', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+      <canvas ref={canvasRef} style={{ display: 'block', width: '100%', flex: 1 }} />
+      <div style={{ padding: '15px', borderTop: '1px solid #2a2a2a', display: 'flex', gap: '20px', background: '#111', flexWrap: 'wrap' }}>
+        <div style={{ flex: 1, minWidth: '150px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'monospace', fontSize: '12px', color: '#ccc', marginBottom: '5px' }}>
+                <span>Vx (Forward/Back)</span>
+                <span>{vx.toFixed(1)} m/s</span>
+            </div>
+            <input type="range" min="-5" max="5" step="0.1" value={vx} onChange={e => setVx(parseFloat(e.target.value))} style={{ width: '100%' }} />
+        </div>
+        <div style={{ flex: 1, minWidth: '150px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'monospace', fontSize: '12px', color: '#ccc', marginBottom: '5px' }}>
+                <span>Vy (Left/Right)</span>
+                <span>{vy.toFixed(1)} m/s</span>
+            </div>
+            <input type="range" min="-5" max="5" step="0.1" value={vy} onChange={e => setVy(parseFloat(e.target.value))} style={{ width: '100%' }} />
+        </div>
+        <div style={{ flex: 1, minWidth: '150px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'monospace', fontSize: '12px', color: '#ccc', marginBottom: '5px' }}>
+                <span>Omega (Rotation)</span>
+                <span>{omega.toFixed(1)} rad/s</span>
+            </div>
+            <input type="range" min="-5" max="5" step="0.1" value={omega} onChange={e => setOmega(parseFloat(e.target.value))} style={{ width: '100%' }} />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+            <button 
+                onClick={() => { setVx(0); setVy(0); setOmega(0); }} 
+                style={{ background: '#B32416', color: '#fff', border: 'none', padding: '8px 15px', borderRadius: '4px', cursor: 'pointer', fontFamily: '"Orbitron", sans-serif', fontWeight: 'bold' }}>
+                ZERO
+            </button>
+        </div>
       </div>
     </div>
   );

@@ -1,0 +1,8 @@
+{
+  "label": "Tutorials",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "Learn how to leverage the MARSLib Advanced Robotic Simulation and hardware abstraction framework through step-by-step guides and interactive visualizations."
+  }
+}

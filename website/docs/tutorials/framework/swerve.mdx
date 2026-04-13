@@ -26,31 +26,9 @@ title: "High-Frequency Swerve"
     <p>Because this thread runs 250 times a second, if you instantiate an object inside this loop, you will instantly crash the RoboRIO due to massive Garbage Collection pressure. This is why our Agentic Skills strictly enforce the <strong>Ephemeral Struct</strong> proxy architecture across the Swerve subsystem.</p>
   </div>
 
-  <div id="swerve-sim" >
-    <div >
-      <div >
-        <label >
-          <span>Vx (Forward/Back) <span id="vx-val" >0.0</span> m/s</span>
-          <input type="range" id="vx" min="-5" max="5" step="0.1" value="0.0" />
-        </label>
-        <label >
-          <span>Vy (Left/Right) <span id="vy-val" >0.0</span> m/s</span>
-          <input type="range" id="vy" min="-5" max="5" step="0.1" value="0.0" />
-        </label>
-        <label >
-          <span>Omega (Rotation) <span id="omega-val" >0.0</span> rad/s</span>
-          <input type="range" id="omega" min="-5" max="5" step="0.1" value="0.0" />
-        </label>
-        <button id="resetSwerve" >ZERO</button>
-      </div>
-    </div>
-    <div >
-      <div >
-        <canvas id="swerveCanvas" width="400" height="400" ></canvas>
-        <div >KINEMATICS SOLVER</div>
-      </div>
-    </div>
-  </div>
+import SwerveSim from '@site/src/components/SwerveSim';
+
+  <SwerveSim />
 
   <h2>2. MegaTag 2.0 Integration</h2>
   <p>Limelight 4's MegaTag 2.0 system relies heavily on the IMU Yaw rates to compensate for camera latency. Because we process the Pigeon 2.0 data at 250Hz, our gyro-seeding to the Limelight is incredibly precise, allowing for flawless localization even while spinning and traversing the Bump.</p>

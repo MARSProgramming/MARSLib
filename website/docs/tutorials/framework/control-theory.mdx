@@ -1,10 +1,12 @@
-﻿---
+---
 sidebar_position: 11
 id: control-theory
 title: "Control Theory Mastery"
 ---
 
-import ControlSimulators from '@site/src/components/ControlSimulators';
+import ElevatorPidSim from '@site/src/components/ElevatorPidSim';
+import FlywheelKvSim from '@site/src/components/FlywheelKvSim';
+import ArmKgSim from '@site/src/components/ArmKgSim';
 
 
 
@@ -31,43 +33,7 @@ double pidVoltage = pid.calculate(currentPosition, targetPosition);
 motor.setVoltage(ffVoltage + pidVoltage);
 ```
 
-  <div id="pid-sim" className="sim-panel">
-    <div className="sim-controls">
-      <div className="sim-sliders">
-        <label>
-          <span>kP (Proportional) <span id="kp-val" >0.20</span></span>
-          <input type="range" id="kp" min="0" max="1" step="0.01" value="0.2" />
-        </label>
-        <label>
-          <span>kI (Integral) <span id="ki-val" >0.00</span></span>
-          <input type="range" id="ki" min="0" max="1" step="0.01" value="0" />
-        </label>
-        <label>
-          <span>kD (Derivative) <span id="kd-val" >0.05</span></span>
-          <input type="range" id="kd" min="0" max="1" step="0.01" value="0.05" />
-        </label>
-        <label>
-          <span>kG (Gravity FF) <span id="kg-val" >0.0</span></span>
-          <input type="range" id="kg" min="0" max="10" step="0.1" value="0.0" />
-        </label>
-      </div>
-      <button id="resetSim" className="btn btn-primary" >FLIP SETPOINT</button>
-    </div>
-    <div className="sim-display">
-      {/* Elevator Canvas */}
-      <div >
-        <canvas id="elevatorCanvas" width="80" height="260" ></canvas>
-      </div>
-      {/* Graph Canvas */}
-      <div >
-        <canvas id="graphCanvas" width="700" height="260" ></canvas>
-        <div >
-          <span >â–  Setpoint</span>
-          <span >â–  Actual</span>
-        </div>
-      </div>
-    </div>
-  </div>
+  <ElevatorPidSim />
 
   <h2>2. Manual Tuning Guide</h2>
   <p>If you cannot run SysId, you must manually tune your Feedforwards and PID loops. Always tune Feedforward (FF) first, as PID should only be correcting minor disturbances, not doing the heavy lifting.</p>
@@ -83,43 +49,7 @@ motor.setVoltage(ffVoltage + pidVoltage);
   <h2>3. Flywheel Inertia Recovery Simulator</h2>
   <p>Flywheels do not fight gravity, but they require massive energy to accelerate (Inertia) and maintain high speeds (Friction/Air Drag). When a game piece enters the shooter, it rapidly saps energy from the wheel. <code>kV</code> keeps the wheel spinning, while <code>kP</code> and <code>kD</code> are crucial for <strong>Recovery Time</strong>.</p>
 
-  <div id="flywheel-sim" className="sim-panel">
-    <div className="sim-controls">
-      <div className="sim-sliders">
-        <label>
-          <span>kV (Velocity FF) <span id="fw-kv-val" >0.12</span></span>
-          <input type="range" id="fw-kv" min="0" max="0.3" step="0.01" value="0.12" />
-        </label>
-        <label>
-          <span>kP (Proportional) <span id="fw-kp-val" >0.08</span></span>
-          <input type="range" id="fw-kp" min="0" max="0.5" step="0.01" value="0.08" />
-        </label>
-        <label>
-          <span>kI (Integral) <span id="fw-ki-val" >0.00</span></span>
-          <input type="range" id="fw-ki" min="0" max="0.5" step="0.01" value="0.00" />
-        </label>
-        <label>
-          <span>kD (Derivative) <span id="fw-kd-val" >0.00</span></span>
-          <input type="range" id="fw-kd" min="0" max="0.5" step="0.01" value="0.00" />
-        </label>
-        <label>
-          <span>Setpoint: <span id="fw-set-val" >80</span></span>
-          <input type="range" id="fw-set" min="0" max="150" step="5" value="80" />
-        </label>
-      </div>
-      <button id="btn-shoot" className="btn btn-primary" >INJECT BALL</button>
-    </div>
-    <div >
-      {/* Wheel Canvas */}
-      <div >
-        <canvas id="wheelCanvas" width="120" height="120" ></canvas>
-      </div>
-      {/* Graph Canvas */}
-      <div >
-        <canvas id="fwGraphCanvas" width="600" height="220" ></canvas>
-      </div>
-    </div>
-  </div>
+  <FlywheelKvSim />
 
   <p><strong>How to manually tune a Flywheel:</strong></p>
   <ol>
@@ -134,48 +64,7 @@ motor.setVoltage(ffVoltage + pidVoltage);
   <p>Unlike an Elevator where gravity pulls equally at all times, a rotating <strong>Arm</strong> or <strong>Intake Pivot</strong> experiences gravity differently depending on its angle. When perfectly horizontal (0&deg;), gravity exerts maximum torque. When perfectly vertical (90&deg; or -90&deg;), the center of mass aligns with the fulcrum, meaning gravity exerts <strong>zero torque</strong>.</p>
   <p>An <code>ArmFeedforward</code> recalculates gravity every 20ms using <code>kG * Math.cos(angle)</code>. Try moving the arm to 90&deg; below to see the required kG voltage drop to zero!</p>
 
-  <div id="arm-sim" className="sim-panel">
-    <div className="sim-controls">
-      <div className="sim-sliders">
-        <label>
-          <span>Target Angle &deg;: <span id="arm-set-val" >0&deg;</span></span>
-          <input type="range" id="arm-set" min="-90" max="90" step="1" value="0" />
-        </label>
-        <label>
-          <span>kG (Gravity Max) <span id="arm-kg-val" >0.6</span></span>
-          <input type="range" id="arm-kg" min="0" max="2.0" step="0.1" value="0.6" />
-        </label>
-        <label>
-          <span>kP (Proportional) <span id="arm-kp-val" >0.05</span></span>
-          <input type="range" id="arm-kp" min="0" max="0.2" step="0.01" value="0.05" />
-        </label>
-        <label>
-          <span>kI (Integral) <span id="arm-ki-val" >0.00</span></span>
-          <input type="range" id="arm-ki" min="0" max="0.2" step="0.01" value="0.00" />
-        </label>
-        <label>
-          <span>kD (Derivative) <span id="arm-kd-val" >0.00</span></span>
-          <input type="range" id="arm-kd" min="0" max="0.2" step="0.01" value="0.00" />
-        </label>
-      </div>
-    </div>
-    <div >
-      {/* Arm Canvas */}
-      <div >
-        <canvas id="armCanvas" width="200" height="200" ></canvas>
-      </div>
-      {/* Vector Math readout */}
-      <div >
-         <p>Current Angle: <span id="v-ang" >0.00&deg;</span></p>
-         <p >cos(<span id="v-cos-ang">0.00</span>&deg;) = <span id="v-cos-res" >1.000</span></p>
-         <p >FF Voltage = kG * cos(&theta;) = <span id="v-ffv" >0.60v</span></p>
-         <div >
-             <div id="v-bar" ></div>
-         </div>
-         <p >Gravity Counter-Force Vector</p>
-      </div>
-    </div>
-  </div>
+  <ArmKgSim />
 
   <p><strong>How to manually tune an Arm:</strong></p>
   <ol>
@@ -193,7 +82,7 @@ motor.setVoltage(ffVoltage + pidVoltage);
   </div>
 </main>
 
-<ControlSimulators />
+
 
 
 
