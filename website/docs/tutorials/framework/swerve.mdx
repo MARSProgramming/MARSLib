@@ -1,4 +1,4 @@
-﻿---
+---
 sidebar_position: 6
 id: swerve
 title: "High-Frequency Swerve"
@@ -40,8 +40,10 @@ public void addVisionMeasurement(Pose2d visionPose, double timestamp, Matrix<N3,
 }
 ```
 
-  <h2>3. Heading-Aware Traction Control</h2>
-  <p>With high-frequency data, we can implement micro-adjustments in real-time. If the IMU detects that the robot is physically slipping or skidding, MARSLib's traction control algorithm will temporarily limit the torque current applied to the Kraken X60 drive motors to regain grip.</p>
+  <h2>3. 2D Kinematic Traction Control</h2>
+  <p>Standard WPILib implementations apply independent <code>SlewRateLimiters</code> to the X and Y joystick axes. However, if the driver pushes diagonally, the robot attempts to accelerate at <b>1.41x</b> the limit, instantly breaking carpet friction.</p> 
+  
+  <p>To solve this, MARSLib uses a unified <code>TractionControlLimiter</code> that calculates the magnitude of the requested 2D acceleration vector and strictly caps it below the kinetic slipping envelope of the FRC carpet (approx 1.1g, or 10.78 m/s&sup2;). This guarantees the swerve drive never breaks static friction natively, preserving your odometry perfectly!</p>
 </main>
 
 
