@@ -74,6 +74,17 @@ const config: Config = {
     */
   ],
 
+  themes: [
+    [
+      require.resolve("@easyops-cn/docusaurus-search-local"),
+      {
+        hashed: true,
+        indexDocs: false,
+        indexPages: true,
+      },
+    ],
+  ],
+
   themeConfig: {
     colorMode: {
       defaultMode: 'dark',
@@ -84,7 +95,7 @@ const config: Config = {
       title: 'MARSLib',
       logo: {
         alt: 'MARS Logo',
-        src: 'img/logo.svg',
+        src: 'assets/mars-logo.png',
       },
       items: [
         {to: '/tutorials', label: 'Tutorials', position: 'left'},
