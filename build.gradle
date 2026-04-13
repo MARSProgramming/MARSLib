@@ -627,7 +627,7 @@ spotless {
     format "misc", {
         target fileTree(".") {
             include "**/*.md", "**/.gitignore"
-            exclude "**/build/**", "**/build-*/**", "CONTROLLER_MAPPINGS.md"
+            exclude "**/build/**", "**/build-*/**", "CONTROLLER_MAPPINGS.md", "website/**", "docs/**"
         }
         trimTrailingWhitespace()
         leadingTabsToSpaces(2)
