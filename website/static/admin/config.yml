@@ -17,7 +17,7 @@ collections:
     folder: "website/docs/tutorials/setup"
     create: true
     extension: "mdx"
-    format: "frontmatter"
+    format: "yaml-frontmatter"
     fields:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Sidebar Position", name: "sidebar_position", widget: "number", required: false }
@@ -29,7 +29,7 @@ collections:
     folder: "website/docs/tutorials/framework"
     create: true
     extension: "mdx"
-    format: "frontmatter"
+    format: "yaml-frontmatter"
     fields:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Sidebar Position", name: "sidebar_position", widget: "number", required: false }
@@ -41,7 +41,7 @@ collections:
     folder: "website/docs/tutorials/elite"
     create: true
     extension: "mdx"
-    format: "frontmatter"
+    format: "yaml-frontmatter"
     fields:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Sidebar Position", name: "sidebar_position", widget: "number", required: false }
@@ -53,7 +53,7 @@ collections:
     folder: "website/docs/tutorials/zero-to-hero"
     create: true
     extension: "mdx"
-    format: "frontmatter"
+    format: "yaml-frontmatter"
     fields:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Sidebar Position", name: "sidebar_position", widget: "number", required: false }
