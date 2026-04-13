@@ -111,12 +111,14 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static edu.wpi.first.wpilibj2.command.Command</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#pathfindObstacleAvoidance(edu.wpi.first.math.geometry.Pose2d)" class="member-name-link">pathfindObstacleAvoidance</a><wbr>(edu.wpi.first.math.geometry.Pose2d&nbsp;targetPose)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#pathfindObstacleAvoidance(com.marslib.swerve.SwerveDrive,edu.wpi.first.math.geometry.Pose2d)" class="member-name-link">pathfindObstacleAvoidance</a><wbr>(<a href="../swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a>&nbsp;drive,
+ edu.wpi.first.math.geometry.Pose2d&nbsp;targetPose)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Utilizes PathPlanner's A* Pathfinding to navigate avoiding obstacles.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static edu.wpi.first.wpilibj2.command.Command</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#pathfindThenRunChoreoTrajectory(java.lang.String)" class="member-name-link">pathfindThenRunChoreoTrajectory</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;choreoTrajectoryName)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#pathfindThenRunChoreoTrajectory(com.marslib.swerve.SwerveDrive,java.lang.String)" class="member-name-link">pathfindThenRunChoreoTrajectory</a><wbr>(<a href="../swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a>&nbsp;drive,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;choreoTrajectoryName)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Executes a pre-planned Choreo trajectory but dynamically pathfinds to the start position first
  if the robot is off-target.</div>
@@ -172,13 +174,15 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="pathfindThenRunChoreoTrajectory(java.lang.String)">
+<section class="detail" id="pathfindThenRunChoreoTrajectory(com.marslib.swerve.SwerveDrive,java.lang.String)">
 <h3>pathfindThenRunChoreoTrajectory</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">edu.wpi.first.wpilibj2.command.Command</span>&nbsp;<span class="element-name">pathfindThenRunChoreoTrajectory</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;choreoTrajectoryName)</span></div>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">edu.wpi.first.wpilibj2.command.Command</span>&nbsp;<span class="element-name">pathfindThenRunChoreoTrajectory</span><wbr><span class="parameters">(<a href="../swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a>&nbsp;drive,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;choreoTrajectoryName)</span></div>
 <div class="block">Executes a pre-planned Choreo trajectory but dynamically pathfinds to the start position first
  if the robot is off-target. This is the ultimate "Hybrid" approach.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
+<dd><code>drive</code> - The SwerveDrive subsystem to retrieve constraints from.</dd>
 <dd><code>choreoTrajectoryName</code> - The filename of the trajectory inside deploy/choreo</dd>
 <dt>Returns:</dt>
 <dd>The autonomous execution Command</dd>
@@ -186,13 +190,15 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="pathfindObstacleAvoidance(edu.wpi.first.math.geometry.Pose2d)">
+<section class="detail" id="pathfindObstacleAvoidance(com.marslib.swerve.SwerveDrive,edu.wpi.first.math.geometry.Pose2d)">
 <h3>pathfindObstacleAvoidance</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">edu.wpi.first.wpilibj2.command.Command</span>&nbsp;<span class="element-name">pathfindObstacleAvoidance</span><wbr><span class="parameters">(edu.wpi.first.math.geometry.Pose2d&nbsp;targetPose)</span></div>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">edu.wpi.first.wpilibj2.command.Command</span>&nbsp;<span class="element-name">pathfindObstacleAvoidance</span><wbr><span class="parameters">(<a href="../swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a>&nbsp;drive,
+ edu.wpi.first.math.geometry.Pose2d&nbsp;targetPose)</span></div>
 <div class="block">Utilizes PathPlanner's A* Pathfinding to navigate avoiding obstacles. Helpful for dynamic
  teleop routing.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
+<dd><code>drive</code> - The SwerveDrive subsystem to retrieve constraints from.</dd>
 <dd><code>targetPose</code> - The destination field pose</dd>
 <dt>Returns:</dt>
 <dd>Pathfinding command</dd>

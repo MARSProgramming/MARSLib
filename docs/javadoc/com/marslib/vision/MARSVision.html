@@ -102,9 +102,10 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(com.marslib.swerve.SwerveDrive,java.util.List,java.util.List)" class="member-name-link">MARSVision</a><wbr>(<a href="../swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a>&nbsp;swerveDrive,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(com.marslib.swerve.SwerveDrive,java.util.List,java.util.List,com.marslib.vision.VisionConfig)" class="member-name-link">MARSVision</a><wbr>(<a href="../swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a>&nbsp;swerveDrive,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="AprilTagVisionIO.html" title="interface in com.marslib.vision">AprilTagVisionIO</a>&gt;&nbsp;aprilTagIOs,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="VIOSlamIO.html" title="interface in com.marslib.vision">VIOSlamIO</a>&gt;&nbsp;slamIOs)</code></div>
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="VIOSlamIO.html" title="interface in com.marslib.vision">VIOSlamIO</a>&gt;&nbsp;slamIOs,
+ <a href="VisionConfig.html" title="class in com.marslib.vision">VisionConfig</a>&nbsp;config)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Constructs the absolute Vision mapping structure.</div>
 </div>
@@ -156,17 +157,19 @@ loadScripts(document, 'script');</script>
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(com.marslib.swerve.SwerveDrive,java.util.List,java.util.List)">
+<section class="detail" id="&lt;init&gt;(com.marslib.swerve.SwerveDrive,java.util.List,java.util.List,com.marslib.vision.VisionConfig)">
 <h3>MARSVision</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">MARSVision</span><wbr><span class="parameters">(<a href="../swerve/SwerveDrive.html" title="class in com.marslib.swerve">SwerveDrive</a>&nbsp;swerveDrive,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="AprilTagVisionIO.html" title="interface in com.marslib.vision">AprilTagVisionIO</a>&gt;&nbsp;aprilTagIOs,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="VIOSlamIO.html" title="interface in com.marslib.vision">VIOSlamIO</a>&gt;&nbsp;slamIOs)</span></div>
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="VIOSlamIO.html" title="interface in com.marslib.vision">VIOSlamIO</a>&gt;&nbsp;slamIOs,
+ <a href="VisionConfig.html" title="class in com.marslib.vision">VisionConfig</a>&nbsp;config)</span></div>
 <div class="block">Constructs the absolute Vision mapping structure.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>swerveDrive</code> - The primary SwerveDrive subsystem reference for data injection.</dd>
 <dd><code>aprilTagIOs</code> - A list of all active AprilTag IO architectures (Limelight, Photon).</dd>
 <dd><code>slamIOs</code> - A list of all active VIO SLAM IO architectures (QuestNav, ROS2).</dd>
+<dd><code>config</code> - The global vision configuration.</dd>
 </dl>
 </section>
 </li>

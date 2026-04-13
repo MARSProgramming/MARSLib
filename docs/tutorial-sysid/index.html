@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="plugin-pages plugin-id-default" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.10.0">
+<title data-rh="true">Tutorial Sysid | MARSLib</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://MARSProgramming.github.io/MARSLib/tutorial-sysid"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docusaurus_tag" content="default"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docsearch:docusaurus_tag" content="default"><meta data-rh="true" property="og:title" content="Tutorial Sysid | MARSLib"><link data-rh="true" rel="icon" href="/MARSLib/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://MARSProgramming.github.io/MARSLib/tutorial-sysid"><link data-rh="true" rel="alternate" href="https://MARSProgramming.github.io/MARSLib/tutorial-sysid" hreflang="en"><link data-rh="true" rel="alternate" href="https://MARSProgramming.github.io/MARSLib/tutorial-sysid" hreflang="x-default"><link rel="alternate" type="application/rss+xml" href="/MARSLib/blog/rss.xml" title="MARSLib RSS Feed">
+<link rel="alternate" type="application/atom+xml" href="/MARSLib/blog/atom.xml" title="MARSLib Atom Feed">
+
+
+
+
+
+<script src="/MARSLib/assets/js/common.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js" async></script><link rel="stylesheet" href="/MARSLib/assets/css/styles.cd35f838.css">
+<script src="/MARSLib/assets/js/runtime~main.1a2b5cb3.js" defer="defer"></script>
+<script src="/MARSLib/assets/js/main.6ea7691a.js" defer="defer"></script>
+</head>
+<body>
+<svg style="display: none;"><defs>
+<symbol id="theme-svg-external-link" viewBox="0 0 24 24"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"/></symbol>
+</defs></svg>
+<script>document.documentElement.setAttribute("data-theme","dark"),document.documentElement.setAttribute("data-theme-choice","dark"),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><div class="starsContainer_N5ii"><div class="stars_rEkM"></div></div><div role="region" aria-label="Skip to main content"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="theme-layout-navbar navbar navbar--fixed-top"><div class="navbar__inner"><div class="theme-layout-navbar-left navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/MARSLib/"><div class="navbar__logo"><img src="/MARSLib/assets/mars-logo.png" alt="MARS Logo" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="/MARSLib/assets/mars-logo.png" alt="MARS Logo" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">MARSLib</b></a><a class="navbar__item navbar__link" href="/MARSLib/tutorials">Tutorials</a><a class="navbar__item navbar__link" href="/MARSLib/standards">Core Standards</a><a class="navbar__item navbar__link" href="/MARSLib/javadoc/index.html">API Reference</a></div><div class="theme-layout-navbar-right navbar__items navbar__items--right"><a href="https://github.com/MARSProgramming/MARSLib" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a><div class="navbarSearchContainer_Bca1"><div class="navbar__search searchBarContainer_NW3z" dir="ltr"><input placeholder="Search" aria-label="Search" class="navbar__search-input searchInput_YFbd" value=""><div class="loadingRing_RJI3 searchBarLoadingRing_YnHq"><div></div><div></div><div></div><div></div></div></div></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="theme-layout-main main-wrapper mainWrapper_z2l0"><div class="legacy-mars"><div>
+
+
+
+<main class="container" style="padding-top: 100px; padding-bottom: 80px;">
+  <div style="text-align: center; margin-bottom: 40px;">
+    <a href="/MARSLib/tutorials" class="back-link">← BACK TO TUTORIALS</a>
+    <h1>System Identification</h1>
+  </div>
+
+  <p>Instead of manually guessing your <code>kS</code>, <code>kV</code>, <code>kA</code>, and <code>kP</code> constants, we let mathematical regression do the work. MARSLib integrates natively with WPILib's <strong>SysId</strong> tool to algorithmically calculate the perfect constants for your drivetrain, arms, elevators, and shooters.</p>
+
+  <h2>1. The SysId Process</h2>
+  <p>SysId uses two distinct types of tests to build a State Space model of your mechanism. You will run each test in both the Forward and Reverse directions.</p>
+
+  <ul style="margin-bottom: 20px; padding-left: 30px; color: var(--text-secondary);">
+    <li style="margin-bottom: 15px;"><strong>Quasistatic Test:</strong> Voltage slowly ramps up continuously at 1 volt per second. This precisely maps your mechanism's <code>kS</code> (Static Friction) and <code>kV</code> (Velocity constant).</li>
+    <li style="margin-bottom: 15px;"><strong>Dynamic Test:</strong> Applies an instant voltage step (e.g. jump to 6 volts). This maps <code>kA</code> (Acceleration) and calculates optimal <code>kP</code> and <code>kD</code> gains based on inertia.</li>
+  </ul>
+
+  <div class="callout callout-warning">
+    <h4>Data Logging</h4>
+    <p>MARSLib leverages AdvantageKit. All SysId tests automatically dump telemetry directly into the <code>.wpilog</code> file. MARSLib also features an Automated Log Uploader—if the robot detects an active internet connection, it will automatically push your SysId logs to the team's GitHub repository.</p>
+  </div>
+
+  <h2>2. Running SysId</h2>
+  <p>Swerve Drives require their own tuning sequence because the wheels must all be aligned correctly first. We map the controller bindings to automatically trigger SysId in <code>RobotBindings.java</code>.</p>
+  <pre><code class="language-java">// Inside configureDriverBindings()
+driver.a().whileTrue(swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+driver.b().whileTrue(swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+driver.x().whileTrue(swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+driver.y().whileTrue(swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kReverse));</code></pre>
+
+  <h2>3. Mechanism Integration</h2>
+  <p>MARSLib's structural <code>LinearMechanismIO</code> and <code>RotaryMechanismIO</code> abstractions automatically have SysId hooked into them! You just have to instantiate a <code>SysIdRoutine</code> object in the Subsystem and pass it your IO methods.</p>
+
+  <pre><code class="language-java">SysIdRoutine routine = new SysIdRoutine(
+  new SysIdRoutine.Config(),
+  new SysIdRoutine.Mechanism(
+    (Volts volts) -> io.setVoltage(volts.in(Volts)),
+    null, // AdvantageKit logs natively
+    this // The subsystem
+  )
+);</code></pre>
+
+  <div class="callout" style="border-left-color: var(--ai-cyan); background: rgba(41, 182, 246, 0.05);">
+    <h4 style="color: var(--ai-cyan);">Safety Notice</h4>
+    <p>Be extremely careful when running SysId on elevators or arms, as there are <strong>no soft limits</strong> enforced during SysId ramps (by definition, it disables PID restrictions).</p>
+  </div>
+
+  <h2>4. Analyzing the Log</h2>
+  <ol style="margin-bottom: 20px; padding-left: 30px; color: var(--text-secondary);">
+    <li style="margin-bottom: 15px;">Retrieve your <code>.wpilog</code> file from the USB drive or GitHub Actions.</li>
+    <li style="margin-bottom: 15px;">Open WPILib VSCode -> Start Tool -> <strong>SysId</strong>.</li>
+    <li style="margin-bottom: 15px;">Open the <code>.wpilog</code> file and select the mechanism under test.</li>
+    <li style="margin-bottom: 15px;">Drag your sliders to fit the feedback noise. The UI will instantly spit out your <code>kS</code>, <code>kV</code>, <code>kA</code>, and <code>kP</code> values!</li>
+  </ol>
+
+  <h2>5. Continuous SysId (Online Estimator)</h2>
+  <p>What if the robot learned its own constants while the driver was practicing? MARSLib features an <strong>Online Feedforward Estimator</strong> built directly into its subsystems.</p>
+
+  <p>A zero-allocation, sliding-window Ordinary Least Squares (OLS) regression algorithm continuously monitors mechanism telemetry during normal Teleop driving. It dynamically computes empirical <code>kV</code> and <code>kA</code> constants in zero-GC real-time.</p>
+
+  <pre><code class="language-java">// Inside periodic()
+double currentVelocity = inputs.velocityRadPerSec;
+double currentAccel = (currentVelocity - lastVelocity) / 0.020;
+estimator.addMeasurement(inputs.appliedVolts, currentVelocity, currentAccel);</code></pre>
+</main>
+
+
+
+
+
+
+</div></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/MARSLib/tutorial-getting-started">Getting Started</a></li><li class="footer__item"><a class="footer__link-item" href="/MARSLib/tutorials">All Tutorials</a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://www.marsfirst.org" target="_blank" rel="noopener noreferrer" class="footer__link-item">MARS Website<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a href="https://www.firsthalloffame.org" target="_blank" rel="noopener noreferrer" class="footer__link-item">Hall of Fame<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/MARSLib/standards">Core Standards</a></li><li class="footer__item"><a href="https://github.com/MARSProgramming/MARSLib" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 Mountaineer Area RoboticS — FRC Team 2614. Built with Docusaurus.</div></div></div></footer></div>
+</body>
+</html>

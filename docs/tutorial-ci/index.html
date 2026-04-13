@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="plugin-pages plugin-id-default" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.10.0">
+<title data-rh="true">Tutorial Ci | MARSLib</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://MARSProgramming.github.io/MARSLib/tutorial-ci"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docusaurus_tag" content="default"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docsearch:docusaurus_tag" content="default"><meta data-rh="true" property="og:title" content="Tutorial Ci | MARSLib"><link data-rh="true" rel="icon" href="/MARSLib/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://MARSProgramming.github.io/MARSLib/tutorial-ci"><link data-rh="true" rel="alternate" href="https://MARSProgramming.github.io/MARSLib/tutorial-ci" hreflang="en"><link data-rh="true" rel="alternate" href="https://MARSProgramming.github.io/MARSLib/tutorial-ci" hreflang="x-default"><link rel="alternate" type="application/rss+xml" href="/MARSLib/blog/rss.xml" title="MARSLib RSS Feed">
+<link rel="alternate" type="application/atom+xml" href="/MARSLib/blog/atom.xml" title="MARSLib Atom Feed">
+
+
+
+
+
+<script src="/MARSLib/assets/js/common.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js" async></script><link rel="stylesheet" href="/MARSLib/assets/css/styles.cd35f838.css">
+<script src="/MARSLib/assets/js/runtime~main.1a2b5cb3.js" defer="defer"></script>
+<script src="/MARSLib/assets/js/main.6ea7691a.js" defer="defer"></script>
+</head>
+<body>
+<svg style="display: none;"><defs>
+<symbol id="theme-svg-external-link" viewBox="0 0 24 24"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"/></symbol>
+</defs></svg>
+<script>document.documentElement.setAttribute("data-theme","dark"),document.documentElement.setAttribute("data-theme-choice","dark"),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><div class="starsContainer_N5ii"><div class="stars_rEkM"></div></div><div role="region" aria-label="Skip to main content"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="theme-layout-navbar navbar navbar--fixed-top"><div class="navbar__inner"><div class="theme-layout-navbar-left navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/MARSLib/"><div class="navbar__logo"><img src="/MARSLib/assets/mars-logo.png" alt="MARS Logo" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="/MARSLib/assets/mars-logo.png" alt="MARS Logo" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">MARSLib</b></a><a class="navbar__item navbar__link" href="/MARSLib/tutorials">Tutorials</a><a class="navbar__item navbar__link" href="/MARSLib/standards">Core Standards</a><a class="navbar__item navbar__link" href="/MARSLib/javadoc/index.html">API Reference</a></div><div class="theme-layout-navbar-right navbar__items navbar__items--right"><a href="https://github.com/MARSProgramming/MARSLib" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a><div class="navbarSearchContainer_Bca1"><div class="navbar__search searchBarContainer_NW3z" dir="ltr"><input placeholder="Search" aria-label="Search" class="navbar__search-input searchInput_YFbd" value=""><div class="loadingRing_RJI3 searchBarLoadingRing_YnHq"><div></div><div></div><div></div><div></div></div></div></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="theme-layout-main main-wrapper mainWrapper_z2l0"><div class="legacy-mars"><div>
+
+
+
+<main class="container" style="padding-top: 100px; padding-bottom: 80px;">
+  <div style="text-align: center; margin-bottom: 40px;">
+    <a href="/MARSLib/tutorials" class="back-link">← BACK TO TUTORIALS</a>
+    <h1>Intro to CI/CD &amp; Testing</h1>
+  </div>
+
+  <p>If you're new to software engineering, you might think the only way to know if your code works is to put the robot on a carpet, cross your fingers, and hit "Enable". In reality, the professional software industry—and MARSLib—uses a system called <strong>CI/CD</strong> to guarantee our code is safe <em>before</em> we ever touch the physical machine.</p>
+
+  <h2>What is CI/CD?</h2>
+  <p><strong>Continuous Integration (CI)</strong> is the practice of automatically testing and verifying every piece of code you write the moment you attempt to save or share it with the team.</p>
+
+  <p>Instead of manually checking for misspelled variables, messy brackets, or logic flaws, the CI <strong>Pipeline</strong> is a robotic supervisor living in GitHub. Every time you push a file, the CI pipeline boots up an isolated computer in the cloud and runs a strict checklist on your work. Only if everything passes perfectly will your code be officially integrated into MARSLib.</p>
+
+  <h2>Why is CI Important for FRC?</h2>
+  <ul>
+    <li><strong>Robot Safety:</strong> If you accidentally type <code>1.0</code> instead of <code>0.1</code> for motor speed, the CI simulator will detect an unsafe launch trajectory before the real robot launches a ball into the ceiling.</li>
+    <li><strong>Zero Memory Leaks:</strong> The CI ensures no "garbage memory" allocations occur, meaning our 20ms physics loops never lag during a World Championship match.</li>
+    <li><strong>Readability:</strong> A developer working at 3 AM might forget to indent their code cleanly. CI automatically reformats it so the whole team can read it easily the next day.</li>
+  </ul>
+
+  <h2>How MARSLib Implements CI</h2>
+  <p>When you run <code>./gradlew build</code> locally, or push to GitHub, you trigger our rigorous pipeline. This is what it checks:</p>
+
+  <h3>1. Spotless Formatting</h3>
+  <p>Spotless is our automated grammar checker. It forces everything (brackets, spacing, import lines) into the strict Google Java format. If your code is messy, you can run <code>./gradlew spotlessApply</code> to have it instantly fixed.</p>
+
+  <h3>2. PMD Static Analysis</h3>
+  <p>PMD is a tool that reads your raw code looking for <strong>code smells</strong>. Did you create an array but never use it? Did you leave a variable open that causes a memory leak? PMD catches it and instantly fails your build until you fix it.</p>
+
+  <h3>3. Dyn4j Physics Testing</h3>
+  <p>The crown jewel of our pipeline is deterministic physics testing. We have over 89 automated tests (JUnit) that run against <strong>Dyn4j</strong>—a 2D collision engine. Rather than "mocking" or pretending the code worked, these CI tests actually spawn virtual swerve modules, drop a virtual ball, and run your Autonomous route to ensure physics limits (like motor stall torque) aren't violated.</p>
+
+  <div class="callout">
+    <h4>You are supported!</h4>
+    <p>Don't be afraid of the CI failing your code—it's supposed to! A failed CI run isn't a bad grade; it is a vital safety net ensuring you feel confident when deploying your logic to the actual 2614 competition robot.</p>
+  </div>
+</main>
+
+
+
+
+</div></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/MARSLib/tutorial-getting-started">Getting Started</a></li><li class="footer__item"><a class="footer__link-item" href="/MARSLib/tutorials">All Tutorials</a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://www.marsfirst.org" target="_blank" rel="noopener noreferrer" class="footer__link-item">MARS Website<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a href="https://www.firsthalloffame.org" target="_blank" rel="noopener noreferrer" class="footer__link-item">Hall of Fame<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/MARSLib/standards">Core Standards</a></li><li class="footer__item"><a href="https://github.com/MARSProgramming/MARSLib" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 Mountaineer Area RoboticS — FRC Team 2614. Built with Docusaurus.</div></div></div></footer></div>
+</body>
+</html>
