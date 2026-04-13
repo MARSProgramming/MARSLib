@@ -792,7 +792,7 @@ publishing {
             groupId = 'com.marslib'
             artifactId = 'MARSLib'
             version = '1.0.0'
-            
+
             pom {
                 name = 'MARSLib'
                 description = 'Zero-allocation FRC framework with dyn4j and AdvantageKit'
