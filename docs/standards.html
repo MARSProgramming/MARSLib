@@ -111,8 +111,8 @@ public void runIntake(double voltageOut) { ... }</code></pre>
     <h2>Zero-Allocation Architecture</h2>
     <p>Hot-paths (the 20ms and 4ms loops) must never use the <code>new</code> keyword to avoid JVM GC stalls. You must use globally instantiated Ephemeral Structs to proxy hardware parameters mathematically.</p>
     
-    <div class="callout" style="background: rgba(41, 182, 246, 0.05); border-left: 4px solid var(--ai-cyan); padding: 24px; border-radius: 8px; margin: 30px 0;">
-      <h4 style="font-family: 'Orbitron', sans-serif; color: var(--ai-cyan); margin-bottom: 10px; font-size: 1rem;">Mathematical Mutation</h4>
+    <div class="callout">
+      <h4>Mathematical Mutation</h4>
       <p>Do not pass structural pointers to objects that must preserve historic state (e.g. PID integrators). Always use <code>.clone()</code> if a downstream pipeline requires an immutable snapshot of an Ephemeral Struct.</p>
     </div>
   </section>
