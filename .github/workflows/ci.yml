@@ -41,9 +41,6 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-    - name: Compile
-      run: ./gradlew compileJava compileTestJava -Pskip-inspector-wrapper -Dorg.gradle.java.home=$JAVA_HOME
-
     - name: Build and Test with Coverage
       run: ./gradlew build jacocoTestReport -Pskip-inspector-wrapper -Dorg.gradle.java.home=$JAVA_HOME
 
@@ -79,6 +76,8 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: 20
+        cache: 'npm'
+        cache-dependency-path: website/package-lock.json
 
     - name: Build Docusaurus Website
       if: github.ref == 'refs/heads/master' && github.event_name == 'push'

@@ -219,7 +219,9 @@ task generateDocs {
         println "Calculating documentation statistics..."
 
         // 1. Source Files Count
-        def sourceFiles = fileTree("src/main/java").matching { include "**/*.java" }.files.size()
+        def sourceFiles = 0
+        def mainSrcDirVar = new File(projectDir, "src/main/java")
+        if (mainSrcDirVar.exists()) mainSrcDirVar.eachFileRecurse(groovy.io.FileType.FILES) { if (it.name.endsWith('.java')) sourceFiles++ }
 
         // 2. Unit Test Count (Parsing JUnit XML results)
         def testCount = 0
@@ -640,20 +642,25 @@ tasks.named('checkstyleTest') { enabled = false }
 task updateDocsCoverage {
     description = "Updates the docs/index.html file with freshly generated JaCoCo coverage metrics"
     dependsOn jacocoTestReport
-    notCompatibleWithConfigurationCache("Accesses project object via fileTree at execution time")
 
+    def projectDirCaptured = projectDir
     doLast {
-        def csvFile = file("build/reports/jacoco/test/jacocoTestReport.csv")
+        def csvFile = new File(projectDirCaptured, "build/reports/jacoco/test/jacocoTestReport.csv")
         if (!csvFile.exists()) {
             println "No jacocoTestReport.csv found, skipping documentation update."
             return
         }
 
-        def sourceFiles = fileTree("src/main/java").matching { include "**/*.java" }.files.size()
-        def testFiles = fileTree("src/test/java").matching { include "**/*.java" }.files.size()
+        def sourceFiles = 0
+        def srcDirVar = new File(projectDirCaptured, "src/main/java")
+        if (srcDirVar.exists()) srcDirVar.eachFileRecurse(groovy.io.FileType.FILES) { if (it.name.endsWith('.java')) sourceFiles++ }
+
+        def testFiles = 0
+        def testDirVar = new File(projectDirCaptured, "src/test/java")
+        if (testDirVar.exists()) testDirVar.eachFileRecurse(groovy.io.FileType.FILES) { if (it.name.endsWith('.java')) testFiles++ }
 
         def testCount = 0
-        def testResultsDir = file("build/test-results/test")
+        def testResultsDir = new File(projectDirCaptured, "build/test-results/test")
         if (testResultsDir.exists()) {
             testResultsDir.listFiles().each { f ->
                 if (f.name.endsWith(".xml")) {
