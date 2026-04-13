@@ -913,3 +913,33 @@ pre code { background: transparent; padding: 0; color: #e8e8e8; font-size: 0.9re
 .code-header { font-family: 'Orbitron', sans-serif; padding: 12px 20px; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; border-bottom: 1px solid var(--border); }
 .code-bad .code-header { background: rgba(179, 36, 22, 0.1); color: var(--mars-red-light); border-bottom-color: rgba(179, 36, 22, 0.3); }
 .code-good .code-header { background: rgba(41, 182, 246, 0.1); color: var(--ai-cyan); border-bottom-color: rgba(41, 182, 246, 0.3); }
+
+/* ===== Code Blocks (Syntax Highlighting) ===== */
+pre { 
+  background: #111; 
+  border: 1px solid var(--border); 
+  padding: 20px; 
+  border-radius: 12px; 
+  overflow-x: auto; 
+  margin-bottom: 30px; 
+}
+pre code { 
+  background: transparent !important; 
+  padding: 0 !important; 
+  color: #e8e8e8; 
+  font-size: 0.9rem; 
+  font-family: 'JetBrains Mono', monospace !important;
+}
+
+/* ===== Simulation Callouts and Inputs ===== */
+.sim-panel {
+  background: #050505; 
+  border: 1px solid var(--border); 
+  border-radius: 12px; 
+  padding: 20px;
+  margin: 40px 0;
+}
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--ai-cyan);
+}
