@@ -9,7 +9,6 @@ package com.marslib.hmi;
 import com.marslib.faults.MARSFaultManager;
 import com.marslib.power.MARSPowerManager;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.PowerConstants;
 
 /** Centralized manager for robot LED logic, translating robot states into visual feedback. */
 public class LEDManager extends SubsystemBase {
@@ -25,7 +24,7 @@ public class LEDManager extends SubsystemBase {
   public void periodic() {
     if (MARSFaultManager.hasActiveCriticalFaults()) {
       io.setCriticalFaultFlash();
-    } else if (powerManager.getVoltage() < PowerConstants.WARNING_VOLTAGE) {
+    } else if (powerManager.isWarning()) {
       io.setLoadSheddingColors();
     } else {
       io.setDefaultColors();

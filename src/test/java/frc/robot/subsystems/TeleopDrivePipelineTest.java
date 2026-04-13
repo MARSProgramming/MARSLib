@@ -34,7 +34,14 @@ public class TeleopDrivePipelineTest {
   @Test
   public void testDeadbandFiltersSmallInputs() {
     ChassisSpeeds speeds = new ChassisSpeeds();
-    TeleopDriveMath.computeFieldRelativeSpeeds(0.05, -0.05, 0.03, false, speeds);
+    TeleopDriveMath.computeFieldRelativeSpeeds(
+        0.05,
+        -0.05,
+        0.03,
+        SwerveConstants.MAX_LINEAR_SPEED_MPS,
+        SwerveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC,
+        false,
+        speeds);
     assertEquals(0.0, speeds.vxMetersPerSecond, 0.001, "VX should be 0 within deadband");
     assertEquals(0.0, speeds.vyMetersPerSecond, 0.001, "VY should be 0 within deadband");
     assertEquals(0.0, speeds.omegaRadiansPerSecond, 0.001, "Omega should be 0 within deadband");
@@ -44,7 +51,14 @@ public class TeleopDrivePipelineTest {
   @Test
   public void testZeroInputProducesZeroOutput() {
     ChassisSpeeds speeds = new ChassisSpeeds();
-    TeleopDriveMath.computeFieldRelativeSpeeds(0.0, 0.0, 0.0, false, speeds);
+    TeleopDriveMath.computeFieldRelativeSpeeds(
+        0.0,
+        0.0,
+        0.0,
+        SwerveConstants.MAX_LINEAR_SPEED_MPS,
+        SwerveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC,
+        false,
+        speeds);
     assertEquals(0.0, speeds.vxMetersPerSecond, 0.001);
     assertEquals(0.0, speeds.vyMetersPerSecond, 0.001);
     assertEquals(0.0, speeds.omegaRadiansPerSecond, 0.001);
@@ -62,7 +76,14 @@ public class TeleopDrivePipelineTest {
   @Test
   public void testFullForwardBlueAlliance() {
     ChassisSpeeds speeds = new ChassisSpeeds();
-    TeleopDriveMath.computeFieldRelativeSpeeds(-1.0, 0.0, 0.0, false, speeds);
+    TeleopDriveMath.computeFieldRelativeSpeeds(
+        -1.0,
+        0.0,
+        0.0,
+        SwerveConstants.MAX_LINEAR_SPEED_MPS,
+        SwerveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC,
+        false,
+        speeds);
     assertTrue(
         speeds.vxMetersPerSecond > 0,
         "Full forward on Blue should produce positive VX, got " + speeds.vxMetersPerSecond);
@@ -77,7 +98,14 @@ public class TeleopDrivePipelineTest {
   @Test
   public void testFullForwardRedAllianceFlipsSign() {
     ChassisSpeeds speeds = new ChassisSpeeds();
-    TeleopDriveMath.computeFieldRelativeSpeeds(-1.0, 0.0, 0.0, true, speeds);
+    TeleopDriveMath.computeFieldRelativeSpeeds(
+        -1.0,
+        0.0,
+        0.0,
+        SwerveConstants.MAX_LINEAR_SPEED_MPS,
+        SwerveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC,
+        true,
+        speeds);
     assertTrue(
         speeds.vxMetersPerSecond < 0,
         "Full forward on Red should produce negative VX (flipped), got "
@@ -96,9 +124,23 @@ public class TeleopDrivePipelineTest {
   @Test
   public void testAllianceFlipAffectsBothAxes() {
     ChassisSpeeds blue = new ChassisSpeeds();
-    TeleopDriveMath.computeFieldRelativeSpeeds(-1.0, -1.0, 0.0, false, blue);
+    TeleopDriveMath.computeFieldRelativeSpeeds(
+        -1.0,
+        -1.0,
+        0.0,
+        SwerveConstants.MAX_LINEAR_SPEED_MPS,
+        SwerveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC,
+        false,
+        blue);
     ChassisSpeeds red = new ChassisSpeeds();
-    TeleopDriveMath.computeFieldRelativeSpeeds(-1.0, -1.0, 0.0, true, red);
+    TeleopDriveMath.computeFieldRelativeSpeeds(
+        -1.0,
+        -1.0,
+        0.0,
+        SwerveConstants.MAX_LINEAR_SPEED_MPS,
+        SwerveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC,
+        true,
+        red);
 
     assertEquals(
         -blue.vxMetersPerSecond,
@@ -116,9 +158,23 @@ public class TeleopDrivePipelineTest {
   @Test
   public void testAllianceFlipDoesNotAffectRotation() {
     ChassisSpeeds blue = new ChassisSpeeds();
-    TeleopDriveMath.computeFieldRelativeSpeeds(0.0, 0.0, 1.0, false, blue);
+    TeleopDriveMath.computeFieldRelativeSpeeds(
+        0.0,
+        0.0,
+        1.0,
+        SwerveConstants.MAX_LINEAR_SPEED_MPS,
+        SwerveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC,
+        false,
+        blue);
     ChassisSpeeds red = new ChassisSpeeds();
-    TeleopDriveMath.computeFieldRelativeSpeeds(0.0, 0.0, 1.0, true, red);
+    TeleopDriveMath.computeFieldRelativeSpeeds(
+        0.0,
+        0.0,
+        1.0,
+        SwerveConstants.MAX_LINEAR_SPEED_MPS,
+        SwerveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC,
+        true,
+        red);
 
     assertEquals(
         blue.omegaRadiansPerSecond,
@@ -138,7 +194,14 @@ public class TeleopDrivePipelineTest {
   @Test
   public void testCubicScalingAtHalfDeflection() {
     ChassisSpeeds speeds = new ChassisSpeeds();
-    TeleopDriveMath.computeFieldRelativeSpeeds(-0.5, 0.0, 0.0, false, speeds);
+    TeleopDriveMath.computeFieldRelativeSpeeds(
+        -0.5,
+        0.0,
+        0.0,
+        SwerveConstants.MAX_LINEAR_SPEED_MPS,
+        SwerveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC,
+        false,
+        speeds);
     // After deadband rescale: (-0.5 - (-0.1)) / (1.0 - 0.1) = -0.4/0.9 ≈ -0.4444
     double postDeadband = MathUtil.applyDeadband(-0.5, TeleopDriveMath.DEADBAND);
     double expected = Math.pow(Math.abs(postDeadband), 3.0) * SwerveConstants.MAX_LINEAR_SPEED_MPS;

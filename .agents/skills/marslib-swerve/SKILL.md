@@ -25,15 +25,15 @@ The swerve drivetrain is split across 10 files in `com.marslib.swerve`:
 | `TeleopDriveMath.java` | Pure-function joystick→ChassisSpeeds math (deadband, cube, scale, alliance flip) |
 
 ### Dependency Injection
+All IO layers require an injected `SwerveConfig` record — **never** access `frc.robot.*` constants from `com.marslib`.
 ```java
 // In RobotContainer:
+SwerveConfig config = new SwerveConfig(...); // All hardware constants defined here
 SwerveModule[] modules = new SwerveModule[] {
-    new SwerveModule(0, new SwerveModuleIOTalonFX(0)),  // or IOSim
-    new SwerveModule(1, new SwerveModuleIOTalonFX(1)),
-    new SwerveModule(2, new SwerveModuleIOTalonFX(2)),
-    new SwerveModule(3, new SwerveModuleIOTalonFX(3))
+    new SwerveModule(0, new SwerveModuleIOTalonFX(driveId, turnId, canbus, config)),
+    // ...
 };
-SwerveDrive drive = new SwerveDrive(modules, new GyroIOPigeon2(), powerManager);
+SwerveDrive drive = new SwerveDrive(config, modules, new GyroIOPigeon2(gyroId, canbus, config), powerManager);
 drive.configurePathPlanner(); // MUST be called separately — not in constructor
 ```
 
@@ -57,13 +57,17 @@ To add a new odometry source (e.g., VIO SLAM from `MARSVision`):
 2. Tune the standard deviations in `Constants.VisionConstants` — higher std devs = less trust in vision.
 3. See the `marslib-vision` skill for the vision pipeline details.
 
-## 4. Constants
-All drivetrain constants live in `frc.robot.SwerveConstants`:
-- `MODULE_LOCATIONS` — Translation2d array defining module positions relative to robot center
-- `DRIVE_GEAR_RATIO`, `TURN_GEAR_RATIO` — Gear reductions
-- `WHEEL_RADIUS_METERS` — Wheel radius for distance calculation
-- `MAX_LINEAR_SPEED_MPS` — Maximum achievable speed
-- `ROBOT_MASS_KG`, `ROBOT_MOI_KG_M2` — For PathPlanner config
+## 4. Configuration (SwerveConfig)
+All drivetrain constants are injected via the `com.marslib.swerve.SwerveConfig` record:
+- `moduleLocations()` — Translation2d array defining module positions relative to robot center
+- `driveGearRatio()`, `turnGearRatio()` — Gear reductions
+- `wheelRadiusMeters()` — Wheel radius for distance calculation
+- `maxLinearSpeedMps()`, `maxAngularSpeedRadPerSec()` — Maximum achievable speeds
+- `robotMassKg()`, `robotMoiKgM2()` — For PathPlanner config
+- `driveStatorCurrentLimit()`, `turnStatorCurrentLimit()` — Motor protection
+- `telemetryHz()`, `odometryHz()` — CAN bus update frequencies
+
+**CRITICAL**: `frc.robot.SwerveConstants` is the application-layer file that constructs the `SwerveConfig` record. The `com.marslib.swerve` package has ZERO imports from `frc.robot`.
 
 ## 5. Telemetry
 - `Swerve/Pose` — Estimated Pose2d

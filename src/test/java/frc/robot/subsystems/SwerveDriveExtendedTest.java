@@ -3,8 +3,10 @@ package frc.robot.subsystems;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.marslib.power.MARSPowerManager;
+import com.marslib.power.PowerConfig;
 import com.marslib.power.PowerIO;
 import com.marslib.swerve.GyroIO;
+import com.marslib.swerve.SwerveConfig;
 import com.marslib.swerve.SwerveDrive;
 import com.marslib.swerve.SwerveModule;
 import com.marslib.swerve.SwerveModuleIOSim;
@@ -35,12 +37,19 @@ public class SwerveDriveExtendedTest {
         }
       };
 
+  private SwerveConfig swerveConfig;
+  private PowerConfig powerConfig;
+
   @BeforeEach
   public void setUp() {
     MARSTestHarness.reset();
+
+    swerveConfig = MARSTestHarness.createSwerveConfig();
+    powerConfig = MARSTestHarness.createPowerConfig();
+
     SwerveModule[] modules = new SwerveModule[4];
     for (int i = 0; i < 4; i++) {
-      modules[i] = new SwerveModule(i, new SwerveModuleIOSim(i));
+      modules[i] = new SwerveModule(i, new SwerveModuleIOSim(i), swerveConfig);
     }
 
     PowerIO spoofedVoltageIO =
@@ -51,7 +60,9 @@ public class SwerveDriveExtendedTest {
           }
         };
 
-    swerveDrive = new SwerveDrive(modules, mockGyro, new MARSPowerManager(spoofedVoltageIO));
+    swerveDrive =
+        new SwerveDrive(
+            modules, mockGyro, new MARSPowerManager(spoofedVoltageIO, powerConfig), swerveConfig);
   }
 
   @AfterEach

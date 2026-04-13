@@ -11,7 +11,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.simulation.SimHooks;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.constants.PowerConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -37,18 +36,20 @@ public class SwerveDriveTest {
             inputs.isBrownedOut = simulatedVoltageOverride < 6.0;
           }
         };
-    spoofedPowerManager = new MARSPowerManager(spoofedVoltageIO);
+    spoofedPowerManager =
+        new MARSPowerManager(spoofedVoltageIO, MARSTestHarness.createPowerConfig());
 
     gyroIOSim = new GyroIOSim();
     SwerveModule[] modules = new SwerveModule[4];
     simIOs = new SwerveModuleIOSim[4];
 
+    SwerveConfig config = MARSTestHarness.createSwerveConfig();
     for (int i = 0; i < 4; i++) {
       simIOs[i] = new SwerveModuleIOSim(i);
-      modules[i] = new SwerveModule(i, simIOs[i]);
+      modules[i] = new SwerveModule(i, simIOs[i], config);
     }
 
-    swerveDrive = new SwerveDrive(modules, gyroIOSim, spoofedPowerManager);
+    swerveDrive = new SwerveDrive(modules, gyroIOSim, spoofedPowerManager, config);
   }
 
   @Test
@@ -82,8 +83,8 @@ public class SwerveDriveTest {
 
   @Test
   public void testLoadSheddingRestrictsKinematicsOutputs() {
-    // Drop voltage to trigger protective shutdown mode
-    simulatedVoltageOverride = PowerConstants.CRITICAL_VOLTAGE - 0.5;
+    // Drop voltage to trigger protective shutdown mode (below 6.0 in PowerConfig)
+    simulatedVoltageOverride = 5.5;
 
     // Command drive forward
     ChassisSpeeds targetSpeeds = new ChassisSpeeds(3.0, 0.0, 0.0);
@@ -135,12 +136,13 @@ public class SwerveDriveTest {
           }
         };
 
+    SwerveConfig config = MARSTestHarness.createSwerveConfig();
     SwerveModule[] mockModules = {
-      new SwerveModule(0, mockModuleIO), new SwerveModule(1, mockModuleIO),
-      new SwerveModule(2, mockModuleIO), new SwerveModule(3, mockModuleIO)
+      new SwerveModule(0, mockModuleIO, config), new SwerveModule(1, mockModuleIO, config),
+      new SwerveModule(2, mockModuleIO, config), new SwerveModule(3, mockModuleIO, config)
     };
 
-    SwerveDrive trustSwerve = new SwerveDrive(mockModules, mockGyro, spoofedPowerManager);
+    SwerveDrive trustSwerve = new SwerveDrive(mockModules, mockGyro, spoofedPowerManager, config);
 
     // 1. Nominal case: flat ground (0 deg tilt)
     mockPitch[0] = 0.0;

@@ -17,7 +17,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import frc.robot.constants.ModeConstants;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -27,6 +26,7 @@ import org.littletonrobotics.junction.Logger;
 public class SwerveOdometry {
   private final SwerveDrivePoseEstimator poseEstimator;
   private final SwerveDriveKinematics kinematics;
+  private final SwerveConfig config;
 
   // Reusable GC-free arrays for periodic loop to prevent massive RoboRIO heap churn
   private final SwerveModulePosition[] positionsForFrame =
@@ -48,8 +48,11 @@ public class SwerveOdometry {
   private final Rotation2d[] frameYawCache = new Rotation2d[] {new Rotation2d()};
 
   public SwerveOdometry(
-      SwerveDriveKinematics kinematics, SwerveModulePosition... initialPositions) {
+      SwerveDriveKinematics kinematics,
+      SwerveConfig config,
+      SwerveModulePosition... initialPositions) {
     this.kinematics = kinematics;
+    this.config = config;
     this.poseEstimator =
         new SwerveDrivePoseEstimator(kinematics, new Rotation2d(), initialPositions, new Pose2d());
   }
@@ -108,7 +111,7 @@ public class SwerveOdometry {
             kinematics.toChassisSpeeds(
                 modules[0].getLatestState(), modules[1].getLatestState(),
                 modules[2].getLatestState(), modules[3].getLatestState());
-        double dt = ModeConstants.LOOP_PERIOD_SECS;
+        double dt = config.loopPeriodSecs();
         frameYawRad = frameYawCache[0].getRadians() + wheelSpeeds.omegaRadiansPerSecond * dt;
       }
       frameYawCache[0] = Rotation2d.fromRadians(frameYawRad);

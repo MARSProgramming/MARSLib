@@ -78,6 +78,17 @@ Always call `MARSTestHarness.cleanup()` in `@AfterEach` to prevent WPILib from l
 5. Assert against physical positions, not command states — test what the mechanism actually did.
 6. For integration tests spanning multiple subsystems, see `RobotLifecycleTest` as the reference.
 
+### Rule E: Always Inject Configuration Records
+All IO layers are now **fully decoupled** from `frc.robot` application constants. When constructing subsystems in tests:
+- Use `MARSTestHarness.createSwerveConfig()` for swerve components
+- Use `MARSTestHarness.createPowerConfig()` for power manager
+- Use `MARSTestHarness.createVisionConfig()` for vision pipeline
+- `PowerIOSim` **requires** a `PowerConfig` parameter: `new PowerIOSim(MARSTestHarness.createPowerConfig())`
+- `SwerveModuleIOTalonFX` **requires** a `SwerveConfig` parameter
+- `GyroIOPigeon2` **requires** a `SwerveConfig` parameter
+
+**Never** reference `frc.robot.*` constants from within `com.marslib.*` test classes.
+
 ## 4. Test Categories
 
 | Type | Example | What It Catches |

@@ -17,7 +17,6 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.SwerveConstants;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -35,23 +34,24 @@ public final class SwerveAutoBuilder {
    */
   public static void configure(SwerveDrive drive) {
     try {
-      DCMotor gearbox = DCMotor.getKrakenX60(1).withReduction(SwerveConstants.DRIVE_GEAR_RATIO);
+      SwerveConfig swerveConfig = drive.getConfig();
+      DCMotor gearbox = DCMotor.getKrakenX60(1).withReduction(swerveConfig.driveGearRatio());
 
       ModuleConfig moduleConfig =
           new ModuleConfig(
-              SwerveConstants.WHEEL_RADIUS_METERS,
-              SwerveConstants.MAX_LINEAR_SPEED_MPS,
-              SwerveConstants.WHEEL_COF_STATIC,
+              swerveConfig.wheelRadiusMeters(),
+              swerveConfig.maxLinearSpeedMps(),
+              swerveConfig.wheelCOFStatic(),
               gearbox,
-              SwerveConstants.DRIVE_STATOR_CURRENT_LIMIT,
+              swerveConfig.driveStatorCurrentLimit(),
               1);
 
       RobotConfig config =
           new RobotConfig(
-              SwerveConstants.ROBOT_MASS_KG,
-              SwerveConstants.ROBOT_MOI_KG_M2,
+              swerveConfig.robotMassKg(),
+              swerveConfig.robotMoiKgM2(),
               moduleConfig,
-              SwerveConstants.MODULE_LOCATIONS);
+              swerveConfig.moduleLocations());
 
       AutoBuilder.configure(
           drive::getPose,
@@ -60,9 +60,8 @@ public final class SwerveAutoBuilder {
           (speeds, feedforwards) -> drive.runVelocity(speeds),
           new PPHolonomicDriveController(
               new PIDConstants(
-                  SwerveConstants.AUTO_TRANSLATION_KP, 0.0, SwerveConstants.AUTO_TRANSLATION_KD),
-              new PIDConstants(
-                  SwerveConstants.AUTO_ROTATION_KP, 0.0, SwerveConstants.AUTO_ROTATION_KD)),
+                  swerveConfig.autoTranslationKp(), 0.0, swerveConfig.autoTranslationKd()),
+              new PIDConstants(swerveConfig.autoRotationKp(), 0.0, swerveConfig.autoRotationKd())),
           config,
           () ->
               DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue)
@@ -88,13 +87,14 @@ public final class SwerveAutoBuilder {
   public static Command alignToPoint(SwerveDrive drive, Supplier<Pose2d> target) {
     return Commands.defer(
         () -> {
+          SwerveConfig swerveConfig = drive.getConfig();
           return AutoBuilder.pathfindToPose(
               target.get(),
               new PathConstraints(
-                  SwerveConstants.MAX_LINEAR_SPEED_MPS,
-                  SwerveConstants.MAX_LINEAR_SPEED_MPS * 0.7,
-                  SwerveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC,
-                  SwerveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC * 0.7),
+                  swerveConfig.maxLinearSpeedMps(),
+                  swerveConfig.maxLinearSpeedMps() * 0.7,
+                  swerveConfig.maxAngularSpeedRadPerSec(),
+                  swerveConfig.maxAngularSpeedRadPerSec() * 0.7),
               0.0);
         },
         Set.of(drive));

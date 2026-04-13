@@ -34,15 +34,17 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
   private final VoltageOut turnVoltageRequest = new VoltageOut(0.0);
 
   private final int odometryId;
+  private final SwerveConfig config;
 
-  public SwerveModuleIOTalonFX(int driveMotorId, int turnMotorId, String canbus) {
+  public SwerveModuleIOTalonFX(
+      int driveMotorId, int turnMotorId, String canbus, SwerveConfig config) {
     driveMotor = new TalonFX(driveMotorId, canbus);
     turnMotor = new TalonFX(turnMotorId, canbus);
+    this.config = config;
 
     TalonFXConfiguration driveConfig = new TalonFXConfiguration();
     driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    driveConfig.CurrentLimits.StatorCurrentLimit =
-        frc.robot.SwerveConstants.DRIVE_STATOR_CURRENT_LIMIT;
+    driveConfig.CurrentLimits.StatorCurrentLimit = config.driveStatorCurrentLimit();
     driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     driveConfig.CurrentLimits.SupplyCurrentLimit = 60.0;
     driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -50,8 +52,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
 
     TalonFXConfiguration turnConfig = new TalonFXConfiguration();
     turnConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    turnConfig.CurrentLimits.StatorCurrentLimit =
-        frc.robot.SwerveConstants.TURN_STATOR_CURRENT_LIMIT;
+    turnConfig.CurrentLimits.StatorCurrentLimit = config.turnStatorCurrentLimit();
     turnConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     turnConfig.CurrentLimits.SupplyCurrentLimit = 40.0;
     turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -65,7 +66,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     turnCurrent = turnMotor.getStatorCurrent();
 
     // Ensure these signals run at standard config frequency
-    double updateHz = frc.robot.constants.DriveConstants.TELEMETRY_HZ;
+    double updateHz = config.telemetryHz();
     driveVelocity.setUpdateFrequency(updateHz);
     turnVelocity.setUpdateFrequency(updateHz);
     driveAppliedVolts.setUpdateFrequency(updateHz);
@@ -76,7 +77,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     // Register position signals to Odometry thread
     odometryId =
         PhoenixOdometryThread.getInstance()
-            .registerModule(driveMotor.getPosition(), turnMotor.getPosition());
+            .registerModule(driveMotor.getPosition(), turnMotor.getPosition(), config.odometryHz());
 
     driveMotor.optimizeBusUtilization();
     turnMotor.optimizeBusUtilization();
@@ -98,11 +99,9 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     inputs.hasHardwareConnected = true; // Assume true if no error during refresh mapping
     // Convert from motor-domain (rotations) to output-shaft-domain (radians at the wheel)
     inputs.driveVelocityRadPerSec =
-        Units.rotationsToRadians(driveVelocity.getValueAsDouble())
-            / frc.robot.SwerveConstants.DRIVE_GEAR_RATIO;
+        Units.rotationsToRadians(driveVelocity.getValueAsDouble()) / config.driveGearRatio();
     inputs.turnVelocityRadPerSec =
-        Units.rotationsToRadians(turnVelocity.getValueAsDouble())
-            / frc.robot.SwerveConstants.TURN_GEAR_RATIO;
+        Units.rotationsToRadians(turnVelocity.getValueAsDouble()) / config.turnGearRatio();
     inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
     inputs.turnAppliedVolts = turnAppliedVolts.getValueAsDouble();
     inputs.driveCurrentAmps = driveCurrent.getValueAsDouble();
@@ -123,11 +122,9 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     // Convert from motor rotations to output-shaft radians (post-gearing)
     for (int i = 0; i < count; i++) {
       cachedDrivePositionsRad[i] =
-          Units.rotationsToRadians(data.drivePositions[i])
-              / frc.robot.SwerveConstants.DRIVE_GEAR_RATIO;
+          Units.rotationsToRadians(data.drivePositions[i]) / config.driveGearRatio();
       cachedTurnPositionsRad[i] =
-          Units.rotationsToRadians(data.turnPositions[i])
-              / frc.robot.SwerveConstants.TURN_GEAR_RATIO;
+          Units.rotationsToRadians(data.turnPositions[i]) / config.turnGearRatio();
       cachedTimestamps[i] = data.timestamps[i];
     }
 

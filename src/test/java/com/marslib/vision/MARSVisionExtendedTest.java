@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.marslib.swerve.GyroIO;
+import com.marslib.swerve.SwerveConfig;
 import com.marslib.swerve.SwerveDrive;
 import com.marslib.swerve.SwerveModule;
 import com.marslib.testing.MARSTestHarness;
@@ -25,16 +26,21 @@ public class MARSVisionExtendedTest {
     MARSTestHarness.reset();
 
     // Setup SwerveDrive dependencies
+    SwerveConfig swerveConfig = MARSTestHarness.createSwerveConfig();
     SwerveModule[] modules = new SwerveModule[4];
     for (int i = 0; i < 4; i++) {
-      modules[i] = new SwerveModule(i, new com.marslib.swerve.SwerveModuleIOSim(i));
+      modules[i] = new SwerveModule(i, new com.marslib.swerve.SwerveModuleIOSim(i), swerveConfig);
     }
     com.marslib.power.MARSPowerManager powerManager =
-        new com.marslib.power.MARSPowerManager(new com.marslib.power.PowerIO() {});
+        new com.marslib.power.MARSPowerManager(
+            new com.marslib.power.PowerIO() {}, MARSTestHarness.createPowerConfig());
 
-    swerveDrive = new SwerveDrive(modules, new com.marslib.swerve.GyroIOSim(), powerManager);
+    swerveDrive =
+        new SwerveDrive(modules, new com.marslib.swerve.GyroIOSim(), powerManager, swerveConfig);
     mockIO = new MockAprilTagIO();
-    vision = new MARSVision(swerveDrive, List.of(mockIO), List.of());
+    vision =
+        new MARSVision(
+            swerveDrive, List.of(mockIO), List.of(), MARSTestHarness.createVisionConfig());
   }
 
   @Test
@@ -114,15 +120,19 @@ public class MARSVisionExtendedTest {
           }
         };
 
+    SwerveConfig config = MARSTestHarness.createSwerveConfig();
     SwerveModule[] modules = new SwerveModule[4];
     for (int i = 0; i < 4; i++) {
-      modules[i] = new SwerveModule(i, new com.marslib.swerve.SwerveModuleIOSim(i));
+      modules[i] = new SwerveModule(i, new com.marslib.swerve.SwerveModuleIOSim(i), config);
     }
     com.marslib.power.MARSPowerManager powerManager =
-        new com.marslib.power.MARSPowerManager(new com.marslib.power.PowerIO() {});
+        new com.marslib.power.MARSPowerManager(
+            new com.marslib.power.PowerIO() {}, MARSTestHarness.createPowerConfig());
 
-    SwerveDrive shockSwerve = new SwerveDrive(modules, shockGyro, powerManager);
-    MARSVision shockVision = new MARSVision(shockSwerve, List.of(mockIO), List.of());
+    SwerveDrive shockSwerve = new SwerveDrive(modules, shockGyro, powerManager, config);
+    MARSVision shockVision =
+        new MARSVision(
+            shockSwerve, List.of(mockIO), List.of(), MARSTestHarness.createVisionConfig());
 
     // Estable base
     shockVision.periodic();

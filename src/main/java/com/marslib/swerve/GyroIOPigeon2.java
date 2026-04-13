@@ -35,7 +35,7 @@ public class GyroIOPigeon2 implements GyroIO {
    * @param canId The CAN ID of the Pigeon2.
    * @param canbus The CAN bus name (e.g. "rio" or "canivore").
    */
-  public GyroIOPigeon2(int canId, String canbus) {
+  public GyroIOPigeon2(int canId, String canbus, SwerveConfig config) {
     pigeon = new Pigeon2(canId, canbus);
 
     yaw = pigeon.getYaw();
@@ -45,12 +45,12 @@ public class GyroIOPigeon2 implements GyroIO {
     pitchVelocity = pigeon.getAngularVelocityXWorld();
     rollVelocity = pigeon.getAngularVelocityYWorld();
 
-    yawVelocity.setUpdateFrequency(100.0);
-    pitchVelocity.setUpdateFrequency(100.0);
-    rollVelocity.setUpdateFrequency(100.0);
+    yawVelocity.setUpdateFrequency(config.telemetryHz());
+    pitchVelocity.setUpdateFrequency(config.telemetryHz());
+    rollVelocity.setUpdateFrequency(config.telemetryHz());
     // yaw frequency is managed by the OdometryThread
 
-    PhoenixOdometryThread.getInstance().registerGyro(yaw);
+    PhoenixOdometryThread.getInstance().registerGyro(yaw, config.odometryHz());
 
     pigeon.optimizeBusUtilization();
   }

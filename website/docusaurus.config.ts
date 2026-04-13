@@ -43,10 +43,22 @@ const config: Config = {
           editUrl: 'https://github.com/MARSProgramming/MARSLib/tree/master/website/',
         },
         theme: {
-          customCss: './src/css/custom.css',
+          customCss: ['./src/css/custom.css', './src/css/legacy.css'],
         },
       } satisfies Preset.Options,
     ],
+  ],
+
+  scripts: [
+    '/MARSLib/assets/js/common.js', // Interactive UI features from legacy
+    {
+      src: 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js',
+      async: true,
+    },
+  ],
+
+  clientModules: [
+    './src/mermaidInit.ts',
   ],
 
   plugins: [

@@ -1,0 +1,90 @@
+import React, { useEffect } from 'react';
+import Layout from '@theme/Layout';
+
+export default function TutorialVision() {
+  return (
+    <Layout title="Tutorial Vision">
+      <div className="legacy-mars">
+        <div dangerouslySetInnerHTML={{ __html: `
+
+
+
+<main class="container" style="padding-top: 100px; padding-bottom: 80px;">
+  <div style="text-align: center; margin-bottom: 40px;">
+    <a href="/MARSLib/tutorials" class="back-link">← BACK TO TUTORIALS</a>
+    <h1>Vision Fusion & Filtration</h1>
+  </div>
+
+  <p>In the FRC 2026: <strong>REBUILT</strong> game, absolute field localization is critical. MARSLib's <code>MARSVision</code> subsystem combines data from multiple cameras and strictly filters out "hallucinations" using techniques pioneered by elite teams.</p>
+
+  <h2>1. Strict Rejection Filters</h2>
+  <p>Vision poses are frequently wrong during high-speed gameplay. Before a measurement reached the Pose Estimator, it must survive five strict boundary checks:</p>
+  <ul style="margin-bottom: 20px; padding-left: 30px; color: var(--text-secondary);">
+    <li style="margin-bottom: 15px;"><strong>Z-Height Hallucinations:</strong> If the pose estimates the robot is flying (Z > 0.5m), it's rejected.</li>
+    <li style="margin-bottom: 15px;"><strong>Out of Bounds:</strong> If the pose is tracked outside the physical field, it's rejected.</li>
+    <li style="margin-bottom: 15px;"><strong>Motion Blur:</strong> If the gyro reports > 120&deg;/s yaw rate, vision is entirely blocked.</li>
+    <li style="margin-bottom: 15px;"><strong>Beaching (Pitch/Roll):</strong> If you ride over an obstacle and tilt > 15&deg;, the pose is rejected.</li>
+    <li style="margin-bottom: 15px;"><strong>Ambiguity:</strong> Low quality single-tag solutions are discarded.</li>
+  </ul>
+
+  <!-- Interactive Vision Simulation Demo -->
+  <div class="simulator-container" style="background:#050505; border: 1px solid var(--border); border-radius:12px; padding:24px; margin:40px 0; box-shadow: inset 0 0 40px rgba(0,0,0,0.8);">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+      <div>
+        <h3 style="margin:0; color:white; font-family:'Orbitron';">Interactive Vision Trust Simulator</h3>
+        <p style="margin:0; font-size:0.9rem; color:var(--text-secondary);">Visualize StdDev scaling and rejection filters in real time.</p>
+      </div>
+    </div>
+    
+    <canvas id="visionCanvas" width="800" height="400" style="width:100%; height:400px; background:#0a0a0a; border-radius:12px; border: 1px solid #333; cursor: crosshair;"></canvas>
+    
+    <div style="display:flex; gap:20px; margin-top:20px; flex-wrap: wrap;">
+      <div style="flex:1; min-width:180px;">
+        <label style="color:var(--text-secondary); font-size:0.9rem; font-family:'Orbitron';">Tags Visible: <span id="tagDisplay" style="color:var(--ai-cyan);">1 Tag</span></label>
+        <input type="range" id="tagCount" min="1" max="2" value="1" step="1" autocomplete="off" style="width:100%;">
+      </div>
+      <div style="flex:1; min-width:180px;">
+        <label style="color:var(--text-secondary); font-size:0.9rem; font-family:'Orbitron';">Robot Spin Rate: <span id="yawDisplay" style="color:var(--ai-cyan);">0&deg;/s</span></label>
+        <input type="range" id="yawRate" min="0" max="250" value="0" step="5" autocomplete="off" style="width:100%;">
+      </div>
+      <div style="flex:1; min-width:180px;">
+        <label style="color:var(--text-secondary); font-size:0.9rem; font-family:'Orbitron';">Robot Pitch (Tilt): <span id="tiltDisplay" style="color:var(--ai-cyan);">0&deg;</span></label>
+        <input type="range" id="tiltVal" min="0" max="30" value="0" step="1" autocomplete="off" style="width:100%;">
+      </div>
+    </div>
+    
+    <div style="margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.5); border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: #aaa; border: 1px solid rgba(255,255,255,0.05);">
+      <div id="solverLog">Drag your robot across the field grid.</div>
+    </div>
+  </div>
+
+  <h2>2. Quadratic StdDev Scaling</h2>
+  <p>Vision poses should mathematically never be trusted equally. A pose from 6 meters away is tiny on the camera sensor—1 pixel of error dramatically shifts the calculated location.</p>
+
+  <p>MARSLib enforces <strong>Quadratic StdDev Scaling</strong>. Trust in vision decays <em>exponentially</em> at long range, stopping the robot from making violent odometry correction jumps based on far-away tags.</p>
+
+  <div class="callout">
+    <h4>MegaTag / Multi-Tag Boost</h4>
+    <p>When multiple AprilTags are visible, geometric ambiguity essentially drops to zero. Our code automatically scales down standard deviations by <code>x0.1</code>, dramatically tightening the Pose Estimator's trust.</p>
+  </div>
+
+  <h2>3. Simulating Imperfection</h2>
+  <p>To ensure tuning works globally, the <code>AprilTagVisionIOSim</code> in MARSLib purposefully injects:</p>
+  <ul style="margin-bottom: 20px; padding-left: 30px; color: var(--text-secondary);">
+    <li style="margin-bottom: 15px;"><strong>Gaussian Noise:</strong> StdDev matched jitter scaled by distance.</li>
+    <li style="margin-bottom: 15px;"><strong>Dropped Frames:</strong> A 5% chance every frame that no pose is returned.</li>
+    <li style="margin-bottom: 15px;"><strong>Latency:</strong> Simulates a 10ms-30ms phase delay offset.</li>
+  </ul>
+</main>
+
+
+
+
+
+
+
+` }} />
+      </div>
+    </Layout>
+  );
+}

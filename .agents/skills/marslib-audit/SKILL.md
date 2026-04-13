@@ -89,10 +89,14 @@ Bad code is automatically detected by Gradle.
 
 ### Rule A: Skill Registration & Missing Manifests
 If MARSLib code changes but the internal AI `SKILL.md` protocols aren't audited, future AI code generation will fail recursively.
-**Audit Action**: Every folder inside `.agents/skills` MUST possess a valid `plugin.json` manifest, otherwise the AI won't load it. Second, the audit must cross-reference `.agents/skills/marketplace.json` to ensure every populated directory is actively injected.
+**Audit Action**: Every folder inside `.agents/skills` MUST possess a valid `SKILL.md`. Second, the audit must cross-reference `.agents/skills/marketplace.json` to ensure every populated directory is actively registered. Remove phantom entries pointing to non-existent directories.
 
 ### Rule B: Outdated Algorithmic Context
-**Audit Action**: Scan through `SKILL.md` rules inside the agent repository and enforce that they reflect the latest architectural choices (e.g. confirming `marslib-swerve` dictates the use of the new `SwerveOdometry` component instead of allowing monolithic drive generation).
+**Audit Action**: Scan through `SKILL.md` rules inside the agent repository and enforce that they reflect the latest architectural choices:
+1. Confirm all skills reference `SwerveConfig` injection instead of static `frc.robot.SwerveConstants`.
+2. Confirm `marslib-testing` documents the `MARSTestHarness.createSwerveConfig()` / `createPowerConfig()` pattern.
+3. Confirm `marslib-swerve` documents `PhoenixOdometryThread.registerModule()` with configurable `odometryHz`.
+4. Verify no skill references `frc.robot.*` imports within `com.marslib.*` package code.
 
 ## 8. Documentation & Educational Hub
 

@@ -71,11 +71,28 @@ jobs:
       if: github.ref == 'refs/heads/master' && github.event_name == 'push'
       run: ./gradlew generateDocs -Pskip-inspector-wrapper -Dorg.gradle.java.home=$JAVA_HOME
 
+    - name: Setup Node.js
+      if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - name: Build Docusaurus Website
+      if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+      run: |
+        cd website
+        npm ci
+        npm run build
+
+    - name: Inject Generated Javadocs
+      if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+      run: cp -r docs/javadoc website/build/javadoc
+
     - name: Upload Pages Artifact
       if: github.ref == 'refs/heads/master' && github.event_name == 'push'
       uses: actions/upload-pages-artifact@v3
       with:
-        path: 'docs/'
+        path: 'website/build/'
 
   deploy:
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'

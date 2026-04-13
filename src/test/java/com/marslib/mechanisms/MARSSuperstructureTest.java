@@ -38,7 +38,8 @@ public class MARSSuperstructureTest {
           }
         };
 
-    MARSPowerManager powerManager = new MARSPowerManager(spoofedVoltageIO);
+    MARSPowerManager powerManager =
+        new MARSPowerManager(spoofedVoltageIO, MARSTestHarness.createPowerConfig());
 
     RotaryMechanismIOSim cowlSim = new RotaryMechanismIOSim("Cowl", 50.0, 0.5, 0.5);
     cowl = new MARSCowl(cowlSim, powerManager);

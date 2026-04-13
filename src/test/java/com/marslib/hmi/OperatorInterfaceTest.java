@@ -36,7 +36,8 @@ public class OperatorInterfaceTest {
             inputs.voltage = spoofedVoltage;
           }
         };
-    MARSPowerManager power = new MARSPowerManager(spoofedPowerIO);
+    MARSPowerManager power =
+        new MARSPowerManager(spoofedPowerIO, MARSTestHarness.createPowerConfig());
     power.periodic();
 
     oi = new OperatorInterface(5, power);
@@ -83,7 +84,7 @@ public class OperatorInterfaceTest {
             inputs.voltage = spoofedVoltage;
           }
         };
-    MARSPowerManager lowPower = new MARSPowerManager(lowIO);
+    MARSPowerManager lowPower = new MARSPowerManager(lowIO, MARSTestHarness.createPowerConfig());
     lowPower.periodic();
     OperatorInterface lowOi = new OperatorInterface(6, lowPower);
 

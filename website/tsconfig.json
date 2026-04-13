@@ -7,7 +7,15 @@
     "skipLibCheck": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "lib": ["dom", "dom.iterable", "esnext"]
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ]
   },
-  "exclude": [".docusaurus", "build", "node_modules"]
+  "exclude": [
+    ".docusaurus",
+    "build",
+    "node_modules"
+  ]
 }

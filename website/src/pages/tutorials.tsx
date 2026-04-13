@@ -1,0 +1,135 @@
+import React, { useEffect } from 'react';
+import Layout from '@theme/Layout';
+
+export default function Tutorials() {
+  return (
+    <Layout title="Tutorials">
+      <div className="legacy-mars">
+        <div dangerouslySetInnerHTML={{ __html: `
+
+
+
+<main class="container" style="padding-top: 100px; padding-bottom: 80px;">
+  <div style="text-align: center; margin-bottom: 60px;">
+    <h1>Recruit Training</h1>
+    <p style="font-size: 1.25rem; color: var(--text-secondary); max-width: 700px; margin: 0 auto;">Step-by-step guides for students and mentors to master the MARSLib framework architecture.</p>
+  </div>
+
+  <div style="margin-top: 60px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
+    <h2 style="font-family: 'Orbitron', sans-serif; color: var(--mars-red);">Onboarding &amp; Getting Started</h2>
+    <p style="color: var(--text-secondary);">Essential setup and telemetry mastery for new recruits.</p>
+  </div>
+  <div class="tutorial-grid" style="padding: 40px 0;">
+    <a href="/MARSLib/tutorial-getting-started" class="tutorial-card">
+      <span class="card-tag">ENVIRONMENT</span>
+      <h3>Software Setup &amp; Git</h3>
+      <p>Install Git, WPILib, and clone the MARSLib framework repository to your machine. Set up the GitHub PAT for the log autouploader.</p>
+    </a>
+    
+    <a href="/MARSLib/tutorial-telemetry" class="tutorial-card">
+      <span class="card-tag">TELEMETRY</span>
+      <h3>AdvantageKit &amp; Scope</h3>
+      <p>Master log replay, visualize Swerve in 3D, configure NetworkTables, and import MARS custom layout templates.</p>
+    </a>
+
+    <a href="/MARSLib/tutorial-ci" class="tutorial-card">
+      <span class="card-tag">PIPELINE</span>
+      <h3>Intro to CI/CD &amp; Testing</h3>
+      <p>Understand how Continuous Integration automatically tests, formats, and verifies our robot code before it ever touches the field.</p>
+    </a>
+  </div>
+
+  <div style="margin-top: 20px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
+    <h2 style="font-family: 'Orbitron', sans-serif; color: var(--mars-red);">Framework Mastery</h2>
+    <p style="color: var(--text-secondary);">Advanced architecture guides and physics implementations.</p>
+  </div>
+  <div class="tutorial-grid" style="padding-top: 40px;">
+    <a href="/MARSLib/tutorial-io-layer" class="tutorial-card">
+      <span class="card-tag">CORE ARCHITECTURE</span>
+      <h3>The IO Layer Pattern</h3>
+      <p>Learn why we separate hardware from logic and how to implement the AdvantageKit pattern for bit-perfect log replay.</p>
+    </a>
+
+    <a href="/MARSLib/tutorial-swerve" class="tutorial-card">
+      <span class="card-tag">DRIVETRAIN</span>
+      <h3>Swerve Drive Persistence</h3>
+      <p>Configure Phoenix 6 modules, implement 250Hz high-frequency odometry, and tune your drift compensation.</p>
+    </a>
+
+    <a href="/MARSLib/tutorial-state-machines" class="tutorial-card">
+      <span class="card-tag">LOGIC & CONTROL</span>
+      <h3>Crowning States</h3>
+      <p>Use MARSStateMachine to coordinate complex mechanisms and visualize live flowcharts in AdvantageScope.</p>
+    </a>
+
+    <a href="/MARSLib/tutorial-sotm" class="tutorial-card">
+      <span class="card-tag">ADVANCED MATH</span>
+      <h3>Elite Shooting (SOTM)</h3>
+      <p>Master the iterative physics solver for shooting fuel balls while pulling high-speed swerve maneuvers.</p>
+    </a>
+
+    <a href="/MARSLib/tutorial-simulation" class="tutorial-card">
+      <span class="card-tag">VIRTUAL ROBOT &amp; TESTING</span>
+      <h3>Physics-First Dev &amp; Testing</h3>
+      <p>Leverage Dyn4j to test your robot code offline. Spawn fuel balls, test collisions, and write deterministic JUnit CI/CD tests.</p>
+    </a>
+
+    <a href="/MARSLib/tutorial-vision" class="tutorial-card">
+      <span class="card-tag">LOCALIZATION</span>
+      <h3>Vision Fusion & Filtation</h3>
+      <p>Explore strict hallucination rejection filters, Megatag confidence scaling, and hardware latency compensation.</p>
+    </a>
+
+    <a href="/MARSLib/tutorial-control-theory" class="tutorial-card">
+      <span class="card-tag">KINEMATICS</span>
+      <h3>Control Theory Mastery</h3>
+      <p>Move past basic PID. Demystify feedforwards, state space models, discrete math, and continuous SysId tuning.</p>
+    </a>
+
+    <a href="/MARSLib/tutorial-sysid" class="tutorial-card">
+      <span class="card-tag">CHARACTERIZATION</span>
+      <h3>System Identification</h3>
+      <p>Stop guessing PID constants. Automate your characterization using WPILib SysId to generate perfect constants mathematically.</p>
+    </a>
+  </div>
+
+  <div style="margin-top: 80px; padding-top: 40px; border-top: 1px solid var(--border); text-align: center;">
+    <h2 style="font-family: 'Orbitron', sans-serif; font-size: 2.5rem; color: var(--mars-red); margin-bottom: 16px; font-weight: 900; letter-spacing: 0.1em;">THE ELITE PLAYBOOK</h2>
+    <p style="color: var(--text-secondary); max-width: 700px; margin: 0 auto 40px auto;">Architectural strategies covering zero-allocation deterministic engineering, dynamic system voltage scaling, and safe framework mining.</p>
+  </div>
+
+  <div class="tutorial-grid" style="padding-top: 0;">
+    <a href="/MARSLib/tutorial-zero-allocation" class="tutorial-card">
+      <span class="card-tag">DETERMINISM</span>
+      <h3>Zero-Allocation Systems</h3>
+      <p>Eliminate JVM Garbage Collection spikes entirely using pre-allocated Ephemeral Structs and mutable proxy references.</p>
+    </a>
+
+    <a href="/MARSLib/tutorial-power-shedding" class="tutorial-card">
+      <span class="card-tag">ELECTRICAL</span>
+      <h3>Dynamic Power Shedding</h3>
+      <p>Configure MARSPowerManager to actively monitor battery voltage and throttle non-essential mechanism ceilings.</p>
+    </a>
+
+    <a href="/MARSLib/tutorial-code-mining" class="tutorial-card">
+      <span class="card-tag">FRAMEWORK</span>
+      <h3>Architecture Mining</h3>
+      <p>How we leverage AI skills to extract mathematical models from elite repositories without corrupting the MARSLib IO Abstraction.</p>
+    </a>
+
+    <a href="/MARSLib/tutorial-uploader" class="tutorial-card">
+      <span class="card-tag">TELEMETRY</span>
+      <h3>Automated Log Uploader</h3>
+      <p>Configure MARSLib's asynchronous daemon thread to automatically upload AdvantageKit hardware logs directly to GitHub.</p>
+    </a>
+  </div>
+</main>
+
+
+
+
+` }} />
+      </div>
+    </Layout>
+  );
+}

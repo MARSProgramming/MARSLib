@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.marslib.swerve.SwerveConfig;
 import com.marslib.swerve.SwerveDrive;
 import com.marslib.swerve.SwerveModule;
 import com.marslib.testing.MARSTestHarness;
@@ -22,14 +23,17 @@ public class AutoBuilderTest {
     MARSTestHarness.reset();
 
     // Setup SwerveDrive dependencies
+    SwerveConfig config = MARSTestHarness.createSwerveConfig();
     SwerveModule[] modules = new SwerveModule[4];
     for (int i = 0; i < 4; i++) {
-      modules[i] = new SwerveModule(i, new com.marslib.swerve.SwerveModuleIOSim(i));
+      modules[i] = new SwerveModule(i, new com.marslib.swerve.SwerveModuleIOSim(i), config);
     }
     com.marslib.power.MARSPowerManager powerManager =
-        new com.marslib.power.MARSPowerManager(new com.marslib.power.PowerIO() {});
+        new com.marslib.power.MARSPowerManager(
+            new com.marslib.power.PowerIO() {}, MARSTestHarness.createPowerConfig());
 
-    swerveDrive = new SwerveDrive(modules, new com.marslib.swerve.GyroIOSim(), powerManager);
+    swerveDrive =
+        new SwerveDrive(modules, new com.marslib.swerve.GyroIOSim(), powerManager, config);
     // Configure PathPlanner as it would be in RobotContainer
     swerveDrive.configurePathPlanner();
   }

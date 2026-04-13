@@ -15,9 +15,28 @@ import org.junit.jupiter.api.Test;
  */
 public class MARSAutoTest {
 
+  private com.marslib.swerve.SwerveDrive swerveDrive;
+
   @BeforeEach
   public void setUp() {
     MARSTestHarness.reset();
+
+    com.marslib.swerve.SwerveConfig swerveConfig = MARSTestHarness.createSwerveConfig();
+    com.marslib.power.MARSPowerManager powerManager =
+        new com.marslib.power.MARSPowerManager(
+            new com.marslib.power.PowerIOSim(MARSTestHarness.createPowerConfig()),
+            MARSTestHarness.createPowerConfig());
+
+    com.marslib.swerve.SwerveModule[] modules = new com.marslib.swerve.SwerveModule[4];
+    for (int i = 0; i < 4; i++) {
+      modules[i] =
+          new com.marslib.swerve.SwerveModule(
+              i, new com.marslib.swerve.SwerveModuleIOSim(i), swerveConfig);
+    }
+
+    swerveDrive =
+        new com.marslib.swerve.SwerveDrive(
+            modules, new com.marslib.swerve.GyroIOSim(), powerManager, swerveConfig);
   }
 
   @Test
@@ -29,7 +48,8 @@ public class MARSAutoTest {
 
   @Test
   public void testPathfindThenRunChoreoReturnsFallbackForMissingFile() {
-    Command result = MARSAuto.pathfindThenRunChoreoTrajectory("nonexistent_trajectory");
+    Command result =
+        MARSAuto.pathfindThenRunChoreoTrajectory(swerveDrive, "nonexistent_trajectory");
     assertNotNull(result, "Should return a fallback command, never null.");
   }
 
@@ -39,6 +59,7 @@ public class MARSAutoTest {
     // This verifies the factory doesn't crash before reaching PathPlanner internals.
     try {
       MARSAuto.pathfindObstacleAvoidance(
+          swerveDrive,
           new edu.wpi.first.math.geometry.Pose2d(
               1.0, 1.0, new edu.wpi.first.math.geometry.Rotation2d()));
       // If AutoBuilder isn't configured, this may throw — that's expected.

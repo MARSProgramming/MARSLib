@@ -29,7 +29,8 @@ public class MARSClimberTest {
           }
         };
 
-    MARSPowerManager powerManager = new MARSPowerManager(spoofedVoltageIO);
+    MARSPowerManager powerManager =
+        new MARSPowerManager(spoofedVoltageIO, MARSTestHarness.createPowerConfig());
 
     LinearMechanismIOSim physicalClimberSim =
         new LinearMechanismIOSim(

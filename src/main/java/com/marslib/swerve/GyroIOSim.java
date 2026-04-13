@@ -25,12 +25,15 @@ public class GyroIOSim implements GyroIO {
     this.simDrive = simDrive;
   }
 
+  public boolean enableCanStarvation = false;
+  public double canStarvationProbability = 0.02;
+
   @Override
   public void updateInputs(GyroIOInputs inputs) {
     inputs.connected = true;
 
-    if (frc.robot.constants.SimulationConstants.ENABLE_CAN_STARVATION) {
-      if (Math.random() < frc.robot.constants.SimulationConstants.CAN_STARVATION_PROBABILITY) {
+    if (enableCanStarvation) {
+      if (Math.random() < canStarvationProbability) {
         inputs.connected = false;
       }
     }

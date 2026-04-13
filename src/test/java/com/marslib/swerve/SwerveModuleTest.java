@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.marslib.testing.MARSTestHarness;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import frc.robot.SwerveConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -35,6 +34,7 @@ public class SwerveModuleTest {
     }
   }
 
+  private SwerveConfig config;
   private SpySwerveModuleIO spyIO;
   private SwerveModule module;
 
@@ -42,7 +42,8 @@ public class SwerveModuleTest {
   public void setUp() {
     MARSTestHarness.reset();
     spyIO = new SpySwerveModuleIO();
-    module = new SwerveModule(0, spyIO);
+    config = MARSTestHarness.createSwerveConfig();
+    module = new SwerveModule(0, spyIO, config);
   }
 
   @Test
@@ -70,7 +71,7 @@ public class SwerveModuleTest {
     // Because current angle is 90 deg, error is 90. Cosine of 90 is 0.
     // Thus drive voltage should be aggressively 0 to prevent sideways drift!
     SwerveModuleState targetState =
-        new SwerveModuleState(SwerveConstants.MAX_LINEAR_SPEED_MPS, new Rotation2d(0.0));
+        new SwerveModuleState(config.maxLinearSpeedMps(), new Rotation2d(0.0));
 
     module.setDesiredState(targetState);
 
@@ -92,7 +93,7 @@ public class SwerveModuleTest {
     // The target is 180 degrees (PI). Instead of spinning 180 degrees,
     // the module should optimize to stay at 0 but invert the drive velocity!
     SwerveModuleState targetState =
-        new SwerveModuleState(SwerveConstants.MAX_LINEAR_SPEED_MPS, Rotation2d.fromDegrees(180));
+        new SwerveModuleState(config.maxLinearSpeedMps(), Rotation2d.fromDegrees(180));
 
     module.setDesiredState(targetState);
 

@@ -1,0 +1,78 @@
+import React, { useEffect } from 'react';
+import Layout from '@theme/Layout';
+
+export default function TutorialGettingStarted() {
+  return (
+    <Layout title="Tutorial Getting Started">
+      <div className="legacy-mars">
+        <div dangerouslySetInnerHTML={{ __html: `
+
+
+
+<main class="container" style="padding-top: 100px; padding-bottom: 80px;">
+  <div style="text-align: center; margin-bottom: 40px;">
+    <a href="/MARSLib/tutorials" class="back-link">← BACK TO TUTORIALS</a>
+    <h1>Software Setup &amp; Git</h1>
+  </div>
+
+  <p>Before you can begin programming the robot, you need to configure your local development environment. MARSLib uses industry-standard tooling alongside specific WPILib architecture to deploy its advanced zero-allocation simulations. Follow these steps meticulously to get started.</p>
+
+  <h2>1. WPILib Installation</h2>
+  <p>WPILib is the official library for FIRST Robotics. It comes bundled with a custom version of Visual Studio Code, a localized JDK, and the necessary Gradle toolchains to compile FRC robot code.</p>
+
+  <ol style="margin-bottom: 20px; padding-left: 30px; color: var(--text-secondary);">
+    <li style="margin-bottom: 15px;">Navigate to the official <a href="https://github.com/wpilibsuite/allwpilib/releases" target="_blank" style="color: var(--ai-cyan);">WPILib GitHub Releases</a> page.</li>
+    <li style="margin-bottom: 15px;">Download the installer corresponding to your operating system (.iso for Windows, .tar.gz for macOS/Linux).</li>
+    <li style="margin-bottom: 15px;">Run the installer. When prompted, select <strong>"Install for All Users"</strong> and <strong>"Download VS Code"</strong> if you don't already have the WPILib VS Code.</li>
+    <li style="margin-bottom: 15px;">Do not use a standard VS Code installation. You must use the <strong>WPILib VS Code</strong> app installed on your desktop.</li>
+  </ol>
+
+  <h2>2. Installing Git &amp; Authentication</h2>
+  <p>MARSLib relies on Git for version control and deploying to our team servers. If you aren't familiar with Git, you should start by downloading it.</p>
+
+  <ol style="margin-bottom: 20px; padding-left: 30px; color: var(--text-secondary);">
+    <li style="margin-bottom: 15px;">Download Git from <a href="https://git-scm.com/downloads" style="color: var(--ai-cyan);">git-scm.com</a> locally.</li>
+    <li style="margin-bottom: 15px;">Open a new command prompt and configure your global identity so your commits are tracked to you:
+      <pre><code>git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"</code></pre>
+    </li>
+    <li style="margin-bottom: 15px;">We highly recommend installing GitHub Desktop or using the built-in Git GUI within VS Code to manage your commits visually.</li>
+  </ol>
+
+  <h2>3. Cloning the Codebase</h2>
+  <p>Now that your environment is ready, it is time to clone the MARSLib framework repository.</p>
+
+  <div class="callout">
+    <h4>SSH Preferred</h4>
+    <p>If you have an SSH key configured with GitHub, we strongly advise using SSH to clone the repository to avoid continuous credential prompts.</p>
+  </div>
+
+  <ol style="margin-bottom: 20px; padding-left: 30px; color: var(--text-secondary);">
+    <li style="margin-bottom: 15px;">Open the WPILib VS Code instance.</li>
+    <li style="margin-bottom: 15px;">Open terminal (\`Ctrl\` + \`~\`) and navigate to your \`Documents\` or preferred Workspace folder.</li>
+    <li style="margin-bottom: 15px;">Run the clone command:
+      <pre><code>git clone https://github.com/MARSProgramming/MARSLib.git</code></pre>
+    </li>
+    <li style="margin-bottom: 15px;">Open the folder directly in VS Code: <code>File &gt; Open Folder &gt; MARSLib</code>.</li>
+  </ol>
+
+  <h2>4. Configuring the Log Auto-Uploader</h2>
+  <p>MARSLib includes an automated script that securely uploads AdvantageKit <code>.wpilog</code> files directly to our private GitHub servers over the 2614 radio network. To authorize your robot to push to our network, you must configure a PAT.</p>
+
+  <ol style="margin-bottom: 20px; padding-left: 30px; color: var(--text-secondary);">
+    <li style="margin-bottom: 15px;">Go to your GitHub Settings &rarr; Developer Settings &rarr; Personal Access Tokens (Fine-Grained).</li>
+    <li style="margin-bottom: 15px;">Generate a new token with <code>Read/Write</code> access directly to the \`LogDatabase\` repository.</li>
+    <li style="margin-bottom: 15px;">Create a new file called <code>github_pat.txt</code> directly in the root directory of your MARSLib project.</li>
+    <li style="margin-bottom: 15px;">Paste your raw token into this file. <strong>Do not worry—this file is tracked by our \`.gitignore\` and won't be pushed publicly.</strong></li>
+    <li style="margin-bottom: 15px;">When you build the code to deploy to the RoboRIO (<code>./gradlew deploy</code>), this file will be SCP'd into the robot's flash automatically!</li>
+  </ol>
+</main>
+
+
+
+
+` }} />
+      </div>
+    </Layout>
+  );
+}

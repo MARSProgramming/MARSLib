@@ -29,7 +29,8 @@ public class MARSCowlTest {
           }
         };
 
-    MARSPowerManager powerManager = new MARSPowerManager(spoofedVoltageIO);
+    MARSPowerManager powerManager =
+        new MARSPowerManager(spoofedVoltageIO, MARSTestHarness.createPowerConfig());
 
     RotaryMechanismIOSim physicalCowlSim =
         new RotaryMechanismIOSim(
@@ -100,7 +101,8 @@ public class MARSCowlTest {
           }
         };
 
-    MARSPowerManager pm = new MARSPowerManager(new PowerIO() {});
+    MARSPowerManager pm =
+        new MARSPowerManager(new PowerIO() {}, MARSTestHarness.createPowerConfig());
     MARSCowl homingCowl = new MARSCowl(mockIO, pm);
 
     // 2. Start homing (-2.0V, 15.0A threshold)

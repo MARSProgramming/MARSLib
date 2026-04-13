@@ -110,6 +110,9 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
     poseEstimator = tmpEstimator;
   }
 
+  public boolean enableOcclusion = false;
+  public double occlusionDropProbability = 0.05;
+
   @SuppressWarnings("removal")
   @Override
   public void updateInputs(AprilTagVisionIOInputs inputs) {
@@ -126,10 +129,8 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
     var results = camera.getAllUnreadResults();
 
     boolean simulatedOcclusion = false;
-    if (frc.robot.constants.SimulationConstants.ENABLE_VISION_OCCLUSION) {
-      simulatedOcclusion =
-          ThreadLocalRandom.current().nextDouble()
-              < frc.robot.constants.SimulationConstants.VISION_OCCLUSION_DROP_PROBABILITY;
+    if (enableOcclusion) {
+      simulatedOcclusion = ThreadLocalRandom.current().nextDouble() < occlusionDropProbability;
     }
 
     int validCount = 0;

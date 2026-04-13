@@ -9,7 +9,6 @@ package com.marslib.power;
 import com.marslib.faults.Alert;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.PowerConstants;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -25,25 +24,30 @@ public class MARSPowerManager extends SubsystemBase {
   private final PowerIOInputsAutoLogged inputs = new PowerIOInputsAutoLogged();
   private final edu.wpi.first.wpilibj.PowerDistribution pdh =
       new edu.wpi.first.wpilibj.PowerDistribution();
+  private final PowerConfig config;
 
-  private final Alert warningAlert =
-      new Alert(
-          "Power",
-          "Voltage Shedding: Voltage below " + PowerConstants.WARNING_VOLTAGE + "V",
-          Alert.AlertType.WARNING);
-  private final Alert criticalAlert =
-      new Alert(
-          "Power",
-          "Voltage Shedding: Voltage below " + PowerConstants.CRITICAL_VOLTAGE + "V",
-          Alert.AlertType.CRITICAL);
+  private final Alert warningAlert;
+  private final Alert criticalAlert;
 
   /**
    * Initializes the Power Manager.
    *
    * @param io The selected IO layer (Sim or Hardware PDH) pulling raw voltages.
+   * @param config The power threshold configuration for the robot.
    */
-  public MARSPowerManager(PowerIO io) {
+  public MARSPowerManager(PowerIO io, PowerConfig config) {
     this.io = io;
+    this.config = config;
+    this.warningAlert =
+        new Alert(
+            "Power",
+            "Voltage Shedding: Voltage below " + config.warningVoltage() + "V",
+            Alert.AlertType.WARNING);
+    this.criticalAlert =
+        new Alert(
+            "Power",
+            "Voltage Shedding: Voltage below " + config.criticalVoltage() + "V",
+            Alert.AlertType.CRITICAL);
   }
 
   /**
@@ -59,10 +63,10 @@ public class MARSPowerManager extends SubsystemBase {
     Logger.recordOutput("Power/TotalCurrentDraw_A", pdh.getTotalCurrent());
 
     if (inputs.voltage > 0) {
-      if (inputs.voltage < PowerConstants.CRITICAL_VOLTAGE) {
+      if (inputs.voltage < config.criticalVoltage()) {
         warningAlert.set(true);
         criticalAlert.set(true);
-      } else if (inputs.voltage < PowerConstants.WARNING_VOLTAGE) {
+      } else if (inputs.voltage < config.warningVoltage()) {
         warningAlert.set(true);
         criticalAlert.set(false);
       } else {
@@ -85,10 +89,32 @@ public class MARSPowerManager extends SubsystemBase {
     return inputs.voltage;
   }
 
+  /** Returns true if the system voltage is currently below the warning threshold. */
+  public boolean isWarning() {
+    return inputs.voltage < config.warningVoltage();
+  }
+
+  /** Returns true if the system voltage is currently below the critical threshold. */
+  public boolean isCritical() {
+    return inputs.voltage < config.criticalVoltage();
+  }
+
+  /**
+   * Helper function for mechanisms to compute dynamically shedded voltage scaling based on the
+   * internal PowerConfig thresholds.
+   *
+   * @return A multiplier [0.0 - 1.0].
+   */
+  public double calculateSheddingFactor() {
+    return calculateVoltageScaleFactor(config.nominalVoltage(), config.criticalVoltage());
+  }
+
   /**
    * Helper function for mechanisms to compute dynamically shedded voltage scaling when battery sag
    * impacts structural stability.
    *
+   * @param nominalVoltage The voltage at which shedding starts.
+   * @param criticalVoltage The voltage at which output is zeroed.
    * @return A multiplier [0.0 - 1.0]. Returns 1.0 when nominal. Scales down towards 0.0 near
    *     critical voltage bounds.
    */

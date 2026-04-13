@@ -9,86 +9,105 @@ package com.marslib.testing;
 import com.marslib.faults.Alert;
 import com.marslib.faults.MARSFaultManager;
 import com.marslib.simulation.MARSPhysicsWorld;
+import com.marslib.swerve.SwerveConfig;
 import com.marslib.vision.AprilTagVisionIOSim;
+import com.marslib.vision.VisionConfig;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-/**
- * Centralized test setup utility that resets ALL MARSLib static singletons in one call.
- *
- * <p>MARSLib uses 5 static singletons that accumulate state across test runs. Forgetting to reset
- * ANY of them causes cross-test contamination: stacked physics bodies, stale alerts, leaked
- * commands. This class eliminates that failure mode by providing a single reset method.
- *
- * <p><b>Usage:</b>
- *
- * <pre>{@code
- * @BeforeEach
- * public void setUp() {
- *     MARSTestHarness.reset();
- *     // ... construct your subsystems here
- * }
- * }</pre>
- */
+/** Centralized test setup utility that resets ALL MARSLib static singletons in one call. */
 public final class MARSTestHarness {
 
-  private MARSTestHarness() {} // Utility class — no instances
+  private MARSTestHarness() {}
 
-  /**
-   * Resets all static singletons to a clean state for test isolation. This MUST be called in every
-   * test class's {@code @BeforeEach} method before constructing any subsystems.
-   *
-   * <p>Resets the following:
-   *
-   * <ol>
-   *   <li>{@code HAL} — Initializes the WPILib Hardware Abstraction Layer for simulation
-   *   <li>{@code CommandScheduler} — Cancels all commands and unregisters all subsystems
-   *   <li>{@code MARSPhysicsWorld} — Destroys the dyn4j world and all physics bodies
-   *   <li>{@code AprilTagVisionIOSim} — Destroys the shared VisionSystemSim
-   *   <li>{@code Alert} — Clears all AdvantageScope alert groups
-   *   <li>{@code MARSFaultManager} — Clears all registered faults
-   *   <li>{@code DriverStationSim} — Sets Blue1 alliance, enables the robot, and beats heartbeat
-   * </ol>
-   */
   public static void reset() {
-    // 1. HAL initialization
     HAL.initialize(500, 0);
-
-    // 2. CommandScheduler — must cancel before unregister to avoid stale command references
     CommandScheduler.getInstance().cancelAll();
     CommandScheduler.getInstance().unregisterAllSubsystems();
-
-    // 3. Physics world — destroys all dyn4j bodies, boundaries, and game pieces
     MARSPhysicsWorld.resetInstance();
-
-    // 4. Vision sim — destroys shared VisionSystemSim and field layout cache
     AprilTagVisionIOSim.resetSimulation();
-
-    // 5. Fault manager — clears critical fault state before destroying alert groups
     MARSFaultManager.clear();
-
-    // 6. Alert system — clears static alert group map
     Alert.resetAll();
-
-    // 7. DriverStation — configure sim heartbeat
     DriverStationSim.setAllianceStationId(edu.wpi.first.hal.AllianceStationID.Blue1);
     DriverStationSim.setEnabled(true);
     DriverStationSim.notifyNewData();
-
-    // 8. Odometry thread — stops high-frequency scanning thread and clears singleton
     com.marslib.swerve.PhoenixOdometryThread.resetInstance();
-
-    // 9. Tunables — clears static list of registered tunable numbers
     com.marslib.util.LoggedTunableNumber.clear();
   }
 
-  /**
-   * Cleans up test state after a test completes. Call this in {@code @AfterEach} to prevent
-   * subsystem references from leaking between tests.
-   */
   public static void cleanup() {
     CommandScheduler.getInstance().cancelAll();
     CommandScheduler.getInstance().unregisterAllSubsystems();
+  }
+
+  /** Returns a standard SwerveConfig for testing. */
+  public static SwerveConfig createSwerveConfig() {
+    return new SwerveConfig(
+        new edu.wpi.first.math.geometry.Translation2d[] {
+          new edu.wpi.first.math.geometry.Translation2d(0.3, 0.3),
+          new edu.wpi.first.math.geometry.Translation2d(0.3, -0.3),
+          new edu.wpi.first.math.geometry.Translation2d(-0.3, 0.3),
+          new edu.wpi.first.math.geometry.Translation2d(-0.3, -0.3)
+        },
+        4.5, // maxLinearSpeedMps
+        10.0, // maxAngularSpeedRadPerSec
+        0.05, // wheelRadiusMeters
+        12.0, // turnKp
+        10.0, // nominalVoltage
+        8.0, // warningVoltage
+        7.0, // criticalVoltage
+        6.75, // driveGearRatio
+        60.0, // driveStatorCurrentLimit
+        50.0, // robotMassKg
+        5.0, // robotMoiKgM2
+        0.8, // bumperLengthMeters
+        0.8, // bumperWidthMeters
+        0.6, // wheelbaseMeters
+        0.6, // trackWidthMeters
+        1.2, // wheelCOFStatic
+        0.02, // loopPeriodSecs
+        15.0, // teleopLinearAccelLimit
+        18.84, // teleopOmegaAccelLimit
+        5.0, // headingKp
+        5.0, // autoTranslationKp
+        0.0, // autoTranslationKd
+        5.0, // autoRotationKp
+        0.0, // autoRotationKd
+        5.0, // alignTranslationKp
+        0.1, // alignTranslationIZoneMeters
+        5.0, // alignThetaKp
+        0.1, // alignThetaIZoneRad
+        50.0, // telemetryHz
+        250.0, // odometryHz
+        150.0 / 7.0, // turnGearRatio
+        40.0 // turnStatorCurrentLimit
+        );
+  }
+
+  /** Returns a standard PowerConfig for testing. */
+  public static com.marslib.power.PowerConfig createPowerConfig() {
+    return new com.marslib.power.PowerConfig(10.0, 8.0, 7.0);
+  }
+
+  /** Returns a standard VisionConfig for testing. */
+  public static VisionConfig createVisionConfig() {
+    return new VisionConfig(
+        () -> 0.5, // maxZHeight
+        16.541, // fieldLength
+        8.211, // fieldWidth
+        () -> 0.5, // fieldMargin
+        () -> 25.0, // maxTilt
+        () -> 1000.0, // maxAngularAccel
+        () -> 0.2, // maxAmbiguity
+        () -> 0.01, // tagStdBase
+        () -> 0.1, // multiTagStdMultiplier
+        () -> 2.0, // angularStdMultiplier
+        () -> 0.5, // linearVelocityStdMultiplier
+        () -> 0.5, // angularVelocityStdMultiplier
+        () -> 0.02, // slamStdDev
+        () -> 0.1, // slamAngularStdDev
+        0.02 // loopPeriod
+        );
   }
 }

@@ -8,6 +8,7 @@ import com.marslib.power.MARSPowerManager;
 import com.marslib.power.PowerIOSim;
 import com.marslib.simulation.MARSPhysicsWorld;
 import com.marslib.swerve.GyroIOSim;
+import com.marslib.swerve.SwerveConfig;
 import com.marslib.swerve.SwerveDrive;
 import com.marslib.swerve.SwerveModule;
 import com.marslib.swerve.SwerveModuleIOSim;
@@ -41,15 +42,19 @@ public class RobotLifecycleTest {
 
     DriverStationSim.setAutonomous(true);
     // Construct all subsystems — same wiring as RobotContainer SIM mode
-    powerManager = new MARSPowerManager(new PowerIOSim());
+    powerManager =
+        new MARSPowerManager(
+            new PowerIOSim(MARSTestHarness.createPowerConfig()),
+            MARSTestHarness.createPowerConfig());
     GyroIOSim gyroSim = new GyroIOSim();
+    SwerveConfig config = MARSTestHarness.createSwerveConfig();
 
     SwerveModule[] modules = new SwerveModule[4];
     for (int i = 0; i < 4; i++) {
-      modules[i] = new SwerveModule(i, new SwerveModuleIOSim(i));
+      modules[i] = new SwerveModule(i, new SwerveModuleIOSim(i), config);
     }
 
-    swerveDrive = new SwerveDrive(modules, gyroSim, powerManager);
+    swerveDrive = new SwerveDrive(modules, gyroSim, powerManager, config);
     swerveDrive.resetPose(new Pose2d(2, 2, new edu.wpi.first.math.geometry.Rotation2d(0)));
 
     cowl = new MARSCowl(new RotaryMechanismIOSim("Cowl", 50.0, 0.5, 0.5), powerManager);

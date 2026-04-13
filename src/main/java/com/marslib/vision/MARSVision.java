@@ -16,8 +16,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.FieldConstants;
-import frc.robot.constants.VisionConstants;
 import java.util.List;
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
@@ -34,6 +32,7 @@ public class MARSVision extends SubsystemBase {
   private final SwerveDrive swerveDrive;
   private final List<AprilTagVisionIO> aprilTagIOs;
   private final AprilTagVisionIOInputsAutoLogged[] aprilTagInputs;
+  private final VisionConfig config;
   private Optional<Translation2d> latestTargetTranslation = Optional.empty();
 
   private double lastYawVelocity = 0.0;
@@ -52,11 +51,16 @@ public class MARSVision extends SubsystemBase {
    * @param swerveDrive The primary SwerveDrive subsystem reference for data injection.
    * @param aprilTagIOs A list of all active AprilTag IO architectures (Limelight, Photon).
    * @param slamIOs A list of all active VIO SLAM IO architectures (QuestNav, ROS2).
+   * @param config The global vision configuration.
    */
   public MARSVision(
-      SwerveDrive swerveDrive, List<AprilTagVisionIO> aprilTagIOs, List<VIOSlamIO> slamIOs) {
+      SwerveDrive swerveDrive,
+      List<AprilTagVisionIO> aprilTagIOs,
+      List<VIOSlamIO> slamIOs,
+      VisionConfig config) {
     this.swerveDrive = swerveDrive;
     this.aprilTagIOs = aprilTagIOs;
+    this.config = config;
     this.aprilTagInputs = new AprilTagVisionIOInputsAutoLogged[aprilTagIOs.size()];
     for (int i = 0; i < aprilTagInputs.length; i++) {
       aprilTagInputs[i] = new AprilTagVisionIOInputsAutoLogged();
@@ -79,7 +83,7 @@ public class MARSVision extends SubsystemBase {
 
     GyroIOInputsAutoLogged gyro = swerveDrive.getGyroInputs();
 
-    double dt = frc.robot.constants.ModeConstants.LOOP_PERIOD_SECS;
+    double dt = config.loopPeriodSecs();
     double maxAngularAccel =
         Math.max(
             Math.abs((gyro.yawVelocityRadPerSec - lastYawVelocity) / dt),
@@ -92,7 +96,7 @@ public class MARSVision extends SubsystemBase {
     lastRollVelocity = gyro.rollVelocityRadPerSec;
 
     boolean isImpactShock =
-        Math.toDegrees(maxAngularAccel) > VisionConstants.MAX_ANGULAR_ACCEL_DEG_PER_SEC2.get();
+        Math.toDegrees(maxAngularAccel) > config.maxAngularAccelDegPerSec2().get();
 
     Pose2d currentFilteredPose = swerveDrive.getPose();
     double dx = currentFilteredPose.getX() - lastPoseX;
@@ -104,9 +108,9 @@ public class MARSVision extends SubsystemBase {
 
     double continuousVelocityMultiplier =
         1.0
-            + (smoothLinearVelocity * VisionConstants.LINEAR_VELOCITY_STD_MULTIPLIER.get())
+            + (smoothLinearVelocity * config.linearVelocityStdMultiplier().get())
             + (Math.toDegrees(Math.abs(gyro.yawVelocityRadPerSec))
-                * VisionConstants.ANGULAR_VELOCITY_STD_MULTIPLIER.get());
+                * config.angularVelocityStdMultiplier().get());
 
     // Process AprilTags
     for (int i = 0; i < aprilTagIOs.size(); i++) {
@@ -140,24 +144,24 @@ public class MARSVision extends SubsystemBase {
         Pose2d pose2d = pose3d.toPose2d();
 
         // Check 1: Z-Height Hallucination
-        if (Math.abs(pose3d.getZ()) > VisionConstants.MAX_Z_HEIGHT.get()) {
+        if (Math.abs(pose3d.getZ()) > config.maxZHeight().get()) {
           rejectedZHeight = true;
           continue;
         }
 
         // Check 2: Field Bounds
-        double margin = VisionConstants.FIELD_MARGIN_METERS.get();
+        double margin = config.fieldMarginMeters().get();
         if (pose2d.getX() < -margin
-            || pose2d.getX() > FieldConstants.FIELD_LENGTH_METERS + margin
+            || pose2d.getX() > config.fieldLengthMeters() + margin
             || pose2d.getY() < -margin
-            || pose2d.getY() > FieldConstants.FIELD_WIDTH_METERS + margin) {
+            || pose2d.getY() > config.fieldWidthMeters() + margin) {
           rejectedOOB = true;
           continue;
         }
 
         // Check 3: Beached / Tilt
         double maxTilt = Math.max(Math.abs(gyro.pitchPositionRad), Math.abs(gyro.rollPositionRad));
-        if (Math.toDegrees(maxTilt) > VisionConstants.MAX_TILT_DEG.get()) {
+        if (Math.toDegrees(maxTilt) > config.maxTiltDeg().get()) {
           rejectedTilt = true;
           continue;
         }
@@ -169,7 +173,7 @@ public class MARSVision extends SubsystemBase {
         }
 
         // Check 5: Ambiguity (For PhotonVision single-tag. Limelight defaults to 0.0)
-        if (tagCount == 1 && ambiguity > VisionConstants.MAX_AMBIGUITY.get()) {
+        if (tagCount == 1 && ambiguity > config.maxAmbiguity().get()) {
           rejectedAmbiguity = true;
           continue;
         }
@@ -177,14 +181,14 @@ public class MARSVision extends SubsystemBase {
         acceptedCount++;
 
         // Calculate standard deviations (Quadratic distance scaling)
-        double linearStdDev = VisionConstants.TAG_STD_BASE.get() * Math.pow(avgDist, 2);
+        double linearStdDev = config.tagStdBase().get() * Math.pow(avgDist, 2);
 
         // MegaTag2 Boost: Dramatically tighten bounds when multiple tags are visible
         if (tagCount > 1) {
-          linearStdDev *= VisionConstants.MULTI_TAG_STD_MULTIPLIER.get();
+          linearStdDev *= config.multiTagStdMultiplier().get();
         }
 
-        double angularStdDev = linearStdDev * VisionConstants.ANGULAR_STD_MULTIPLIER.get();
+        double angularStdDev = linearStdDev * config.angularStdMultiplier().get();
 
         // Continuous Velocity Scaling: smoothly blur out vision trust at max speeds without hard
         // cutoffs
@@ -221,9 +225,9 @@ public class MARSVision extends SubsystemBase {
         // Tight static covariance for reliable VIO odometry
         Matrix<N3, N1> stdDevs =
             VecBuilder.fill(
-                VisionConstants.SLAM_STD_DEV.get(),
-                VisionConstants.SLAM_STD_DEV.get(),
-                VisionConstants.SLAM_ANGULAR_STD_DEV.get());
+                config.slamStdDev().get(),
+                config.slamStdDev().get(),
+                config.slamAngularStdDev().get());
         Pose2d pose2d = pose3d.toPose2d();
 
         swerveDrive.addVisionMeasurement(pose2d, timestamp, stdDevs);

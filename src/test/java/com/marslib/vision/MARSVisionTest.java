@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.marslib.power.MARSPowerManager;
 import com.marslib.power.PowerIOSim;
 import com.marslib.swerve.GyroIOSim;
+import com.marslib.swerve.SwerveConfig;
 import com.marslib.swerve.SwerveDrive;
 import com.marslib.swerve.SwerveModule;
 import com.marslib.swerve.SwerveModuleIOSim;
@@ -22,18 +23,23 @@ public class MARSVisionTest {
   @BeforeEach
   public void setUp() {
     MARSTestHarness.reset();
-    MARSPowerManager powerManager = new MARSPowerManager(new PowerIOSim());
+    MARSPowerManager powerManager =
+        new MARSPowerManager(
+            new PowerIOSim(MARSTestHarness.createPowerConfig()),
+            MARSTestHarness.createPowerConfig());
+    SwerveConfig config = MARSTestHarness.createSwerveConfig();
 
     swerveDrive =
         new SwerveDrive(
             new SwerveModule[] {
-              new SwerveModule(0, new SwerveModuleIOSim(0)),
-              new SwerveModule(1, new SwerveModuleIOSim(1)),
-              new SwerveModule(2, new SwerveModuleIOSim(2)),
-              new SwerveModule(3, new SwerveModuleIOSim(3))
+              new SwerveModule(0, new SwerveModuleIOSim(0), config),
+              new SwerveModule(1, new SwerveModuleIOSim(1), config),
+              new SwerveModule(2, new SwerveModuleIOSim(2), config),
+              new SwerveModule(3, new SwerveModuleIOSim(3), config)
             },
             new GyroIOSim(),
-            powerManager);
+            powerManager,
+            config);
   }
 
   @Test
@@ -57,7 +63,9 @@ public class MARSVisionTest {
           }
         };
 
-    MARSVision vision = new MARSVision(swerveDrive, List.of(mockVisionIO), List.of());
+    MARSVision vision =
+        new MARSVision(
+            swerveDrive, List.of(mockVisionIO), List.of(), MARSTestHarness.createVisionConfig());
 
     // 2. Set odometry to (0, 0, 0)
     swerveDrive.resetPose(new Pose2d());

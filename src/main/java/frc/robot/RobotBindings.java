@@ -19,6 +19,7 @@ public final class RobotBindings {
   public static void configureBindings(
       OperatorInterface operatorInterface,
       SwerveDrive swerveDrive,
+      com.marslib.swerve.SwerveConfig swerveConfig,
       MARSSuperstructure superstructure,
       MARSClimber climber,
       MARSCowl cowl,
@@ -33,6 +34,7 @@ public final class RobotBindings {
     swerveDrive.setDefaultCommand(
         new TeleopDriveCommand(
             swerveDrive,
+            swerveConfig,
             () -> controller.getLeftY(),
             () -> controller.getLeftX(),
             () -> controller.getRightX()));
@@ -60,7 +62,7 @@ public final class RobotBindings {
                       -Math.pow(
                               edu.wpi.first.math.MathUtil.applyDeadband(controller.getLeftY(), 0.1),
                               3.0)
-                          * SwerveConstants.MAX_LINEAR_SPEED_MPS;
+                          * swerveConfig.maxLinearSpeedMps();
                   if (edu.wpi.first.wpilibj.DriverStation.getAlliance().isPresent()
                       && edu.wpi.first.wpilibj.DriverStation.getAlliance().get()
                           == edu.wpi.first.wpilibj.DriverStation.Alliance.Red) {
@@ -73,7 +75,7 @@ public final class RobotBindings {
                       -Math.pow(
                               edu.wpi.first.math.MathUtil.applyDeadband(controller.getLeftX(), 0.1),
                               3.0)
-                          * SwerveConstants.MAX_LINEAR_SPEED_MPS;
+                          * swerveConfig.maxLinearSpeedMps();
                   if (edu.wpi.first.wpilibj.DriverStation.getAlliance().isPresent()
                       && edu.wpi.first.wpilibj.DriverStation.getAlliance().get()
                           == edu.wpi.first.wpilibj.DriverStation.Alliance.Red) {

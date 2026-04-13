@@ -3,7 +3,6 @@ package com.marslib.power;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.marslib.testing.MARSTestHarness;
-import frc.robot.constants.PowerConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +23,7 @@ public class MARSPowerManagerTest {
           }
         };
 
-    powerManager = new MARSPowerManager(mockIO);
+    powerManager = new MARSPowerManager(mockIO, MARSTestHarness.createPowerConfig());
   }
 
   @Test
@@ -55,12 +54,9 @@ public class MARSPowerManagerTest {
 
   @Test
   public void testAlertActivation() {
-    // Under warning threshold
-    simulatedVoltage = PowerConstants.WARNING_VOLTAGE - 0.1;
+    // Under warning threshold (8.0 in createPowerConfig)
+    simulatedVoltage = 7.9;
     powerManager.periodic();
-
-    // We can't easily check the Alert object's private state without reflection,
-    // but we've exercised the logic paths.
-    assertTrue(powerManager.getVoltage() < PowerConstants.WARNING_VOLTAGE);
+    assertTrue(powerManager.getVoltage() < 8.0);
   }
 }

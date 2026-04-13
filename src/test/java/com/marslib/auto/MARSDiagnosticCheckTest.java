@@ -12,6 +12,7 @@ import com.marslib.power.MARSPowerManager;
 import com.marslib.power.PowerIO;
 import com.marslib.simulation.MARSPhysicsWorld;
 import com.marslib.swerve.GyroIO;
+import com.marslib.swerve.SwerveConfig;
 import com.marslib.swerve.SwerveDrive;
 import com.marslib.swerve.SwerveModule;
 import com.marslib.swerve.SwerveModuleIO;
@@ -66,7 +67,7 @@ public class MARSDiagnosticCheckTest {
             inputs.voltage = 12.6;
           }
         };
-    MARSPowerManager power = new MARSPowerManager(powerIO);
+    MARSPowerManager power = new MARSPowerManager(powerIO, MARSTestHarness.createPowerConfig());
 
     // Build SwerveDrive with stub IOs
     SwerveModuleIO stubIO =
@@ -79,13 +80,14 @@ public class MARSDiagnosticCheckTest {
           }
         };
 
+    SwerveConfig config = MARSTestHarness.createSwerveConfig();
     SwerveModule[] modules = {
-      new SwerveModule(0, stubIO),
-      new SwerveModule(1, stubIO),
-      new SwerveModule(2, stubIO),
-      new SwerveModule(3, stubIO)
+      new SwerveModule(0, stubIO, config),
+      new SwerveModule(1, stubIO, config),
+      new SwerveModule(2, stubIO, config),
+      new SwerveModule(3, stubIO, config)
     };
-    swerveDrive = new SwerveDrive(modules, new GyroIO() {}, power);
+    swerveDrive = new SwerveDrive(modules, new GyroIO() {}, power, config);
 
     // Build physics-backed Subsystems
     fastClimber = new MARSClimber(new LinearMechanismIOSim("Fast", 50.0, 0.5, 0.5), power);

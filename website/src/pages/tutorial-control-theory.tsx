@@ -1,0 +1,204 @@
+import React, { useEffect } from 'react';
+import Layout from '@theme/Layout';
+
+export default function TutorialControlTheory() {
+  return (
+    <Layout title="Tutorial Control Theory">
+      <div className="legacy-mars">
+        <div dangerouslySetInnerHTML={{ __html: `
+
+
+
+<main class="container" style="padding-top: 100px; padding-bottom: 80px;">
+  <div style="text-align: center; margin-bottom: 40px;">
+    <a href="/MARSLib/tutorials" class="back-link">← BACK TO TUTORIALS</a>
+    <h1>Control Theory Mastery</h1>
+  </div>
+
+  <p>Basic PID loops are reacting to the past. To achieve World Championship fidelity, your mechanisms must predict the future. MARSLib employs advanced control theory algorithms, including <strong>Feedforwards</strong> and <strong>State Space Models</strong>.</p>
+
+  <h2>1. Feedforward: Predicting the Physics</h2>
+  <p>A PID loop only acts when there is an error. A <strong>Feedforward (FF)</strong> model <em>anticipates</em> the physical energy required to reach a state. For a heavy elevator (like the <strong>Ladder</strong> climber), gravity is always pulling it down. A <code>ElevatorFeedforward</code> calculates the exact voltage needed to counteract gravity (kG) before the PID even kicks in.</p>
+
+  <pre><code class="language-java">// kS (Static Friction), kG (Gravity), kV (Velocity), kA (Acceleration)
+ElevatorFeedforward ff = new ElevatorFeedforward(0.1, 0.4, 1.2, 0.05);
+
+// Calculate voltage required to hold steady, PLUS voltage to reach target velocity
+double ffVoltage = ff.calculate(currentVelocity, targetVelocity);
+double pidVoltage = pid.calculate(currentPosition, targetPosition);
+
+motor.setVoltage(ffVoltage + pidVoltage);</code></pre>
+
+  <div id="pid-sim" class="sim-panel">
+    <div class="sim-controls">
+      <div class="sim-sliders">
+        <label>
+          <span>kP (Proportional) <span id="kp-val" style="color:var(--ai-cyan)">0.20</span></span>
+          <input type="range" id="kp" min="0" max="1" step="0.01" value="0.2">
+        </label>
+        <label>
+          <span>kI (Integral) <span id="ki-val" style="color:var(--ai-cyan)">0.00</span></span>
+          <input type="range" id="ki" min="0" max="1" step="0.01" value="0">
+        </label>
+        <label>
+          <span>kD (Derivative) <span id="kd-val" style="color:var(--ai-cyan)">0.05</span></span>
+          <input type="range" id="kd" min="0" max="1" step="0.01" value="0.05">
+        </label>
+        <label>
+          <span>kG (Gravity FF) <span id="kg-val" style="color:var(--ai-cyan)">0.0</span></span>
+          <input type="range" id="kg" min="0" max="10" step="0.1" value="0.0">
+        </label>
+      </div>
+      <button id="resetSim" class="btn btn-primary" style="background:var(--mars-red); color:#fff; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-family:'Orbitron'; font-weight:700; transition: transform 0.1s;">FLIP SETPOINT</button>
+    </div>
+    <div class="sim-display">
+      <!-- Elevator Canvas -->
+      <div style="flex: 0 0 80px; position: relative;">
+        <canvas id="elevatorCanvas" width="80" height="260" style="background: #111; border: 1px solid #333; border-radius: 6px;"></canvas>
+      </div>
+      <!-- Graph Canvas -->
+      <div style="flex: 1; position: relative;">
+        <canvas id="graphCanvas" width="700" height="260" style="width: 100%; height: 100%; display: block;"></canvas>
+        <div style="position:absolute; top:5px; right:15px; display:flex; gap:15px; font-family:'JetBrains Mono'; font-size:11px; background: rgba(0,0,0,0.5); padding: 4px 8px; border-radius: 4px;">
+          <span style="color:#29b6f6;">■ Setpoint</span>
+          <span style="color:#B32416;">■ Actual</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>2. Manual Tuning Guide</h2>
+  <p>If you cannot run SysId, you must manually tune your Feedforwards and PID loops. Always tune Feedforward (FF) first, as PID should only be correcting minor disturbances, not doing the heavy lifting.</p>
+  <ol>
+    <li><strong>Set everything to Zero:</strong> <code>kP = 0, kI = 0, kD = 0, kS = 0, kV = 0, kG = 0, kA = 0</code>.</li>
+    <li><strong>Tune kS (Static Friction):</strong> Slowly increase <code>kS</code> until the mechanism *just barely* starts to twitch or overcome friction.</li>
+    <li><strong>Tune kG (Gravity):</strong> For vertical elevators, increase <code>kG</code> until the elevator holds its current position without falling. For rotary arms, position the arm perfectly horizontal (where gravity is strongest) and tune <code>kG</code> until it holds steady.</li>
+    <li><strong>Tune kV (Velocity):</strong> Command the mechanism to run at a consistent voltage (e.g. 6v). Log the resulting steady-state velocity (e.g. 5 rad/s). Your <code>kV = 6.0 / 5.0 = 1.2</code>.</li>
+    <li><strong>Tune kP (Proportional):</strong> Now that the FF model handles the physics, increase <code>kP</code> to snap the mechanism quickly to its target. Stop increasing when it starts oscillating around the setpoint.</li>
+    <li><strong>Tune kD (Derivative):</strong> If you have slight overshoot or oscillation, increase <code>kD</code> to act as a dampener to slow the system down as it approaches the target.</li>
+  </ol>
+
+  <h2>3. Flywheel Inertia Recovery Simulator</h2>
+  <p>Flywheels do not fight gravity, but they require massive energy to accelerate (Inertia) and maintain high speeds (Friction/Air Drag). When a game piece enters the shooter, it rapidly saps energy from the wheel. <code>kV</code> keeps the wheel spinning, while <code>kP</code> and <code>kD</code> are crucial for <strong>Recovery Time</strong>.</p>
+
+  <div id="flywheel-sim" class="sim-panel">
+    <div class="sim-controls">
+      <div class="sim-sliders">
+        <label>
+          <span>kV (Velocity FF) <span id="fw-kv-val" style="color:var(--ai-cyan)">0.12</span></span>
+          <input type="range" id="fw-kv" min="0" max="0.3" step="0.01" value="0.12">
+        </label>
+        <label>
+          <span>kP (Proportional) <span id="fw-kp-val" style="color:var(--ai-cyan)">0.08</span></span>
+          <input type="range" id="fw-kp" min="0" max="0.5" step="0.01" value="0.08">
+        </label>
+        <label>
+          <span>kI (Integral) <span id="fw-ki-val" style="color:var(--ai-cyan)">0.00</span></span>
+          <input type="range" id="fw-ki" min="0" max="0.5" step="0.01" value="0.00">
+        </label>
+        <label>
+          <span>kD (Derivative) <span id="fw-kd-val" style="color:var(--ai-cyan)">0.00</span></span>
+          <input type="range" id="fw-kd" min="0" max="0.5" step="0.01" value="0.00">
+        </label>
+        <label>
+          <span>Setpoint: <span id="fw-set-val" style="color:var(--mars-red-light)">80</span></span>
+          <input type="range" id="fw-set" min="0" max="150" step="5" value="80">
+        </label>
+      </div>
+      <button id="btn-shoot" class="btn btn-primary" style="background:var(--mars-red); color:#fff; border:none; padding:10px 15px; border-radius:6px; cursor:pointer; font-family:'Orbitron'; font-weight:700;">INJECT BALL</button>
+    </div>
+    <div style="display: flex; height: 260px; padding: 20px; gap: 20px;">
+      <!-- Wheel Canvas -->
+      <div style="flex: 0 0 120px; display:flex; align-items:center; justify-content:center; position: relative;">
+        <canvas id="wheelCanvas" width="120" height="120" style="background: transparent;"></canvas>
+      </div>
+      <!-- Graph Canvas -->
+      <div style="flex: 1; position: relative;">
+        <canvas id="fwGraphCanvas" width="600" height="220" style="width: 100%; height: 100%; display: block; background:#111; border: 1px solid #333; border-radius: 6px;"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <p><strong>How to manually tune a Flywheel:</strong></p>
+  <ol>
+    <li>Set <strong>kP = 0, kI = 0, kD = 0</strong>. Adjust the <strong>kV</strong> slider until the Actual velocity (red) perfectly tracks the Setpoint velocity (blue) in steady state (e.g. at 80 rad/s). In this simulator, that happens around <code>kV = 0.12</code>.</li>
+    <li>Once the wheel holds its setpoint on its own, click <strong>INJECT BALL</strong> to introduce a massive physical drag disturbance.</li>
+    <li>Notice the horrific recovery time using only kV? Increase <strong>kP</strong> to aggressively spike voltage during the disturbance to violently snap the wheel back to the setpoint!</li>
+    <li>Use <strong>kD (Derivative)</strong> if your kP is causing the wheel to overshoot past 80 rad/s. A small kD acts like a parachute, slowing down the acceleration as the error rate rapidly shrinks.</li>
+    <li>Use <strong>kI (Integral)</strong> sparingly if the velocity gets "stuck" right underneath the setpoint (e.g. 78 rad/s) because kP isn't strong enough. In systems with high friction, the integral mathematically "builds up" over time, forcing that last 2 rad/s error to zero.</li>
+  </ol>
+
+  <h2>4. Rotating Arm (Cosine Feedforward)</h2>
+  <p>Unlike an Elevator where gravity pulls equally at all times, a rotating <strong>Arm</strong> or <strong>Intake Pivot</strong> experiences gravity differently depending on its angle. When perfectly horizontal (0&deg;), gravity exerts maximum torque. When perfectly vertical (90&deg; or -90&deg;), the center of mass aligns with the fulcrum, meaning gravity exerts <strong>zero torque</strong>.</p>
+  <p>An <code>ArmFeedforward</code> recalculates gravity every 20ms using <code>kG * Math.cos(angle)</code>. Try moving the arm to 90&deg; below to see the required kG voltage drop to zero!</p>
+
+  <div id="arm-sim" class="sim-panel">
+    <div class="sim-controls">
+      <div class="sim-sliders">
+        <label>
+          <span>Target Angle &deg;: <span id="arm-set-val" style="color:var(--ai-cyan)">0&deg;</span></span>
+          <input type="range" id="arm-set" min="-90" max="90" step="1" value="0">
+        </label>
+        <label>
+          <span>kG (Gravity Max) <span id="arm-kg-val" style="color:var(--ai-cyan)">0.6</span></span>
+          <input type="range" id="arm-kg" min="0" max="2.0" step="0.1" value="0.6">
+        </label>
+        <label>
+          <span>kP (Proportional) <span id="arm-kp-val" style="color:var(--ai-cyan)">0.05</span></span>
+          <input type="range" id="arm-kp" min="0" max="0.2" step="0.01" value="0.05">
+        </label>
+        <label>
+          <span>kI (Integral) <span id="arm-ki-val" style="color:var(--ai-cyan)">0.00</span></span>
+          <input type="range" id="arm-ki" min="0" max="0.2" step="0.01" value="0.00">
+        </label>
+        <label>
+          <span>kD (Derivative) <span id="arm-kd-val" style="color:var(--ai-cyan)">0.00</span></span>
+          <input type="range" id="arm-kd" min="0" max="0.2" step="0.01" value="0.00">
+        </label>
+      </div>
+    </div>
+    <div style="display: flex; padding: 20px; gap: 40px; align-items:center;">
+      <!-- Arm Canvas -->
+      <div style="position: relative;">
+        <canvas id="armCanvas" width="200" height="200" style="background: transparent; border:1px dashed #333; border-radius:50%;"></canvas>
+      </div>
+      <!-- Vector Math readout -->
+      <div style="flex: 1; font-family: 'JetBrains Mono', monospace; font-size: 14px; color: #ccc;">
+         <p>Current Angle: <span id="v-ang" style="color:white; font-weight:bold;">0.00&deg;</span></p>
+         <p style="margin-top:10px;">cos(<span id="v-cos-ang">0.00</span>&deg;) = <span id="v-cos-res" style="color:var(--ai-cyan)">1.000</span></p>
+         <p style="margin-top:10px;">FF Voltage = kG * cos(&theta;) = <span id="v-ffv" style="color:var(--ai-cyan); font-weight:bold;">0.60v</span></p>
+         <div style="width:100%; height:8px; background:#222; margin-top:20px; border-radius:4px;">
+             <div id="v-bar" style="height:100%; width:50%; background:var(--ai-cyan); border-radius:4px; transition:width 0.1s;"></div>
+         </div>
+         <p style="font-size:10px; margin-top:5px; color:#666;">Gravity Counter-Force Vector</p>
+      </div>
+    </div>
+  </div>
+
+  <p><strong>How to manually tune an Arm:</strong></p>
+  <ol>
+    <li>Change the <strong>Target Angle</strong> to exactly <code>0&deg;</code> (Horizontal). This is where gravity pulls the hardest.</li>
+    <li>Set <strong>kP = 0, kI = 0, kD = 0</strong> to disable PID. Adjust <strong>kG</strong> until the FF Voltage precisely counters the physical drop and holds the arm perfectly level.</li>
+    <li>With FF holding the arm up perfectly against gravity, increase <strong>kP</strong> to help the arm quickly snap to new angles.</li>
+    <li>If the arm oscillates (wobbles back and forth) before settling, add a small amount of <strong>kD (Derivative)</strong>. It will act like a shock absorber, damping the motion as it approaches the target.</li>
+    <li>If the arm gets stuck incredibly close to its target (e.g. 88&deg; when asking for 90&deg;), use a small <strong>kI (Integral)</strong> to wind up enough voltage to clear the final friction barrier.</li>
+    <li>Move the Target Angle to <code>90&deg;</code> (straight up). Watch the kG voltage organically shrink to zero and the arm stabilize effortlessly without PID fighting!</li>
+  </ol>
+
+  <div class="callout" style="margin-top: 50px;">
+    <h4>Looking for SysId?</h4>
+    <p>MARSLib recommends mathematically automating all kS, kV, and kA calculations. If you want to skip manual tuning and let WPILib calculate perfection, check out our dedicated <a href="/MARSLib/tutorial-sysid" style="color:var(--ai-cyan); font-weight:bold;">SysId Characterization Tutorial</a>!</p>
+  </div>
+</main>
+
+
+
+
+
+
+
+` }} />
+      </div>
+    </Layout>
+  );
+}

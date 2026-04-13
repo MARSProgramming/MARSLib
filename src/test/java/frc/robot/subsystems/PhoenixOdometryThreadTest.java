@@ -37,11 +37,11 @@ public class PhoenixOdometryThreadTest {
     BaseStatusSignal drivePos = driveMotor.getPosition();
     BaseStatusSignal turnPos = turnMotor.getPosition();
 
-    int id = thread.registerModule(drivePos, turnPos);
+    int id = thread.registerModule(drivePos, turnPos, 250.0);
     assertEquals(0, id);
 
     // Verify registration returns sequential IDs
-    int id2 = thread.registerModule(drivePos, turnPos);
+    int id2 = thread.registerModule(drivePos, turnPos, 250.0);
     assertEquals(1, id2);
   }
 
@@ -52,7 +52,7 @@ public class PhoenixOdometryThreadTest {
     BaseStatusSignal gyroYaw = pigeon.getYaw();
 
     // Should not throw
-    assertDoesNotThrow(() -> thread.registerGyro(gyroYaw));
+    assertDoesNotThrow(() -> thread.registerGyro(gyroYaw, 250.0));
   }
 
   @Test
@@ -64,7 +64,7 @@ public class PhoenixOdometryThreadTest {
     BaseStatusSignal drivePos = driveMotor.getPosition();
     BaseStatusSignal turnPos = turnMotor.getPosition();
 
-    int id = thread.registerModule(drivePos, turnPos);
+    int id = thread.registerModule(drivePos, turnPos, 250.0);
 
     PhoenixOdometryThread.SyncData data1 = thread.getSyncData(id);
     assertNotNull(data1);

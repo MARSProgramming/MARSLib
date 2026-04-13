@@ -9,7 +9,6 @@ package com.marslib.swerve;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import frc.robot.SwerveConstants;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -23,6 +22,7 @@ public class SwerveModule {
   private final SwerveModuleIO io;
   private final SwerveModuleIOInputsAutoLogged inputs = new SwerveModuleIOInputsAutoLogged();
   private final int index;
+  private final SwerveConfig config;
 
   private double lastDriveVoltage = 0.0;
   private final SwerveModulePosition[] cachedDeltas = new SwerveModulePosition[20];
@@ -33,10 +33,12 @@ public class SwerveModule {
    *
    * @param index The ID/Index (0=FL, 1=FR, 2=BL, 3=BR) for structural AdvantageKit logging keys.
    * @param io The implementation-specific IO layer (TalonFX or Sim).
+   * @param config The global swerve configuration.
    */
-  public SwerveModule(int index, SwerveModuleIO io) {
+  public SwerveModule(int index, SwerveModuleIO io, SwerveConfig config) {
     this.index = index;
     this.io = io;
+    this.config = config;
     for (int i = 0; i < cachedDeltas.length; i++) {
       cachedDeltas[i] = new SwerveModulePosition(0.0, Rotation2d.fromRadians(0.0));
     }
@@ -49,8 +51,7 @@ public class SwerveModule {
     // Update statically allocated positional cache
     cachedDeltaCount = Math.min(inputs.drivePositionsRad.length, cachedDeltas.length);
     for (int i = 0; i < cachedDeltaCount; i++) {
-      cachedDeltas[i].distanceMeters =
-          inputs.drivePositionsRad[i] * SwerveConstants.WHEEL_RADIUS_METERS;
+      cachedDeltas[i].distanceMeters = inputs.drivePositionsRad[i] * config.wheelRadiusMeters();
       cachedDeltas[i].angle = Rotation2d.fromRadians(inputs.turnPositionsRad[i]);
     }
   }
@@ -95,7 +96,7 @@ public class SwerveModule {
    */
   public SwerveModuleState getLatestState() {
     cachedLatestState.speedMetersPerSecond =
-        inputs.driveVelocityRadPerSec * SwerveConstants.WHEEL_RADIUS_METERS;
+        inputs.driveVelocityRadPerSec * config.wheelRadiusMeters();
     cachedLatestState.angle =
         Rotation2d.fromRadians(
             inputs.turnPositionsRad.length > 0
@@ -135,14 +136,12 @@ public class SwerveModule {
     // This prevents the robot from driving while the wheels are sideways, eliminating drift.
     double driveVoltage =
         (desiredState.speedMetersPerSecond * Math.cos(angleErrorRad))
-            * SwerveConstants.NOMINAL_BATTERY_VOLTAGE
-            / SwerveConstants.MAX_LINEAR_SPEED_MPS;
+            * config.nominalVoltage()
+            / config.maxLinearSpeedMps();
 
-    double turnVoltage = angleErrorRad * SwerveConstants.TURN_KP;
+    double turnVoltage = angleErrorRad * config.turnKp();
     turnVoltage =
-        Math.max(
-            -SwerveConstants.NOMINAL_BATTERY_VOLTAGE,
-            Math.min(SwerveConstants.NOMINAL_BATTERY_VOLTAGE, turnVoltage));
+        Math.max(-config.nominalVoltage(), Math.min(config.nominalVoltage(), turnVoltage));
 
     lastDriveVoltage = driveVoltage;
     io.setDriveVoltage(driveVoltage);

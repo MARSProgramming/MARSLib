@@ -5,7 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.marslib.mechanisms.FlywheelIOSim;
 import com.marslib.mechanisms.RotaryMechanismIOSim;
 import com.marslib.power.MARSPowerManager;
+import com.marslib.power.PowerConfig;
 import com.marslib.power.PowerIO;
+import com.marslib.swerve.SwerveConfig;
 import com.marslib.testing.MARSTestHarness;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -43,7 +45,8 @@ public class MARSCommandCoverageTest {
           }
         };
 
-    powerManager = new MARSPowerManager(spoofedVoltageIO);
+    PowerConfig powerConfig = new PowerConfig(10.0, 8.0, 7.0);
+    powerManager = new MARSPowerManager(spoofedVoltageIO, powerConfig);
 
     cowl = new MARSCowl(new RotaryMechanismIOSim("Cowl", 50.0, 0.5, 0.5), powerManager);
     intakePivot =
@@ -73,14 +76,16 @@ public class MARSCommandCoverageTest {
                 edu.wpi.first.math.system.plant.DCMotor.getKrakenX60Foc(1), 1.0, 0.002),
             powerManager);
 
+    SwerveConfig swerveConfig = MARSTestHarness.createSwerveConfig();
     com.marslib.swerve.SwerveModule[] modules = new com.marslib.swerve.SwerveModule[4];
     for (int i = 0; i < 4; i++) {
       modules[i] =
-          new com.marslib.swerve.SwerveModule(i, new com.marslib.swerve.SwerveModuleIOSim(i));
+          new com.marslib.swerve.SwerveModule(
+              i, new com.marslib.swerve.SwerveModuleIOSim(i), swerveConfig);
     }
     swerveDrive =
         new com.marslib.swerve.SwerveDrive(
-            modules, new com.marslib.swerve.GyroIOSim(), powerManager);
+            modules, new com.marslib.swerve.GyroIOSim(), powerManager, swerveConfig);
 
     superstructure =
         new MARSSuperstructure(

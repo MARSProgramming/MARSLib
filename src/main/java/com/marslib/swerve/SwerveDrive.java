@@ -24,8 +24,6 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.SwerveConstants;
-import frc.robot.constants.ModeConstants;
 import java.util.Arrays;
 import java.util.function.Supplier;
 import org.ironmaple.simulation.drivesims.COTS;
@@ -44,6 +42,7 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
   private final SwerveDriveKinematics kinematics;
   private final MARSPowerManager powerManager;
   private final OnlineFeedforwardEstimator driveFeedforwardEstimator;
+  private final SwerveConfig config;
 
   private final com.marslib.faults.Alert gyroAlert =
       new com.marslib.faults.Alert(
@@ -65,14 +64,16 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
   private final SwerveDiagnostics diagnostics;
 
   @SuppressWarnings("PMD.NullAssignment")
-  public SwerveDrive(SwerveModule[] modules, GyroIO gyroIO, MARSPowerManager powerManager) {
+  public SwerveDrive(
+      SwerveModule[] modules, GyroIO gyroIO, MARSPowerManager powerManager, SwerveConfig config) {
     this.modules = Arrays.copyOf(modules, modules.length);
     this.gyroIO = gyroIO;
     this.powerManager = powerManager;
+    this.config = config;
 
     GyroIOSim gyroIOSim = (gyroIO instanceof GyroIOSim) ? (GyroIOSim) gyroIO : null;
 
-    this.kinematics = new SwerveDriveKinematics(SwerveConstants.MODULE_LOCATIONS);
+    this.kinematics = new SwerveDriveKinematics(config.moduleLocations());
 
     SwerveModulePosition[] initialPositions =
         new SwerveModulePosition[] {
@@ -80,24 +81,22 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
           modules[2].getLatestPosition(), modules[3].getLatestPosition()
         };
 
-    this.odometry = new SwerveOdometry(kinematics, initialPositions);
+    this.odometry = new SwerveOdometry(kinematics, config, initialPositions);
     this.diagnostics = new SwerveDiagnostics(this, this.modules);
 
-    if (frc.robot.Robot.isSimulation()) {
+    if (gyroIOSim != null) {
       DriveTrainSimulationConfig driveSimConfig =
           DriveTrainSimulationConfig.Default()
-              .withRobotMass(Kilograms.of(SwerveConstants.ROBOT_MASS_KG))
+              .withRobotMass(Kilograms.of(config.robotMassKg()))
               .withBumperSize(
-                  Meters.of(SwerveConstants.BUMPER_LENGTH_METERS),
-                  Meters.of(SwerveConstants.BUMPER_WIDTH_METERS))
+                  Meters.of(config.bumperLengthMeters()), Meters.of(config.bumperWidthMeters()))
               .withTrackLengthTrackWidth(
-                  Meters.of(SwerveConstants.WHEELBASE_METERS),
-                  Meters.of(SwerveConstants.TRACK_WIDTH_METERS))
+                  Meters.of(config.wheelbaseMeters()), Meters.of(config.trackWidthMeters()))
               .withSwerveModule(
                   COTS.ofMark4(
                       edu.wpi.first.math.system.plant.DCMotor.getKrakenX60Foc(1),
                       edu.wpi.first.math.system.plant.DCMotor.getKrakenX60Foc(1),
-                      SwerveConstants.WHEEL_COF_STATIC,
+                      config.wheelCOFStatic(),
                       2));
 
       simDrive = new SwerveDriveSimulation(driveSimConfig, odometry.getPose());
@@ -111,10 +110,8 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
         modules[i].injectModuleSimulation(simDrive.getModules()[i]);
       }
 
-      if (gyroIOSim != null) {
-        gyroIOSim.setGyroSimulation(simDrive.getGyroSimulation());
-        gyroIOSim.setSwerveDriveSimulation(simDrive);
-      }
+      gyroIOSim.setGyroSimulation(simDrive.getGyroSimulation());
+      gyroIOSim.setSwerveDriveSimulation(simDrive);
     } else {
       simDrive = null;
       lidarSim = null;
@@ -124,9 +121,9 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
 
     this.setpointGenerator = new SwerveSetpointGenerator(this.kinematics);
     this.kinematicLimits = new SwerveSetpointGenerator.KinematicLimits();
-    this.kinematicLimits.maxDriveVelocity = SwerveConstants.MAX_LINEAR_SPEED_MPS;
-    this.kinematicLimits.maxDriveAcceleration = SwerveConstants.WHEEL_COF_STATIC * 9.81;
-    this.kinematicLimits.maxSteeringVelocity = SwerveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC;
+    this.kinematicLimits.maxDriveVelocity = config.maxLinearSpeedMps();
+    this.kinematicLimits.maxDriveAcceleration = config.wheelCOFStatic() * 9.81;
+    this.kinematicLimits.maxSteeringVelocity = config.maxAngularSpeedRadPerSec();
 
     this.prevSetpoint =
         new SwerveSetpointGenerator.SwerveSetpoint(
@@ -178,8 +175,7 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
     Logger.recordOutput("SwerveDrive/MeasuredStates", measuredStatesCache);
 
     double currentVelocity = measuredStatesCache[0].speedMetersPerSecond;
-    double currentAccel =
-        (currentVelocity - lastDriveVelocityForSysId) / ModeConstants.LOOP_PERIOD_SECS;
+    double currentAccel = (currentVelocity - lastDriveVelocityForSysId) / config.loopPeriodSecs();
     lastDriveVelocityForSysId = currentVelocity;
 
     driveFeedforwardEstimator.addMeasurement(
@@ -187,13 +183,9 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
   }
 
   public void runVelocity(ChassisSpeeds speeds) {
-    ChassisSpeeds discretizedSpeeds =
-        ChassisSpeeds.discretize(speeds, ModeConstants.LOOP_PERIOD_SECS);
+    ChassisSpeeds discretizedSpeeds = ChassisSpeeds.discretize(speeds, config.loopPeriodSecs());
 
-    double voltageScale =
-        powerManager.calculateVoltageScaleFactor(
-            frc.robot.constants.PowerConstants.NOMINAL_VOLTAGE,
-            frc.robot.constants.PowerConstants.CRITICAL_VOLTAGE);
+    double voltageScale = powerManager.calculateSheddingFactor();
 
     ChassisSpeeds scaledSpeeds =
         new ChassisSpeeds(
@@ -203,7 +195,7 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
 
     this.prevSetpoint =
         setpointGenerator.generateSetpoint(
-            kinematicLimits, prevSetpoint, scaledSpeeds, ModeConstants.LOOP_PERIOD_SECS);
+            kinematicLimits, prevSetpoint, scaledSpeeds, config.loopPeriodSecs());
 
     SwerveModuleState[] states = prevSetpoint.moduleStates;
 
@@ -214,7 +206,7 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
   }
 
   public void setModuleStates(SwerveModuleState... states) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(states, SwerveConstants.MAX_LINEAR_SPEED_MPS);
+    SwerveDriveKinematics.desaturateWheelSpeeds(states, config.maxLinearSpeedMps());
     for (int i = 0; i < 4; i++) modules[i].setDesiredState(states[i]);
     Logger.recordOutput("SwerveDrive/DesiredStates", states);
   }
@@ -279,5 +271,9 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
   @Override
   public Command getSystemCheckCommand() {
     return diagnostics.getSystemCheckCommand();
+  }
+
+  public SwerveConfig getConfig() {
+    return config;
   }
 }

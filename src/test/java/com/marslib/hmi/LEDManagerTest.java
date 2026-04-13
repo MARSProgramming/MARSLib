@@ -63,7 +63,8 @@ public class LEDManagerTest {
           }
         };
 
-    MARSPowerManager power = new MARSPowerManager(spoofedPowerIO);
+    MARSPowerManager power =
+        new MARSPowerManager(spoofedPowerIO, MARSTestHarness.createPowerConfig());
     power.periodic(); // Prime the voltage reading
     ledManager = new LEDManager(recordingIO, power);
   }
@@ -86,7 +87,8 @@ public class LEDManagerTest {
             inputs.voltage = spoofedVoltage;
           }
         };
-    MARSPowerManager lowPower = new MARSPowerManager(lowVoltageIO);
+    MARSPowerManager lowPower =
+        new MARSPowerManager(lowVoltageIO, MARSTestHarness.createPowerConfig());
     lowPower.periodic();
     LEDManager lowLedManager = new LEDManager(recordingIO, lowPower);
 

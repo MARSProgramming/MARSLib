@@ -6,6 +6,7 @@ import com.marslib.power.MARSPowerManager;
 import com.marslib.power.PowerIOSim;
 import com.marslib.simulation.MARSPhysicsWorld;
 import com.marslib.swerve.GyroIOSim;
+import com.marslib.swerve.SwerveConfig;
 import com.marslib.swerve.SwerveDrive;
 import com.marslib.swerve.SwerveModule;
 import com.marslib.swerve.SwerveModuleIOSim;
@@ -58,15 +59,19 @@ public class VisionFusionTest {
     MARSTestHarness.reset();
     DriverStationSim.setAutonomous(false);
     // Construct swerve
-    powerManager = new MARSPowerManager(new PowerIOSim());
+    powerManager =
+        new MARSPowerManager(
+            new PowerIOSim(MARSTestHarness.createPowerConfig()),
+            MARSTestHarness.createPowerConfig());
     GyroIOSim gyroSim = new GyroIOSim();
+    SwerveConfig config = MARSTestHarness.createSwerveConfig();
 
     SwerveModule[] modules = new SwerveModule[4];
     for (int i = 0; i < 4; i++) {
-      modules[i] = new SwerveModule(i, new SwerveModuleIOSim(i));
+      modules[i] = new SwerveModule(i, new SwerveModuleIOSim(i), config);
     }
 
-    swerveDrive = new SwerveDrive(modules, gyroSim, powerManager);
+    swerveDrive = new SwerveDrive(modules, gyroSim, powerManager, config);
 
     // Start the robot at a known pose near AprilTags so the camera can "see" them
     // Blue alliance wall area — tags should be visible on the far wall/reef
@@ -77,7 +82,9 @@ public class VisionFusionTest {
     AprilTagVisionIOSim cameraIO =
         new AprilTagVisionIOSim("TestCam", CAMERA_TRANSFORM, swerveDrive::getSimPose3d);
 
-    vision = new MARSVision(swerveDrive, List.of(cameraIO), List.of());
+    vision =
+        new MARSVision(
+            swerveDrive, List.of(cameraIO), List.of(), MARSTestHarness.createVisionConfig());
   }
 
   @AfterEach

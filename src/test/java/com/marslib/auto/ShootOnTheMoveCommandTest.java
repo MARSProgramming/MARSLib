@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.marslib.power.MARSPowerManager;
 import com.marslib.power.PowerIOSim;
 import com.marslib.swerve.GyroIOSim;
+import com.marslib.swerve.SwerveConfig;
 import com.marslib.swerve.SwerveDrive;
 import com.marslib.swerve.SwerveModule;
 import com.marslib.swerve.SwerveModuleIOSim;
@@ -42,14 +43,18 @@ public class ShootOnTheMoveCommandTest {
     MARSTestHarness.reset();
 
     GyroIOSim gyroSim = new GyroIOSim();
-    MARSPowerManager powerManager = new MARSPowerManager(new PowerIOSim());
+    MARSPowerManager powerManager =
+        new MARSPowerManager(
+            new PowerIOSim(MARSTestHarness.createPowerConfig()),
+            MARSTestHarness.createPowerConfig());
+    SwerveConfig config = MARSTestHarness.createSwerveConfig();
 
     SwerveModule[] modules = new SwerveModule[4];
     for (int i = 0; i < 4; i++) {
-      modules[i] = new SwerveModule(i, new SwerveModuleIOSim(i));
+      modules[i] = new SwerveModule(i, new SwerveModuleIOSim(i), config);
     }
 
-    swerveDrive = new SwerveDrive(modules, gyroSim, powerManager);
+    swerveDrive = new SwerveDrive(modules, gyroSim, powerManager, config);
     swerveDrive.resetPose(new Pose2d(0, 0, new Rotation2d()));
 
     cowl =

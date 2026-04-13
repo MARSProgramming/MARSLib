@@ -71,9 +71,11 @@ public class MechanismIOInstrumentationTest {
 
   @Test
   public void testSwerveModuleIOTalonFX() {
+    com.marslib.swerve.SwerveConfig config =
+        com.marslib.testing.MARSTestHarness.createSwerveConfig();
     assertDoesNotThrow(
         () -> {
-          SwerveModuleIOTalonFX io = new SwerveModuleIOTalonFX(12, 13, "rio");
+          SwerveModuleIOTalonFX io = new SwerveModuleIOTalonFX(12, 13, "rio", config);
           io.updateInputs(new com.marslib.swerve.SwerveModuleIO.SwerveModuleIOInputs());
 
           // Force PID update branch

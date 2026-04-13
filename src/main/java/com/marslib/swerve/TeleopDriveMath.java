@@ -1,14 +1,7 @@
-/**
- * MARSLib - FRC Team 2614 "MARS" Software Framework (c) 2024-2026 Mountaineer Area RoboticS (MARS)
- *
- * <p>Developed by MARS 2614 - Mountaineer Area RoboticS. Use of this source code is governed by an
- * MIT-style license that can be found in the LICENSE file.
- */
 package com.marslib.swerve;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import frc.robot.SwerveConstants;
 
 /**
  * Pure-function joystick-to-ChassisSpeeds math for the teleop drive pipeline.
@@ -43,6 +36,8 @@ public final class TeleopDriveMath {
    * @param rawLeftY Raw left stick Y axis (negative = forward per HID convention)
    * @param rawLeftX Raw left stick X axis (negative = left per HID convention)
    * @param rawOmega Raw right stick X axis (negative = CCW per HID convention)
+   * @param maxLinearSpeedMps The maximum translation speed of the robot.
+   * @param maxAngularSpeedRadPerSec The maximum rotation speed of the robot.
    * @param isRedAlliance Whether the robot is on the Red alliance (flips translation axes)
    * @param outSpeeds The pre-allocated ChassisSpeeds to populate with field-relative velocities.
    *     Omega is negated so that rightward stick (positive HID) produces negative (clockwise)
@@ -52,6 +47,8 @@ public final class TeleopDriveMath {
       double rawLeftY,
       double rawLeftX,
       double rawOmega,
+      double maxLinearSpeedMps,
+      double maxAngularSpeedRadPerSec,
       boolean isRedAlliance,
       ChassisSpeeds outSpeeds) {
     double xVal = MathUtil.applyDeadband(rawLeftY, DEADBAND);
@@ -59,9 +56,9 @@ public final class TeleopDriveMath {
     double omgVal = MathUtil.applyDeadband(rawOmega, DEADBAND);
 
     // Cube joystick first to maintain exponential curve, then scale to physical units
-    double mappedX = Math.pow(xVal, 3.0) * SwerveConstants.MAX_LINEAR_SPEED_MPS;
-    double mappedY = Math.pow(yVal, 3.0) * SwerveConstants.MAX_LINEAR_SPEED_MPS;
-    double mappedOmg = Math.pow(omgVal, 3.0) * SwerveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC;
+    double mappedX = Math.pow(xVal, 3.0) * maxLinearSpeedMps;
+    double mappedY = Math.pow(yVal, 3.0) * maxLinearSpeedMps;
+    double mappedOmg = Math.pow(omgVal, 3.0) * maxAngularSpeedRadPerSec;
 
     // Negate for WPILib convention (stick forward = negative axis, but field +X = forward)
     double orientedX = -mappedX;

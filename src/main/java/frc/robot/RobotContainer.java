@@ -12,11 +12,13 @@ import com.marslib.mechanisms.RotaryMechanismIO;
 import com.marslib.mechanisms.RotaryMechanismIOSim;
 import com.marslib.mechanisms.RotaryMechanismIOTalonFX;
 import com.marslib.power.MARSPowerManager;
+import com.marslib.power.PowerConfig;
 import com.marslib.power.PowerIOReal;
 import com.marslib.power.PowerIOSim;
 import com.marslib.swerve.GyroIO;
 import com.marslib.swerve.GyroIOPigeon2;
 import com.marslib.swerve.GyroIOSim;
+import com.marslib.swerve.SwerveConfig;
 import com.marslib.swerve.SwerveDrive;
 import com.marslib.swerve.SwerveModule;
 import com.marslib.swerve.SwerveModuleIO;
@@ -25,17 +27,22 @@ import com.marslib.swerve.SwerveModuleIOTalonFX;
 import com.marslib.vision.AprilTagVisionIOLimelight;
 import com.marslib.vision.AprilTagVisionIOSim;
 import com.marslib.vision.MARSVision;
+import com.marslib.vision.VisionConfig;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.AutoConstants;
 import frc.robot.constants.ClimberConstants;
 import frc.robot.constants.CowlConstants;
 import frc.robot.constants.DriveConstants;
+import frc.robot.constants.FieldConstants;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.LEDConstants;
 import frc.robot.constants.ModeConstants;
+import frc.robot.constants.PowerConstants;
 import frc.robot.constants.ShooterConstants;
+import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.MARSClimber;
 import frc.robot.subsystems.MARSCowl;
 import frc.robot.subsystems.MARSIntakePivot;
@@ -76,23 +83,85 @@ public class RobotContainer {
   }
 
   public RobotContainer(boolean buildDashboards) {
+    // 0. Initialize Library Configurations from App Constants
+    final SwerveConfig swerveConfig =
+        new SwerveConfig(
+            SwerveConstants.MODULE_LOCATIONS,
+            SwerveConstants.MAX_LINEAR_SPEED_MPS,
+            SwerveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC,
+            SwerveConstants.WHEEL_RADIUS_METERS,
+            SwerveConstants.TURN_KP,
+            PowerConstants.NOMINAL_VOLTAGE,
+            PowerConstants.WARNING_VOLTAGE,
+            PowerConstants.CRITICAL_VOLTAGE,
+            SwerveConstants.DRIVE_GEAR_RATIO,
+            SwerveConstants.DRIVE_STATOR_CURRENT_LIMIT,
+            SwerveConstants.ROBOT_MASS_KG,
+            SwerveConstants.ROBOT_MOI_KG_M2,
+            SwerveConstants.BUMPER_LENGTH_METERS,
+            SwerveConstants.BUMPER_WIDTH_METERS,
+            SwerveConstants.WHEELBASE_METERS,
+            SwerveConstants.TRACK_WIDTH_METERS,
+            SwerveConstants.WHEEL_COF_STATIC,
+            ModeConstants.LOOP_PERIOD_SECS,
+            DriveConstants.TELEOP_LINEAR_ACCEL_LIMIT,
+            DriveConstants.TELEOP_OMEGA_ACCEL_LIMIT,
+            DriveConstants.HEADING_KP,
+            SwerveConstants.AUTO_TRANSLATION_KP,
+            SwerveConstants.AUTO_TRANSLATION_KD,
+            SwerveConstants.AUTO_ROTATION_KP,
+            SwerveConstants.AUTO_ROTATION_KD,
+            AutoConstants.ALIGN_TRANSLATION_KP,
+            AutoConstants.ALIGN_TRANSLATION_IZONE_METERS,
+            AutoConstants.ALIGN_THETA_KP,
+            AutoConstants.ALIGN_THETA_IZONE_RAD,
+            DriveConstants.TELEMETRY_HZ,
+            DriveConstants.ODOMETRY_HZ,
+            SwerveConstants.TURN_GEAR_RATIO,
+            SwerveConstants.TURN_STATOR_CURRENT_LIMIT);
+
+    final VisionConfig visionConfig =
+        new VisionConfig(
+            VisionConstants.MAX_Z_HEIGHT::get,
+            FieldConstants.FIELD_LENGTH_METERS,
+            FieldConstants.FIELD_WIDTH_METERS,
+            VisionConstants.FIELD_MARGIN_METERS::get,
+            VisionConstants.MAX_TILT_DEG::get,
+            VisionConstants.MAX_ANGULAR_ACCEL_DEG_PER_SEC2::get,
+            VisionConstants.MAX_AMBIGUITY::get,
+            VisionConstants.TAG_STD_BASE::get,
+            VisionConstants.MULTI_TAG_STD_MULTIPLIER::get,
+            VisionConstants.ANGULAR_STD_MULTIPLIER::get,
+            VisionConstants.LINEAR_VELOCITY_STD_MULTIPLIER::get,
+            VisionConstants.ANGULAR_VELOCITY_STD_MULTIPLIER::get,
+            VisionConstants.SLAM_STD_DEV::get,
+            VisionConstants.SLAM_ANGULAR_STD_DEV::get,
+            ModeConstants.LOOP_PERIOD_SECS);
+
+    final PowerConfig powerConfig =
+        new PowerConfig(
+            PowerConstants.NOMINAL_VOLTAGE,
+            PowerConstants.WARNING_VOLTAGE,
+            PowerConstants.CRITICAL_VOLTAGE);
+
     // 1. Dependency Injection based on Current Mode
     switch (ModeConstants.CURRENT_MODE) {
       case SIM:
         {
-          powerManager = new MARSPowerManager(new PowerIOSim());
+          powerManager = new MARSPowerManager(new PowerIOSim(powerConfig), powerConfig);
           GyroIOSim gyroSim = new GyroIOSim();
 
           swerveDrive =
               new SwerveDrive(
                   new SwerveModule[] {
-                    new SwerveModule(0, new SwerveModuleIOSim(0)),
-                    new SwerveModule(1, new SwerveModuleIOSim(1)),
-                    new SwerveModule(2, new SwerveModuleIOSim(2)),
-                    new SwerveModule(3, new SwerveModuleIOSim(3))
+                    new SwerveModule(0, new SwerveModuleIOSim(0), swerveConfig),
+                    new SwerveModule(1, new SwerveModuleIOSim(1), swerveConfig),
+                    new SwerveModule(2, new SwerveModuleIOSim(2), swerveConfig),
+                    new SwerveModule(3, new SwerveModuleIOSim(3), swerveConfig)
                   },
                   gyroSim,
-                  powerManager);
+                  powerManager,
+                  swerveConfig);
 
           climber =
               new MARSClimber(
@@ -150,12 +219,13 @@ public class RobotContainer {
                           new Transform3d(
                               new Translation3d(-0.3, 0.0, 0.5), new Rotation3d(0, 0, Math.PI)),
                           swerveDrive::getSimPose3d)),
-                  java.util.List.of());
+                  java.util.List.of(),
+                  visionConfig);
           break;
         }
       case REAL:
         {
-          powerManager = new MARSPowerManager(new PowerIOReal());
+          powerManager = new MARSPowerManager(new PowerIOReal(), powerConfig);
 
           swerveDrive =
               new SwerveDrive(
@@ -165,28 +235,37 @@ public class RobotContainer {
                         new SwerveModuleIOTalonFX(
                             DriveConstants.FL_DRIVE_ID,
                             DriveConstants.FL_TURN_ID,
-                            DriveConstants.CANBUS)),
+                            DriveConstants.CANBUS,
+                            swerveConfig),
+                        swerveConfig),
                     new SwerveModule(
                         1,
                         new SwerveModuleIOTalonFX(
                             DriveConstants.FR_DRIVE_ID,
                             DriveConstants.FR_TURN_ID,
-                            DriveConstants.CANBUS)),
+                            DriveConstants.CANBUS,
+                            swerveConfig),
+                        swerveConfig),
                     new SwerveModule(
                         2,
                         new SwerveModuleIOTalonFX(
                             DriveConstants.BL_DRIVE_ID,
                             DriveConstants.BL_TURN_ID,
-                            DriveConstants.CANBUS)),
+                            DriveConstants.CANBUS,
+                            swerveConfig),
+                        swerveConfig),
                     new SwerveModule(
                         3,
                         new SwerveModuleIOTalonFX(
                             DriveConstants.BR_DRIVE_ID,
                             DriveConstants.BR_TURN_ID,
-                            DriveConstants.CANBUS))
+                            DriveConstants.CANBUS,
+                            swerveConfig),
+                        swerveConfig)
                   },
-                  new GyroIOPigeon2(DriveConstants.PIGEON2_ID, DriveConstants.CANBUS),
-                  powerManager);
+                  new GyroIOPigeon2(DriveConstants.PIGEON2_ID, DriveConstants.CANBUS, swerveConfig),
+                  powerManager,
+                  swerveConfig);
 
           climber =
               new MARSClimber(
@@ -255,7 +334,8 @@ public class RobotContainer {
                   java.util.List.of(
                       new AprilTagVisionIOLimelight("limelight-front"),
                       new AprilTagVisionIOLimelight("limelight-back")),
-                  java.util.List.of());
+                  java.util.List.of(),
+                  visionConfig);
           break;
         }
       case REPLAY:
@@ -263,22 +343,31 @@ public class RobotContainer {
         {
           // REPLAY mode: no-op IO implementations to allow
           // deterministic log replay without hardware or physics dependencies.
-          powerManager = new MARSPowerManager(new PowerIOSim());
+          powerManager = new MARSPowerManager(new PowerIOSim(powerConfig), powerConfig);
 
           swerveDrive =
               new SwerveDrive(
                   new SwerveModule[] {
                     new SwerveModule(
-                        0, com.marslib.util.ReplayIOFactory.createProxy(SwerveModuleIO.class)),
+                        0,
+                        com.marslib.util.ReplayIOFactory.createProxy(SwerveModuleIO.class),
+                        swerveConfig),
                     new SwerveModule(
-                        1, com.marslib.util.ReplayIOFactory.createProxy(SwerveModuleIO.class)),
+                        1,
+                        com.marslib.util.ReplayIOFactory.createProxy(SwerveModuleIO.class),
+                        swerveConfig),
                     new SwerveModule(
-                        2, com.marslib.util.ReplayIOFactory.createProxy(SwerveModuleIO.class)),
+                        2,
+                        com.marslib.util.ReplayIOFactory.createProxy(SwerveModuleIO.class),
+                        swerveConfig),
                     new SwerveModule(
-                        3, com.marslib.util.ReplayIOFactory.createProxy(SwerveModuleIO.class))
+                        3,
+                        com.marslib.util.ReplayIOFactory.createProxy(SwerveModuleIO.class),
+                        swerveConfig)
                   },
                   com.marslib.util.ReplayIOFactory.createProxy(GyroIO.class),
-                  powerManager);
+                  powerManager,
+                  swerveConfig);
 
           climber =
               new MARSClimber(
@@ -309,7 +398,8 @@ public class RobotContainer {
                   powerManager);
           ledManager = new LEDManager(new LEDIOAddressable(0, LEDConstants.LENGTH), powerManager);
 
-          vision = new MARSVision(swerveDrive, java.util.List.of(), java.util.List.of());
+          vision =
+              new MARSVision(swerveDrive, java.util.List.of(), java.util.List.of(), visionConfig);
           break;
         }
     }
@@ -377,6 +467,7 @@ public class RobotContainer {
     RobotBindings.configureBindings(
         operatorInterface,
         swerveDrive,
+        swerveConfig,
         superstructure,
         climber,
         cowl,

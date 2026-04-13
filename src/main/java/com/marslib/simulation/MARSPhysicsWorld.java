@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
-import frc.robot.constants.FieldConstants;
 import java.util.HashMap;
 import java.util.Map;
 import org.dyn4j.dynamics.Body;
@@ -96,9 +95,9 @@ public class MARSPhysicsWorld {
   @SuppressWarnings("PMD.AssignmentToNonFinalStatic")
   private MARSPhysicsWorld() {
     instance = this;
-    // By default, full realism mode (efficiency mode OFF) unless toggled via FieldConstants
+    // By default, full realism mode (efficiency mode OFF)
     arena = new ArenaWrapper(true);
-    arena.setEfficiencyMode(FieldConstants.MAPLE_SIM_EFFICIENCY_MODE);
+    arena.setEfficiencyMode(false);
 
     mechanismBodies = new HashMap<>();
 

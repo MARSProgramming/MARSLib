@@ -12,10 +12,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.DriveConstants;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -28,16 +25,14 @@ import org.littletonrobotics.junction.Logger;
  */
 public class TeleopDriveCommand extends Command {
   private final SwerveDrive swerveDrive;
+  private final SwerveConfig config;
   private final DoubleSupplier xSupplier;
   private final DoubleSupplier ySupplier;
   private final DoubleSupplier omegaSupplier;
 
-  private final TractionControlLimiter tractionLimiter =
-      new TractionControlLimiter(DriveConstants.TELEOP_LINEAR_ACCEL_LIMIT);
-  private final SlewRateLimiter omegaLimiter =
-      new SlewRateLimiter(DriveConstants.TELEOP_OMEGA_ACCEL_LIMIT);
-  private final PIDController headingController =
-      new PIDController(DriveConstants.HEADING_KP, 0, 0);
+  private final TractionControlLimiter tractionLimiter;
+  private final SlewRateLimiter omegaLimiter;
+  private final PIDController headingController;
 
   private Rotation2d targetHeading = new Rotation2d();
   private final ChassisSpeeds preSlewSpeeds = new ChassisSpeeds();
@@ -51,13 +46,19 @@ public class TeleopDriveCommand extends Command {
 
   public TeleopDriveCommand(
       SwerveDrive swerveDrive,
+      SwerveConfig config,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier) {
     this.swerveDrive = swerveDrive;
+    this.config = config;
     this.xSupplier = xSupplier;
     this.ySupplier = ySupplier;
     this.omegaSupplier = omegaSupplier;
+
+    this.tractionLimiter = new TractionControlLimiter(config.teleopLinearAccelLimit());
+    this.omegaLimiter = new SlewRateLimiter(config.teleopOmegaAccelLimit());
+    this.headingController = new PIDController(config.headingKp(), 0, 0);
 
     // Task 3: Cap integral windup safely (max ~5 degrees tolerance)
     headingController.setIZone(Math.toRadians(5.0));
@@ -72,28 +73,29 @@ public class TeleopDriveCommand extends Command {
 
   @Override
   public void execute() {
-    boolean isRed =
-        DriverStation.getAlliance().isPresent()
-            && DriverStation.getAlliance().get() == Alliance.Red;
+    boolean isRed = com.marslib.util.AllianceUtil.isRed();
 
     double rawX = xSupplier.getAsDouble();
     double rawY = ySupplier.getAsDouble();
     double rawOmega = omegaSupplier.getAsDouble();
 
-    TeleopDriveMath.computeFieldRelativeSpeeds(rawX, rawY, rawOmega, isRed, preSlewSpeeds);
+    TeleopDriveMath.computeFieldRelativeSpeeds(
+        rawX,
+        rawY,
+        rawOmega,
+        config.maxLinearSpeedMps(),
+        config.maxAngularSpeedRadPerSec(),
+        isRed,
+        preSlewSpeeds);
 
     double xVal = MathUtil.applyDeadband(rawX, TeleopDriveMath.DEADBAND);
     double yVal = MathUtil.applyDeadband(rawY, TeleopDriveMath.DEADBAND);
     double omgVal = MathUtil.applyDeadband(rawOmega, TeleopDriveMath.DEADBAND);
 
     // Mutate translation dynamically to satisfy traction control
-    targetTrans.getY(); // ensure static linking
     Translation2d finalTrans =
         tractionLimiter.calculate(
-            new Translation2d(
-                preSlewSpeeds.vxMetersPerSecond,
-                preSlewSpeeds
-                    .vyMetersPerSecond)); // TractionControlLimiter is stateful, creates internally.
+            new Translation2d(preSlewSpeeds.vxMetersPerSecond, preSlewSpeeds.vyMetersPerSecond));
 
     targetSpeeds.vxMetersPerSecond = finalTrans.getX();
     targetSpeeds.vyMetersPerSecond = finalTrans.getY();
