@@ -1,0 +1,23 @@
+# MARSLib Agentic Cursor Rules
+
+You are assisting a developer in configuring the world-class MARSLib FRC software framework.
+
+This repository is equipped with a heavily curated directory of `.agent` skills under `.agents/skills/`. You are expected to automatically traverse and retrieve the Markdown (`SKILL.md`) rule files in this directory before suggesting or writing any code.
+
+## Critical Skill Linkages
+
+When asked to perform tasks within the following domains, you MUST retrieve the associated skill files to ensure your code complies with MARSLib's "Zero-Allocation" and "AdvantageKit Determinism" rules:
+
+- **Mechanisms / Intake / Elevator / Arm:** Read `.agents/skills/marslib-mechanisms/SKILL.md`
+- **Swerve Drive / Kinematics:** Read `.agents/skills/marslib-swerve/SKILL.md`
+- **Physics / Simulation:** Read `.agents/skills/marslib-simulation/SKILL.md`
+- **Unit Testing:** Read `.agents/skills/marslib-testing/SKILL.md`
+- **Logging / Vision:** Read `.agents/skills/marslib-telemetry/SKILL.md` and `.agents/skills/marslib-vision/SKILL.md`
+- **Shoot On The Move:** Read `.agents/skills/marslib-shotsetup/SKILL.md`
+- **State Machines:** Read `.agents/skills/marslib-statemachine/SKILL.md`
+- **Auditing Code:** Read `.agents/skills/marslib-audit/SKILL.md`
+
+## Fundamental Directives
+1. **Zero Allocation:** Never use `new` inside a continuous loop (`periodic`, `execute`). Do not generate standard WPILib subsystems that violate this.
+2. **AdvantageKit First:** All hardware logic goes inside an `IO` interface implementation. Never instantiate `TalonFX` directly in the Subsystem logic.
+3. If you encounter something outside standard templates, reference `.agents/skills/marslib-core-standards/SKILL.md`.
