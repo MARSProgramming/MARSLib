@@ -1,4 +1,4 @@
-﻿---
+---
 sidebar_position: 12
 id: sysid
 title: "System Identification"
@@ -23,6 +23,10 @@ title: "System Identification"
     <li ><strong>Quasistatic Test:</strong> Voltage slowly ramps up continuously at 1 volt per second. This precisely maps your mechanism's <code>kS</code> (Static Friction) and <code>kV</code> (Velocity constant).</li>
     <li ><strong>Dynamic Test:</strong> Applies an instant voltage step (e.g. jump to 6 volts). This maps <code>kA</code> (Acceleration) and calculates optimal <code>kP</code> and <code>kD</code> gains based on inertia.</li>
   </ul>
+
+import SysIdSim from '@site/src/components/SysIdSim';
+
+  <SysIdSim />
 
   <div className="callout callout-warning">
     <h4>Data Logging</h4>

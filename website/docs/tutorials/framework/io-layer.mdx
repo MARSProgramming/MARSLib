@@ -1,4 +1,4 @@
-﻿---
+---
 sidebar_position: 5
 id: io-layer
 title: "The IO Layer Pattern"
@@ -96,16 +96,6 @@ subsystem = new FlywheelSubsystem(io);
     <h4 >Student Pro-Tip</h4>
     <p>Always keep your IO implementations "dumb". All logic belongs in the Subsystem and Commands. If you add math to your hardware layer, you've broken the abstraction.</p>
   </div>
-
-  <h2>5. Structural Hardware Resiliency</h2>
-  <p>Because the IO Layer maps the real hardware to the exact same struct model as the <code>dyn4j</code> software simulation, we gain a massive structural advantage: <strong>Resiliency</strong>.</p>
-  <p>If a CAN bus wire snaps in the middle of a matchâ€”or a Kraken motor spontaneously rebootsâ€”the IO layer can seamlessly redirect the `Inputs` struct to read from the internal Physics engine fallback. The Subsystem logic never even knows the hardware failed, and it continues calculating the target state organically.</p>
-  <p>Try clicking <strong>SEVER CAN WIRE</strong> below to see the math fallback gracefully handle the outage without zeroing out the reported velocity!</p>
-
-import FaultSim from '@site/src/components/FaultSim';
-
-  <FaultSim />
-
 </main>
 
 
