@@ -2,13 +2,13 @@
 
 You are operating within the **MARSLib World-Class FRC Framework**.
 
-MARSLib uses a highly specific architecture designed around a strict 20ms AdvantageKit physics loop, zero runtime garbage collection, and custom IO simulation layers. 
+MARSLib uses a highly specific architecture designed around a strict 20ms AdvantageKit physics loop, zero runtime garbage collection, and custom IO simulation layers.
 
 ## Agentic Skill Integration
 
 MARSLib is equipped with specialized `.agent` Markdown skills located in the `.agents/skills/` directory.
 
-Before writing code for any major robotic subsystem or utility, you **MUST** automatically read and apply the associated SKILL.md file if it matches the user's request. 
+Before writing code for any major robotic subsystem or utility, you **MUST** automatically read and apply the associated SKILL.md file if it matches the user's request.
 
 ### Key Skill Mappings to Auto-Fetch:
 - **Writing Subsystems:** Always read `.agents/skills/marslib-mechanisms/SKILL.md`
