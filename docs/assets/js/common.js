@@ -13,23 +13,34 @@ function injectHeader() {
   const editUrl = getEditUrl();
   const nav = document.createElement('nav');
   nav.innerHTML = `
-    <div class="container">
-      <a href="index.html" class="nav-brand">
-        <img src="assets/mars-logo.png" alt="MARS Logo">
-        <div class="nav-logo">MARS<span>Lib</span></div>
-      </a>
-      <ul class="nav-links">
-        <li><a href="index.html" class="nav-link-text">Home</a></li>
-        <li><a href="index.html#features" class="nav-link-text">Features</a></li>
-        <li><a href="tutorials.html" class="nav-link-text">Tutorials</a></li>
-        <li><a href="standards.html" class="nav-link-text">Standards</a></li>
-        <li class="nav-search">
-          <input type="text" id="search-input" class="search-input" placeholder="Search MARSLib...">
-          <ul id="search-results" class="search-results"></ul>
-        </li>
-        <li><a href="${editUrl}" target="_blank" class="nav-edit">Edit</a></li>
-        <li><a href="javadoc/index.html" target="_blank" class="nav-cta">API Docs</a></li>
-      </ul>
+    <div class="container" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+      
+      <!-- LEFT: Brand & Links -->
+      <div style="display: flex; align-items: center; gap: 30px;">
+        <a href="index.html" class="nav-brand">
+          <img src="media/team_logo.png" alt="MARS Logo">
+          <div class="nav-logo">MARS<span>Lib</span></div>
+        </a>
+        <ul class="nav-links" style="margin: 0; padding: 0;">
+          <li><a href="index.html" class="nav-link-text">Home</a></li>
+          <li><a href="tutorials.html" class="nav-link-text">Tutorials</a></li>
+          <li><a href="standards.html" class="nav-link-text">Standards</a></li>
+        </ul>
+      </div>
+
+      <!-- CENTER: Search -->
+      <div class="nav-search" style="flex: 1; max-width: 300px; margin: 0 20px;">
+        <input type="text" id="search-input" class="search-input" placeholder="Search MARSLib..." style="width: 100%;">
+        <ul id="search-results" class="search-results"></ul>
+      </div>
+
+      <!-- RIGHT: Action Buttons -->
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <a href="${editUrl}" target="_blank" class="nav-edit">Edit Wiki</a>
+        <a href="javadoc/index.html" target="_blank" class="nav-cta">API Docs</a>
+        <a href="https://github.com/MARSProgramming/MARSLib" target="_blank" class="nav-cta" style="background: #24292e; border: 1px solid #444; color: white;">GitHub</a>
+      </div>
+
     </div>
   `;
   headerPlaceholder.replaceWith(nav);
