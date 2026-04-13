@@ -7,6 +7,7 @@
 package com.marslib.swerve;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -20,6 +21,9 @@ import edu.wpi.first.units.measure.Voltage;
 
 /** Hardware IO implementation for a Swerve Module using CTRE TalonFX motors and a CANcoder. */
 public class SwerveModuleIOTalonFX implements SwerveModuleIO {
+  /** Maximum number of CAN config retries before reporting a fault. */
+  private static final int CONFIG_RETRIES = 5;
+
   private final TalonFX driveMotor;
   private final TalonFX turnMotor;
 
@@ -48,7 +52,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     driveConfig.CurrentLimits.SupplyCurrentLimit = 60.0;
     driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    driveMotor.getConfigurator().apply(driveConfig);
+    applyWithRetry(driveMotor, driveConfig, "DriveMotor[" + driveMotorId + "]");
 
     TalonFXConfiguration turnConfig = new TalonFXConfiguration();
     turnConfig.CurrentLimits.StatorCurrentLimitEnable = true;
@@ -56,7 +60,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     turnConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     turnConfig.CurrentLimits.SupplyCurrentLimit = 40.0;
     turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    turnMotor.getConfigurator().apply(turnConfig);
+    applyWithRetry(turnMotor, turnConfig, "TurnMotor[" + turnMotorId + "]");
 
     driveVelocity = driveMotor.getVelocity();
     turnVelocity = turnMotor.getVelocity();
@@ -90,13 +94,14 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
 
   @Override
   public void updateInputs(SwerveModuleIOInputs inputs) {
-    // Query the bulk 50hz telemetry
-    BaseStatusSignal.refreshAll(
-        driveVelocity, turnVelocity,
-        driveAppliedVolts, turnAppliedVolts,
-        driveCurrent, turnCurrent);
+    // Query the bulk 50hz telemetry — StatusCode indicates CAN health
+    StatusCode refreshStatus =
+        BaseStatusSignal.refreshAll(
+            driveVelocity, turnVelocity,
+            driveAppliedVolts, turnAppliedVolts,
+            driveCurrent, turnCurrent);
 
-    inputs.hasHardwareConnected = true; // Assume true if no error during refresh mapping
+    inputs.hasHardwareConnected = refreshStatus.isOK();
     // Convert from motor-domain (rotations) to output-shaft-domain (radians at the wheel)
     inputs.driveVelocityRadPerSec =
         Units.rotationsToRadians(driveVelocity.getValueAsDouble()) / config.driveGearRatio();
@@ -157,5 +162,26 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     turnMotor.getConfigurator().refresh(config);
     config.NeutralMode = enable ? NeutralModeValue.Brake : NeutralModeValue.Coast;
     turnMotor.getConfigurator().apply(config);
+  }
+
+  /**
+   * Applies a TalonFX configuration with retry logic for CAN bus contention.
+   *
+   * @param motor The TalonFX motor to configure.
+   * @param config The configuration to apply.
+   * @param label A human-readable label for fault reporting.
+   */
+  private static void applyWithRetry(TalonFX motor, TalonFXConfiguration config, String label) {
+    StatusCode status = StatusCode.StatusCodeNotInitialized;
+    for (int i = 0; i < CONFIG_RETRIES; i++) {
+      status = motor.getConfigurator().apply(config);
+      if (status.isOK()) {
+        return;
+      }
+    }
+    new com.marslib.faults.Alert(
+            "SwerveModule " + label + " config failed: " + status.getName(),
+            com.marslib.faults.Alert.AlertType.CRITICAL)
+        .set(true);
   }
 }

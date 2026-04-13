@@ -7,7 +7,7 @@
 package com.marslib.swerve;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.Timer;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * Advanced 2D Slew Rate Limiter to prevent carpet slippage and Odometry drift.
@@ -22,7 +22,7 @@ public class TractionControlLimiter {
 
   private final double maxAccelMetersPerSecSq;
   private Translation2d lastVelocity = new Translation2d();
-  private double lastTime = Timer.getFPGATimestamp();
+  private double lastTime = Logger.getTimestamp();
 
   /**
    * Initializes the 2D Traction Control limit.
@@ -40,7 +40,7 @@ public class TractionControlLimiter {
    * @return Safe velocity vector to apply to the ChassisSpeeds.
    */
   public Translation2d calculate(Translation2d targetVelocity) {
-    double currentTime = Timer.getFPGATimestamp();
+    double currentTime = Logger.getTimestamp();
     double dt = currentTime - lastTime;
     lastTime = currentTime;
 

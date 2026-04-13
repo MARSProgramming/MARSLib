@@ -82,4 +82,16 @@ public class SmartAssistAlign extends Command {
   public void end(boolean interrupted) {
     swerveDrive.runVelocity(new ChassisSpeeds());
   }
+
+  @Override
+  public boolean isFinished() {
+    Pose2d currentPose = swerveDrive.getPose();
+    double yError = Math.abs(currentPose.getY() - targetNode.getY());
+    double thetaError =
+        Math.abs(
+            edu.wpi.first.math.MathUtil.angleModulus(
+                currentPose.getRotation().getRadians() - targetNode.getRotation().getRadians()));
+    // Converged when within 2cm laterally and 2° rotationally
+    return yError < 0.02 && thetaError < Math.toRadians(2.0);
+  }
 }

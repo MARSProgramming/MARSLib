@@ -106,18 +106,151 @@ If the core classes are updated without documentation, teams cloning MARSLib wil
 
 ### Rule B: GitHub Pages Site Integrity (github.io)
 MARSLib maintains an interactive web documentation hub. A broken link or outdated code snippet destroys the educational value for other drive teams.
-**Audit Action**: Audit the `docs/*.html` and Markdown files for broken local hyperlinks. Verify that Code Snippets present in the tutorials exactly match the current signature of the Java API.
+**Audit Action**: Audit the `website/src/pages/` and Markdown files for broken local hyperlinks. Verify that code snippets present in the tutorials exactly match the current signature of the Java API.
 
-## 9. Typical Audit Workflow
+## 9. Thread Safety & Concurrency
+
+MARSLib runs multiple threads concurrently: the main robot thread (50Hz), `PhoenixOdometryThread` (250Hz), and vision processing threads. Unsynchronized shared mutable state causes invisible data corruption.
+
+### Rule A: Shared Mutable State Protection
+Any field written by one thread and read by another MUST be `volatile`, `Atomic*`, or protected by a lock.
+**Audit Action**: Enumerate every non-final field in `PhoenixOdometryThread`. Verify that fields read by `SwerveDrive.periodic()` (main thread) are properly protected. Scan for `SyncData` array access patterns — if the odometry thread writes array elements and the main thread reads them, verify happens-before guarantees exist (volatile reference swap, lock, or `System.arraycopy` under lock).
+
+### Rule B: Lock Contention on Hot Paths
+Synchronized blocks at 250Hz cause priority inversion and loop overruns.
+**Audit Action**: `grep -rn "synchronized" src/main/java/com/marslib/` — verify that NO synchronized block exists on the 250Hz odometry hot path. `LoggedTunableNumber` uses synchronized blocks — verify these are only accessed during `disabledPeriodic()` tuning, never during `teleopPeriodic()`.
+
+### Rule C: Singleton Thread Safety
+`PhoenixOdometryThread.getInstance()` uses `synchronized` for lazy init. Verify this is the only access pattern — double-checked locking without volatile is broken in Java.
+**Audit Action**: Confirm `getInstance()` is called only during construction (single-threaded robot init), not during periodic execution.
+
+## 10. CAN Bus Error Recovery (StatusCode)
+
+Phoenix 6 API calls (`getConfigurator().apply()`, `setUpdateFrequency()`) return `StatusCode` indicating success or failure. **Ignoring these means silently running with unconfigured motors.**
+
+### Rule A: Configuration Apply Must Be Verified
+Every `motor.getConfigurator().apply(config)` call should check the return `StatusCode`.
+**Audit Action**: `grep -rn "\.apply(" src/main/java/com/marslib/ --include="*.java"` — verify each result either:
+1. Checks `StatusCode.isOK()` and logs failures, OR
+2. Uses a retry loop (Phoenix 6 recommends up to 5 retries for CAN contention)
+
+If neither exists, wrap in a utility method:
+```java
+public static void applyWithRetry(TalonFXConfigurator cfg, TalonFXConfiguration config, int retries) {
+    StatusCode status = StatusCode.StatusCodeNotInitialized;
+    for (int i = 0; i < retries; i++) {
+        status = cfg.apply(config);
+        if (status.isOK()) return;
+    }
+    MARSFaultManager.report("CAN config failed: " + status.getName());
+}
+```
+
+### Rule B: Signal Frequency Must Be Verified
+`BaseStatusSignal.setUpdateFrequency()` also returns StatusCode. If it fails, the signal remains at its default rate (4Hz), meaning our 250Hz odometry thread is actually polling stale 4Hz data.
+**Audit Action**: Verify that `setUpdateFrequency()` calls in `SwerveModuleIOTalonFX`, `GyroIOPigeon2`, and mechanism IO layers check the return status or at minimum log failures.
+
+## 11. Command Lifecycle Safety
+
+Commands that never terminate lock out their required subsystem for the entire match.
+
+### Rule A: Every Custom Command Must Terminate
+Every `Command` subclass in `com.marslib` must satisfy one of:
+1. Has an `isFinished()` method that can return `true`, OR
+2. Is a default command (designed to run forever), OR
+3. Is always composed with `.withTimeout()` at the usage site
+
+**Audit Action**: `grep -rn "extends Command" src/main/java/com/marslib/` — for each result, verify `isFinished()` exists. For commands without `isFinished()`, verify they are exclusively used as default commands or wrapped with `.withTimeout()`.
+
+### Rule B: Alignment/PID Commands Must Have Convergence Timeouts
+PID-based alignment commands (e.g., `MARSAlignmentCommand`) may never converge if the target is unreachable or the mechanism is jammed.
+**Audit Action**: Verify that every PID-convergence command is composed with `.withTimeout()` at the call site (typically 2-5 seconds). A command that runs indefinitely because the PID error never reaches tolerance is a match-ender.
+
+## 12. AdvantageKit Replay Contract
+
+AdvantageKit's deterministic replay only works if **every hardware input flows through `@AutoLog` IO layers**. Direct hardware reads bypass replay and cause log divergence.
+
+### Rule A: No Direct Hardware Reads Outside IO Layers
+Subsystem `periodic()` methods must NEVER call `Timer.getFPGATimestamp()`, `RobotController.getBatteryVoltage()`, or `DriverStation.*` directly. These must come through IO inputs or utility wrappers.
+**Audit Action**: Run the following scan and verify zero results:
+```
+grep -rn "Timer.getFPGATimestamp\|RobotController.getBatteryVoltage\|DriverStation\." \
+  src/main/java/com/marslib/ --include="*.java" \
+  | grep -v "IO\.java\|IOSim\.java\|IOReal\.java\|IOTalonFX\.java\|IOPhoton\.java\|IOPigeon2\.java\|AllianceUtil\|IOLimelight\|IOAddressable\|IOQuestNav"
+```
+Any hits outside IO layers or approved utility wrappers break replay determinism.
+
+### Rule B: All IO Interfaces Must Have `@AutoLog`
+Every IO interface in `com.marslib` must have an `@AutoLog` annotation on its `Inputs` inner class.
+**Audit Action**: `grep -rn "class.*Inputs" src/main/java/com/marslib/ --include="*IO.java"` — verify each has a preceding `@AutoLog` annotation. Missing `@AutoLog` means the IO data is not captured in logs and cannot be replayed.
+
+## 13. Autonomous Safety Bounds
+
+A misconfigured autonomous path can drive the robot off-field at max speed.
+
+### Rule A: Auto Command Loading Must Have Fallbacks
+PathPlanner path loading (in `MARSAuto` or equivalent) is wrapped in try/catch. The catch block MUST provide a safe no-op command (e.g., `Commands.none()`) rather than returning `null` or re-throwing.
+**Audit Action**: Inspect every `catch` block in auto-related files. Verify the fallback returns a safe, non-null Command. A `null` auto command will crash the scheduler.
+
+### Rule B: Auto Commands Should Have Safety Timeouts
+Autonomous routines should have top-level timeouts to prevent a stuck path from consuming the entire 15-second auto period without scoring.
+**Audit Action**: `grep -rn "PathPlannerAuto\|AutoBuilder\|NamedCommands" src/main/java/ --include="*.java"` — verify that auto command compositions include `.withTimeout()` wrappers at the top level or per-path level.
+
+## 14. Dependency Version Auditing
+
+Vendordeps pinned to old versions may silently break when WPILib or vendors push updates.
+
+### Rule A: Vendordep Freshness
+**Audit Action**: List all vendordep JSON files in `vendordeps/` and extract their `version` fields. Cross-reference against the latest known stable versions. Flag any vendordep that is more than one minor version behind.
+```
+cat vendordeps/*.json | grep -E "\"version\"|\"name\""
+```
+
+### Rule B: Deprecated API Usage
+Vendor APIs change across seasons. Phoenix 6 v24 → v25 renamed several methods.
+**Audit Action**: Run the build with `-Xlint:deprecation` flag enabled. Any deprecation warnings in `com.marslib` must be resolved before competition deployment.
+
+### Rule C: WPILib Season Match
+The WPILib version in `build.gradle` must match the competition FMS deployment target. Deploying code built against WPILib 2025.3.1 to a RoboRIO running WPILib 2025.2.1 will cause runtime class incompatibility.
+**Audit Action**: Verify `wpi.versions.wpilibVersion` in `build.gradle` matches the latest stable WPILib release for the current season.
+
+## 15. Graceful Degradation & Fault Resilience
+
+We test that things *work*, but we must also verify that things *fail safely*.
+
+### Rule A: Hardware Disconnection Must Set `hasHardwareConnected`
+Every `*IOReal` and `*IOTalonFX` `updateInputs()` method MUST set `inputs.hasHardwareConnected` based on actual CAN bus communication status.
+**Audit Action**: `grep -rn "hasHardwareConnected" src/main/java/com/marslib/` — verify every IO implementation sets this flag. If a motor controller returns stale data (same timestamp as previous tick), the flag should go `false`.
+
+### Rule B: Subsystems Must React to Disconnection
+When `hasHardwareConnected` is `false`, the subsystem must:
+1. Log a fault via `MARSFaultManager`
+2. Command safe outputs (zero voltage, hold position)
+3. NOT feed stale sensor data to pose estimation or PID loops
+
+**Audit Action**: Inspect each subsystem's `periodic()` method for disconnection handling. A subsystem that feeds stale gyro data into the pose estimator during a dropout will corrupt the odometry for the entire match.
+
+### Rule C: NaN Propagation Firewall
+If a sensor returns `NaN`, it must be caught before entering kinematics or PID. A single `NaN` in `ChassisSpeeds` propagates to all 4 module outputs, commanding `NaN` voltage and disabling the drivetrain.
+**Audit Action**: `grep -rn "Double.isNaN\|Double.isFinite\|Double.isInfinite" src/main/java/com/marslib/` — verify NaN guards exist at IO layer boundaries. Critical locations: gyro yaw, vision pose, drive encoder velocity.
+
+## 16. Typical Audit Workflow
 1. Verify the state of the Build configuration (gradle/jacoco).
-2. Execute `./gradlew pmdMain checkstyleMain` to catch immediate documentation and static analysis flaws.
-3. Scan for Zero-Allocation violations and NetworkTable threading locks.
+2. Execute `./gradlew spotlessCheck` to catch formatting and static analysis flaws.
+3. Scan for Zero-Allocation violations (`new` in periodic) and GC triggers (`System.gc()`).
 4. Highlight Class Size violations (>400 lines) and "God Objects".
-5. Search for Optional misusage strings and Naked Modulo expressions.
-6. Execute Math Validation checks scanning for unprotected division and `Math.sqrt()` inputs.
-7. Check hardware allocations for stringent Current Limits and CAN Bus frequency drop-offs.
-8. Validate AI Skill parity, ensuring `plugin.json` and `marketplace.json` correctly load all existing directories.
-9. Verify the GitHub Pages (github.io) integration for dead links and missing Javadoc implementations.
-10. Execute `gradlew test jacocoTestReport` and analyze `.csv` output for untested mathematical helper classes.
-11. Provide a summary checklist of detected errors.
-12. Systematically remediate them inline.
+5. Search for Optional misusage (`Optional.get()`) and Naked Modulo expressions (`% 360`).
+6. Execute Math Validation checks: unprotected division, unclamped `Math.sqrt()`/`Math.acos()` inputs.
+7. Check hardware allocations: Current Limits, CAN Bus frequencies, hardware timeouts.
+8. **NEW**: Audit thread safety — verify all shared mutable state in `PhoenixOdometryThread` and `LoggedTunableNumber`.
+9. **NEW**: Verify CAN `StatusCode` checking on every `.apply()` and `.setUpdateFrequency()` call.
+10. **NEW**: Verify Command lifecycle — `isFinished()` or `.withTimeout()` on every custom command.
+11. **NEW**: Enforce AdvantageKit replay contract — no direct hardware reads outside IO layers.
+12. **NEW**: Check autonomous safety — fallback commands, timeout wrappers, field boundary clamps.
+13. **NEW**: Audit vendordep versions against latest stable releases.
+14. **NEW**: Verify graceful degradation — `hasHardwareConnected`, NaN firewalls, fault escalation.
+15. Validate AI Skill parity — `SKILL.md` and `marketplace.json` correctly reference all directories.
+16. Verify the documentation site for dead links and stale code snippets.
+17. Execute `./gradlew test jacocoTestReport` and analyze `.csv` output for untested classes.
+18. Provide a summary checklist of detected defects.
+19. Systematically remediate defects inline.

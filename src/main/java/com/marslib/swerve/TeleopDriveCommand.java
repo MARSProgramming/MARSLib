@@ -145,6 +145,18 @@ public class TeleopDriveCommand extends Command {
     Logger.recordOutput("Teleop/RobotRelSpeeds", robotRelLog);
     Logger.recordOutput("Teleop/GyroLockActive", Math.abs(omgVal) <= 0.01);
 
+    // NaN firewall — prevent corrupted sensor data from propagating to motor outputs
+    if (!Double.isFinite(robotRelativeSpeeds.vxMetersPerSecond)
+        || !Double.isFinite(robotRelativeSpeeds.vyMetersPerSecond)
+        || !Double.isFinite(robotRelativeSpeeds.omegaRadiansPerSecond)) {
+      robotRelativeSpeeds.vxMetersPerSecond = 0.0;
+      robotRelativeSpeeds.vyMetersPerSecond = 0.0;
+      robotRelativeSpeeds.omegaRadiansPerSecond = 0.0;
+      Logger.recordOutput("Teleop/NaNDetected", true);
+    } else {
+      Logger.recordOutput("Teleop/NaNDetected", false);
+    }
+
     swerveDrive.runVelocity(robotRelativeSpeeds);
   }
 }
