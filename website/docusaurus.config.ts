@@ -105,7 +105,7 @@ const config: Config = {
           label: 'Tutorials',
         },
         {to: '/standards', label: 'Core Standards', position: 'left'},
-        {to: '/javadoc/index.html', label: 'API Reference', position: 'left'},
+        {href: 'pathname:///MARSLib/javadoc/index.html', label: 'API Reference', target: '_self', position: 'left'},
         {
           href: 'https://github.com/MARSProgramming/MARSLib',
           label: 'GitHub',

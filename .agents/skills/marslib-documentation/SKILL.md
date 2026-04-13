@@ -29,3 +29,11 @@ Tutorials should break complex topics down elegantly:
 
 ## 4. The Agentic Skill Architecture
 When documenting the framework itself, ensure users understand that MARSLib is co-developed alongside Agentic AI. Refer to `.agents/skills` as the "Agentic Skill Architecture" which enforces FRC best practices programmatically.
+## 5. Docusaurus React Migrations & Simulators
+When porting or authoring interactive simulators in the Docusaurus React architecture:
+- **Canvas Operations**: Always encapsulate DOM manipulations (<canvas>) inside React .tsx components within the website/src/components/ directory.
+- **Hook Architecture**: Use useRef for mutable animation state (score, loop timers) and useEffect with equestAnimationFrame and cleanup logic to prevent React hydration or unmount loop memory leaks.
+- **MDX Formatting Strictness**: When injecting React component tags like <SotmSim /> into .mdx files, you must ensure:
+  1. The import statement rests at the parent un-indented block level.
+  2. A blank line separates the import and the component tag to prevent the Docusaurus Acorn MDX parser from crashing.
+  3. External static paths like /javadoc/index.html MUST use Docusaurus explicit bypass routing (e.g. href: 'pathname:///MARSLib/javadoc/index.html') to avoid React Router Single Page Application (SPA) intercepting it as a soft-nav and generating a 404 page.
