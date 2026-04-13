@@ -27,11 +27,11 @@
         {
           "name": "MARSLib-1.0.0.jar",
           "url": "MARSLib-1.0.0.jar",
-          "size": 8802374,
-          "sha512": "7ceb85b2bc32a23bbacdfdf6098d6512f8ece91af5e62033264f56c89dd80db5714bc78e7f6fa595e82c56395f3e8108656c46b1524e6412882a07275abeb7fe",
-          "sha256": "cbf3d4e09849a7c6dc0af016bcc3116f525b79414b20d23e754b15cf3f3995a0",
-          "sha1": "ad7441f32025588b7dbb3fc4ec312a4e5c1d22cf",
-          "md5": "9092e0974e452079e567d924d95c2e8f"
+          "size": 8802376,
+          "sha512": "b91f2fb1ec0e80a4fa66b8246a4c19e48bc916f4f309adf23f130720eccd468128b557f5266c2cdb157d1c9a30b294fd36e48294994c0041295c9126cb311b02",
+          "sha256": "73300a1e1e31934feff6f59b4e0871e4c7ca2ae5d797d182674aae21943af6d4",
+          "sha1": "16a323f0fdcc9ab5dfd16bc6d89ad9a519dea7eb",
+          "md5": "7e0aa4c09901593099e0cbbfe6bb1d6e"
         }
       ]
     },
@@ -225,11 +225,11 @@
         {
           "name": "MARSLib-1.0.0.jar",
           "url": "MARSLib-1.0.0.jar",
-          "size": 8802374,
-          "sha512": "7ceb85b2bc32a23bbacdfdf6098d6512f8ece91af5e62033264f56c89dd80db5714bc78e7f6fa595e82c56395f3e8108656c46b1524e6412882a07275abeb7fe",
-          "sha256": "cbf3d4e09849a7c6dc0af016bcc3116f525b79414b20d23e754b15cf3f3995a0",
-          "sha1": "ad7441f32025588b7dbb3fc4ec312a4e5c1d22cf",
-          "md5": "9092e0974e452079e567d924d95c2e8f"
+          "size": 8802376,
+          "sha512": "b91f2fb1ec0e80a4fa66b8246a4c19e48bc916f4f309adf23f130720eccd468128b557f5266c2cdb157d1c9a30b294fd36e48294994c0041295c9126cb311b02",
+          "sha256": "73300a1e1e31934feff6f59b4e0871e4c7ca2ae5d797d182674aae21943af6d4",
+          "sha1": "16a323f0fdcc9ab5dfd16bc6d89ad9a519dea7eb",
+          "md5": "7e0aa4c09901593099e0cbbfe6bb1d6e"
         }
       ]
     },
@@ -245,11 +245,11 @@
         {
           "name": "MARSLib-1.0.0-sources.jar",
           "url": "MARSLib-1.0.0-sources.jar",
-          "size": 144545,
-          "sha512": "83c6f6087891fd1fa109057ae66bd5a39c8da0ad00f05ae10bf754e2f5e81b96bf98a468a0cc5375a603083fa37d79af4074843e13827232d5e80df184b462be",
-          "sha256": "80f9b61739d3091f689ebe63c732bc1fb77a34c589b0feab4560a7442af6e61e",
-          "sha1": "c99aa009a72993fbee32f407593804406367300b",
-          "md5": "57b5f1b9fb75c1b03ec33ec36fb60a98"
+          "size": 144546,
+          "sha512": "f9e514acaa8e7341200a598c377ea98518f648e480cc934fa859490d977ffd0cf166669980b1605088e97284ae07fbca4b101970c49f9db6344e54580ea41486",
+          "sha256": "bb6fd3d5f5adf00b709b91a8858bcdb693ed3ac655b50946fbdee1f86bd10168",
+          "sha1": "46338aff97213fd79b12963d34d12a52ad88b1f1",
+          "md5": "bd7058544ab060dc8d301c545232ec5b"
         }
       ]
     }
