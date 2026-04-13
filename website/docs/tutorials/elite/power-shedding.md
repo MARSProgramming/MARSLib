@@ -8,7 +8,7 @@ title: "Dynamic Power Shedding"
 
 
 
-<main className="container" >
+<main class="container" >
   <div >
 
     <h1>Dynamic Power Shedding</h1>
@@ -47,7 +47,7 @@ import PowerSheddingSim from '@site/src/components/PowerSheddingSim';
 
 <PowerSheddingSim />
 
-  <div className="callout callout-warning">
+  <div class="callout callout-warning">
     <h4>Simulation Parity</h4>
     <p>You can test your power shedding algorithms entirely in Dyn4j. The <code>MARSPhysicsWorld</code> natively simulates voltage sag as the sum of all simulated motor torque output increases, allowing you to trigger brownout scenarios in your JUnit tests and ensure your shedding algorithm functions correctly. See the <strong><a href="https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/introduction.html" target="_blank">WPILib Brownout Documentation</a></strong> for more on hardware behavior.</p>
   </div>

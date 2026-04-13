@@ -4,7 +4,7 @@ id: hardware
 title: "2. The Hardware Paradigm"
 ---
 
-<main className="container">
+<main class="container">
   <div>
     <h1>The Hardware Paradigm</h1>
   </div>
@@ -17,7 +17,7 @@ title: "2. The Hardware Paradigm"
   <h2>2. The FRC Radio (The Network)</h2>
   <p>The RoboRIO does not have native WiFi. A separate module—the Radio (like the <a href="https://vivid-hosting.net/product/vh-109-radio/" target="_blank">Vivid-Hosting VH-109</a> or <a href="https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/radio-configuration.html" target="_blank">OpenMesh</a>)—must be physically ethernet-connected to the RIO. Your laptop talks securely to the Radio, which then pipelines the connection.</p>
 
-  <div className="callout callout-warning">
+  <div class="callout callout-warning">
     <h4>FMS vs Pit Strategy</h4>
     <p>When you are in the Pit or at home, you configure the Radio to emit a standard 5GHz WiFi signal or you plug an Ethernet/USB-B cord directly into the RoboRIO to deploy code.</p>
     <p>At official competitions, you must use the <strong>Radio Kiosk</strong>. This physically rewrites your Radio's firmware to bind directly to the official <strong>Field Management System (FMS)</strong>. Once hooked to FMS, your laptop connects via Ethernet to a Driver Station pedestal on the field boundary, ensuring extreme security.</p>

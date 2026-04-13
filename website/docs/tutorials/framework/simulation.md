@@ -8,7 +8,7 @@ title: "Physics-First Development"
 
 
 
-<main className="container" >
+<main class="container" >
   <div >
 
     <h1>Physics-First Development</h1>
@@ -44,7 +44,7 @@ import PhysicsSim from '@site/src/components/PhysicsSim';
   <h2>3. Subsystem IO-Sim</h2>
   <p>As covered in the IO Layer tutorial, your subsystems should use <code>IOSim</code> implementations. These classes connect WPILib simulators (like <code>ElevatorSim</code>) to the physics world. The simulator provides the mathematical state, while Dyn4j provides the collision bounds.</p>
 
-  <div className="callout callout-warning">
+  <div class="callout callout-warning">
     <h4>Realistic Power Modeling</h4>
     <p>MARSLib doesn't just sim motion; it sims electrical draw. If your elevator hits a mechanical limit and stalls, the <code>MARSPowerManager</code> will calculate the voltage drop, which might cause your "virtual" Rio to brown out! This allows you to tune current limits safely in offline code.</p>
   </div>
@@ -52,7 +52,7 @@ import PhysicsSim from '@site/src/components/PhysicsSim';
   <h2>4. Visualizing with AdvantageScope</h2>
   <p>You can't "see" physics math, so we export all body positions to AdvantageScope. By dragging the <code>PhysicsWorld/GamePieces</code> field into the 3D Field view, you can watch your robot interact with Fuel Balls and the Hub in real-time.</p>
 
-  <div className="callout">
+  <div class="callout">
     <h4>Student Pro-Tip</h4>
     <p>Run your PathPlanner autonomous paths in simulation with <strong>Efficiency Mode OFF</strong> to test how physical collisions with obstacle walls might knock your robot off path. If your pathing breaks here, it will definitely break on the real field.</p>
   </div>
@@ -103,7 +103,7 @@ for (int i = 0; i < 100; i++) {
 assertEquals(1.5, elevator.getPosition().in(Meters), 0.05);
   ```
 
-  <div className="callout callout-warning">
+  <div class="callout callout-warning">
     <h4>Beware the 20ms Loop</h4>
     <p>Never advance the clock by more than <code>0.02</code> seconds (20ms) at a time. The PID controllers assume a 50Hz execution cycle. Bypassing this will cause your integrators to explode.</p>
   </div>

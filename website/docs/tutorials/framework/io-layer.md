@@ -8,7 +8,7 @@ title: "The IO Layer Pattern"
 
 
 
-<main className="container" >
+<main class="container" >
   <div >
 
     <h1>The IO Layer Pattern</h1>
@@ -16,7 +16,7 @@ title: "The IO Layer Pattern"
 
   <p>The most important architectural rule in MARSLib is the **separation of hardware from logic**. We use the <strong><a href="https://github.com/Mechanical-Advantage/AdvantageKit" target="_blank">AdvantageKit</a></strong> IO abstraction pattern to ensure that our robot code is deterministic, testable, and capable of bit-perfect log replay.</p>
 
-  <div className="callout">
+  <div class="callout">
     <h4>Architectural Immunity</h4>
     <p>If you call <code>motor.getVelocity()</code> directly in your subsystem, your code depends on physical hardware. You can't run it in sim accurately, you can't test it easily, and your logs won't capture what the motor was "actually" doing versus what your code "saw".</p>
   </div>
@@ -92,7 +92,7 @@ if (isReal) {
 subsystem = new FlywheelSubsystem(io);
 ```
 
-  <div className="callout" >
+  <div class="callout" >
     <h4 >Student Pro-Tip</h4>
     <p>Always keep your IO implementations "dumb". All logic belongs in the Subsystem and Commands. If you add math to your hardware layer, you've broken the abstraction.</p>
   </div>

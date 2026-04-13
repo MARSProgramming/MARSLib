@@ -8,7 +8,7 @@ title: "Vision Fusion & Filtration"
 
 
 
-<main className="container" >
+<main class="container" >
   <div >
 
     <h1>Vision Fusion & Filtration</h1>
@@ -37,7 +37,7 @@ import VisionSim from '@site/src/components/VisionSim';
 
   <p>MARSLib enforces <strong>Quadratic StdDev Scaling</strong>. Trust in vision decays <em>exponentially</em> at long range, stopping the robot from making violent odometry correction jumps based on far-away tags.</p>
 
-  <div className="callout">
+  <div class="callout">
     <h4>MegaTag / Multi-Tag Boost</h4>
     <p>When multiple AprilTags are visible, geometric ambiguity essentially drops to zero. Our code automatically scales down standard deviations by <code>x0.1</code>, dramatically tightening the Pose Estimator's trust.</p>
   </div>

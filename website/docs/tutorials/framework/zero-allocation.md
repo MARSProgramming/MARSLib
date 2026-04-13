@@ -6,7 +6,7 @@ title: "Strict Zero-Allocation"
 
 import ZeroAllocationSim from '@site/src/components/ZeroAllocationSim';
 
-<main className="container" >
+<main class="container" >
   <div >
 
     <h1>Strict Zero-Allocation</h1>
@@ -14,7 +14,7 @@ import ZeroAllocationSim from '@site/src/components/ZeroAllocationSim';
 
   <p>In high-frequency robotics (250Hz+), the #1 cause of sudden, non-deterministic jitter is the Java Garbage Collector (GC). Every time you use the <code>new</code> keyword inside a loop, you are creating a tiny bit of "trash" that the CPU eventually has to stop everything and clean up.</p>
 
-  <div className="callout callout-warning">
+  <div class="callout callout-warning">
       <h4>The 20ms Deadline</h4>
       <p>If the GC triggers during a critical autonomous spline, your 20ms control loop might stretch to 40ms. This causes the robot's pose estimator to miss reality, leading to a missed shot or a collision.</p>
   </div>

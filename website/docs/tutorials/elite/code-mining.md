@@ -8,7 +8,7 @@ title: "Elite Architecture Mining"
 
 
 
-<main className="container" >
+<main class="container" >
   <div >
 
     <h1>Elite Architecture Mining</h1>
@@ -23,7 +23,7 @@ title: "Elite Architecture Mining"
 
   <p>When mining this logic, you must strictly strip the target repository of its architecture and salvage <em>only the raw mathematics</em>. If the original code calls a motor controller directly inside the math solver, you must replace it with a decoupled <code>MARSMechanismTarget</code> payload.</p>
 
-  <div className="callout callout-warning">
+  <div class="callout callout-warning">
     <h4>AI Agent Enforcement</h4>
     <p>MARSLib natively enforces this boundary via the <code>marslib-elite-mining</code> skill. Lead engineers can command the AI to ingest a target repository file, extract the discrete state-space models, and map them purely into our AdvantageKit <code>IO</code> layer paradigm. The AI is forbidden from ingesting the hardware implementations of rival teams.</p>
   </div>

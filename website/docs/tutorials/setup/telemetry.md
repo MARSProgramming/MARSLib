@@ -8,7 +8,7 @@ title: "Telemetry Mastery"
 
 
 
-<main className="container" >
+<main class="container" >
   <div >
 
     <h1>Telemetry Mastery</h1>
@@ -35,7 +35,7 @@ title: "Telemetry Mastery"
   <h2>3. Importing MARS Layout Templates</h2>
   <p>AdvantageScope utilizes <code>layout.json</code> files that arrange tabs specifically to enhance driver feedback. To avoid creating views from scratch every time, import our central template!</p>
 
-  <div className="callout">
+  <div class="callout">
     <h4>Swerve &amp; Mechanisms Template</h4>
     <p>Our agentic skills dynamically generate the <code>MARS_Standard_Layout.json</code> layout file for the 2614 layout. You can find this inside the root directory under <code>.agents/layouts/</code>.</p>
   </div>
@@ -58,7 +58,7 @@ title: "Telemetry Mastery"
   <h2>5. Simulation Replay Tuning</h2>
   <p>AdvantageKit provides an unparalleled workflow called <strong>Simulation Replay</strong>. Because all sensor inputs are completely decoupled from control logic, you can execute a recorded log, but inject modified robot logic <em>while the log replays</em>.</p>
 
-  <div className="callout" >
+  <div class="callout" >
     <h4 >Elite Tuning Workflow</h4>
     <p>Imagine your robot missed several shots because the Vision hallucination rejection filter failed. Instead of guessing parameters on the live robot:</p>
     <ul>

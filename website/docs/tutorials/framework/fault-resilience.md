@@ -6,7 +6,7 @@ title: "Fault Resilience"
 
 import FaultSim from '@site/src/components/FaultSim';
 
-<main className="container" >
+<main class="container" >
   <div >
     <h1>Fault Resilience</h1>
     <p>High-fidelity health monitoring and driver alerting systems.</p>
@@ -17,7 +17,7 @@ import FaultSim from '@site/src/components/FaultSim';
   <h2>1. The Two-Layer Architecture</h2>
   <p>Fault monitoring is split into two distinct responsibilities to ensure zero-latency detection:</p>
 
-  <div className="callout callout-warning">
+  <div class="callout callout-warning">
       <h4 >Layer 1: IO-Level Health</h4>
       <p>This layer lives inside the Hardware Wrapper (e.g., <code>ArmIOKraken</code>). It monitors the lowest level sensor data for "Red Flags":</p>
       <ul>
@@ -57,7 +57,7 @@ import FaultSim from '@site/src/components/FaultSim';
   <h2>4. Pre-Match Diagnostics</h2>
   <p>MARSLib includes <code>MARSDiagnostics</code>, which standardizes running "Sweep Tests" of all registered mechanisms in the pits. It stresses the arm, drives the chassis 10cm, and spins the intake at 10% power to verify that no cables were loosened during transport.</p>
 
-  <div className="callout callout-info">
+  <div class="callout callout-info">
       <h4>Safety Shutdowns</h4>
       <p>If a critical error is detected during diagnostic scans (like an over-current spike), MARSLib's high-level fault controllers will automatically block enabling or scale back voltage limits to prevent permanent motor burnout on the field.</p>
   </div>

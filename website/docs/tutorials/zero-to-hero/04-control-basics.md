@@ -4,7 +4,7 @@ id: control-basics
 title: "4. Control Theory Crash Course"
 ---
 
-<main className="container">
+<main class="container">
   <div>
     <h1>Control Systems Theory</h1>
   </div>
@@ -19,7 +19,7 @@ title: "4. Control Theory Crash Course"
     <li><strong>kD (Derivative)</strong>: Think of this as the "Brakes." It slows the mechanism down as you approach the target so you don't aggressively overshoot it.</li>
   </ul>
 
-  <div className="callout callout-warning">
+  <div class="callout callout-warning">
     <h4>Overcompensation</h4>
     <p>If you set your <strong>kP</strong> arbitrarily high, the motor will push brutally hard even for a small error. It will violently fly past the target, realize it overshot, and violently fly backwards. This causes horrific mechanical "Oscillation" and will rapidly shake your physical robot to pieces.</p>
   </div>

@@ -8,7 +8,7 @@ import ElevatorPidSim from '@site/src/components/ElevatorPidSim';
 import FlywheelKvSim from '@site/src/components/FlywheelKvSim';
 import ArmKgSim from '@site/src/components/ArmKgSim';
 
-<main className="container" >
+<main class="container" >
   <div >
 
     <h1>Control Theory Mastery</h1>
@@ -73,7 +73,7 @@ motor.setVoltage(ffVoltage + pidVoltage);
     <li>Move the Target Angle to <code>90&deg;</code> (straight up). Watch the kG voltage organically shrink to zero and the arm stabilize effortlessly without PID fighting!</li>
   </ol>
 
-  <div className="callout" >
+  <div class="callout" >
     <h4>Looking for SysId?</h4>
     <p>MARSLib recommends mathematically automating all kS, kV, and kA calculations. If you want to skip manual tuning and let WPILib calculate perfection, check out our dedicated <a href="/MARSLib/docs/tutorials/framework/sysid" >SysId Characterization Tutorial</a>!</p>
   </div>

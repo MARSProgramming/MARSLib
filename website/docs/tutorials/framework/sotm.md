@@ -4,7 +4,7 @@ id: sotm
 title: "Shooting On The Move"
 ---
 
-<main className="container" >
+<main class="container" >
   <div >
 
     <h1>Shooting On The Move (SOTM)</h1>
@@ -15,7 +15,7 @@ title: "Shooting On The Move"
   <h2>1. The Moving Target Problem</h2>
   <p>If you aim where the Hub is <em>right now</em>, by the time the ball leaves your shooter and travels 4 meters, the ball will hit the rim and bounce out. You must aim where the Hub <em>will be</em> relative to the ball's flight path.</p>
 
-  <div className="callout callout-warning">
+  <div class="callout callout-warning">
       <h4>Relative Frames of Reference</h4>
       <p>The math requires calculating an "Intercept Point." This depends on your Current Robot Velocity, the Game Piece Exit Velocity, and the physical distance to the goal. MARSLib handles these vector transformations automatically using <strong><a href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/index.html" target="_blank">WPILib Geometry</a></strong>.</p>
   </div>

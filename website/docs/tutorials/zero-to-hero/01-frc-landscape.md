@@ -4,7 +4,7 @@ id: landscape
 title: "1. The Dev Ecosystem"
 ---
 
-<main className="container">
+<main class="container">
   <div>
     <h1>The Dev Ecosystem</h1>
   </div>
@@ -12,7 +12,7 @@ title: "1. The Dev Ecosystem"
   <p>Before we touch a single line of Java or look at a physical robot, you must understand the toolchain we use to build, track, and deploy code. FRC development is uniquely complex because it relies heavily on offline-capable environments and cross-platform utilities.</p>
 
   <h2>1. Version Control (Git & GitHub)</h2>
-  <div className="callout callout-info">
+  <div class="callout callout-info">
     <h4>What is Git?</h4>
     <p><a href="https://git-scm.com/" target="_blank">Git</a> is a "Time Machine" for your code. It tracks exactly who changed which lines in a file, allowing multiple robot programmers to safely write code simultaneously without accidentally deleting each other's work.</p>
   </div>

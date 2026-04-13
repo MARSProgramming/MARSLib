@@ -4,7 +4,7 @@ id: command-based
 title: "3. Command-Based Paradigm"
 ---
 
-<main className="container">
+<main class="container">
   <div>
     <h1>Command-Based Architecture</h1>
   </div>
@@ -13,7 +13,7 @@ title: "3. Command-Based Paradigm"
   <p>To ensure code is evaluated safely every 20ms, WPILib enforces the <strong><a href="https://docs.wpilib.org/en/stable/docs/software/commandbased/index.html" target="_blank">Command-Based Paradigm</a></strong>.</p>
 
   <h2>1. Subsystems (The Nouns)</h2>
-  <div className="callout callout-info">
+  <div class="callout callout-info">
     <h4>Persistent Wrappers</h4>
     <p>A <a href="https://docs.wpilib.org/en/stable/docs/software/commandbased/subsystems.html" target="_blank">Subsystem</a> represents physical hardware on the robot (e.g., <code>ElevatorSubsystem</code>, <code>ShooterSubsystem</code>). It is instantiated exactly once on boot and persists forever.</p>
   </div>

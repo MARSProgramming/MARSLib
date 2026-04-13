@@ -8,7 +8,7 @@ title: "State Machine Logic"
 
 
 
-<main className="container" >
+<main class="container" >
   <div >
 
     <h1>State Machine Logic</h1>
@@ -42,7 +42,7 @@ stateMachine.addBidirectional(LOADED_FUEL_BALL, HUB_SCORE);
 stateMachine.addWildcardTo(STOW); // Can always go back to STOW in an emergency
 ```
 
-  <div className="callout callout-warning">
+  <div class="callout callout-warning">
     <h4>Pre-Match Diagnostics Mandatory</h4>
     <p>Before ever running a physical state machine transition on the field, the involved subsystems must pass their <code>SystemTestable</code> pre-match assertions. Ensure the hardware actually works via <code>MARSFaultManager</code> sweeps to prevent hardware collisions.</p>
   </div>
@@ -68,7 +68,7 @@ import StateMachineSim from '@site/src/components/StateMachineSim';
   <h2>4. Live Mermaid Visualization</h2>
   <p>One of the most powerful features of <code>MARSStateMachine</code> is that it automatically generates a <strong><a href="https://mermaid.js.org/" target="_blank">Mermaid.js flowchart</a></strong>. This graph is sent over telemetry and can be viewed live in <strong><a href="https://github.com/Mechanical-Advantage/AdvantageScope" target="_blank">AdvantageScope</a></strong>.</p>
 
-  <div className="callout">
+  <div class="callout">
     <h4>Visual Debugging</h4>
     <p>Open the "Mermaid" tab in AdvantageScope and drag the <code>Superstructure/StateMachine/MermaidGraph</code> field into it. You will see a live diagram where the current state is highlighted in glowing green.</p>
   </div>

@@ -8,7 +8,7 @@ title: "Automated Log Uploader"
 
 
 
-<main className="container" >
+<main class="container" >
   <div >
 
     <h1>Automated Log Uploader</h1>
@@ -39,7 +39,7 @@ public final class LogUploader {
     <li >Copy the exact token string (it will start with <code>github_pat_</code>).</li>
   </ol>
 
-  <div className="callout callout-warning">
+  <div class="callout callout-warning">
     <h4>Robot Security</h4>
     <p>Never hardcode your PAT into Java! The <code>LogUploader</code> explicitly reads the token from a local text file that is ignored by Git.</p>
   </div>

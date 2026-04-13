@@ -6,7 +6,7 @@ title: "Pathfinding & Autonomous"
 
 import AutoSim from '@site/src/components/AutoSim';
 
-<main className="container" >
+<main class="container" >
   <div >
     <h1>Pathfinding & Autonomous</h1>
   </div>
@@ -33,7 +33,7 @@ import AutoSim from '@site/src/components/AutoSim';
   );
   ```
 
-  <div className="callout callout-warning">
+  <div class="callout callout-warning">
     <h4>Avoid On-RIO A* Calculation</h4>
     <p>Calculating an entire field NavGrid requires traversing a massive 2D array graph. Executing this on the core RoboRIO thread can cause devastating loop overruns (exceeding 20ms). Always offload advanced Pathfinding math to the <strong>Driver Station Laptop</strong> or a dedicated coprocessor.</p>
   </div>
