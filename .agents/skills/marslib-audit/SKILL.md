@@ -234,7 +234,54 @@ When `hasHardwareConnected` is `false`, the subsystem must:
 If a sensor returns `NaN`, it must be caught before entering kinematics or PID. A single `NaN` in `ChassisSpeeds` propagates to all 4 module outputs, commanding `NaN` voltage and disabling the drivetrain.
 **Audit Action**: `grep -rn "Double.isNaN\|Double.isFinite\|Double.isInfinite" src/main/java/com/marslib/` — verify NaN guards exist at IO layer boundaries. Critical locations: gyro yaw, vision pose, drive encoder velocity.
 
-## 16. Typical Audit Workflow
+## 16. AdvantageScope Layout Completeness
+
+The AdvantageScope layout file (`advantagescope_layout.json`) is the primary competition debugging interface. Missing log keys mean blind spots during critical moments.
+
+### Rule A: Critical Log Keys Must Be Visualized
+The layout MUST contain tabs that reference these critical output keys:
+- **Odometry**: `SwerveDrive/Pose`, `Odometry/RobotPose`, `Robot/Pose3d`
+- **Swerve**: `SwerveDrive/MeasuredStates`, `SwerveDrive/DesiredStates`
+- **Vision**: `Vision/ValidPoses/*`, `Vision/CameraFrustums/*`
+- **Power**: `PhysicsWorld/ComputedVoltage`, `PhysicsWorld/FrameCurrentDraw_A`
+- **System Health**: `System/LoopRunTime_ms`, `System/BatteryVoltage`, `System/CANBusUtilization`, `System/CANivoreUtilization`
+- **Teleop**: `Teleop/RawJoystickX`, `Teleop/PostDeadband`, `Teleop/NaNDetected`
+- **Faults**: `Alerts/Critical`, `Alerts/Warning`, `Alerts/Info`
+- **Tuning**: `TunableNumbers/*` (all mechanism feedforward gains)
+
+**Audit Action**: Parse `advantagescope_layout.json` and extract all `logKey` values. Cross-reference against the grep of `Logger.recordOutput(` across `src/main/java/`. Any critical key that exists in code but is NOT present in any layout tab is a potential debugging blind spot.
+
+### Rule B: Layout File Must Have Version Tag
+AdvantageScope requires a `"version"` key at the top level of the layout JSON. Without it, the file silently fails to load.
+**Audit Action**: Verify `advantagescope_layout.json` contains `"version": "26.0.0"` (or the appropriate AdvantageScope version). See KI `advantagescope_mcp_missing_version` for known bugs.
+
+### Rule C: Layout Must Reference Correct Field Year
+The `"field"` and `"game"` keys in 2D/3D tabs must match the current competition year (e.g., `"FRC:2026 Field"`). An old field reference will render the robot at the wrong coordinates.
+**Audit Action**: `grep -i "field\|game" advantagescope_layout.json` — verify all results reference the current season's field.
+
+## 17. Dashboard Configuration Integrity
+
+The team dashboard (`marsteam_dashboard.json`) is used pitside during competition. It must be complete, correct, and match the current codebase.
+
+### Rule A: Dashboard Must Cover Pit-Critical Data
+The pitside dashboard MUST include tabs/views for:
+1. **3D Field View**: `SwerveDrive/Pose` as robot source (verify driver can see position)
+2. **Swerve Diagnostics**: Both `MeasuredStates` and `DesiredStates` (detects dead modules)
+3. **Power Monitoring**: Battery voltage and current draw graphs
+4. **Driver Inputs**: Raw joystick values (diagnoses stuck buttons or dead axes)
+5. **Fault Alerts**: `Alerts/Critical` and `Alerts/Warning` (surface match-impacting faults)
+
+**Audit Action**: Parse `marsteam_dashboard.json` and verify all 5 categories have corresponding tab entries with valid `logKey` references. A dashboard missing fault alerts means the pit crew cannot diagnose hardware failures between matches.
+
+### Rule B: Dashboard Must Not Reference Stale Keys
+If a `recordOutput` key is renamed or removed in Java code, the dashboard tab referencing it will show blank/no data.
+**Audit Action**: Extract all `logKey` references from `marsteam_dashboard.json`. For each, verify the corresponding `Logger.recordOutput("keyname"` exists in the codebase. Flag any orphaned dashboard keys that no longer have a code source.
+
+### Rule C: Dashboard Version Must Match AdvantageScope
+The `"version"` in `marsteam_dashboard.json` must match the installed AdvantageScope version.
+**Audit Action**: Verify both `advantagescope_layout.json` and `marsteam_dashboard.json` have the same version string. A mismatch can cause silent load failures.
+
+## 18. Typical Audit Workflow
 1. Verify the state of the Build configuration (gradle/jacoco).
 2. Execute `./gradlew spotlessCheck` to catch formatting and static analysis flaws.
 3. Scan for Zero-Allocation violations (`new` in periodic) and GC triggers (`System.gc()`).
@@ -242,15 +289,17 @@ If a sensor returns `NaN`, it must be caught before entering kinematics or PID. 
 5. Search for Optional misusage (`Optional.get()`) and Naked Modulo expressions (`% 360`).
 6. Execute Math Validation checks: unprotected division, unclamped `Math.sqrt()`/`Math.acos()` inputs.
 7. Check hardware allocations: Current Limits, CAN Bus frequencies, hardware timeouts.
-8. **NEW**: Audit thread safety — verify all shared mutable state in `PhoenixOdometryThread` and `LoggedTunableNumber`.
-9. **NEW**: Verify CAN `StatusCode` checking on every `.apply()` and `.setUpdateFrequency()` call.
-10. **NEW**: Verify Command lifecycle — `isFinished()` or `.withTimeout()` on every custom command.
-11. **NEW**: Enforce AdvantageKit replay contract — no direct hardware reads outside IO layers.
-12. **NEW**: Check autonomous safety — fallback commands, timeout wrappers, field boundary clamps.
-13. **NEW**: Audit vendordep versions against latest stable releases.
-14. **NEW**: Verify graceful degradation — `hasHardwareConnected`, NaN firewalls, fault escalation.
-15. Validate AI Skill parity — `SKILL.md` and `marketplace.json` correctly reference all directories.
-16. Verify the documentation site for dead links and stale code snippets.
-17. Execute `./gradlew test jacocoTestReport` and analyze `.csv` output for untested classes.
-18. Provide a summary checklist of detected defects.
-19. Systematically remediate defects inline.
+8. Audit thread safety — verify all shared mutable state in `PhoenixOdometryThread` and `LoggedTunableNumber`.
+9. Verify CAN `StatusCode` checking on every `.apply()` and `.setUpdateFrequency()` call.
+10. Verify Command lifecycle — `isFinished()` or `.withTimeout()` on every custom command.
+11. Enforce AdvantageKit replay contract — no direct hardware reads outside IO layers.
+12. Check autonomous safety — fallback commands, timeout wrappers, field boundary clamps.
+13. Audit vendordep versions against latest stable releases.
+14. Verify graceful degradation — `hasHardwareConnected`, NaN firewalls, fault escalation.
+15. **AdvantageScope layout audit** — cross-reference code `recordOutput` keys against layout tabs.
+16. **Dashboard config audit** — verify pitside dashboard covers all critical subsystems and has no orphaned keys.
+17. Validate AI Skill parity — `SKILL.md` and `marketplace.json` correctly reference all directories.
+18. Verify the documentation site for dead links and stale code snippets.
+19. Execute `./gradlew test jacocoTestReport` and analyze `.csv` output for untested classes.
+20. Provide a summary checklist of detected defects.
+21. Systematically remediate defects inline.
