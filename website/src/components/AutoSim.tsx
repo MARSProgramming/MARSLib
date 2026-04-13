@@ -5,7 +5,7 @@ type Point = { x: number, y: number };
 export default function AutoSim() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [waypoints, setWaypoints] = useState<Point[]>([
+  const waypointsRef = useRef<Point[]>([
     { x: 50, y: 300 },
     { x: 250, y: 150 },
     { x: 500, y: 350 },
@@ -46,7 +46,6 @@ export default function AutoSim() {
   function generatePath(points: Point[]): Point[] {
     if (points.length < 4) return [];
     const path: Point[] = [];
-    // We treat the first and last point as control points to cap the spline
     const pts = [points[0], ...points, points[points.length - 1]];
     
     for (let i = 1; i < pts.length - 2; i++) {
@@ -79,15 +78,14 @@ export default function AutoSim() {
     resize();
 
     let animationFrameId: number;
-    let path = generatePath(waypoints);
+    let path = generatePath(waypointsRef.current);
 
     const handlePointerDown = (e: PointerEvent) => {
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
       
-      // Find clicked waypoint
-      const clickedIdx = waypoints.findIndex(p => Math.hypot(p.x - x, p.y - y) < 20);
+      const clickedIdx = waypointsRef.current.findIndex((p: Point) => Math.hypot(p.x - x, p.y - y) < 20);
       if (clickedIdx !== -1) {
         draggedPointRef.current = clickedIdx;
         setIsPlaying(false);
@@ -100,12 +98,8 @@ export default function AutoSim() {
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
         
-        setWaypoints(prev => {
-          const next = [...prev];
-          next[draggedPointRef.current!] = { x, y };
-          path = generatePath(next);
-          return next;
-        });
+        waypointsRef.current[draggedPointRef.current] = { x, y };
+        path = generatePath(waypointsRef.current);
       }
     };
 
@@ -118,15 +112,13 @@ export default function AutoSim() {
     window.addEventListener('pointerup', handlePointerUp);
 
     function loop() {
-      // Logic
       if (playRef.current && path.length > 0) {
         const r = robotRef.current;
-        r.progress += 0.01;
+        r.progress += 0.005;
         if (r.progress >= 1.0) {
           r.progress = 0;
           setIsPlaying(false);
         } else {
-          // Find closest point approximation
           const idx = Math.floor(r.progress * (path.length - 1));
           const nextIdx = Math.min(idx + 1, path.length - 1);
           const p1 = path[idx];
@@ -152,7 +144,6 @@ export default function AutoSim() {
 
       ctx!.clearRect(0, 0, width, height);
       
-      // Draw Grid / Field
       ctx!.strokeStyle = 'rgba(255, 255, 255, 0.05)';
       ctx!.lineWidth = 1;
       const gridSize = 40;
@@ -163,7 +154,6 @@ export default function AutoSim() {
         ctx!.beginPath(); ctx!.moveTo(0, i); ctx!.lineTo(width, i); ctx!.stroke();
       }
 
-      // Draw Path
       if (path.length > 0) {
         ctx!.beginPath();
         ctx!.strokeStyle = 'rgba(41, 182, 246, 0.5)';
@@ -177,10 +167,9 @@ export default function AutoSim() {
         ctx!.setLineDash([]);
       }
 
-      // Draw waypoints
-      waypoints.forEach((p, i) => {
+      waypointsRef.current.forEach((p: Point, i: number) => {
         ctx!.beginPath();
-        ctx!.fillStyle = i === 0 || i === waypoints.length-1 ? '#B32416' : '#29b6f6';
+        ctx!.fillStyle = i === 0 || i === waypointsRef.current.length-1 ? '#B32416' : '#29b6f6';
         ctx!.arc(p.x, p.y, 8, 0, Math.PI * 2);
         ctx!.fill();
         ctx!.strokeStyle = 'rgba(255,255,255,0.8)';
@@ -188,7 +177,6 @@ export default function AutoSim() {
         ctx!.stroke();
       });
 
-      // Draw Robot
       const rbW = 40;
       const rbH = 40;
       const rx = robotRef.current.x;
@@ -198,10 +186,6 @@ export default function AutoSim() {
       ctx!.save();
       ctx!.translate(rx, ry);
       
-      // Visualize holonomic translation (chassis facing fixed while moving)
-      // vs standard tank drive. We render holonomic chassis facing 0 (always forward)
-      // but a velocity indicator pointing in heading.
-      
       ctx!.fillStyle = 'rgba(40, 40, 40, 0.9)';
       ctx!.strokeStyle = '#29b6f6';
       ctx!.lineWidth = 2;
@@ -209,7 +193,7 @@ export default function AutoSim() {
       ctx!.strokeRect(-rbW/2, -rbH/2, rbW, rbH);
       
       ctx!.rotate(rh);
-      ctx!.strokeStyle = '#9c7bcc'; // path vector
+      ctx!.strokeStyle = '#9c7bcc';
       ctx!.beginPath(); ctx!.moveTo(0,0); ctx!.lineTo(30, 0); ctx!.stroke();
       
       ctx!.restore();
@@ -229,7 +213,7 @@ export default function AutoSim() {
       window.removeEventListener('pointerup', handlePointerUp);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [waypoints, isPlaying]);
+  }, []);
 
   return (
     <div style={{ width: '100%', height: '480px', backgroundColor: '#0a0a0a', border: '1px solid #2a2a2a', borderRadius: '8px', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
