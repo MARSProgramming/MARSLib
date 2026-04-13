@@ -193,6 +193,7 @@ tasks.withType(Javadoc) {
 task generateDocs {
     description = 'Generates the full MARSLib documentation site into docs/'
     dependsOn javadoc, jacocoTestReport
+    notCompatibleWithConfigurationCache("Uses project copy at execution time")
 
     def docsDir = file("docs")
     def javadocDir = layout.buildDirectory.dir("docs/javadoc")
