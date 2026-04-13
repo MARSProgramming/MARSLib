@@ -42,6 +42,12 @@ body {
   overflow-x: hidden;
 }
 
+p { margin-bottom: 20px; color: var(--text-secondary); font-size: 1.1rem; }
+ul, ol { margin-bottom: 20px; padding-left: 30px; color: var(--text-secondary); }
+li { margin-bottom: 15px; }
+a { color: var(--ai-cyan); text-decoration: none; transition: color 0.2s; }
+a:hover { color: white; }
+
 /* ===== Layout ===== */
 .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
 
@@ -739,3 +745,20 @@ footer {
 .feature-card:hover .feature-icon img {
   transform: scale(1.1);
 }
+
+/* ===== Documentation Formatting ===== */
+code { font-family: 'JetBrains Mono', monospace; background: #222; padding: 2px 6px; border-radius: 4px; color: #ffab91; }
+pre { background: #111; border: 1px solid var(--border); padding: 20px; border-radius: 12px; overflow-x: auto; margin-bottom: 30px; }
+pre code { background: transparent; padding: 0; color: #e8e8e8; font-size: 0.9rem; }
+
+.callout { background: rgba(41, 182, 246, 0.1); border: 1px solid var(--ai-cyan); padding: 24px; border-radius: 12px; margin: 30px 0; }
+.callout h4 { font-family: 'Orbitron', sans-serif; color: var(--ai-cyan); margin-bottom: 10px; text-transform: uppercase; font-size: 0.9rem; }
+.callout-warning { background: rgba(179, 36, 22, 0.1); border: 1px solid var(--mars-red); }
+.callout-warning h4 { color: var(--mars-red-light); }
+
+.back-link { display: inline-block; margin-bottom: 40px; color: var(--mars-red); text-decoration: none; font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.1em; transition: transform 0.2s; }
+.back-link:hover { transform: translateX(-5px); color: var(--mars-red); }
+
+.arch-diagram { background: #111; padding: 30px; border-radius: 12px; border: 1px solid var(--border); overflow-x: auto; margin: 40px auto; max-width: 800px; }
+.arch-diagram pre { color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; line-height: 1.5; margin: 0; padding: 0; background: transparent; border: none; }
+.arch-diagram b { color: var(--mars-red-light); }
