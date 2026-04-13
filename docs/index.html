@@ -583,6 +583,51 @@
       color: var(--mars-red-light);
     }
 
+    /* ===== Partner Badges ===== */
+    .partner-grid {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .partner-badge {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      background: rgba(255,255,255,0.03);
+      padding: 10px 18px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(10px);
+    }
+
+    .partner-badge:hover {
+      background: rgba(179, 36, 22, 0.08);
+      border-color: var(--mars-red);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    .partner-logo {
+      height: 24px;
+      width: auto;
+      filter: grayscale(100%) opacity(0.7);
+      transition: all 0.3s ease;
+    }
+
+    .partner-badge:hover .partner-logo {
+      filter: grayscale(0%) opacity(1);
+    }
+
     /* ===== Footer ===== */
     footer {
       border-top: 1px solid var(--border);
@@ -1097,14 +1142,39 @@
     <p style="color: var(--text-secondary); max-width: 800px; margin: 0 auto 40px; font-size: 1.1rem; line-height: 1.8;">
       MARSLib stands upon the shoulders of giants. We extend our deepest gratitude to the <b>MapleSim</b> project for their groundbreaking simulation patterns, and to the incredible open-source maintainers, corporate sponsors, and the FIRST community for making modern FRC software possible. 
     </p>
-    <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; max-width: 900px; margin: 0 auto;">
-      <a href="https://github.com/wpilibsuite/allwpilib" target="_blank" style="text-decoration: none; background: rgba(255,255,255,0.05); padding: 12px 20px; border-radius: 8px; border: 1px solid var(--border); color: var(--text-primary); font-family: 'Orbitron', sans-serif; transition: all 0.2s;">❤️ <b>WPILib</b></a>
-      <a href="https://github.com/Mechanical-Advantage" target="_blank" style="text-decoration: none; background: rgba(255,255,255,0.05); padding: 12px 20px; border-radius: 8px; border: 1px solid var(--border); color: var(--text-primary); font-family: 'Orbitron', sans-serif; transition: all 0.2s;">❤️ <b>Mechanical Advantage</b></a>
-      <a href="https://dyn4j.org/" target="_blank" style="text-decoration: none; background: rgba(255,255,255,0.05); padding: 12px 20px; border-radius: 8px; border: 1px solid var(--border); color: var(--text-primary); font-family: 'Orbitron', sans-serif; transition: all 0.2s;">❤️ <b>Dyn4j Simulation</b></a>
-      <a href="https://pathplanner.dev/" target="_blank" style="text-decoration: none; background: rgba(255,255,255,0.05); padding: 12px 20px; border-radius: 8px; border: 1px solid var(--border); color: var(--text-primary); font-family: 'Orbitron', sans-serif; transition: all 0.2s;">❤️ <b>PathPlanner</b></a>
-      <a href="https://photonvision.org/" target="_blank" style="text-decoration: none; background: rgba(255,255,255,0.05); padding: 12px 20px; border-radius: 8px; border: 1px solid var(--border); color: var(--text-primary); font-family: 'Orbitron', sans-serif; transition: all 0.2s;">❤️ <b>PhotonVision</b></a>
-      <a href="https://store.ctr-electronics.com/" target="_blank" style="text-decoration: none; background: rgba(255,255,255,0.05); padding: 12px 20px; border-radius: 8px; border: 1px solid var(--border); color: var(--text-primary); font-family: 'Orbitron', sans-serif; transition: all 0.2s;">❤️ <b>CTRE &amp; REV</b></a>
-      <a href="https://shenzhen-robotics-alliance.github.io/maple-sim/rebuilt/" target="_blank" style="text-decoration: none; background: rgba(255,255,255,0.05); padding: 12px 20px; border-radius: 8px; border: 1px solid var(--border); color: var(--text-primary); font-family: 'Orbitron', sans-serif; transition: all 0.2s;">❤️ <b>MapleSim</b></a>
+    <div class="partner-grid">
+      <a href="https://github.com/wpilibsuite/allwpilib" target="_blank" class="partner-badge">
+        <img src="assets/logos/wpilib.svg" alt="WPILib" class="partner-logo">
+        WPILib
+      </a>
+      <a href="https://github.com/Mechanical-Advantage" target="_blank" class="partner-badge">
+        <img src="assets/logos/advantagekit.png" alt="AdvantageKit" class="partner-logo">
+        AdvantageKit
+      </a>
+      <a href="https://dyn4j.org/" target="_blank" class="partner-badge">
+        <img src="assets/logos/dyn4j.png" alt="Dyn4j" class="partner-logo">
+        Dyn4j
+      </a>
+      <a href="https://pathplanner.dev/" target="_blank" class="partner-badge">
+        <img src="assets/logos/pathplanner.png" alt="PathPlanner" class="partner-logo">
+        PathPlanner
+      </a>
+      <a href="https://photonvision.org/" target="_blank" class="partner-badge">
+        <img src="assets/logos/photonvision.png" alt="PhotonVision" class="partner-logo">
+        PhotonVision
+      </a>
+      <a href="https://store.ctr-electronics.com/" target="_blank" class="partner-badge">
+        <img src="assets/logos/ctre.png" alt="CTRE" class="partner-logo">
+        CTRE
+      </a>
+      <a href="https://www.revrobotics.com/" target="_blank" class="partner-badge">
+        <img src="assets/logos/rev.svg" alt="REV" class="partner-logo">
+        REV
+      </a>
+      <a href="https://shenzhen-robotics-alliance.github.io/maple-sim/rebuilt/" target="_blank" class="partner-badge">
+        <img src="assets/logos/maple-sim.png" alt="MapleSim" class="partner-logo">
+        MapleSim
+      </a>
     </div>
   </div>
 </section>

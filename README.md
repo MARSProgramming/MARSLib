@@ -110,7 +110,20 @@ Want to analyze a bug or replay a match?
 Use our customized [GitHub Issue Templates](.github/ISSUE_TEMPLATE) to let the software leads know exactly what went wrong in your simulation or physical robot code! Whether it's a new PathPlanner routine request or an odometry jitter bug, the templates will automatically guide you through attaching your `.wpilog` telemetry data.
 
 ## ⚖️ Open Source Acknowledgements
-This mathematical architecture leverages the shoulders of giants. We extend our deepest gratitude to the **MapleSim** project for their groundbreaking simulation patterns. We explicitly attribute and bundle the following open-source resources according to their respective MIT/BSD constraints:
+
+MARSLib stands upon the shoulders of giants. We extend our deepest gratitude to the **MapleSim** project for their groundbreaking simulation patterns, and to the following open-source maintainers and vendors who make modern FRC possible:
+
+<p align="center">
+  <a href="https://github.com/wpilibsuite/allwpilib" target="_blank"><img src="https://raw.githubusercontent.com/wpilibsuite/branding/main/wpilib-icon.svg" width="40" height="40" alt="WPILib" style="margin: 10px;"></a>
+  <a href="https://github.com/Mechanical-Advantage" target="_blank"><img src="https://docs.advantagekit.org/img/logo.png" width="40" height="40" alt="AdvantageKit" style="margin: 10px;"></a>
+  <a href="https://dyn4j.org/" target="_blank"><img src="https://dyn4j.org/assets/img/logo.png" width="40" height="40" alt="Dyn4j" style="margin: 10px;"></a>
+  <a href="https://pathplanner.dev/" target="_blank"><img src="https://pathplanner.dev/img/logo.png" width="40" height="40" alt="PathPlanner" style="margin: 10px;"></a>
+  <a href="https://photonvision.org/" target="_blank"><img src="https://raw.githubusercontent.com/PhotonVision/photonvision-branding/master/PhotonVision%20Branding/Logos/Icon/PNG/PhotonVision-Icon-noBG.png" width="40" height="40" alt="PhotonVision" style="margin: 10px;"></a>
+  <a href="https://store.ctr-electronics.com/" target="_blank"><img src="https://v6.docs.ctr-electronics.com/en/stable/_static/ctre.png" width="40" height="40" alt="CTRE" style="margin: 10px;"></a>
+  <a href="https://www.revrobotics.com/" target="_blank"><img src="https://www.revrobotics.com/static/version/frontend/Magento/luma/en_US/images/logo.svg" width="40" height="40" alt="REV" style="margin: 10px;"></a>
+  <a href="https://shenzhen-robotics-alliance.github.io/maple-sim/rebuilt/" target="_blank"><img src="https://shenzhen-robotics-alliance.github.io/maple-sim/assets/logo.png" width="40" height="40" alt="MapleSim" style="margin: 10px;"></a>
+</p>
+
 - [Mechanical Advantage (AdvantageKit)](AdvantageKit-License.md)
 - [WPILib Core](WPILib-License.md)
 - [Dyn4j Collision Physics](Dyn4j-License.md)
