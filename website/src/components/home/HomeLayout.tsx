@@ -83,6 +83,11 @@ export const HomeTutorialGrid = () => {
           <h3>📻 SysId Characterization</h3>
           <p>Automated system identification for calculating perfect feedforward constants passively during real matches.</p>
         </a>
+
+        <a href="/accessibility/" className="tutorial-card" style={{ borderTop: '4px solid #3498db' }}>
+          <h3>♿ Accessible by Design</h3>
+          <p>Read our commitment to inclusive engineering. Learn how we use AI agents and Pa11y to enforce WCAG 2.1 AA DOM parity.</p>
+        </a>
       </div>
     </div>
   );
