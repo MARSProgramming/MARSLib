@@ -14,10 +14,12 @@ title: "Elite Architecture Mining"
 
   <p>When mining this logic, you must strictly strip the target repository of its architecture and salvage <em>only the raw mathematics</em>. If the original code calls a motor controller directly inside the math solver, you must replace it with a decoupled <code>MARSMechanismTarget</code> payload.</p>
 
-  <div class="callout callout-warning">
-    <h4>AI Agent Enforcement</h4>
-    <p>MARSLib natively enforces this boundary via the <code>marslib-elite-mining</code> skill. Lead engineers can command the AI to ingest a target repository file, extract the discrete state-space models, and map them purely into our AdvantageKit <code>IO</code> layer paradigm. The AI is forbidden from ingesting the hardware implementations of rival teams.</p>
-  </div>
+  :::caution
+**AI Agent Enforcement**
+
+
+    MARSLib natively enforces this boundary via the <code>marslib-elite-mining</code> skill. Lead engineers can command the AI to ingest a target repository file, extract the discrete state-space models, and map them purely into our AdvantageKit <code>IO</code> layer paradigm. The AI is forbidden from ingesting the hardware implementations of rival teams.
+:::
 
   <h2>2. Telemetry Rewiring</h2>
   <p>Elite teams often use complex Dashboard configurations or raw `SmartDashboard` calls. When bringing this logic into MARSLib, all telemetry calls must be gutted and replaced explicitly with AdvantageKit <code>Logger.recordOutput(...)</code> arrays, preserving determinism.</p>

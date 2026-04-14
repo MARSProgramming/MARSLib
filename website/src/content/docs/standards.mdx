@@ -4,24 +4,15 @@ description: "The definitive software engineering ruleset governing our World-Ch
 template: splash
 ---
 
-<div style={{ textAlign: 'center', marginBottom: '60px', marginTop: '60px' }}>
-  <a href="/" className="back-link">← RETURN TO BASE</a>
-  <h1 style={{ fontFamily: 'Orbitron, sans-serif' }}>THE MARSLIB STANDARD</h1>
-  <p style={{ fontSize: '1.25rem', color: 'var(--sl-color-text-muted)', maxWidth: '700px', margin: '0 auto' }}>
-    The definitive software engineering ruleset governing our World-Champion grade infrastructure. Code that violates these rules is rejected.
-  </p>
-</div>
+<StandardHeader />
 
-<main style={{ maxWidth: '900px', margin: '0 auto', paddingBottom: '80px' }}>
+<SplashContainer>
 
-  <section className="rule-section">
-    <span className="rule-num">01</span>
-    <h2>Nullify Hungarian Notation</h2>
+  <RuleSection num="01" title="Nullify Hungarian Notation">
     <p>Using <code>m_</code> prefixes to dictate member variables is an archaic C++ practice that poisons Java IDE autocompletion and drastically reduces readability. MARSLib strictly bans Hungarian notation. We rely on modern syntax highlighting and the <code>this.</code> keyword for variable scope.</p>
     
-    <div className="code-comparison">
-      <div className="code-card code-bad">
-        <div className="code-header">VIOLATION</div>
+    <CodeComparison>
+      <CodeViolation>
         
 ```java
 private final SwerveDrive m_swerve;
@@ -32,9 +23,8 @@ public void setSpeed(double speed) {
 }
 ```
 
-      </div>
-      <div className="code-card code-good">
-        <div className="code-header">MARS STANDARD</div>
+      </CodeViolation>
+      <CodeStandard>
 
 ```java
 private final SwerveDrive swerve;
@@ -45,18 +35,15 @@ public void setVelocity(double targetVelocity) {
 }
 ```
 
-      </div>
-    </div>
-  </section>
+      </CodeStandard>
+    </CodeComparison>
+  </RuleSection>
 
-  <section className="rule-section">
-    <span className="rule-num">02</span>
-    <h2>The "Never Nester" Protocol</h2>
+  <RuleSection num="02" title="The &quot;Never Nester&quot; Protocol">
     <p>Code that is deeply nested across multiple <code>if/else</code> and <code>for</code> blocks is fragile and requires immense cognitive load to debug under competition pressure. All FRC control loops must remain completely "flat". Utilize guard clauses and early <code>return</code> expressions immediately.</p>
     
-    <div className="code-comparison">
-      <div className="code-card code-bad">
-        <div className="code-header">VIOLATION</div>
+    <CodeComparison>
+      <CodeViolation>
         
 ```java
 public void shoot() {
@@ -69,9 +56,8 @@ public void shoot() {
     }
 }
 ```
-      </div>
-      <div className="code-card code-good">
-        <div className="code-header">MARS STANDARD</div>
+      </CodeViolation>
+      <CodeStandard>
         
 ```java
 public void shoot() {
@@ -83,18 +69,15 @@ public void shoot() {
 }
 ```
 
-      </div>
-    </div>
-  </section>
+      </CodeStandard>
+    </CodeComparison>
+  </RuleSection>
 
-  <section className="rule-section">
-    <span className="rule-num">03</span>
-    <h2>Explicit Unit Nomenclature</h2>
-    <p>A double named <span className="inline-code">speed</span> has destroyed billions of dollars in real-world aerospace missions. Passing raw sensor ticks or ambiguous integers into high-level functions is banned. Variables must describe precisely what they represent.</p>
+  <RuleSection num="03" title="Explicit Unit Nomenclature">
+    <p>A double named <code>speed</code> has destroyed billions of dollars in real-world aerospace missions. Passing raw sensor ticks or ambiguous integers into high-level functions is banned. Variables must describe precisely what they represent.</p>
     
-    <div className="code-comparison">
-      <div className="code-card code-bad">
-        <div className="code-header">VIOLATION</div>
+    <CodeComparison>
+      <CodeViolation>
         
 ```java
 // What is 'tolerance'? Degrees? Radians?
@@ -103,9 +86,8 @@ public void setAngle(double angle, double tolerance) { ... }
 public void runIntake(double speed) { ... }
 ```
 
-      </div>
-      <div className="code-card code-good">
-        <div className="code-header">MARS STANDARD</div>
+      </CodeViolation>
+      <CodeStandard>
 
 ```java
 // Mathematically explicit parameters
@@ -113,26 +95,22 @@ public void setAngle(double radians, double toleranceRads) { ... }
 public void runIntake(double voltageOut) { ... }
 ```
 
-      </div>
-    </div>
-  </section>
+      </CodeStandard>
+    </CodeComparison>
+  </RuleSection>
 
-  <section className="rule-section">
-    <span className="rule-num">04</span>
-    <h2>Zero-Allocation Architecture</h2>
+  <RuleSection num="04" title="Zero-Allocation Architecture">
     <p>Hot-paths (the 20ms and 4ms loops) must never use the <code>new</code> keyword to avoid JVM GC stalls. You must use globally instantiated Ephemeral Structs to proxy hardware parameters mathematically.</p>
     
     <div className="callout callout-warning">
       <h4>Mathematical Mutation</h4>
       <p>Do not pass structural pointers to objects that must preserve historic state (e.g. PID integrators). Always use <code>.clone()</code> if a downstream pipeline requires an immutable snapshot of an Ephemeral Struct.</p>
     </div>
-  </section>
+  </RuleSection>
 
-  <section className="rule-section">
-    <span className="rule-num">05</span>
-    <h2>Agentic Comments and Autonomy</h2>
+  <RuleSection num="05" title="Agentic Comments and Autonomy">
     <p>MARSLib is the first FRC framework expressly co-developed with Artificial Intelligence. To instruct Claude Code or Z.ai agents efficiently, developers must leave explicitly structured block comments prefixing the exact file or mathematical function requiring augmentation.</p>
     <p>Code that is actively governed by an AI skill (such as Swerve Kinematics or Log Replay) must carry the <code>@AGENT_ENFORCED</code> JavaDoc tag to prevent human developers from breaking structured logic patterns.</p>
-  </section>
+  </RuleSection>
 
-</main>
+</SplashContainer>

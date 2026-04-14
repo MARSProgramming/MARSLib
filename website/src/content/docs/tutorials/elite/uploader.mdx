@@ -30,10 +30,12 @@ public final class LogUploader {
     <li >Copy the exact token string (it will start with <code>github_pat_</code>).</li>
   </ol>
 
-  <div class="callout callout-warning">
-    <h4>Robot Security</h4>
-    <p>Never hardcode your PAT into Java! The <code>LogUploader</code> explicitly reads the token from a local text file that is ignored by Git.</p>
-  </div>
+  :::caution
+**Robot Security**
+
+
+    Never hardcode your PAT into Java! The <code>LogUploader</code> explicitly reads the token from a local text file that is ignored by Git.
+:::
 
   <h2>4. Deploying the PAT</h2>
   <p>You must place your token inside the RoboRIO's deploy directory. Create a new file locally in your project:</p>

@@ -12,12 +12,13 @@ title: "High-Frequency Swerve"
   <h2>1. The 250Hz Thread</h2>
   <p>Instead of relying on the main RoboRIO thread, our swerve architecture spins up an isolated background thread that communicates directly with the <strong><a href="https://v6.docs.ctr-electronics.com/en/stable/docs/canivore/canivore-intro.html" target="_blank">CTRE CANivore</a></strong> bus. This thread calculates the robot's physical kinematics at 250Hz.</p>
 
-  <div class="callout callout-warning">
-    <h4>Zero-Allocation (GC) Danger</h4>
-    <p>Because this thread runs 250 times a second, if you instantiate an object inside this loop, you will instantly crash the RoboRIO due to massive Garbage Collection pressure. This is why our Agentic Skills strictly enforce the <strong>Ephemeral Struct</strong> proxy architecture across the Swerve subsystem.</p>
-  </div>
+  :::caution
+**Zero-Allocation (GC) Danger**
 
-import SwerveSim from '../../../../components/SwerveSim.tsx';
+
+    Because this thread runs 250 times a second, if you instantiate an object inside this loop, you will instantly crash the RoboRIO due to massive Garbage Collection pressure. This is why our Agentic Skills strictly enforce the <strong>Ephemeral Struct</strong> proxy architecture across the Swerve subsystem.
+:::
+
 
   <SwerveSim client:only="react" />
 

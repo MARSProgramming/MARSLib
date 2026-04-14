@@ -26,10 +26,12 @@ title: "Telemetry Mastery"
   <h2>3. Importing MARS Layout Templates</h2>
   <p>AdvantageScope utilizes <code>layout.json</code> files that arrange tabs specifically to enhance driver feedback. To avoid creating views from scratch every time, import our central template!</p>
 
-  <div class="callout">
-    <h4>Swerve &amp; Mechanisms Template</h4>
-    <p>Our agentic skills dynamically generate the <code>MARS_Standard_Layout.json</code> layout file for the 2614 layout. You can find this inside the root directory under <code>.agents/layouts/</code>.</p>
-  </div>
+  :::note
+**Swerve &amp; Mechanisms Template**
+
+
+    Our agentic skills dynamically generate the <code>MARS_Standard_Layout.json</code> layout file for the 2614 layout. You can find this inside the root directory under <code>.agents/layouts/</code>.
+:::
 
   <ol >
     <li >In AdvantageScope, go to the upper right Layouts icon and select <strong>Import Layout...</strong></li>
@@ -49,15 +51,17 @@ title: "Telemetry Mastery"
   <h2>5. Simulation Replay Tuning</h2>
   <p>AdvantageKit provides an unparalleled workflow called <strong>Simulation Replay</strong>. Because all sensor inputs are completely decoupled from control logic, you can execute a recorded log, but inject modified robot logic <em>while the log replays</em>.</p>
 
-  <div class="callout" >
-    <h4 >Elite Tuning Workflow</h4>
-    <p>Imagine your robot missed several shots because the Vision hallucination rejection filter failed. Instead of guessing parameters on the live robot:</p>
+  :::note
+**Elite Tuning Workflow**
+
+
+    Imagine your robot missed several shots because the Vision hallucination rejection filter failed. Instead of guessing parameters on the live robot:
     <ul>
       <li>Download the `.wpilog` from the match.</li>
       <li>Boot MARSLib in <code>SimReplay</code> mode and target the log file.</li>
       <li>Alter your Pose Estimation code locally, rebuild, and watch the exact match play out with your newly tuned vision filters.</li>
     </ul>
-  </div>
+:::
   <p>This approach allows engineers to endlessly tweak feedforward loops, vision confidence tuning, and superstructure kinematic logic using a single match's data until it's perfected—without ever turning on the physical robot.</p>
 
   <br /><hr /><br />

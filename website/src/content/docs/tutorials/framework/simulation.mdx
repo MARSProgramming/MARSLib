@@ -27,7 +27,6 @@ MARSPhysicsWorld.getInstance().getDyn4jWorld().addBody(fuelBall);
 ```
 
   {/* Interactive Physics Sandbox Demo */}
-import PhysicsSim from '../../../../components/PhysicsSim.tsx';
 
 <PhysicsSim client:only="react" />
 
@@ -35,18 +34,22 @@ import PhysicsSim from '../../../../components/PhysicsSim.tsx';
   <h2>3. Subsystem IO-Sim</h2>
   <p>As covered in the IO Layer tutorial, your subsystems should use <code>IOSim</code> implementations. These classes connect WPILib simulators (like <code>ElevatorSim</code>) to the physics world. The simulator provides the mathematical state, while Dyn4j provides the collision bounds.</p>
 
-  <div class="callout callout-warning">
-    <h4>Realistic Power Modeling</h4>
-    <p>MARSLib doesn't just sim motion; it sims electrical draw. If your elevator hits a mechanical limit and stalls, the <code>MARSPowerManager</code> will calculate the voltage drop, which might cause your "virtual" Rio to brown out! This allows you to tune current limits safely in offline code.</p>
-  </div>
+  :::caution
+**Realistic Power Modeling**
+
+
+    MARSLib doesn't just sim motion; it sims electrical draw. If your elevator hits a mechanical limit and stalls, the <code>MARSPowerManager</code> will calculate the voltage drop, which might cause your "virtual" Rio to brown out! This allows you to tune current limits safely in offline code.
+:::
 
   <h2>4. Visualizing with AdvantageScope</h2>
   <p>You can't "see" physics math, so we export all body positions to AdvantageScope. By dragging the <code>PhysicsWorld/GamePieces</code> field into the 3D Field view, you can watch your robot interact with Fuel Balls and the Hub in real-time.</p>
 
-  <div class="callout">
-    <h4>Student Pro-Tip</h4>
-    <p>Run your PathPlanner autonomous paths in simulation with <strong>Efficiency Mode OFF</strong> to test how physical collisions with obstacle walls might knock your robot off path. If your pathing breaks here, it will definitely break on the real field.</p>
-  </div>
+  :::note
+**Student Pro-Tip**
+
+
+    Run your PathPlanner autonomous paths in simulation with <strong>Efficiency Mode OFF</strong> to test how physical collisions with obstacle walls might knock your robot off path. If your pathing breaks here, it will definitely break on the real field.
+:::
 
   <h2>5. Offline Log Replay and Auto-Tuning</h2>
   <p>Because MARSLib strictly abstracts hardware out with the AdvantageKit IO layer, simulation isn't just about the physics engineâ€”it natively supports <strong>Log Replay</strong>. You can pull an active <code>.wpilog</code> file from a real match and feed it straight back into the robot code on your laptop.</p>
@@ -94,10 +97,12 @@ for (int i = 0; i < 100; i++) {
 assertEquals(1.5, elevator.getPosition().in(Meters), 0.05);
   ```
 
-  <div class="callout callout-warning">
-    <h4>Beware the 20ms Loop</h4>
-    <p>Never advance the clock by more than <code>0.02</code> seconds (20ms) at a time. The PID controllers assume a 50Hz execution cycle. Bypassing this will cause your integrators to explode.</p>
-  </div>
+  :::caution
+**Beware the 20ms Loop**
+
+
+    Never advance the clock by more than <code>0.02</code> seconds (20ms) at a time. The PID controllers assume a 50Hz execution cycle. Bypassing this will cause your integrators to explode.
+:::
 
   <h3>6.3 Testing Autonomous Paths</h3>
   <p>Because we have <code>IOSim</code> and Dyn4j, you can actually test a full PathPlanner macro in JUnit!</p>

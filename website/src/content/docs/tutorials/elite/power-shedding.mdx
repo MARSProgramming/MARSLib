@@ -34,14 +34,15 @@ motor.setVoltage(MathUtil.clamp(requestedVoltage, -maxAllowedVoltage, maxAllowed
       <li><strong>TIER 3 (Sheddable):</strong> Intakes, Feeders, and LEDs. If the voltage drops to 9V, these subsystems are aggressively clamped to a maximum output of 2-3 Volts until the battery recovers.</li>
   </ul>
 
-import PowerSheddingSim from '../../../../components/PowerSheddingSim.tsx';
 
 <PowerSheddingSim client:only="react" />
 
-  <div class="callout callout-warning">
-    <h4>Simulation Parity</h4>
-    <p>You can test your power shedding algorithms entirely in Dyn4j. The <code>MARSPhysicsWorld</code> natively simulates voltage sag as the sum of all simulated motor torque output increases, allowing you to trigger brownout scenarios in your JUnit tests and ensure your shedding algorithm functions correctly. See the <strong><a href="https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/introduction.html" target="_blank">WPILib Brownout Documentation</a></strong> for more on hardware behavior.</p>
-  </div>
+  :::caution
+**Simulation Parity**
+
+
+    You can test your power shedding algorithms entirely in Dyn4j. The <code>MARSPhysicsWorld</code> natively simulates voltage sag as the sum of all simulated motor torque output increases, allowing you to trigger brownout scenarios in your JUnit tests and ensure your shedding algorithm functions correctly. See the <strong><a href="https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/introduction.html" target="_blank">WPILib Brownout Documentation</a></strong> for more on hardware behavior.
+:::
 
   <br /><hr /><br />
   <h2>📖 Further Reading & External Resources</h2>

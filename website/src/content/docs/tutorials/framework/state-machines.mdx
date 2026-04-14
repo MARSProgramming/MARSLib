@@ -33,10 +33,12 @@ stateMachine.addBidirectional(LOADED_FUEL_BALL, HUB_SCORE);
 stateMachine.addWildcardTo(STOW); // Can always go back to STOW in an emergency
 ```
 
-  <div class="callout callout-warning">
-    <h4>Pre-Match Diagnostics Mandatory</h4>
-    <p>Before ever running a physical state machine transition on the field, the involved subsystems must pass their <code>SystemTestable</code> pre-match assertions. Ensure the hardware actually works via <code>MARSFaultManager</code> sweeps to prevent hardware collisions.</p>
-  </div>
+  :::caution
+**Pre-Match Diagnostics Mandatory**
+
+
+    Before ever running a physical state machine transition on the field, the involved subsystems must pass their <code>SystemTestable</code> pre-match assertions. Ensure the hardware actually works via <code>MARSFaultManager</code> sweeps to prevent hardware collisions.
+:::
 
   <h2>3. Entry & Exit Actions</h2>
   <p>Often, you want something to happen exactly once when a state changes. For example, when entering <code>INTAKING_FLOOR</code>, you want to deploy the pivot.</p>
@@ -52,17 +54,18 @@ stateMachine.setExitAction(INTAKING_FLOOR, () -> {
 });
 ```
 
-import StateMachineSim from '../../../../components/StateMachineSim.tsx';
 
 <StateMachineSim client:only="react" />
 
   <h2>4. Live Mermaid Visualization</h2>
   <p>One of the most powerful features of <code>MARSStateMachine</code> is that it automatically generates a <strong><a href="https://mermaid.js.org/" target="_blank">Mermaid.js flowchart</a></strong>. This graph is sent over telemetry and can be viewed live in <strong><a href="https://github.com/Mechanical-Advantage/AdvantageScope" target="_blank">AdvantageScope</a></strong>.</p>
 
-  <div class="callout">
-    <h4>Visual Debugging</h4>
-    <p>Open the "Mermaid" tab in AdvantageScope and drag the <code>Superstructure/StateMachine/MermaidGraph</code> field into it. You will see a live diagram where the current state is highlighted in glowing green.</p>
-  </div>
+  :::note
+**Visual Debugging**
+
+
+    Open the "Mermaid" tab in AdvantageScope and drag the <code>Superstructure/StateMachine/MermaidGraph</code> field into it. You will see a live diagram where the current state is highlighted in glowing green.
+:::
 
   <br /><hr /><br />
   <h2>📖 Further Reading & External Resources</h2>

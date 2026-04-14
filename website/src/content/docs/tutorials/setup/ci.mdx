@@ -31,10 +31,12 @@ title: "Intro to CI/CD & Testing"
   <h3>3. Dyn4j Physics Testing</h3>
   <p>The crown jewel of our pipeline is deterministic physics testing. We have over 89 automated tests (JUnit) that run against <strong>Dyn4j</strong>—a 2D collision engine. Rather than "mocking" or pretending the code worked, these CI tests actually spawn virtual swerve modules, drop a virtual ball, and run your Autonomous route to ensure physics limits (like motor stall torque) aren't violated.</p>
 
-  <div class="callout">
-    <h4>You are supported!</h4>
-    <p>Don't be afraid of the CI failing your code—it's supposed to! A failed CI run isn't a bad grade; it is a vital safety net ensuring you feel confident when deploying your logic to the actual 2614 competition robot.</p>
-  </div>
+  :::note
+**You are supported!**
+
+
+    Don't be afraid of the CI failing your code—it's supposed to! A failed CI run isn't a bad grade; it is a vital safety net ensuring you feel confident when deploying your logic to the actual 2614 competition robot.
+:::
 
   <br /><hr /><br />
   <h2>📖 Further Reading & External Resources</h2>

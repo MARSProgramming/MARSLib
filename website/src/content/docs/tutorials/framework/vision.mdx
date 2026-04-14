@@ -18,7 +18,6 @@ title: "Vision Fusion & Filtration"
   </ul>
 
   {/* Interactive Vision Simulation Demo */}
-import VisionSim from '../../../../components/VisionSim.tsx';
 
 <VisionSim client:only="react" />
 
@@ -28,10 +27,12 @@ import VisionSim from '../../../../components/VisionSim.tsx';
 
   <p>MARSLib enforces <strong>Quadratic StdDev Scaling</strong>. Trust in vision decays <em>exponentially</em> at long range, stopping the robot from making violent odometry correction jumps based on far-away tags.</p>
 
-  <div class="callout">
-    <h4>MegaTag / Multi-Tag Boost</h4>
-    <p>When multiple AprilTags are visible, geometric ambiguity essentially drops to zero. Our code automatically scales down standard deviations by <code>x0.1</code>, dramatically tightening the Pose Estimator's trust.</p>
-  </div>
+  :::note
+**MegaTag / Multi-Tag Boost**
+
+
+    When multiple AprilTags are visible, geometric ambiguity essentially drops to zero. Our code automatically scales down standard deviations by <code>x0.1</code>, dramatically tightening the Pose Estimator's trust.
+:::
 
   <h2>3. Simulating Imperfection</h2>
   <p>To ensure tuning works globally, the <code>AprilTagVisionIOSim</code> in MARSLib purposefully injects:</p>

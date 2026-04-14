@@ -24,6 +24,25 @@ export default defineConfig({
 		build: {
 			chunkSizeWarningLimit: 2000,
 		},
+		plugins: [
+			{
+				name: 'auto-inject-mdx-components',
+				enforce: 'pre',
+				transform(code, id) {
+					if (id.endsWith('.mdx') && !id.includes('node_modules')) {
+						const inject = `import { ArmKgSim, AutoSim, ElevatorPidSim, FaultSim, FlywheelKvSim, PhysicsSim, PowerSheddingSim, SotmSim, StateMachineSim, SwerveSim, SysIdSim, VisionSim, ZeroAllocationSim, RuleSection, CodeComparison, CodeViolation, CodeStandard, StandardHeader, SplashContainer, HomeHero, HomeSimulatorContainer, HomeHallOfFame, HomeTutorialGrid, SponsorsList } from '/src/components/index.ts';\n\n`;
+						
+						// Inject after frontmatter
+						const fmEndIndex = code.indexOf('---', 3);
+						if (fmEndIndex !== -1 && code.startsWith('---')) {
+							return code.slice(0, fmEndIndex + 3) + '\n' + inject + code.slice(fmEndIndex + 3);
+						}
+						
+						return inject + code;
+					}
+				}
+			}
+		]
 	},
 	integrations: [
 		starlight({

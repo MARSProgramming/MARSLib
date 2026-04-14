@@ -1,14 +1,13 @@
 import { config, fields, collection } from '@keystatic/core';
 import React from 'react';
 
-/**
- * Shared Starlight frontmatter schema.
- *
- * Uses fields.emptyContent() to tell Keystatic these are .mdx content files
- * without trying to parse the MDX body. The tutorials use JSX imports and
- * raw HTML that Keystatic's structured MDX editor cannot handle.
- * Content editing is done in VS Code; the CMS manages metadata only.
- */
+const simBlock = (label: string) => ({
+	label,
+	schema: {
+		'client:only': fields.text({ label: 'Astro Client Directive', defaultValue: 'react' }),
+	},
+});
+
 const starlightSchema = {
 	title: fields.slug({ name: { label: 'Title' } }),
 	description: fields.text({ label: 'Description', multiline: true }),
@@ -29,7 +28,71 @@ const starlightSchema = {
 		{ label: 'Sidebar Settings' }
 	),
 	head: fields.text({ label: 'Custom Head Tag (raw)', multiline: true }),
-	body: fields.emptyContent({ extension: 'mdx' }),
+	body: fields.mdx({
+		extension: 'mdx',
+		components: {
+			ArmKgSim: simBlock('Arm Kg Simulator'),
+			AutoSim: simBlock('Auto Simulator'),
+			ElevatorPidSim: simBlock('Elevator PID Simulator'),
+			FaultSim: simBlock('Faults Simulator'),
+			FlywheelKvSim: simBlock('Flywheel Kv Simulator'),
+			PhysicsSim: simBlock('Physics Simulator'),
+			PowerSheddingSim: simBlock('Power Shedding Simulator'),
+			SotmSim: simBlock('SOTM Simulator'),
+			StateMachineSim: simBlock('State Machine Simulator'),
+			SwerveSim: simBlock('Swerve Simulator'),
+			SysIdSim: simBlock('SysId Simulator'),
+			VisionSim: simBlock('Vision Simulator'),
+			ZeroAllocationSim: simBlock('Zero Allocation Simulator'),
+			RuleSection: {
+				label: 'Rule Section',
+				schema: {
+					num: fields.text({ label: 'Rule Number' }),
+					title: fields.text({ label: 'Rule Title' }),
+				},
+			},
+			CodeComparison: {
+				label: 'Code Comparison',
+				schema: {},
+			},
+			CodeViolation: {
+				label: 'Code Violation',
+				schema: {},
+			},
+			CodeStandard: {
+				label: 'Code Standard',
+				schema: {},
+			},
+			StandardHeader: {
+				label: 'Standard Header',
+				schema: {},
+			},
+			SplashContainer: {
+				label: 'Splash Container',
+				schema: {},
+			},
+			HomeHero: {
+				label: 'Home Hero',
+				schema: {},
+			},
+			HomeSimulatorContainer: {
+				label: 'Home Simulator Container',
+				schema: {},
+			},
+			HomeHallOfFame: {
+				label: 'Home Hall of Fame',
+				schema: {},
+			},
+			HomeTutorialGrid: {
+				label: 'Home Tutorial Grid',
+				schema: {},
+			},
+			SponsorsList: {
+				label: 'Sponsors List',
+				schema: {},
+			},
+		},
+	}),
 };
 
 const contentFormat = { contentField: 'body' } as const;
@@ -58,7 +121,6 @@ export default config({
 		pages: collection({
 			label: 'Site Pages',
 			slugField: 'title',
-			entryLayout: 'form',
 			path: 'website/src/content/docs/*',
 			format: contentFormat,
 			schema: starlightSchema,
@@ -67,7 +129,6 @@ export default config({
 		setup: collection({
 			label: 'Setup & CI',
 			slugField: 'title',
-			entryLayout: 'form',
 			path: 'website/src/content/docs/tutorials/setup/*',
 			format: contentFormat,
 			schema: starlightSchema,
@@ -76,7 +137,6 @@ export default config({
 		zeroToHero: collection({
 			label: 'Zero → Hero',
 			slugField: 'title',
-			entryLayout: 'form',
 			path: 'website/src/content/docs/tutorials/zero-to-hero/*',
 			format: contentFormat,
 			schema: starlightSchema,
@@ -85,7 +145,6 @@ export default config({
 		framework: collection({
 			label: 'Framework Tutorials',
 			slugField: 'title',
-			entryLayout: 'form',
 			path: 'website/src/content/docs/tutorials/framework/*',
 			format: contentFormat,
 			schema: starlightSchema,
@@ -94,7 +153,6 @@ export default config({
 		elite: collection({
 			label: 'Elite Techniques',
 			slugField: 'title',
-			entryLayout: 'form',
 			path: 'website/src/content/docs/tutorials/elite/*',
 			format: contentFormat,
 			schema: starlightSchema,
