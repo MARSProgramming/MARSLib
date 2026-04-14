@@ -6,7 +6,5 @@
     "/api/keystatic",
     "/api/keystatic/*"
   ],
-  "exclude": [
-    "/*"
-  ]
+  "exclude": []
 }
