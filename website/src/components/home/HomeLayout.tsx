@@ -5,7 +5,7 @@ export const HomeHero = () => {
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginTop: '20px', marginBottom: '40px' }}>
       <img src="/img/mars-logo.png" alt="MARSLib Logo" width="300" style={{ marginBottom: '20px', objectFit: 'contain' }} />
       <h1 style={{ fontSize: '3rem', margin: '0 0 10px 0' }}>
-        <span style={{ color: 'var(--mars-red)' }}>MARS</span><span style={{ color: 'white' }}>Lib</span> Framework
+        <span style={{ color: '#ef4435' }}>MARS</span><span style={{ color: 'white' }}>Lib</span> Framework
       </h1>
       <p style={{ fontSize: '1.2rem', color: 'var(--sl-color-text-muted)', maxWidth: '700px', margin: '0 auto 30px auto' }}>A zero-allocation, physics-simulated FRC framework with deterministic AdvantageKit logging, 250Hz odometry, and shot-on-the-move kinematics.</p>
       

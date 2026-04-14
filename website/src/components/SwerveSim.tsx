@@ -191,21 +191,21 @@ export default function SwerveSim() {
                 <span>Vx (Forward/Back)</span>
                 <span>{vx.toFixed(1)} m/s</span>
             </div>
-            <input type="range" min="-5" max="5" step="0.1" value={vx} onChange={e => setVx(parseFloat(e.target.value))} style={{ width: '100%' }} />
+            <input type="range" aria-label="Forward/Back Velocity" min="-5" max="5" step="0.1" value={vx} onChange={e => setVx(parseFloat(e.target.value))} style={{ width: '100%' }} />
         </div>
         <div style={{ flex: 1, minWidth: '150px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'monospace', fontSize: '12px', color: '#ccc', marginBottom: '5px' }}>
                 <span>Vy (Left/Right)</span>
                 <span>{vy.toFixed(1)} m/s</span>
             </div>
-            <input type="range" min="-5" max="5" step="0.1" value={vy} onChange={e => setVy(parseFloat(e.target.value))} style={{ width: '100%' }} />
+            <input type="range" aria-label="Left/Right Velocity" min="-5" max="5" step="0.1" value={vy} onChange={e => setVy(parseFloat(e.target.value))} style={{ width: '100%' }} />
         </div>
         <div style={{ flex: 1, minWidth: '150px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'monospace', fontSize: '12px', color: '#ccc', marginBottom: '5px' }}>
                 <span>Omega (Rotation)</span>
                 <span>{omega.toFixed(1)} rad/s</span>
             </div>
-            <input type="range" min="-5" max="5" step="0.1" value={omega} onChange={e => setOmega(parseFloat(e.target.value))} style={{ width: '100%' }} />
+            <input type="range" aria-label="Rotation Velocity" min="-5" max="5" step="0.1" value={omega} onChange={e => setOmega(parseFloat(e.target.value))} style={{ width: '100%' }} />
         </div>
         <div style={{ display: 'flex', alignItems: 'center' }}>
             <button 
