@@ -154,7 +154,7 @@ export default function VisionSim() {
         style={{ width: '100%', height: 'auto', background: '#0a0a0a', borderRadius: '12px', border: '1px solid #333', cursor: 'crosshair', aspectRatio: '2/1' }}
       />
       
-      <div style={{ display: 'flex', gap: '20px', marginTop: '20px', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: '20px', marginTop: '20px', flexWrap: 'wrap', alignItems: 'flex-end' }}>
         <div style={{ flex: 1, minWidth: '180px' }}>
           <label style={{ color: 'var(--ifm-color-emphasis-600)', fontSize: '0.9rem', fontFamily: '"Orbitron", sans-serif' }}>Tags Visible: <span style={{ color: '#00d0ff' }}>{tagCount === 1 ? "1 Tag" : "2 Tags (MegaTagBoost)"}</span></label>
           <input type="range" min="1" max="2" value={tagCount} step="1" onChange={(e) => setTagCount(parseInt(e.target.value))} style={{ width: '100%' }} />

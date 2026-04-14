@@ -105,7 +105,7 @@ export default function StateMachineSim() {
         Superstructure Collision Sequencer
       </div>
       
-      <div style={{ display: 'flex', gap: '10px', padding: '16px 20px', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: '10px', padding: '16px 20px', flexWrap: 'wrap', alignItems: 'flex-end' }}>
          <button 
             onClick={() => setSmTarget("STOW")} 
             style={{ flex: 1, background: smTarget === "STOW" ? '#00d0ff' : '#222', color: smTarget === "STOW" ? '#000' : '#fff', border: smTarget === "STOW" ? 'none' : '1px solid #444', padding: '10px', borderRadius: '6px', cursor: 'pointer', fontFamily: '"Orbitron", sans-serif', fontWeight: 700, transition: '0.2s' }}>
@@ -123,7 +123,7 @@ export default function StateMachineSim() {
          </button>
       </div>
       
-      <div style={{ padding: '0 20px 20px 20px', display: 'flex', gap: '20px', alignItems: 'stretch', flexWrap: 'wrap' }}>
+      <div style={{ padding: '0 20px 20px 20px', display: 'flex', gap: '20px', alignItems: 'stretch', flexWrap: 'wrap', alignItems: 'flex-end' }}>
         {/* Active Logic Log */}
         <div style={{ flex: 1, minWidth: '200px', fontFamily: '"JetBrains Mono", monospace', fontSize: '11px', background: '#111', border: '1px solid #333', padding: '15px', borderRadius: '6px', height: '200px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div>

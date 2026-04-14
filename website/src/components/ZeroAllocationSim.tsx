@@ -138,7 +138,7 @@ export default function ZeroAllocationSim() {
 
   return (
     <div style={{ background: '#050505', border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '12px', margin: '30px 0', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: 'inset 0 0 40px rgba(0,0,0,0.8)' }}>
-      <div style={{ display: 'flex', gap: '20px', padding: '16px 20px', background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid var(--ifm-color-emphasis-200)', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: '20px', padding: '16px 20px', background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid var(--ifm-color-emphasis-200)', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', alignItems: 'flex-end' }}>
         <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
           <button 
             onClick={() => setMode("STD")}

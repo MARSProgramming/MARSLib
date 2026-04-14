@@ -150,7 +150,7 @@ export default function SotmSim() {
         style={{ width: '100%', maxWidth: '800px', aspectRatio: '2/1', height: 'auto', display: 'block', margin: '0 auto', background: '#0a0a0a', borderRadius: '8px', border: '1px solid #333', cursor: 'crosshair' }}
       />
       
-      <div style={{ display: 'flex', gap: '20px', marginTop: '20px', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: '20px', marginTop: '20px', flexWrap: 'wrap', alignItems: 'flex-end' }}>
         <div style={{ flex: 1, minWidth: '200px' }}>
           <label style={{ color: 'var(--ifm-color-emphasis-600)', fontSize: '0.9rem' }}>Robot Velocity: <span style={{ color: '#00d0ff' }}>{botVelocity.toFixed(1)} m/s</span></label>
           <input type="range" min="0" max="8" value={botVelocity} step="0.1" onChange={(e) => setBotVelocity(parseFloat(e.target.value))} style={{ width: '100%' }} />

@@ -143,7 +143,7 @@ export default function ElevatorPidSim() {
 
   return (
     <div style={{ backgroundColor: '#0a0a0a', border: '1px solid #2a2a2a', borderRadius: '8px', overflow: 'hidden', display: 'flex', flexDirection: 'column', color: '#e8e8e8' }}>
-      <div style={{ padding: '15px', borderBottom: '1px solid #2a2a2a', display: 'flex', gap: '20px', background: '#111', flexWrap: 'wrap' }}>
+      <div style={{ padding: '15px', borderBottom: '1px solid #2a2a2a', display: 'flex', gap: '20px', background: '#111', flexWrap: 'wrap', alignItems: 'flex-end' }}>
         <div style={{ flex: 1, minWidth: '150px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'monospace', fontSize: '12px', color: '#ccc', marginBottom: '5px' }}>
                 <span>kP (Proportional)</span><span>{kp.toFixed(2)}</span>
@@ -183,8 +183,8 @@ export default function ElevatorPidSim() {
         <div style={{ flex: 1, position: 'relative' }}>
           <canvas ref={gCanvasRef} width="100" height="260" style={{ display: 'block', width: '100%', background: '#1a1a1a', borderRadius: '4px' }} />
           <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', gap: '15px', fontFamily: '"Orbitron", sans-serif', fontSize: '12px' }}>
-            <span style={{ color: '#29b6f6' }}>â–  Setpoint</span>
-            <span style={{ color: '#B32416' }}>â–  Actual</span>
+            <span style={{ color: '#29b6f6' }}>■  Setpoint</span>
+            <span style={{ color: '#B32416' }}>■  Actual</span>
           </div>
         </div>
       </div>
