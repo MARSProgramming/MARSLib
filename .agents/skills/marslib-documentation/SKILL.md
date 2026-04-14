@@ -37,3 +37,25 @@ When porting or authoring interactive simulators in the Astro Starlight architec
 
 ## 6. Keystatic Navigation Synchronization
 Whenever you author new tutorial `.mdx` files inside `src/content/docs/tutorials/*`, do not generate raw files. Use Astro Starlight's sidebar autogeneration by ensuring `sidebar: { order: X }` is populated in the frontmatter, and Keystatic will automatically map it to the Cloudflare UI.
+
+## 7. Keystatic Frontmatter & MDX Schema
+Because we use `@keystatic/core` to enforce content architecture, every `.mdx` file MUST strictly adhere to our custom `starlightSchema` frontmatter. Missing or malformed frontmatter will break the CMS and Astro build:
+
+```yaml
+---
+title: "Your Tutorial Title"
+description: "A short multi-line summary of the educational topic."
+id: "unique-string-id" # Required
+template: "doc" # 'doc' or 'splash'
+sidebar:
+  order: 1
+  label: "Short UI Label"
+---
+```
+
+Additionally, Keystatic natively injects custom React wrapper components via `keystatic.config.ts`. You MUST NOT use standard markdown blockquotes for rules; instead, utilize these custom components organically in the MDX body (no imports necessary):
+- `<RuleSection num="X" title="Title">...</RuleSection>`
+- `<CodeComparison>...</CodeComparison>` (for before/after code blocks)
+- `<CodeViolation>...</CodeViolation>`
+- `<CodeStandard>...</CodeStandard>`
+- For interactive React simulations, use the injected components directly: `<ArmKgSim client:visible />`, `<PhysicsSim client:visible />`, `<SwerveSim client:visible />`, etc.
