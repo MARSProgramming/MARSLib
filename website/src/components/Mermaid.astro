@@ -1,0 +1,24 @@
+---
+const { code } = Astro.props;
+---
+<div class="mermaid-diagram-container" style="background: transparent; padding: 1rem; border-radius: 8px; display: flex; justify-content: center; overflow-x: auto;">
+  <pre class="mermaid" style="background: transparent; border: none; margin: 0;">
+    {code}
+  </pre>
+</div>
+
+<script>
+  import mermaid from 'mermaid';
+  
+  // Initialize mermaid on client load
+  document.addEventListener('DOMContentLoaded', () => {
+    mermaid.initialize({ 
+      startOnLoad: true, 
+      theme: 'dark', 
+      background: 'transparent',
+      fontFamily: '"Ubuntu", sans-serif'
+    });
+    // Astro might dynamically swap content, so we ensure run is called.
+    mermaid.run({ querySelector: '.mermaid' });
+  });
+</script>

@@ -9,19 +9,19 @@ MARSLib is designed with a strict zero-allocation abstraction layer. The framewo
 
 ## Architecture Diagram
 
-```mermaid
-graph TD
-    Z["User Project\n(RobotContainer.java)"] -->|Depends On| A("MARSLib Framework\n(Vendor Dependency)")
+<Mermaid code={`
+flowchart TD
+    Z["User Project<br/>(RobotContainer.java)"] -->|Depends On| A("MARSLib Framework<br/>(Vendor Dependency)")
     A --> C[Swerve Subsystem]
     A --> D[Mechanisms]
     A --> E[System Utilities]
     C <--> F{"IO Abstraction Layer"}
     D <--> F
     E <--> F
-    F <-->|Hardware Mode| G["IOReal\n(TalonFX, Pigeon2)"]
-    F <-->|Simulation Mode| H["IOSim\n(Dyn4j Physics)"]
-    G --> I[("(AdvantageKit Log)")]
-    H --> I
+    F <-->|Hardware Mode| G["IOReal<br/>(TalonFX, Pigeon2)"]
+    F <-->|Simulation Mode| H["IOSim<br/>(Dyn4j Physics)"]
+    G --> I[("AdvantageKit Log")]
+    H --> I[("AdvantageKit Log")]
     style Z fill:#0a0a0a,stroke:#2a2a2a,stroke-width:2px,color:#e8e8e8
     style A fill:#141414,stroke:#B32416,stroke-width:2px,color:#e8e8e8
     style C fill:#1a1a1a,stroke:#2a2a2a,stroke-width:1px,color:#e8e8e8
@@ -31,7 +31,7 @@ graph TD
     style G fill:#2a2a2a,stroke:#1a1a1a,stroke-width:1px,color:#29b6f6
     style H fill:#2a2a2a,stroke:#1a1a1a,stroke-width:1px,color:#9c7bcc
     style I fill:#0a0a0a,stroke:#6ba3d6,stroke-width:2px,color:#6ba3d6
-```
+`} />
 
 ## Package Reference
 
