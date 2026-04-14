@@ -1,5 +1,35 @@
-import { config, fields, collection, singleton } from '@keystatic/core';
+import { config, fields, collection } from '@keystatic/core';
 import React from 'react';
+
+/**
+ * Shared schema matching Starlight's frontmatter fields.
+ * Every key that exists in any .md/.mdx file must be declared here
+ * or Keystatic will reject the entry with "Key not allowed".
+ */
+const starlightSchema = {
+	title: fields.slug({ name: { label: 'Title' } }),
+	description: fields.text({ label: 'Description', multiline: true }),
+	id: fields.text({ label: 'Page ID' }),
+	template: fields.select({
+		label: 'Template',
+		options: [
+			{ label: 'Doc (default)', value: 'doc' },
+			{ label: 'Splash', value: 'splash' },
+		],
+		defaultValue: 'doc',
+	}),
+	sidebar: fields.object(
+		{
+			order: fields.integer({ label: 'Sidebar Order' }),
+			label: fields.text({ label: 'Sidebar Label' }),
+		},
+		{ label: 'Sidebar Settings' }
+	),
+	content: fields.mdx({ label: 'Content' }),
+};
+
+/** Shared format config for content files */
+const contentFormat = { contentField: 'content' } as const;
 
 export default config({
 	ui: {
@@ -23,144 +53,60 @@ export default config({
 		repo: 'MARSProgramming/MARSLib',
 	},
 	collections: {
-		// ── Top-Level Pages ────────────────────────────────────────
 		pages: collection({
 			label: 'Site Pages',
 			slugField: 'title',
 			path: 'website/src/content/docs/*',
-			format: { contentField: 'content' },
-			schema: {
-				title: fields.slug({ name: { label: 'Title' } }),
-				sidebar: fields.object(
-					{
-						order: fields.integer({
-							label: 'Sidebar Order',
-						}),
-					},
-					{ label: 'Sidebar Settings' }
-				),
-				content: fields.mdx({ label: 'Content' }),
-			},
+			format: contentFormat,
+			schema: starlightSchema,
 		}),
 
-		// ── Setup & CI Tutorials ──────────────────────────────────
 		setup: collection({
 			label: 'Setup & CI',
 			slugField: 'title',
 			path: 'website/src/content/docs/tutorials/setup/*',
-			format: { contentField: 'content' },
-			schema: {
-				title: fields.slug({ name: { label: 'Title' } }),
-				sidebar: fields.object(
-					{
-						order: fields.integer({
-							label: 'Sidebar Order',
-						}),
-					},
-					{ label: 'Sidebar Settings' }
-				),
-				content: fields.mdx({ label: 'Content' }),
-			},
+			format: contentFormat,
+			schema: starlightSchema,
 		}),
 
-		// ── Zero-to-Hero Tutorial Series ──────────────────────────
 		zeroToHero: collection({
 			label: 'Zero → Hero',
 			slugField: 'title',
 			path: 'website/src/content/docs/tutorials/zero-to-hero/*',
-			format: { contentField: 'content' },
-			schema: {
-				title: fields.slug({ name: { label: 'Title' } }),
-				sidebar: fields.object(
-					{
-						order: fields.integer({
-							label: 'Sidebar Order',
-						}),
-					},
-					{ label: 'Sidebar Settings' }
-				),
-				content: fields.mdx({ label: 'Content' }),
-			},
+			format: contentFormat,
+			schema: starlightSchema,
 		}),
 
-		// ── Framework Deep-Dive Tutorials ─────────────────────────
 		framework: collection({
 			label: 'Framework Tutorials',
 			slugField: 'title',
 			path: 'website/src/content/docs/tutorials/framework/*',
-			format: { contentField: 'content' },
-			schema: {
-				title: fields.slug({ name: { label: 'Title' } }),
-				sidebar: fields.object(
-					{
-						order: fields.integer({
-							label: 'Sidebar Order',
-						}),
-					},
-					{ label: 'Sidebar Settings' }
-				),
-				content: fields.mdx({ label: 'Content' }),
-			},
+			format: contentFormat,
+			schema: starlightSchema,
 		}),
 
-		// ── Elite / Advanced Tutorials ─────────────────────────────
 		elite: collection({
 			label: 'Elite Techniques',
 			slugField: 'title',
 			path: 'website/src/content/docs/tutorials/elite/*',
-			format: { contentField: 'content' },
-			schema: {
-				title: fields.slug({ name: { label: 'Title' } }),
-				sidebar: fields.object(
-					{
-						order: fields.integer({
-							label: 'Sidebar Order',
-						}),
-					},
-					{ label: 'Sidebar Settings' }
-				),
-				content: fields.mdx({ label: 'Content' }),
-			},
+			format: contentFormat,
+			schema: starlightSchema,
 		}),
 
-		// ── Guides ─────────────────────────────────────────────────
 		guides: collection({
 			label: 'Guides',
 			slugField: 'title',
 			path: 'website/src/content/docs/guides/*',
-			format: { contentField: 'content' },
-			schema: {
-				title: fields.slug({ name: { label: 'Title' } }),
-				sidebar: fields.object(
-					{
-						order: fields.integer({
-							label: 'Sidebar Order',
-						}),
-					},
-					{ label: 'Sidebar Settings' }
-				),
-				content: fields.mdx({ label: 'Content' }),
-			},
+			format: contentFormat,
+			schema: starlightSchema,
 		}),
 
-		// ── API Reference Pages ────────────────────────────────────
 		reference: collection({
 			label: 'Reference',
 			slugField: 'title',
 			path: 'website/src/content/docs/reference/*',
-			format: { contentField: 'content' },
-			schema: {
-				title: fields.slug({ name: { label: 'Title' } }),
-				sidebar: fields.object(
-					{
-						order: fields.integer({
-							label: 'Sidebar Order',
-						}),
-					},
-					{ label: 'Sidebar Settings' }
-				),
-				content: fields.mdx({ label: 'Content' }),
-			},
+			format: contentFormat,
+			schema: starlightSchema,
 		}),
 	},
 });
