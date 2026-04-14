@@ -47,6 +47,16 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: 'MARSLib Documentation',
+			head: [
+				{
+					tag: 'script',
+					attrs: {
+						defer: true,
+						src: 'https://static.cloudflareinsights.com/beacon.min.js',
+						'data-cf-beacon': '{"token": "73337eb41c5c4f51bb5ee550920d8f9e"}'
+					}
+				}
+			],
 			customCss: [
 				'./src/styles/custom.css',
 			],
