@@ -53,6 +53,7 @@ export default defineConfig({
 			logo: {
 				src: './src/assets/mars-logo.png',
 			},
+			favicon: '/favicon.ico',
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/MARSProgramming/MARSLib' }],
 			sidebar: [
 				{
