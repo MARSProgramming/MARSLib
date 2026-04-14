@@ -11,6 +11,7 @@
 [![AdvantageKit](https://img.shields.io/badge/Powered%20By-AdvantageKit-yellow)](https://github.com/Mechanical-Advantage/AdvantageKit)
 [![Dyn4j](https://img.shields.io/badge/Physics-Dyn4j-blue)](https://dyn4j.org/)
 [![Docs](https://img.shields.io/badge/docs-MARSLib-B32416)](https://MARSProgramming.github.io/MARSLib/)
+[![Accessibility](https://img.shields.io/badge/A11y-WCAG_AA-brightgreen)](https://github.com/MARSProgramming/MARSLib/actions/workflows/a11y.yml)
 
 **A championship-tier software template for Mountaineer Area RoboticS — FRC Team 2614.**
 </div>

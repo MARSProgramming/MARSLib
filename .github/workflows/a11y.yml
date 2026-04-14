@@ -1,0 +1,17 @@
+name: Accessibility Check
+
+on:
+  push:
+    branches: [ "master" ]
+  schedule:
+    - cron: '0 0 * * 0'
+
+jobs:
+  a11y:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Cloudflare Deployment
+        run: sleep 60
+
+      - name: Run WCAG AA Audit
+        run: npx pa11y https://marslib.pages.dev --standard WCAG2AA --ignore "WCAG2AA.Principle2.Guideline2_4.2_4_1.G1,G123,G124.NoSuchID"
