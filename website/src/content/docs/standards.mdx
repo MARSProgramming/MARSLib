@@ -1,0 +1,138 @@
+---
+title: "The MARSLib Standard"
+description: "The definitive software engineering ruleset governing our World-Champion grade infrastructure."
+template: splash
+---
+
+<div style={{ textAlign: 'center', marginBottom: '60px', marginTop: '60px' }}>
+  <a href="/" className="back-link">← RETURN TO BASE</a>
+  <h1 style={{ fontFamily: 'Orbitron, sans-serif' }}>THE MARSLIB STANDARD</h1>
+  <p style={{ fontSize: '1.25rem', color: 'var(--sl-color-text-muted)', maxWidth: '700px', margin: '0 auto' }}>
+    The definitive software engineering ruleset governing our World-Champion grade infrastructure. Code that violates these rules is rejected.
+  </p>
+</div>
+
+<main style={{ maxWidth: '900px', margin: '0 auto', paddingBottom: '80px' }}>
+
+  <section className="rule-section">
+    <span className="rule-num">01</span>
+    <h2>Nullify Hungarian Notation</h2>
+    <p>Using <code>m_</code> prefixes to dictate member variables is an archaic C++ practice that poisons Java IDE autocompletion and drastically reduces readability. MARSLib strictly bans Hungarian notation. We rely on modern syntax highlighting and the <code>this.</code> keyword for variable scope.</p>
+    
+    <div className="code-comparison">
+      <div className="code-card code-bad">
+        <div className="code-header">VIOLATION</div>
+        
+```java
+private final SwerveDrive m_swerve;
+private double m_speed;
+
+public void setSpeed(double speed) {
+    m_speed = speed;
+}
+```
+
+      </div>
+      <div className="code-card code-good">
+        <div className="code-header">MARS STANDARD</div>
+
+```java
+private final SwerveDrive swerve;
+private double targetVelocity;
+
+public void setVelocity(double targetVelocity) {
+    this.targetVelocity = targetVelocity;
+}
+```
+
+      </div>
+    </div>
+  </section>
+
+  <section className="rule-section">
+    <span className="rule-num">02</span>
+    <h2>The "Never Nester" Protocol</h2>
+    <p>Code that is deeply nested across multiple <code>if/else</code> and <code>for</code> blocks is fragile and requires immense cognitive load to debug under competition pressure. All FRC control loops must remain completely "flat". Utilize guard clauses and early <code>return</code> expressions immediately.</p>
+    
+    <div className="code-comparison">
+      <div className="code-card code-bad">
+        <div className="code-header">VIOLATION</div>
+        
+```java
+public void shoot() {
+    if (systemReady) {
+        if (targetLocked) {
+            if (flywheelAtSpeed) {
+                feeder.run();
+            }
+        }
+    }
+}
+```
+      </div>
+      <div className="code-card code-good">
+        <div className="code-header">MARS STANDARD</div>
+        
+```java
+public void shoot() {
+    if (!systemReady) return;
+    if (!targetLocked) return;
+    if (!flywheelAtSpeed) return;
+    
+    feeder.run();
+}
+```
+
+      </div>
+    </div>
+  </section>
+
+  <section className="rule-section">
+    <span className="rule-num">03</span>
+    <h2>Explicit Unit Nomenclature</h2>
+    <p>A double named <span className="inline-code">speed</span> has destroyed billions of dollars in real-world aerospace missions. Passing raw sensor ticks or ambiguous integers into high-level functions is banned. Variables must describe precisely what they represent.</p>
+    
+    <div className="code-comparison">
+      <div className="code-card code-bad">
+        <div className="code-header">VIOLATION</div>
+        
+```java
+// What is 'tolerance'? Degrees? Radians?
+// What is 'speed'? RPM? M/s? Volts?
+public void setAngle(double angle, double tolerance) { ... }
+public void runIntake(double speed) { ... }
+```
+
+      </div>
+      <div className="code-card code-good">
+        <div className="code-header">MARS STANDARD</div>
+
+```java
+// Mathematically explicit parameters
+public void setAngle(double radians, double toleranceRads) { ... }
+public void runIntake(double voltageOut) { ... }
+```
+
+      </div>
+    </div>
+  </section>
+
+  <section className="rule-section">
+    <span className="rule-num">04</span>
+    <h2>Zero-Allocation Architecture</h2>
+    <p>Hot-paths (the 20ms and 4ms loops) must never use the <code>new</code> keyword to avoid JVM GC stalls. You must use globally instantiated Ephemeral Structs to proxy hardware parameters mathematically.</p>
+    
+    <div className="callout callout-warning">
+      <h4>Mathematical Mutation</h4>
+      <p>Do not pass structural pointers to objects that must preserve historic state (e.g. PID integrators). Always use <code>.clone()</code> if a downstream pipeline requires an immutable snapshot of an Ephemeral Struct.</p>
+    </div>
+  </section>
+
+  <section className="rule-section">
+    <span className="rule-num">05</span>
+    <h2>Agentic Comments and Autonomy</h2>
+    <p>MARSLib is the first FRC framework expressly co-developed with Artificial Intelligence. To instruct Claude Code or Z.ai agents efficiently, developers must leave explicitly structured block comments prefixing the exact file or mathematical function requiring augmentation.</p>
+    <p>Code that is actively governed by an AI skill (such as Swerve Kinematics or Log Replay) must carry the <code>@AGENT_ENFORCED</code> JavaDoc tag to prevent human developers from breaking structured logic patterns.</p>
+  </section>
+
+</main>

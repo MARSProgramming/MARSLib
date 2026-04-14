@@ -1,0 +1,211 @@
+© Team 2614, 2020
+Branding Standards 
+Developed by MARS, Team 2614 
+Adapted from the Team 254 Branding Standards.
+----------------Page (0) Break----------------
+© Team 2614, 2020
+This document consists of comprehensive 
+and detailed branding standards meant to 
+strengthen team image and ensure that 
+the  MARS, Team 2614    logo is used only in 
+professional, educational, and productive 
+environments. 
+MARS, Team 2614    can at any time develop 
+and produce variations or modifications of 
+the base  MARS Logo  , as long as the 
+modifications do not violate CORE 
+BRANDING STANDARDS.
+Purpose of Branding Standards
+Branding Modifications  
+----------------Page (1) Break----------------
+© Team 2614, 2020
+The team name (   Mountaineer Area RoboticS       ) is 
+critical to success. MARS has succeeded in its 
+community and throughout the world due to its 
+memorable and easily used name abbreviation 
+(MARS  ). Either of which may be used in formal or 
+informal documents. 
+The team name may not be changed under any 
+circumstances except by that of team vote with a 
+unilateral outcome. 
+Team Name
+Official Team Name:    Mountaineer Area RoboticS        
+Name Abbreviation:    MARS 
+Variations on Name: “   MARS—Team 2614    ”, “Team 
+2614 ”, “2614 ”, “MARS 2614  ”, “MARS FRC  ”, 
+“Mountaineer Area RoboticS—Team 2614        ”. 
+Team 2614   should not be referred to as any 
+other alias not listed above, including; 
+Morgantown Area RoboticS, MARS RoboticS, or 
+similar misconceptions.
+----------------Page (2) Break----------------
+© Team 2614, 2020
+Typography
+MARS   has chosen a single font family to be 
+predominately used in team media, such as the 
+team website. Certain forms of media may use 
+different typefaces, and the font family chosen 
+is not critical to team image.
+Header Font:   Orbitron
+Primary Font:   Ubuntu
+Secondary Font:    Bebas Neue
+Robot names are stylized individually and are 
+not subject to branding standards.
+Vertical lettering should be avoided at all times.
+Website Specific Typography
+The software used for our website alters 
+our branded fonts in an unsatisfactory way, 
+for that reason we’ve chosen the following 
+fonts to be used on our website.
+Heading One:   Josefin Sans
+Heading Two:   Freight Sans Pro
+Heading Three:   Freight Sans Pro
+These fonts are unacceptable for anything 
+other than  MARS   website.
+----------------Page (3) Break----------------
+© Team 2614, 2020
+Color Palette
+ 
+The predominant color in all communications 
+materials should be selected from the primary 
+palette.
+Long body text should always be displayed in 
+primary black on a primary white background. 
+Accent text and graphics may be displayed in any of 
+the primary   MARS  colors; preferably MARS Red.
+The  2614  palette should always be displayed on the 
+RGB scale when possible.
+All reds used in produced media must be the 
+standard approved    MARS Red  .
+RGB Color Code: #B32416 
+R: 179 G: 36 B: 22 
+C:0 Y:80 M:88 K:30
+RGB Color Code: #FFFFFF 
+R: 255 G: 255 B: 255
+C:0 Y:0 M:0 K:0
+RGB Color Code: #000000 
+R: 0 G: 0 B: 0 
+C:0 Y:0 M:0 K:100
+----------------Page (4) Break----------------
+© Team 2614, 2020
+Presentation Palette
+ 
+In presentation mediums, colors from the 
+presentation palette may be used for background 
+design elements to shift the viewer’s eyes to the 
+content.
+Different scales of gray may be used in 
+presentation, but they must remain warm or 
+neutral-toned. 
+In informal presentation mediums exclusively, the 
+MARS Red   may be shifted to be darker or dulled. At 
+that time may other colors be used if agreed upon.
+RGB Color Code: #B32416 
+R: 179 G: 36 B: 22 
+C:0 Y:80 M:88 K:30
+RGB Color Code: #000000 
+R: 0 G: 0 B: 0 
+C:0 Y:0 M:0 K:100
+RGB Color Code: #FFFFFF 
+R: 255 G: 255 B: 255
+C:0 Y:0 M:0 K:0
+RGB Color Code: #363636
+R: 54 G: 54 B: 54
+C:0 Y:0 M:0 K:79
+----------------Page (5) Break----------------
+© Team 2614, 2020
+The Team 2614    MARS Logo   should be used in 
+compliance with the standards here. Only when 
+necessary should a grayscale version be used. Keep 
+the  MARS Logo   area clear of all elements that may 
+sacrifice the integrity. The    MARS Logo   should always 
+be seen clearly and shown on all materials released 
+by Team 2614  . 
+The  MARS Logo   should not be used on any 
+non-color documents except when absolutely 
+necessary, either due to cost or lack of a color 
+print capable printer. When it is necessary, use 
+the white/transparent background image and 
+select the grayscale option in the print options 
+for the best outcome.
+The MARS Logo            When Used in Non-Color Documents
+----------------Page (6) Break----------------
+© Team 2614, 2020
+The  MARS Logo    should not be:    
+● Stretched out of proportion
+● Displayed on a low contrast background 
+● Recreated with substitute fonts
+● Styled with any 3D effect
+● Tilted or rotated
+● Watermarked behind text
+● Displayed at partial opacity
+● Cropped    
+● Duplicated to create a pattern
+● Displayed with low resolution
+● Or any other variation, unless it is 
+accepted by the mentors of     Team 2614  .
+Unacceptable MARS Logo 
+Treatments 
+----------------Page (7) Break----------------
+© Team 2614, 2020
+During certain seasons    MARS   students will 
+create themed graphical variations of the 
+MARS Logo   with the same theme as the 
+current year’s game.
+These themed logos are often used exclusively 
+for buttons at events, but have also been used 
+as elements alongside the traditional logo in 
+game specific documents.
+Themed MARS Logos
+STEAMWORKS, 2017
+Stronghold, 2016
+POWER UP, 2018
+----------------Page (8) Break----------------
+© Team 2614, 2020
+The  MARS Logo   have been altered many 
+times to fit the needs of    MARS , all uses of the 
+MARS Logo   must fall in compliance with our 
+most recent adaptation. 
+Several versions of the    MARS Logo   with 
+different variants of words and shades of red.
+When adjusting for non-color documents the 
+bottom left and right logo version were 
+created, but are not in use anymore in favor 
+of the traditional   MARS Logo   de-saturated.
+Variants of the MARS Logos
+----------------Page (9) Break----------------
+© Team 2614, 2020
+The  MARS Logo   is available in a single file type so as to 
+avoid false duplication and enable easy importation of the 
+MARS Logo   into various different printable/viewable media 
+formats.
+This file type, PNG (.png), is known to be compatible with 
+Microsoft Word, Microsoft Publisher, Microsoft 
+PowerPoint, Microsoft Excel, Adobe Photoshop CC, Adobe 
+Premiere Pro CC, Windows Movie Maker, iMovie, Microsoft 
+Paint, Windows Photo Viewer (Windows 8 and Lower), and 
+the Mac “Photos” application. Using the PNG file type with 
+other programs is not necessarily recommended, though it 
+is likely to work.
+Both the white (“Traditional”)     MARS Logo   and the black 
+(“Anniversary Revision”)    MARS Logo   are available at 
+marsfirst.org/resource-links     in the team branding package.
+File Types 
+----------------Page (10) Break----------------
+© Team 2614, 2020
+Through the 2017 World Chairman’s Award,        MARS 
+entered the FIRST Hall of Fame. Subsequently,         MARS 
+began including the Hall of Fame logo on most 
+documentation. Though a full-color version of the 
+logo is available,   MARS  uses the black and white 
+variant to suit its color scheme.
+The Tucker Team follows the same unacceptable 
+treatments as the MARS logo, detailed on page 8. 
+Keep the Tucker Team logo area clear of all elements 
+that may sacrifice the integrity. All Tucker Team based 
+documentation must include the logo in some 
+capacity, ideally the version including text.
+Other Applicable Logos
+----------------Page (11) Break----------------
+© Team 2614, 2020
+----------------Page (12) Break----------------
