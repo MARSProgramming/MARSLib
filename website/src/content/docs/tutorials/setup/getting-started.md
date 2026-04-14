@@ -5,8 +5,6 @@ id: getting-started
 title: "Software Setup & Git"
 ---
 
-# Software Setup & Git
-
 Before you can begin programming the robot, you need to configure your local development environment. MARSLib uses industry-standard tooling alongside specific WPILib architecture to deploy its advanced zero-allocation simulations. Follow these steps meticulously to get started. Note this is still a work in progress.
 
 ## 1. WPILib Installation

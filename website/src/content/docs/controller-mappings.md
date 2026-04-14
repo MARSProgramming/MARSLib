@@ -3,8 +3,6 @@ title: Controller Mappings
 description: Reference for current active mappings
 ---
 
-# MARSLib Controller Mappings
-
 This document is automatically generated during compilation from `RobotBindings.java`.
 
 ## 🎮 Pilot (Driver) - Controller 0

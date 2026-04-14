@@ -177,3 +177,90 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.5;
   color: var(--text-secondary, #999);
 }
+
+/* MARSLib Legacy Standards Port */
+.rule-section {
+  background: var(--sl-color-bg-nav);
+  border: 1px solid var(--sl-color-hairline);
+  border-radius: 8px;
+  padding: 2.5rem;
+  margin-bottom: 3rem;
+  position: relative;
+  margin-top: 2rem;
+}
+.rule-num {
+  position: absolute;
+  top: -1.2rem;
+  left: -1rem;
+  background: var(--mars-red);
+  color: white;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 800;
+  font-size: 1.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(179,36,22,0.4);
+}
+.rule-section h2 {
+  margin-top: 0 !important;
+  color: white;
+}
+.code-comparison {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+@media (min-width: 50rem) {
+  .code-comparison {
+    flex-direction: row;
+  }
+}
+.code-card {
+  flex: 1;
+  background: var(--sl-color-bg-nav);
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--sl-color-hairline);
+}
+.code-header {
+  padding: 0.75rem 1rem;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.05em;
+}
+.code-bad {
+  border-top: 4px solid #e74c3c;
+}
+.code-bad .code-header {
+  background: rgba(231, 76, 60, 0.1);
+  color: #e74c3c;
+}
+.code-good {
+  border-top: 4px solid #2ecc71;
+}
+.code-good .code-header {
+  background: rgba(46, 204, 113, 0.1);
+  color: #2ecc71;
+}
+.code-card pre {
+  margin: 0 !important;
+  border-radius: 0 !important;
+  background: rgba(0,0,0,0.2) !important;
+  border: none !important;
+}
+
+.callout-warning {
+  margin-top: 2rem;
+  border-left: 4px solid var(--sl-color-orange-high);
+  background: var(--sl-color-orange-low);
+  padding: 1rem 1.5rem;
+  border-radius: 0 8px 8px 0;
+}
+.callout-warning h4 {
+  color: var(--sl-color-orange-high);
+  margin-top: 0 !important;
+  margin-bottom: 0.5rem;
+}
