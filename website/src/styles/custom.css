@@ -25,12 +25,17 @@
   /* Starlight Native Variables Mapping */
   --sl-color-accent-low: rgba(179, 36, 22, 0.2);
   --sl-color-accent: #B32416;
-  --sl-color-accent-high: #B32416;
-  --sl-color-text-accent: #B32416;
+  --sl-color-accent-high: #ef4435;
+  --sl-color-text-accent: #ef4435;
   
   /* Starlight Font Overrides */
   --sl-font: 'Ubuntu', sans-serif;
   --sl-font-mono: 'JetBrains Mono', monospace;
+}
+
+/* Improve link readability inside inline code blocks */
+.sl-markdown-content a code {
+  color: var(--sl-color-text-accent) !important;
 }
 
 /* Force Dark Mode Globally (Mirroring Docusaurus disableSwitch: true) */
