@@ -27,6 +27,26 @@
   --sl-color-accent: #B32416;
   --sl-color-accent-high: #f26d60;
   --sl-color-text-accent: #f26d60;
+  
+  /* Starlight Font Overrides */
+  --sl-font: 'Ubuntu', sans-serif;
+  --sl-font-mono: 'JetBrains Mono', monospace;
+}
+
+/* Force Dark Mode Globally (Mirroring Docusaurus disableSwitch: true) */
+:root, :root[data-theme='light'], :root[data-theme='dark'] {
+  --sl-color-bg: #0a0a0a !important;
+  --sl-color-bg-nav: rgba(10, 10, 10, 0.85) !important;
+  --sl-color-bg-sidebar: #0a0a0a !important;
+  --sl-color-text: #c2c2c2 !important;
+  --sl-color-white: #ffffff !important;
+  color-scheme: dark !important;
+  background-color: var(--sl-color-bg) !important;
+  color: var(--sl-color-text) !important;
+}
+
+starlight-theme-select {
+  display: none !important; /* Hide the theme toggle button entirely */
 }
 
 [data-theme='dark'] {
@@ -38,9 +58,9 @@
 
 /* Typography Overrides */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--ifm-heading-font-family);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  font-family: var(--ifm-heading-font-family) !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
 }
 
 .navbar__title {
