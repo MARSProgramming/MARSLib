@@ -142,12 +142,12 @@ export default function ZeroAllocationSim() {
         <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
           <button 
             onClick={() => setMode("STD")}
-            style={{ flex: 1, background: mode === "STD" ? '#ff4d4d' : '#222', color: '#fff', border: mode === "STD" ? 'none' : '1px solid #444', padding: '12px', borderRadius: '6px', cursor: 'pointer', fontFamily: '"Orbitron", sans-serif', fontWeight: 700, transition: '0.2s' }}>
+            style={{ flex: 1, background: mode === "STD" ? '#ff4d4d' : '#222', color: '#fff', border: mode === "STD" ? '1px solid #ff4d4d' : '1px solid #444', padding: '12px', borderRadius: '6px', cursor: 'pointer', fontFamily: '"Orbitron", sans-serif', fontWeight: 700, transition: '0.2s' }}>
             STANDARD FRC (Allocating)
           </button>
           <button 
             onClick={() => setMode("MARS")}
-            style={{ flex: 1, background: mode === "MARS" ? '#00d0ff' : '#222', color: mode === "MARS" ? '#000' : '#fff', border: mode === "MARS" ? 'none' : '1px solid #444', padding: '12px', borderRadius: '6px', cursor: 'pointer', fontFamily: '"Orbitron", sans-serif', fontWeight: 700, transition: '0.2s' }}>
+            style={{ flex: 1, background: mode === "MARS" ? '#00d0ff' : '#222', color: mode === "MARS" ? '#000' : '#fff', border: mode === "MARS" ? '1px solid #00d0ff' : '1px solid #444', padding: '12px', borderRadius: '6px', cursor: 'pointer', fontFamily: '"Orbitron", sans-serif', fontWeight: 700, transition: '0.2s' }}>
             MARSLIB (Zero-Allocation)
           </button>
         </div>
