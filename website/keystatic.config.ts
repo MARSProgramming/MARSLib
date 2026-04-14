@@ -1,7 +1,8 @@
 import { config, fields, collection } from '@keystatic/core';
+import { block, wrapper } from '@keystatic/core/content-components';
 import React from 'react';
 
-const simBlock = (label: string) => ({
+const simBlock = (label: string) => block({
 	label,
 	schema: {
 		'client:only': fields.text({ label: 'Astro Client Directive', defaultValue: 'react' }),
@@ -44,53 +45,53 @@ const starlightSchema = {
 			SysIdSim: simBlock('SysId Simulator'),
 			VisionSim: simBlock('Vision Simulator'),
 			ZeroAllocationSim: simBlock('Zero Allocation Simulator'),
-			RuleSection: {
+			RuleSection: wrapper({
 				label: 'Rule Section',
 				schema: {
 					num: fields.text({ label: 'Rule Number' }),
 					title: fields.text({ label: 'Rule Title' }),
 				},
-			},
-			CodeComparison: {
+			}),
+			CodeComparison: wrapper({
 				label: 'Code Comparison',
 				schema: {},
-			},
-			CodeViolation: {
+			}),
+			CodeViolation: wrapper({
 				label: 'Code Violation',
 				schema: {},
-			},
-			CodeStandard: {
+			}),
+			CodeStandard: wrapper({
 				label: 'Code Standard',
 				schema: {},
-			},
-			StandardHeader: {
+			}),
+			StandardHeader: block({
 				label: 'Standard Header',
 				schema: {},
-			},
-			SplashContainer: {
+			}),
+			SplashContainer: wrapper({
 				label: 'Splash Container',
 				schema: {},
-			},
-			HomeHero: {
+			}),
+			HomeHero: block({
 				label: 'Home Hero',
 				schema: {},
-			},
-			HomeSimulatorContainer: {
+			}),
+			HomeSimulatorContainer: wrapper({
 				label: 'Home Simulator Container',
 				schema: {},
-			},
-			HomeHallOfFame: {
+			}),
+			HomeHallOfFame: block({
 				label: 'Home Hall of Fame',
 				schema: {},
-			},
-			HomeTutorialGrid: {
+			}),
+			HomeTutorialGrid: block({
 				label: 'Home Tutorial Grid',
 				schema: {},
-			},
-			SponsorsList: {
+			}),
+			SponsorsList: block({
 				label: 'Sponsors List',
 				schema: {},
-			},
+			}),
 		},
 	}),
 };
