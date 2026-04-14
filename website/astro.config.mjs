@@ -8,6 +8,7 @@ import cloudflare from '@astrojs/cloudflare';
 
 // https://astro.build/config
 export default defineConfig({
+	site: 'https://marslib.pages.dev',
 	output: 'static',
 	adapter: cloudflare({
 		imageService: 'cloudflare'
@@ -15,6 +16,9 @@ export default defineConfig({
 	vite: {
 		ssr: {
 			external: ['node:path', 'node:fs', 'node:url', 'node:util', 'path', 'fs', 'url', 'util', 'postcss', 'util-deprecate'],
+		},
+		build: {
+			chunkSizeWarningLimit: 2000,
 		},
 	},
 	integrations: [
