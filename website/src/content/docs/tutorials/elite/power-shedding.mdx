@@ -9,13 +9,13 @@ title: "Dynamic Power Shedding"
 Modern FRC hardware—specifically [Krakens](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/talonfx.html) and [Falcons](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/talonfx.html)—can physically pull more power than the [RoboRIO](https://www.ni.com/en/shop/hardware/products/roborio.html) and a 12V battery can safely provide. If your Swerve Drive engages in a massive pushing match while the Intake is stalled on a stuck **Fuel Ball**, the battery voltage will dip below 7V, the RoboRIO will reset, and you will lose the match.
 
 
-  ## <span class="mars-num">1.</span> The Problem with Static Limits
+  ## <span class="mars-num">1</span> The Problem with Static Limits
 
   
 Most teams solve this by configuring static breaker current limits. This is a compromise. It neuters your robot's acceleration when the battery is fully charged at 12.8V just to protect it when it drops to 9V.
 
 
-  ## <span class="mars-num">2.</span> MARSPowerManager: Voltage Scaling
+  ## <span class="mars-num">2</span> MARSPowerManager: Voltage Scaling
 
   
 In MARSLib, we use the `MARSPowerManager` to implement **Voltage Scaling** and **Power Shedding**. Instead of static stator current bounds, our subsystems dynamically cap their output voltage based on the real-time health of the battery.
@@ -34,7 +34,7 @@ if (currentSystemVoltage < 9.5) {
 motor.setVoltage(MathUtil.clamp(requestedVoltage, -maxAllowedVoltage, maxAllowedVoltage));
 ```
 
-  ## <span class="mars-num">3.</span> Subsystem Priority Classes
+  ## <span class="mars-num">3</span> Subsystem Priority Classes
 
   
 Not all subsystems are created equal. When the `MARSPowerManager` detects a critical system voltage sag (e.g., `< 9.5V`), it initiates a lockdown phase. The framework groups mechanisms into three distinct tiers:

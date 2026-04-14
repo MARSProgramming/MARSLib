@@ -7,7 +7,7 @@ title: "SysId & Continuous Tuning"
 
 PID controllers are powerful, but they are reactive. To achieve truly championship-grade motion, you need **Feedforward**—the ability to predict the voltage required to achieve a target velocity. MARSLib provides a specialized `SysId` suite to calculate these constants automatically.
 
-## <span class="mars-num">1.</span> Understanding kS, kV, and kA
+## <span class="mars-num">1</span> Understanding kS, kV, and kA
 
 MARSLib uses the standard WPILib-style Feedforward model:
 
@@ -21,7 +21,7 @@ MARSLib uses the standard WPILib-style Feedforward model:
 By calculating these values, your robot can hit its targets instantly without waiting for the PID loop to "catch up" to the error.
 :::
 
-## <span class="mars-num">2.</span> Standard SysId Routine
+## <span class="mars-num">2</span> Standard SysId Routine
 
 For one-time characterization, use the `SysIdRoutine` command. This will execute the "Quasistatic" and "Dynamic" ramps required for the SysId analysis tool.
 
@@ -50,7 +50,7 @@ public Command getSysIdCommand() {
 Always run SysId routines with the robot on blocks before testing on the ground. A failed characterization can result in sudden, full-speed uncontrolled movement.
 :::
 
-## <span class="mars-num">3.</span> Continuous SysId Tuning
+## <span class="mars-num">3</span> Continuous SysId Tuning
 
 Static System Identification (running specific "quasistatic" tests in the pits) is the industry standard. However, mechanism friction changes as the robot's gears wear down or get dirty throughout a 3-day competition. MARSLib introduces **Continuous SysId**, which passively identifies your `kV` and `kA` constants during real matches.
 

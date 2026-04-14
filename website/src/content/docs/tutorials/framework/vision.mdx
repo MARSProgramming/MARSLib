@@ -9,7 +9,7 @@ title: "Vision Fusion & Filtration"
 In the FRC 2026: **REBUILT** game, absolute field localization is critical. MARSLib's `MARSVision` subsystem combines data from multiple cameras and strictly filters out "hallucinations" using techniques pioneered by elite teams. We utilize **[AprilTags](https://docs.wpilib.org/en/stable/docs/software/vision-processing/apriltag/apriltag-intro.html)** as the primary landmarks for global pose estimation.
 
 
-  ## <span class="mars-num">1.</span> Strict Rejection Filters
+  ## <span class="mars-num">1</span> Strict Rejection Filters
 
   
 Vision poses are frequently wrong during high-speed gameplay. Before a measurement reached the Pose Estimator, it must survive five strict boundary checks:
@@ -33,7 +33,7 @@ Vision poses are frequently wrong during high-speed gameplay. Before a measureme
 <VisionSim client:only="react" />
 
 
-  ## <span class="mars-num">2.</span> Quadratic StdDev Scaling
+  ## <span class="mars-num">2</span> Quadratic StdDev Scaling
 
   
 Vision poses should mathematically never be trusted equally. A pose from 6 meters away is tiny on the camera sensorâ€”1 pixel of error dramatically shifts the calculated location.
@@ -50,7 +50,7 @@ MARSLib enforces **Quadratic StdDev Scaling**. Trust in vision decays *exponenti
     When multiple AprilTags are visible, geometric ambiguity essentially drops to zero. Our code automatically scales down standard deviations by `x0.1`, dramatically tightening the Pose Estimator's trust.
 :::
 
-  ## <span class="mars-num">3.</span> Simulating Imperfection
+  ## <span class="mars-num">3</span> Simulating Imperfection
 
   
 To ensure tuning works globally, the `AprilTagVisionIOSim` in MARSLib purposefully injects:

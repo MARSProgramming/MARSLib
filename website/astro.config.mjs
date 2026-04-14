@@ -58,7 +58,12 @@ export default defineConfig({
 			sidebar: [
 				{
 					label: 'Tutorials',
-					autogenerate: { directory: 'tutorials' },
+					items: [
+						{ label: 'Zero-to-Hero (Start Here)', autogenerate: { directory: 'tutorials/zero-to-hero' } },
+						{ label: 'Setup & Infrastructure', autogenerate: { directory: 'tutorials/setup' } },
+						{ label: 'Framework Architecture', autogenerate: { directory: 'tutorials/framework' } },
+						{ label: 'Elite-Level Workflows', autogenerate: { directory: 'tutorials/elite' } }
+					]
 				},
 				{
 					label: 'Core Standards',

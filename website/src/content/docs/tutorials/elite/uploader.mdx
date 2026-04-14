@@ -9,13 +9,13 @@ title: "Automated Log Uploader"
 Manually retrieving USB drives from the [RoboRIO](https://www.ni.com/en/shop/hardware/products/roborio.html) is tedious. MARSLib introduces the `LogUploader`, an asynchronous daemon thread that quietly runs in the background. If it detects a tethered internet connection, it automatically pushes all new [AdvantageKit](https://github.com/Mechanical-Advantage/AdvantageKit) `.wpilog` files directly to your team's [GitHub](https://github.com/) repository!
 
 
-  ## <span class="mars-num">1.</span> Dedicated Log Repository
+  ## <span class="mars-num">1</span> Dedicated Log Repository
 
   
 Do not upload logs directly into your main robot code repository! Telemetry logs are massive binary files and will quickly bloat your Git history. Create a brand new, empty repository solely for telemetry.
 
 
-  ## <span class="mars-num">2.</span> Configuration
+  ## <span class="mars-num">2</span> Configuration
 
   
 To point the uploader toward your team's new repository, you must modify the static configuration fields inside `LogUploader.java`.
@@ -30,7 +30,7 @@ public final class LogUploader {
 }
 ```
 
-  ## <span class="mars-num">3.</span> Personal Access Token
+  ## <span class="mars-num">3</span> Personal Access Token
 
   
 The RoboRIO needs permission to upload directly to your team's GitHub organization.
@@ -49,7 +49,7 @@ The RoboRIO needs permission to upload directly to your team's GitHub organizati
     Never hardcode your PAT into Java! The `LogUploader` explicitly reads the token from a local text file that is ignored by Git.
 :::
 
-  ## <span class="mars-num">4.</span> Deploying the PAT
+  ## <span class="mars-num">4</span> Deploying the PAT
 
   
 You must place your token inside the RoboRIO's deploy directory. Create a new file locally in your project:
@@ -63,7 +63,7 @@ src/main/deploy/github_pat.txt
 Paste the `github_pat_...` string directly into this file. The next time you deploy, the `LogUploader` will find it there automatically!
 
 
-  ## <span class="mars-num">5.</span> Execution
+  ## <span class="mars-num">5</span> Execution
 
   
 The system is completely automatic. It checks the `DriverStation.isFMSAttached()` flag to ensure it **never uploads during real matches**. During practice, whenever the robot is disabled and tethered, it will quietly push the logs to GitHub!

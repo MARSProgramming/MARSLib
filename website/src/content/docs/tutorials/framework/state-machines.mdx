@@ -9,7 +9,7 @@ title: "State Machine Logic"
 Coordinating multiple mechanisms (like an intake, a pivot, and a shooter) is incredibly complex. If you use simple if-statements, you'll eventually end up with "spaghetti code" where the robot crashes into itself. MARSLib uses `MARSStateMachine` within the overarching `MARSSuperstructure` to manage these transitions safely.
 
 
-  ## <span class="mars-num">1.</span> Defining Your States
+  ## <span class="mars-num">1</span> Defining Your States
 
   
 Start by creating an enum that represents every possible state of your superstructure for the 2026 game.
@@ -25,7 +25,7 @@ public enum SuperstructureState {
 }
 ```
 
-  ## <span class="mars-num">2.</span> The Transition Table
+  ## <span class="mars-num">2</span> The Transition Table
 
   
 In your Subsystem's constructor, you define which transitions are legal. This prevents the robot from trying to shoot into the Hub if it hasn't successfully acquired a Fuel Ball yet!
@@ -48,7 +48,7 @@ stateMachine.addWildcardTo(STOW); // Can always go back to STOW in an emergency
     Before ever running a physical state machine transition on the field, the involved subsystems must pass their `SystemTestable` pre-match assertions. Ensure the hardware actually works via `MARSFaultManager` sweeps to prevent hardware collisions.
 :::
 
-  ## <span class="mars-num">3.</span> Entry & Exit Actions
+  ## <span class="mars-num">3</span> Entry & Exit Actions
 
   
 Often, you want something to happen exactly once when a state changes. For example, when entering `INTAKING_FLOOR`, you want to deploy the pivot.
@@ -68,7 +68,7 @@ stateMachine.setExitAction(INTAKING_FLOOR, () -> {
 
 <StateMachineSim client:only="react" />
 
-  ## <span class="mars-num">4.</span> Live Mermaid Visualization
+  ## <span class="mars-num">4</span> Live Mermaid Visualization
 
   
 One of the most powerful features of `MARSStateMachine` is that it automatically generates a **[Mermaid.js flowchart](https://mermaid.js.org/)**. This graph is sent over telemetry and can be viewed live in **[AdvantageScope](https://github.com/Mechanical-Advantage/AdvantageScope)**.

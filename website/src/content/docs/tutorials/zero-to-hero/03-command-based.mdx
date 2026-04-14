@@ -12,7 +12,7 @@ If you've built simple robots before, you might have written all your code linea
 To ensure code is evaluated safely every 20ms, WPILib enforces the **[Command-Based Paradigm](https://docs.wpilib.org/en/stable/docs/software/commandbased/index.html)**.
 
 
-  ## <span class="mars-num">1.</span> Subsystems (The Nouns)
+  ## <span class="mars-num">1</span> Subsystems (The Nouns)
 
   :::note
 **Persistent Wrappers**
@@ -31,7 +31,7 @@ To ensure code is evaluated safely every 20ms, WPILib enforces the **[Command-Ba
   
 
 
-  ## <span class="mars-num">2.</span> Commands (The Verbs)
+  ## <span class="mars-num">2</span> Commands (The Verbs)
 
   
 [Commands](https://docs.wpilib.org/en/stable/docs/software/commandbased/commands.html) are discrete actions (e.g., `FireShooterCommand`, `ScoreAmpCommand`).
@@ -45,7 +45,7 @@ To ensure code is evaluated safely every 20ms, WPILib enforces the **[Command-Ba
   
 
 
-  ## <span class="mars-num">3.</span> The RobotContainer (The Glue)
+  ## <span class="mars-num">3</span> The RobotContainer (The Glue)
 
   
 You cannot blindly command motors in FRC directly from driver inputs. We use the **[RobotContainer.java](https://docs.wpilib.org/en/stable/docs/software/commandbased/structuring-command-based-project.html#robotcontainer)** class as a strict wiring harness.
@@ -59,7 +59,7 @@ You cannot blindly command motors in FRC directly from driver inputs. We use the
 When the driver presses the "A" button, the runtime scheduler grabs `FireShooterCommand`, injects the permanent `shooterSubsystem` into it, and schedules the execution cleanly alongside the rest of the robot loops.
 
 
-  ## <span class="mars-num">4.</span> The 20ms Control Loop
+  ## <span class="mars-num">4</span> The 20ms Control Loop
 
   
 Here is what the RoboRIO is doing 50 times every single second during a match:
