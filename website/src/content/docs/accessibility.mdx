@@ -1,0 +1,25 @@
+---
+title: Accessibility Commitment
+description: How MARSLib enforces WCAG 2.1 AA compliance across our software ecosystem.
+---
+
+# Design for Every Developer
+
+At MARS 2614, we believe that championship-grade robotics education must be fundamentally accessible to every student, regardless of physical or cognitive ability. We do not view accessibility as a nice-to-have or an afterthought—it is a **core engineering requirement** hardcoded directly into the MARSLib infrastructure.
+
+Our documentation hub, configuration dashboards, and VS Code extensions are explicitly designed to pass rigorous **WCAG 2.1 AA** standards. We refuse to compromise on inclusivity for the sake of visual flair. 
+
+## The Automation Engine
+
+To guarantee our standards are upheld dynamically as our repository scales, we deploy automated accessibility audits via **Pa11y**. Every pull request against our documentation triggers headless browser agents that mechanically verify the DOM structure against WCAG guidelines.
+
+We actively utilize **Autonomous AI Subagents** and custom skills programmed with explicit structural schemas to surgically patch rendering layers. These agents enforce:
+- **Semantic DOM Parity**: Strip-mining orphaned form labels and duplicate IDs injected by static site components.
+- **Micro-Contrast Checks**: Guaranteeing that all text features—down to the edge-labels within our dynamic Mermaid flowchart modules—maintain a mathematical contrast ratio of at least `4.5:1` against the dark theme.
+- **Screen Reader Context**: Ensuring visual simulation canvases, interactive UI cards, and status graphics are correctly adorned with `aria-hidden` or descriptive `.sr-only` text blocks for navigation cleanly via keyboard and screen readers.
+
+## Our Design Palette
+
+Our signature dark mode and vibrant accent colors are not just for aesthetics. Our primary structural hyperlink highlight is explicitly designed as high-contrast **AI Cyan (`#00f2ff`)**, shifting away from the primary red MARS team color (`#ef4435`) specifically because the red did not meet strict mathematical visibility thresholds against our charcoal background.
+
+We believe that building world-class software starts with building software for the whole world. If you encounter any barriers on our platform, please open an issue in the MARSLib repository immediately so our AI agents can deploy a surgical patch.

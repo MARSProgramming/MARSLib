@@ -65,6 +65,10 @@ export default defineConfig({
 					link: '/standards/',
 				},
 				{
+					label: 'Accessibility Commitment',
+					link: '/accessibility/',
+				},
+				{
 					label: 'API Reference',
 					link: 'https://MARSProgramming.github.io/MARSLib/javadoc/index.html',
 					attrs: { target: '_blank' }
