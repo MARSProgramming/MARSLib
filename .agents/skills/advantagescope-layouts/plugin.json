@@ -1,0 +1,18 @@
+{
+  "name": "advantagescope-layouts",
+  "version": "1.0.0",
+  "description": "Exposes standardized execution rules for properly building and structuring layout.json configurations using the advantagescope-mcp tools.",
+  "author": {
+    "name": "Team MARS 2614",
+    "url": "https://github.com/MARSProgramming"
+  },
+  "repository": "https://github.com/MARSProgramming/MARSLib",
+  "license": "MIT",
+  "keywords": [
+    "frc",
+    "marslib",
+    "advantagescope",
+    "telemetry",
+    "mcp"
+  ]
+}

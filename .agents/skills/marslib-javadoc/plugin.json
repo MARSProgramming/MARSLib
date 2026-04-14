@@ -1,0 +1,17 @@
+{
+  "name": "marslib-javadoc",
+  "version": "1.0.0",
+  "description": "Enforces championship-tier Javadoc standards across the MARSLib framework.",
+  "author": {
+    "name": "Team MARS 2614",
+    "url": "https://github.com/MARSProgramming"
+  },
+  "repository": "https://github.com/MARSProgramming/MARSLib",
+  "license": "MIT",
+  "keywords": [
+    "frc",
+    "marslib",
+    "javadoc",
+    "documentation"
+  ]
+}

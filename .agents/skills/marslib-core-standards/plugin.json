@@ -1,0 +1,17 @@
+{
+  "name": "marslib-core-standards",
+  "version": "1.0.0",
+  "description": "Enforces strict elite coding standards including 'Never Nester', explicit unit nomenclature, and strict mathematical documentation.",
+  "author": {
+    "name": "Team MARS 2614",
+    "url": "https://github.com/MARSProgramming"
+  },
+  "repository": "https://github.com/MARSProgramming/MARSLib",
+  "license": "MIT",
+  "keywords": [
+    "frc",
+    "marslib",
+    "standards",
+    "code-quality"
+  ]
+}
