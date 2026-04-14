@@ -2,26 +2,63 @@
 sidebar:
   order: 14
 id: sysid
-title: "Continuous SysId"
+title: "SysId & Continuous Tuning"
 ---
 
-  
+PID controllers are powerful, but they are reactive. To achieve truly championship-grade motion, you need **Feedforward**—the ability to predict the voltage required to achieve a target velocity. MARSLib provides a specialized `SysId` suite to calculate these constants automatically.
+
+## 1. Understanding kS, kV, and kA
+
+MARSLib uses the standard WPILib-style Feedforward model:
+
+- **kS (Static)**: The voltage required to overcome static friction and just start the motor moving.
+- **kV (Velocity)**: The voltage required to maintain a steady state velocity (proportional to speed).
+- **kA (Acceleration)**: The voltage required to change velocity (proportional to acceleration).
+
+:::note
+**Voltage = (kS * sgn(v)) + (kV * v) + (kA * a)**
+
+By calculating these values, your robot can hit its targets instantly without waiting for the PID loop to "catch up" to the error.
+:::
+
+## 2. Standard SysId Routine
+
+For one-time characterization, use the `SysIdRoutine` command. This will execute the "Quasistatic" and "Dynamic" ramps required for the SysId analysis tool.
+
+<SysIdSim client:only="react" />
+
+- **Quasistatic**: The motor voltage slowly ramps up linearly. This isolates the **kV** and **kS** values.
+- **Dynamic**: The motor is blasted with full voltage. This isolates the **kA** (inertia) value.
+
+```java
+// Command-based SysId implementation
+public Command getSysIdCommand() {
+    return new SysIdRoutine(
+        new Config(),
+        new Mechanism(
+            (volts) -> m_drive.setVoltage(volts),
+            null, // No logging needed, handled by @AutoLog
+            this
+        )
+    ).quasistatic(Direction.kForward);
+}
+```
+
+:::caution
+**Safety First**
+
+Always run SysId routines with the robot on blocks before testing on the ground. A failed characterization can result in sudden, full-speed uncontrolled movement.
+:::
+
+## 3. Continuous SysId Tuning
+
 Static System Identification (running specific "quasistatic" tests in the pits) is the industry standard. However, mechanism friction changes as the robot's gears wear down or get dirty throughout a 3-day competition. MARSLib introduces **Continuous SysId**, which passively identifies your `kV` and `kA` constants during real matches.
 
-
-  ## 1. The Logging Advantage
-
-  
 Because every motor voltage and velocity is logged at high frequency through **[AdvantageKit](https://github.com/Mechanical-Advantage/AdvantageKit)**, we don't need dedicated tests. The `MARSSysIdManager` runs an **Ordinary Least Squares (OLS)** regression against the log data every time the robot is disabled.
 
-
-  ## 2. Implementation
-
-  
 To enable passive characterization, you must register your subsystem's IO with the manager.
 
-
-  ```java
+```java
 // Inside RobotContainer.java
 SysIdManager.getInstance().registerMechanism(
     "Shooter",
@@ -30,24 +67,11 @@ SysIdManager.getInstance().registerMechanism(
 );
 ```
 
-  ## 3. Viewing the Results
+The calculated `kV` (Volts per Unit/s) and `kA` (Volts per Unit/s&sup2;) are pushed to NetworkTables. If the passively identified kV differs from your hardcoded constant by more than 15%, a **Fault Alert** will trigger, notifying the pit crew that a mechanism is experiencing unexpected friction.
 
-  
-The calculated `kV` (Volts per Unit/s) and `kA` (Volts per Unit/s&sup2;) are pushed to NetworkTables. If the passion-identified kV differs from your hardcoded constant by more than 15%, a **Fault Alert** will trigger, notifying the pit crew that a mechanism is experiencing unexpected friction.
-
-
-  
 ---
 
+## 📖 Further Reading & External Resources
 
-  ## 📖 Further Reading & External Resources
-
-  
-
-    - [WPILib: System Identification (SysId)](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/system-identification/index.html) - Characterize your robot with automated experiments.
-
-    - [CTRE Phoenix 6: Signal Logging](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/control-requests.html) - Best practices for high-speed telemetry in characterization.
-
-  
-
-
+- [WPILib: System Identification (SysId)](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/system-identification/index.html) - Characterize your robot with automated experiments.
+- [CTRE Phoenix 6: Signal Logging](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/control-requests.html) - Best practices for high-speed telemetry in characterization.
