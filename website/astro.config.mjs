@@ -9,9 +9,10 @@ import cloudflare from '@astrojs/cloudflare';
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://marslib.pages.dev',
-	output: 'static',
+	output: 'server',
 	adapter: cloudflare({
-		imageService: 'cloudflare'
+		imageService: 'cloudflare',
+		mode: 'directory'
 	}),
 	vite: {
 		ssr: {
@@ -23,7 +24,7 @@ export default defineConfig({
 	},
 	integrations: [
 		starlight({
-			title: 'My Docs',
+			title: 'MARSLib Documentation',
 			customCss: [
 				'./src/styles/custom.css',
 			],
@@ -35,6 +36,10 @@ export default defineConfig({
 						// Each item here is one entry in the navigation menu.
 						{ label: 'Example Guide', slug: 'guides/example' },
 					],
+				},
+				{
+					label: 'Tutorials',
+					autogenerate: { directory: 'tutorials' },
 				},
 				{
 					label: 'Reference',
