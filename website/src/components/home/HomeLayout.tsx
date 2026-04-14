@@ -3,7 +3,7 @@ import React from 'react';
 export const HomeHero = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginTop: '20px', marginBottom: '40px' }}>
-      <img src="/marsfirst.png" alt="MARSLib Logo" width="300" style={{ marginBottom: '20px', objectFit: 'contain' }} />
+      <img src="/img/mars-logo.png" alt="MARSLib Logo" width="300" style={{ marginBottom: '20px', objectFit: 'contain' }} />
       <h1 style={{ fontSize: '3rem', margin: '0 0 10px 0' }}>
         <span style={{ color: 'var(--mars-red)' }}>MARS</span><span style={{ color: 'white' }}>Lib</span> Framework
       </h1>

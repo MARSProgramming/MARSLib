@@ -51,9 +51,9 @@ export default defineConfig({
 				'./src/styles/custom.css',
 			],
 			logo: {
-				src: './src/assets/marsfirst.png',
+				src: './src/assets/mars-logo.png',
 			},
-			favicon: '/marsfirst.png',
+			favicon: '/img/mars-logo.png',
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/MARSProgramming/MARSLib' }],
 			sidebar: [
 				{
