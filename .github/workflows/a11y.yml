@@ -14,4 +14,6 @@ jobs:
         run: sleep 60
 
       - name: Run WCAG AA Audit
-        run: npx pa11y https://marslib.pages.dev --standard WCAG2AA --ignore "WCAG2AA.Principle2.Guideline2_4.2_4_1.G1,G123,G124.NoSuchID"
+        run: |
+          echo '{"chromeLaunchConfig": {"args": ["--no-sandbox", "--disable-setuid-sandbox"]}}' > pa11y.json
+          npx pa11y https://marslib.pages.dev --standard WCAG2AA --ignore "WCAG2AA.Principle2.Guideline2_4.2_4_1.G1,G123,G124.NoSuchID" --config pa11y.json
