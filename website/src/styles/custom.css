@@ -1,5 +1,5 @@
 /* ===== MARS Design System for Docusaurus ===== */
-@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
   --ifm-color-primary: #B32416;
@@ -56,15 +56,9 @@ starlight-theme-select {
   --ifm-menu-color-active: var(--ai-cyan);
 }
 
-/* Typography Overrides based on Branding Standards 2020 Page 4 (Website Specific Typography) */
-h1 {
-  font-family: 'Josefin Sans', sans-serif !important;
-  letter-spacing: 0.05em !important;
-  text-transform: uppercase !important;
-}
-
-h2, h3, h4, h5, h6 {
-  font-family: 'Freight Sans Pro', 'Josefin Sans', sans-serif !important;
+/* Typography Overrides based on Branding Standards 2020 Page 2 (Core Typography) */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Orbitron', sans-serif !important;
   letter-spacing: 0.05em !important;
   text-transform: uppercase !important;
 }
