@@ -103,6 +103,10 @@
       "source": "./marslib-vision"
     },
     {
+      "name": "marslib-cloudflare",
+      "source": "./marslib-cloudflare"
+    },
+    {
       "name": "advantagescope-layouts",
       "source": "./advantagescope-layouts"
     }

@@ -1,0 +1,19 @@
+{
+  "name": "marslib-cloudflare",
+  "version": "1.0.0",
+  "description": "MARSLib Cloudflare Pages deployment - Astro 6 SSR worker mounting and Keystatic CMS integration",
+  "author": {
+    "name": "Team MARS 2614",
+    "url": "https://github.com/MARSProgramming"
+  },
+  "repository": "https://github.com/MARSProgramming/MARSLib",
+  "license": "MIT",
+  "keywords": [
+    "frc",
+    "marslib",
+    "cloudflare",
+    "astro",
+    "keystatic",
+    "deployment"
+  ]
+}
