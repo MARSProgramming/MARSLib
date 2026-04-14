@@ -9,7 +9,9 @@ template: splash
 <SplashContainer>
 
   <RuleSection num="01" title="Nullify Hungarian Notation">
-    <p>Using <code>m_</code> prefixes to dictate member variables is an archaic C++ practice that poisons Java IDE autocompletion and drastically reduces readability. MARSLib strictly bans Hungarian notation. We rely on modern syntax highlighting and the <code>this.</code> keyword for variable scope.</p>
+    
+Using `m_` prefixes to dictate member variables is an archaic C++ practice that poisons Java IDE autocompletion and drastically reduces readability. MARSLib strictly bans Hungarian notation. We rely on modern syntax highlighting and the `this.` keyword for variable scope.
+
     
     <CodeComparison>
       <CodeViolation>
@@ -40,7 +42,9 @@ public void setVelocity(double targetVelocity) {
   </RuleSection>
 
   <RuleSection num="02" title="The &quot;Never Nester&quot; Protocol">
-    <p>Code that is deeply nested across multiple <code>if/else</code> and <code>for</code> blocks is fragile and requires immense cognitive load to debug under competition pressure. All FRC control loops must remain completely "flat". Utilize guard clauses and early <code>return</code> expressions immediately.</p>
+    
+Code that is deeply nested across multiple `if/else` and `for` blocks is fragile and requires immense cognitive load to debug under competition pressure. All FRC control loops must remain completely "flat". Utilize guard clauses and early `return` expressions immediately.
+
     
     <CodeComparison>
       <CodeViolation>
@@ -74,7 +78,9 @@ public void shoot() {
   </RuleSection>
 
   <RuleSection num="03" title="Explicit Unit Nomenclature">
-    <p>A double named <code>speed</code> has destroyed billions of dollars in real-world aerospace missions. Passing raw sensor ticks or ambiguous integers into high-level functions is banned. Variables must describe precisely what they represent.</p>
+    
+A double named `speed` has destroyed billions of dollars in real-world aerospace missions. Passing raw sensor ticks or ambiguous integers into high-level functions is banned. Variables must describe precisely what they represent.
+
     
     <CodeComparison>
       <CodeViolation>
@@ -100,17 +106,26 @@ public void runIntake(double voltageOut) { ... }
   </RuleSection>
 
   <RuleSection num="04" title="Zero-Allocation Architecture">
-    <p>Hot-paths (the 20ms and 4ms loops) must never use the <code>new</code> keyword to avoid JVM GC stalls. You must use globally instantiated Ephemeral Structs to proxy hardware parameters mathematically.</p>
+    
+Hot-paths (the 20ms and 4ms loops) must never use the `new` keyword to avoid JVM GC stalls. You must use globally instantiated Ephemeral Structs to proxy hardware parameters mathematically.
+
     
     <div className="callout callout-warning">
-      <h4>Mathematical Mutation</h4>
-      <p>Do not pass structural pointers to objects that must preserve historic state (e.g. PID integrators). Always use <code>.clone()</code> if a downstream pipeline requires an immutable snapshot of an Ephemeral Struct.</p>
+      #### Mathematical Mutation
+
+      
+Do not pass structural pointers to objects that must preserve historic state (e.g. PID integrators). Always use `.clone()` if a downstream pipeline requires an immutable snapshot of an Ephemeral Struct.
+
     </div>
   </RuleSection>
 
   <RuleSection num="05" title="Agentic Comments and Autonomy">
-    <p>MARSLib is the first FRC framework expressly co-developed with Artificial Intelligence. To instruct Claude Code or Z.ai agents efficiently, developers must leave explicitly structured block comments prefixing the exact file or mathematical function requiring augmentation.</p>
-    <p>Code that is actively governed by an AI skill (such as Swerve Kinematics or Log Replay) must carry the <code>@AGENT_ENFORCED</code> JavaDoc tag to prevent human developers from breaking structured logic patterns.</p>
+    
+MARSLib is the first FRC framework expressly co-developed with Artificial Intelligence. To instruct Claude Code or Z.ai agents efficiently, developers must leave explicitly structured block comments prefixing the exact file or mathematical function requiring augmentation.
+
+    
+Code that is actively governed by an AI skill (such as Swerve Kinematics or Log Replay) must carry the `@AGENT_ENFORCED` JavaDoc tag to prevent human developers from breaking structured logic patterns.
+
   </RuleSection>
 
 </SplashContainer>

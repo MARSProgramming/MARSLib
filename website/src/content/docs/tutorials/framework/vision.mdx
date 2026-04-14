@@ -5,47 +5,70 @@ id: vision
 title: "Vision Fusion & Filtration"
 ---
 
-  <p>In the FRC 2026: <strong>REBUILT</strong> game, absolute field localization is critical. MARSLib's <code>MARSVision</code> subsystem combines data from multiple cameras and strictly filters out "hallucinations" using techniques pioneered by elite teams. We utilize <strong><a href="https://docs.wpilib.org/en/stable/docs/software/vision-processing/apriltag/apriltag-intro.html" target="_blank">AprilTags</a></strong> as the primary landmarks for global pose estimation.</p>
+  
+In the FRC 2026: **REBUILT** game, absolute field localization is critical. MARSLib's `MARSVision` subsystem combines data from multiple cameras and strictly filters out "hallucinations" using techniques pioneered by elite teams. We utilize **[AprilTags](https://docs.wpilib.org/en/stable/docs/software/vision-processing/apriltag/apriltag-intro.html)** as the primary landmarks for global pose estimation.
 
-  <h2>1. Strict Rejection Filters</h2>
-  <p>Vision poses are frequently wrong during high-speed gameplay. Before a measurement reached the Pose Estimator, it must survive five strict boundary checks:</p>
+
+  ## 1. Strict Rejection Filters
+
+  
+Vision poses are frequently wrong during high-speed gameplay. Before a measurement reached the Pose Estimator, it must survive five strict boundary checks:
+
   <ul >
-    <li ><strong>Z-Height Hallucinations:</strong> If the pose estimates the robot is flying (Z > 0.5m), it's rejected.</li>
-    <li ><strong>Out of Bounds:</strong> If the pose is tracked outside the physical field, it's rejected.</li>
-    <li ><strong>Motion Blur:</strong> If the gyro reports > 120&deg;/s yaw rate, vision is entirely blocked.</li>
-    <li ><strong>Beaching (Pitch/Roll):</strong> If you ride over an obstacle and tilt > 15&deg;, the pose is rejected.</li>
-    <li ><strong>Ambiguity:</strong> Low quality single-tag solutions are discarded.</li>
-  </ul>
+    <li >**Z-Height Hallucinations:** If the pose estimates the robot is flying (Z > 0.5m), it's rejected.</li>
+    <li >**Out of Bounds:** If the pose is tracked outside the physical field, it's rejected.</li>
+    <li >**Motion Blur:** If the gyro reports > 120&deg;/s yaw rate, vision is entirely blocked.</li>
+    <li >**Beaching (Pitch/Roll):** If you ride over an obstacle and tilt > 15&deg;, the pose is rejected.</li>
+    <li >**Ambiguity:** Low quality single-tag solutions are discarded.</li>
+  
+
 
   {/* Interactive Vision Simulation Demo */}
 
 <VisionSim client:only="react" />
 
 
-  <h2>2. Quadratic StdDev Scaling</h2>
-  <p>Vision poses should mathematically never be trusted equally. A pose from 6 meters away is tiny on the camera sensorâ€”1 pixel of error dramatically shifts the calculated location.</p>
+  ## 2. Quadratic StdDev Scaling
 
-  <p>MARSLib enforces <strong>Quadratic StdDev Scaling</strong>. Trust in vision decays <em>exponentially</em> at long range, stopping the robot from making violent odometry correction jumps based on far-away tags.</p>
+  
+Vision poses should mathematically never be trusted equally. A pose from 6 meters away is tiny on the camera sensorâ€”1 pixel of error dramatically shifts the calculated location.
+
+
+  
+MARSLib enforces **Quadratic StdDev Scaling**. Trust in vision decays *exponentially* at long range, stopping the robot from making violent odometry correction jumps based on far-away tags.
+
 
   :::note
 **MegaTag / Multi-Tag Boost**
 
 
-    When multiple AprilTags are visible, geometric ambiguity essentially drops to zero. Our code automatically scales down standard deviations by <code>x0.1</code>, dramatically tightening the Pose Estimator's trust.
+    When multiple AprilTags are visible, geometric ambiguity essentially drops to zero. Our code automatically scales down standard deviations by `x0.1`, dramatically tightening the Pose Estimator's trust.
 :::
 
-  <h2>3. Simulating Imperfection</h2>
-  <p>To ensure tuning works globally, the <code>AprilTagVisionIOSim</code> in MARSLib purposefully injects:</p>
-  <ul >
-    <li ><strong>Gaussian Noise:</strong> StdDev matched jitter scaled by distance.</li>
-    <li ><strong>Dropped Frames:</strong> A 5% chance every frame that no pose is returned.</li>
-    <li ><strong>Latency:</strong> Simulates a 10ms-30ms phase delay offset.</li>
-  </ul>
+  ## 3. Simulating Imperfection
 
-  <br /><hr /><br />
-  <h2>📖 Further Reading & External Resources</h2>
-  <ul>
-    <li><a href="https://www.youtube.com/watch?v=_eP941oXGow">Limelight MegaTag 2.0 Breakdown</a> - Understanding how FRC 1690 style IMU yaw-seeding rejects rapid AprilTag noise variations.</li>
-    <li><a href="https://docs.photonvision.org/en/latest/">PhotonVision Hardware Guide</a> - Best practices for illuminating targets globally.</li>
-  </ul>
+  
+To ensure tuning works globally, the `AprilTagVisionIOSim` in MARSLib purposefully injects:
+
+  <ul >
+    <li >**Gaussian Noise:** StdDev matched jitter scaled by distance.</li>
+    <li >**Dropped Frames:** A 5% chance every frame that no pose is returned.</li>
+    <li >**Latency:** Simulates a 10ms-30ms phase delay offset.</li>
+  
+
+
+  
+---
+
+
+  ## 📖 Further Reading & External Resources
+
+  
+
+    - [Limelight MegaTag 2.0 Breakdown](https://www.youtube.com/watch?v=_eP941oXGow) - Understanding how FRC 1690 style IMU yaw-seeding rejects rapid AprilTag noise variations.
+
+    - [PhotonVision Hardware Guide](https://docs.photonvision.org/en/latest/) - Best practices for illuminating targets globally.
+
+  
+
 

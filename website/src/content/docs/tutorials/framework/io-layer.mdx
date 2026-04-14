@@ -5,17 +5,22 @@ id: io-layer
 title: "The IO Layer Pattern"
 ---
 
-  <p>The most important architectural rule in MARSLib is the **separation of hardware from logic**. We use the <strong><a href="https://github.com/Mechanical-Advantage/AdvantageKit" target="_blank">AdvantageKit</a></strong> IO abstraction pattern to ensure that our robot code is deterministic, testable, and capable of bit-perfect log replay.</p>
+  
+The most important architectural rule in MARSLib is the **separation of hardware from logic**. We use the **[AdvantageKit](https://github.com/Mechanical-Advantage/AdvantageKit)** IO abstraction pattern to ensure that our robot code is deterministic, testable, and capable of bit-perfect log replay.
+
 
   :::note
 **Architectural Immunity**
 
 
-    If you call <code>motor.getVelocity()</code> directly in your subsystem, your code depends on physical hardware. You can't run it in sim accurately, you can't test it easily, and your logs won't capture what the motor was "actually" doing versus what your code "saw".
+    If you call `motor.getVelocity()` directly in your subsystem, your code depends on physical hardware. You can't run it in sim accurately, you can't test it easily, and your logs won't capture what the motor was "actually" doing versus what your code "saw".
 :::
 
-  <h2>1. The Interface</h2>
-  <p>First, we define an interface that lists all inputs the subsystem needs from the hardware. We use <code>@AutoLog</code> from <strong><a href="https://github.com/Mechanical-Advantage/AdvantageKit" target="_blank">AdvantageKit</a></strong> to automatically generate the logging boilerplate.</p>
+  ## 1. The Interface
+
+  
+First, we define an interface that lists all inputs the subsystem needs from the hardware. We use `@AutoLog` from **[AdvantageKit](https://github.com/Mechanical-Advantage/AdvantageKit)** to automatically generate the logging boilerplate.
+
 
   ```java
 public interface FlywheelIO {
@@ -32,12 +37,15 @@ public interface FlywheelIO {
 }
 ```
 
-  <h2>2. Hardware Implementation</h2>
-  <p>The "Real" implementation talks to actual motors. It has no logicÃ¢â‚¬â€it only moves data between the hardware and the Inputs object.</p>
+  ## 2. Hardware Implementation
+
+  
+The "Real" implementation talks to actual motors. It has no logicÃ¢â‚¬â€it only moves data between the hardware and the Inputs object.
+
 
   ```java
 public class FlywheelIOTalonFX implements FlywheelIO {
-  private final <a href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/talonfx.html" target="_blank">TalonFX</a> motor;
+  private final [TalonFX](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/talonfx.html) motor;
 
   public FlywheelIOTalonFX(int id) {
     motor = new TalonFX(id);
@@ -56,8 +64,11 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 }
 ```
 
-  <h2>3. Physics Implementation</h2>
-  <p>The "Sim" implementation uses math to calculate how a motor would behave. MARSLib uses <strong><a href="https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/introduction.html" target="_blank">WPILib Physics Sims</a></strong> (like <code>DCMotorSim</code>) and <strong><a href="https://marsprogramming.github.io/MARSLib/docs/tutorials/framework/simulation">MARSPhysicsWorld</a></strong> for high-fidelity physics.</p>
+  ## 3. Physics Implementation
+
+  
+The "Sim" implementation uses math to calculate how a motor would behave. MARSLib uses **[WPILib Physics Sims](https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/introduction.html)** (like `DCMotorSim`) and **[MARSPhysicsWorld](https://marsprogramming.github.io/MARSLib/docs/tutorials/framework/simulation)** for high-fidelity physics.
+
 
   ```java
 public class FlywheelIOSim implements FlywheelIO {
@@ -72,8 +83,11 @@ public class FlywheelIOSim implements FlywheelIO {
 }
 ```
 
-  <h2>4. Dependency Injection</h2>
-  <p>In <code>RobotContainer</code>, we decide which version to use based on the robot mode. The Subsystem itself only ever sees the <code>FlywheelIO</code> interface!</p>
+  ## 4. Dependency Injection
+
+  
+In `RobotContainer`, we decide which version to use based on the robot mode. The Subsystem itself only ever sees the `FlywheelIO` interface!
+
 
   ```java
 FlywheelIO io;
@@ -92,11 +106,20 @@ subsystem = new FlywheelSubsystem(io);
     Always keep your IO implementations "dumb". All logic belongs in the Subsystem and Commands. If you add math to your hardware layer, you've broken the abstraction.
 :::
 
-  <br /><hr /><br />
-  <h2>📖 Further Reading & External Resources</h2>
-  <ul>
-    <li><a href="https://www.youtube.com/watch?v=yYn9NqJ6kXU">FRC Log Replay and Simulation</a> - Mechanical Advantage's definitive 2024 Championship presentation on the why behind the IO-Layer abstraction.</li>
-    <li><a href="https://github.com/Mechanical-Advantage/AdvantageKit">AdvantageKit Architecture</a> - The core repository governing deterministic replay loops on the RIO.</li>
-    <li><a href="https://github.com/Mechanical-Advantage/AdvantageScope">AdvantageScope Documentation</a> - Visualizing 3D logs natively in real-time.</li>
-  </ul>
+  
+---
+
+
+  ## 📖 Further Reading & External Resources
+
+  
+
+    - [FRC Log Replay and Simulation](https://www.youtube.com/watch?v=yYn9NqJ6kXU) - Mechanical Advantage's definitive 2024 Championship presentation on the why behind the IO-Layer abstraction.
+
+    - [AdvantageKit Architecture](https://github.com/Mechanical-Advantage/AdvantageKit) - The core repository governing deterministic replay loops on the RIO.
+
+    - [AdvantageScope Documentation](https://github.com/Mechanical-Advantage/AdvantageScope) - Visualizing 3D logs natively in real-time.
+
+  
+
 
