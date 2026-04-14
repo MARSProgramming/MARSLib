@@ -28,7 +28,13 @@ const starlightSchema = {
 		},
 		{ label: 'Sidebar Settings' }
 	),
-	head: fields.text({ label: 'Custom Head Tag (raw)', multiline: true }),
+	head: fields.array(
+		fields.object({
+			tag: fields.text({ label: 'HTML Tag' }),
+			content: fields.text({ label: 'Content', multiline: true }),
+		}),
+		{ label: 'Custom Head Tags', itemLabel: props => props.fields.tag.value }
+	),
 	body: fields.mdx({
 		extension: 'mdx',
 		components: {
