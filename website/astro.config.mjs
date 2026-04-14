@@ -3,7 +3,6 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import react from '@astrojs/react';
 import markdoc from '@astrojs/markdoc';
-import keystatic from '@keystatic/astro';
 import cloudflare from '@astrojs/cloudflare';
 
 // https://astro.build/config
@@ -12,7 +11,7 @@ export default defineConfig({
 	output: 'server',
 	adapter: cloudflare({
 		imageService: 'cloudflare',
-		mode: 'directory',
+		mode: 'advanced',
 		routes: {
 			extend: {
 				include: ['/keystatic', '/keystatic/*', '/api/keystatic', '/api/keystatic/*']
@@ -70,7 +69,6 @@ export default defineConfig({
 			},
 		}),
 		react(),
-		markdoc(),
-		keystatic()
+		markdoc()
 	],
 });
