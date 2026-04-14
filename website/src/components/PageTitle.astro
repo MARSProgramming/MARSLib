@@ -2,6 +2,7 @@
 import type { Props } from '@astrojs/starlight/props';
 import Default from '@astrojs/starlight/components/PageTitle.astro';
 
-const isSplash = Astro.props.entry.data.template === 'splash';
+const starlightRoute = Astro.locals.starlightRoute;
+const isSplash = starlightRoute && starlightRoute.entry && starlightRoute.entry.data.template === 'splash';
 ---
 {!isSplash && <Default {...Astro.props} />}
