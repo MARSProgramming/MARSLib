@@ -53,7 +53,16 @@ PMD is a tool that reads your raw code looking for **code smells**. Did you crea
   ### 3. Dyn4j Physics Testing
 
   
-The crown jewel of our pipeline is deterministic physics testing. We have over 89 automated tests (JUnit) that run against **Dyn4j**—a 2D collision engine. Rather than "mocking" or pretending the code worked, these CI tests actually spawn virtual swerve modules, drop a virtual ball, and run your Autonomous route to ensure physics limits (like motor stall torque) aren't violated.
+The crown jewel of our pipeline is deterministic physics testing. We have over 89 automated tests (JUnit 5) that run against **Dyn4j**—a 2D collision engine. Rather than "mocking" or pretending the code worked, these CI tests actually spawn virtual swerve modules, drop a virtual ball, and run your Autonomous route to ensure physics limits (like motor stall torque) aren't violated.
+
+
+  ### 4. Test Coverage (JaCoCo)
+
+  
+Writing tests is only half the battle; knowing *what* we tested is equally critical. Our pipeline uses **JaCoCo** (Java Code Coverage) to generate reports every time tests run. 
+  
+When a Pull Request is submitted, the CI pipeline fails if the new code introduces a drop in overall test coverage. This enforces a strict standard: any new state machine, math utility, or algorithm *must* have an accompanying JUnit test proving it works safely under physical simulation before it is merged into the championship codebase.
+
 
 
   :::note
