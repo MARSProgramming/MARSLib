@@ -1,5 +1,5 @@
 /* ===== MARS Design System for Docusaurus ===== */
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
   --ifm-color-primary: #B32416;
@@ -23,10 +23,10 @@
   --ifm-footer-background-color: #141414;
   
   /* Starlight Native Variables Mapping */
-  --sl-color-accent-low: #3c0c07;
+  --sl-color-accent-low: rgba(179, 36, 22, 0.2);
   --sl-color-accent: #B32416;
-  --sl-color-accent-high: #f26d60;
-  --sl-color-text-accent: #f26d60;
+  --sl-color-accent-high: #B32416;
+  --sl-color-text-accent: #B32416;
   
   /* Starlight Font Overrides */
   --sl-font: 'Ubuntu', sans-serif;
@@ -56,9 +56,15 @@ starlight-theme-select {
   --ifm-menu-color-active: var(--ai-cyan);
 }
 
-/* Typography Overrides */
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--ifm-heading-font-family) !important;
+/* Typography Overrides based on Branding Standards 2020 Page 4 (Website Specific Typography) */
+h1 {
+  font-family: 'Josefin Sans', sans-serif !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+}
+
+h2, h3, h4, h5, h6 {
+  font-family: 'Freight Sans Pro', 'Josefin Sans', sans-serif !important;
   letter-spacing: 0.05em !important;
   text-transform: uppercase !important;
 }
