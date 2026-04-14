@@ -1,6 +1,13 @@
 import { config, fields, collection } from '@keystatic/core';
+import React from 'react';
 
 export default config({
+  ui: {
+    brand: {
+      name: 'MARSLib CMS',
+      mark: () => React.createElement('img', { src: '/mars-logo.png', height: 28, alt: 'MARSLib Logo' })
+    }
+  },
   storage: {
     kind: 'github',
     repo: 'MARSProgramming/MARSLib'
