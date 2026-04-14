@@ -29,7 +29,7 @@ export default defineConfig({
 				'./src/styles/custom.css',
 			],
 			logo: {
-				src: './public/img/mars-logo.png',
+				src: './src/assets/mars-logo.png',
 			},
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/MARSProgramming/MARSLib' }],
 			sidebar: [
@@ -60,6 +60,7 @@ export default defineConfig({
 			],
 			components: {
 				Footer: './src/components/Footer.astro',
+				SiteTitle: './src/components/SiteTitle.astro',
 			},
 		}),
 		react(),
