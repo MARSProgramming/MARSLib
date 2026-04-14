@@ -26,7 +26,7 @@
   --sl-color-accent-low: rgba(179, 36, 22, 0.2);
   --sl-color-accent: #B32416;
   --sl-color-accent-high: #ef4435;
-  --sl-color-text-accent: #ef4435;
+  --sl-color-text-accent: var(--ai-cyan);
   
   /* Starlight Font Overrides */
   --sl-font: 'Ubuntu', sans-serif;
