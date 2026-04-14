@@ -3,8 +3,11 @@ import React from 'react';
 
 /**
  * Shared schema matching Starlight's frontmatter fields.
- * Every key that exists in any .md/.mdx file must be declared here
- * or Keystatic will reject the entry with "Key not allowed".
+ *
+ * NOTE: contentField is intentionally omitted. The tutorial MDX files use
+ * JSX imports and custom React components (AutoSim, etc.) that Keystatic's
+ * built-in MDX parser cannot handle. The CMS manages frontmatter/metadata
+ * only — content is edited in VS Code where full JSX support is available.
  */
 const starlightSchema = {
 	title: fields.slug({ name: { label: 'Title' } }),
@@ -25,11 +28,8 @@ const starlightSchema = {
 		},
 		{ label: 'Sidebar Settings' }
 	),
-	content: fields.mdx({ label: 'Content' }),
+	head: fields.text({ label: 'Custom Head Tag (raw)', multiline: true }),
 };
-
-/** Shared format config for content files */
-const contentFormat = { contentField: 'content' } as const;
 
 export default config({
 	ui: {
@@ -56,7 +56,6 @@ export default config({
 			label: 'Site Pages',
 			slugField: 'title',
 			path: 'website/src/content/docs/*',
-			format: contentFormat,
 			schema: starlightSchema,
 		}),
 
@@ -64,7 +63,6 @@ export default config({
 			label: 'Setup & CI',
 			slugField: 'title',
 			path: 'website/src/content/docs/tutorials/setup/*',
-			format: contentFormat,
 			schema: starlightSchema,
 		}),
 
@@ -72,7 +70,6 @@ export default config({
 			label: 'Zero → Hero',
 			slugField: 'title',
 			path: 'website/src/content/docs/tutorials/zero-to-hero/*',
-			format: contentFormat,
 			schema: starlightSchema,
 		}),
 
@@ -80,7 +77,6 @@ export default config({
 			label: 'Framework Tutorials',
 			slugField: 'title',
 			path: 'website/src/content/docs/tutorials/framework/*',
-			format: contentFormat,
 			schema: starlightSchema,
 		}),
 
@@ -88,7 +84,6 @@ export default config({
 			label: 'Elite Techniques',
 			slugField: 'title',
 			path: 'website/src/content/docs/tutorials/elite/*',
-			format: contentFormat,
 			schema: starlightSchema,
 		}),
 	},
