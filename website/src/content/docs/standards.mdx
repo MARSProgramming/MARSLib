@@ -110,13 +110,13 @@ public void runIntake(double voltageOut) { ... }
 Hot-paths (the 20ms and 4ms loops) must never use the `new` keyword to avoid JVM GC stalls. You must use globally instantiated Ephemeral Structs to proxy hardware parameters mathematically.
 
     
-    <div className="callout callout-warning">
+    :::caution
       #### Mathematical Mutation
 
       
 Do not pass structural pointers to objects that must preserve historic state (e.g. PID integrators). Always use `.clone()` if a downstream pipeline requires an immutable snapshot of an Ephemeral Struct.
 
-    </div>
+    :::
   </RuleSection>
 
   <RuleSection num="05" title="Agentic Comments and Autonomy">
