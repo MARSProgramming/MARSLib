@@ -1,131 +1,113 @@
 ---
-title: "The MARSLib Standard"
-description: "The definitive software engineering ruleset governing our World-Champion grade infrastructure."
+title: The MARSLib Standard
+description: >-
+  The definitive software engineering ruleset governing our World-Champion grade
+  infrastructure.
 template: splash
+sidebar: {}
+head: []
 ---
-
 <StandardHeader />
 
 <SplashContainer>
-
   <RuleSection num="01" title="Nullify Hungarian Notation">
-    
-Using `m_` prefixes to dictate member variables is an archaic C++ practice that poisons Java IDE autocompletion and drastically reduces readability. MARSLib strictly bans Hungarian notation. We rely on modern syntax highlighting and the `this.` keyword for variable scope.
+    Using `m_` prefixes to dictate member variables is an archaic C++ practice that poisons Java IDE autocompletion and drastically reduces readability. MARSLib strictly bans Hungarian notation. We rely on modern syntax highlighting and the `this.` keyword for variable scope.
 
-    
     <CodeComparison>
       <CodeViolation>
-        
-```java
-private final SwerveDrive m_swerve;
-private double m_speed;
+        ```java
+        private final SwerveDrive m_swerve;
+        private double m_speed;
 
-public void setSpeed(double speed) {
-    m_speed = speed;
-}
-```
-
+        public void setSpeed(double speed) {
+            m_speed = speed;
+        }
+        ```
       </CodeViolation>
+
       <CodeStandard>
+        ```java
+        private final SwerveDrive swerve;
+        private double targetVelocity;
 
-```java
-private final SwerveDrive swerve;
-private double targetVelocity;
-
-public void setVelocity(double targetVelocity) {
-    this.targetVelocity = targetVelocity;
-}
-```
-
+        public void setVelocity(double targetVelocity) {
+            this.targetVelocity = targetVelocity;
+        }
+        ```
       </CodeStandard>
     </CodeComparison>
   </RuleSection>
 
-  <RuleSection num="02" title="The &quot;Never Nester&quot; Protocol">
-    
-Code that is deeply nested across multiple `if/else` and `for` blocks is fragile and requires immense cognitive load to debug under competition pressure. All FRC control loops must remain completely "flat". Utilize guard clauses and early `return` expressions immediately.
+  <RuleSection num="02" title="The &#x22;Never Nester&#x22; Protocol">
+    Code that is deeply nested across multiple `if/else` and `for` blocks is fragile and requires immense cognitive load to debug under competition pressure. All FRC control loops must remain completely "flat". Utilize guard clauses and early `return` expressions immediately.
 
-    
     <CodeComparison>
       <CodeViolation>
-        
-```java
-public void shoot() {
-    if (systemReady) {
-        if (targetLocked) {
-            if (flywheelAtSpeed) {
-                feeder.run();
+        ```java
+        public void shoot() {
+            if (systemReady) {
+                if (targetLocked) {
+                    if (flywheelAtSpeed) {
+                        feeder.run();
+                    }
+                }
             }
         }
-    }
-}
-```
+        ```
       </CodeViolation>
-      <CodeStandard>
-        
-```java
-public void shoot() {
-    if (!systemReady) return;
-    if (!targetLocked) return;
-    if (!flywheelAtSpeed) return;
-    
-    feeder.run();
-}
-```
 
+      <CodeStandard>
+        ```java
+        public void shoot() {
+            if (!systemReady) return;
+            if (!targetLocked) return;
+            if (!flywheelAtSpeed) return;
+            
+            feeder.run();
+        }
+        ```
       </CodeStandard>
     </CodeComparison>
   </RuleSection>
 
   <RuleSection num="03" title="Explicit Unit Nomenclature">
-    
-A double named `speed` has destroyed billions of dollars in real-world aerospace missions. Passing raw sensor ticks or ambiguous integers into high-level functions is banned. Variables must describe precisely what they represent.
+    A double named `speed` has destroyed billions of dollars in real-world aerospace missions through misunderstanding units. Passing raw sensor ticks or ambiguous integers into high-level functions is banned. Variables must describe precisely what they represent.
 
-    
     <CodeComparison>
       <CodeViolation>
-        
-```java
-// What is 'tolerance'? Degrees? Radians?
-// What is 'speed'? RPM? M/s? Volts?
-public void setAngle(double angle, double tolerance) { ... }
-public void runIntake(double speed) { ... }
-```
-
+        ```java
+        // What is 'tolerance'? Degrees? Radians?
+        // What is 'speed'? RPM? M/s? Volts?
+        public void setAngle(double angle, double tolerance) { ... }
+        public void runIntake(double speed) { ... }
+        ```
       </CodeViolation>
+
       <CodeStandard>
-
-```java
-// Mathematically explicit parameters
-public void setAngle(double radians, double toleranceRads) { ... }
-public void runIntake(double voltageOut) { ... }
-```
-
+        ```java
+        // Mathematically explicit parameters
+        public void setAngle(double radians, double toleranceRads) { ... }
+        public void runIntake(double voltageOut) { ... }
+        ```
       </CodeStandard>
     </CodeComparison>
   </RuleSection>
 
   <RuleSection num="04" title="Zero-Allocation Architecture">
-    
-Hot-paths (the 20ms and 4ms loops) must never use the `new` keyword to avoid JVM GC stalls. You must use globally instantiated Ephemeral Structs to proxy hardware parameters mathematically.
+    Hot-paths (the 20ms and 4ms loops) must never use the `new` keyword to avoid JVM GC stalls. You must use globally instantiated Ephemeral Structs to proxy hardware parameters mathematically.
 
-    
     :::caution
-      #### Mathematical Mutation
 
-      
-Do not pass structural pointers to objects that must preserve historic state (e.g. PID integrators). Always use `.clone()` if a downstream pipeline requires an immutable snapshot of an Ephemeral Struct.
+    #### Mathematical Mutation
+
+    Do not pass structural pointers to objects that must preserve historic state (e.g. PID integrators). Always use `.clone()` if a downstream pipeline requires an immutable snapshot of an Ephemeral Struct.
 
     :::
   </RuleSection>
 
   <RuleSection num="05" title="Agentic Comments and Autonomy">
-    
-MARSLib is the first FRC framework expressly co-developed with Artificial Intelligence. To instruct Claude Code or Z.ai agents efficiently, developers must leave explicitly structured block comments prefixing the exact file or mathematical function requiring augmentation.
+    MARSLib is the first FRC framework expressly co-developed with Artificial Intelligence. To instruct Claude Code or Z.ai agents efficiently, developers must leave explicitly structured block comments prefixing the exact file or mathematical function requiring augmentation.
 
-    
-Code that is actively governed by an AI skill (such as Swerve Kinematics or Log Replay) must carry the `@AGENT_ENFORCED` JavaDoc tag to prevent human developers from breaking structured logic patterns.
-
+    Code that is actively governed by an AI skill (such as Swerve Kinematics or Log Replay) must carry the `@AGENT_ENFORCED` JavaDoc tag to prevent human developers from breaking structured logic patterns.
   </RuleSection>
-
 </SplashContainer>
