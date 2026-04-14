@@ -27,9 +27,9 @@ MARSPhysicsWorld.getInstance().getDyn4jWorld().addBody(fuelBall);
 ```
 
   {/* Interactive Physics Sandbox Demo */}
-import PhysicsSim from '../../../components/PhysicsSim';
+import PhysicsSim from '../../../../components/PhysicsSim.tsx';
 
-<PhysicsSim />
+<PhysicsSim client:only="react" />
 
 
   <h2>3. Subsystem IO-Sim</h2>

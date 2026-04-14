@@ -5,7 +5,7 @@ id: zero-allocation
 title: "Strict Zero-Allocation"
 ---
 
-import ZeroAllocationSim from '../../../components/ZeroAllocationSim';
+import ZeroAllocationSim from '../../../../components/ZeroAllocationSim.tsx';
 
   <p>In high-frequency robotics (250Hz+), the #1 cause of sudden, non-deterministic jitter is the Java Garbage Collector (GC). Every time you use the <code>new</code> keyword inside a loop, you are creating a tiny bit of "trash" that the CPU eventually has to stop everything and clean up.</p>
 
@@ -19,7 +19,7 @@ import ZeroAllocationSim from '../../../components/ZeroAllocationSim';
 
   <p>Try clicking <strong>ALLOCATE OBJECT</strong> in the simulator below to see how heavy object creation "spikes" the loop time and forces the GC to halt the robot!</p>
 
-  <ZeroAllocationSim />
+  <ZeroAllocationSim client:only="react" />
 
   <h2>2. MARSLib Constraints</h2>
   <p>The <code>marslib-audit</code> skill strictly forbids the following patterns in "Hot Paths" (periodic loops):</p>

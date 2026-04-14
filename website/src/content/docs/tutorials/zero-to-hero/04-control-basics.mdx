@@ -20,9 +20,9 @@ title: "4. Control Theory Crash Course"
     <p>If you set your <strong>kP</strong> arbitrarily high, the motor will push brutally hard even for a small error. It will violently fly past the target, realize it overshot, and violently fly backwards. This causes horrific mechanical "Oscillation" and will rapidly shake your physical robot to pieces.</p>
   </div>
 
-import ElevatorPidSim from '../../../components/ElevatorPidSim';
+import ElevatorPidSim from '../../../../components/ElevatorPidSim.tsx';
 
-<ElevatorPidSim />
+<ElevatorPidSim client:only="react" />
 
   <h2>2. FeedForward (FF)</h2>
   <p>PID is reactive. It only applies voltage if there is an existing Error. Why is this bad? If an elevator needs 1 Volt just to hold its heavy weight against gravity, a pure PID loop will droop down, generate Error, push up, reach the target, cut power, droop down... bouncing forever!</p>

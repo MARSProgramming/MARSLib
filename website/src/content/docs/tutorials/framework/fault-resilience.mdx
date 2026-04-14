@@ -5,7 +5,7 @@ id: fault-resilience
 title: "Fault Resilience"
 ---
 
-import FaultSim from '../../../components/FaultSim';
+import FaultSim from '../../../../components/FaultSim.tsx';
 
   <div >
     <h1>Fault Resilience</h1>
@@ -52,7 +52,7 @@ import FaultSim from '../../../components/FaultSim';
 
   <p>Try clicking <strong>SEVER CAN WIRE</strong> below to see the math fallback gracefully handle the outage without zeroing out the reported velocity! Notice that the software continues simulating the mechanism's positional state even when the actual hardware is coasting to a stop.</p>
 
-  <FaultSim />
+  <FaultSim client:only="react" />
 
   <h2>4. Pre-Match Diagnostics</h2>
   <p>MARSLib includes <code>MARSDiagnostics</code>, which standardizes running "Sweep Tests" of all registered mechanisms in the pits. It stresses the arm, drives the chassis 10cm, and spins the intake at 10% power to verify that no cables were loosened during transport.</p>

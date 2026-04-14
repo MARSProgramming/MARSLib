@@ -5,7 +5,7 @@ id: pathfinding
 title: "Pathfinding & Autonomous"
 ---
 
-import AutoSim from '../../../components/AutoSim';
+import AutoSim from '../../../../components/AutoSim.tsx';
 
   <p>To win on Einstein, a robot cannot simply drive straight lines from point A to point B in the autonomous period. The field is littered with obstacles, standard trajectories lack fluidity, and sudden game piece collisions require dynamic recalculations. MARSLib integrates deeply with <strong>PathPlanner</strong> to bring seamless, holistic pathfinding to the FRC field.</p>
 
@@ -14,7 +14,7 @@ import AutoSim from '../../../components/AutoSim';
 
   <p>Try dragging the waypoints (nodes) on the field simulator below to watch how the trajectory natively curves to intercept them smoothly. Press <strong>FOLLOW SPLINE</strong> to witness the holonomic controller drive the trajectory:</p>
 
-  <AutoSim />
+  <AutoSim client:only="react" />
 
   <h2>2. A* NavGrid Traversal</h2>
   <p>During the tele-op period, the driver may need to command the robot to auto-align or traverse from the Loading Zone directly to the Hub. MARSLib uses a NavGrid A* solver running on the Driver Station (or Coprocessor) to intelligently weave a safe path around the Stage/Ladder obstacles.</p>

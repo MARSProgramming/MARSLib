@@ -17,9 +17,9 @@ title: "High-Frequency Swerve"
     <p>Because this thread runs 250 times a second, if you instantiate an object inside this loop, you will instantly crash the RoboRIO due to massive Garbage Collection pressure. This is why our Agentic Skills strictly enforce the <strong>Ephemeral Struct</strong> proxy architecture across the Swerve subsystem.</p>
   </div>
 
-import SwerveSim from '../../../components/SwerveSim';
+import SwerveSim from '../../../../components/SwerveSim.tsx';
 
-  <SwerveSim />
+  <SwerveSim client:only="react" />
 
   <h2>2. MegaTag 2.0 Integration</h2>
   <p><strong><a href="https://limelightvision.io/" target="_blank">Limelight 4's</a></strong> MegaTag 2.0 system relies heavily on the IMU Yaw rates to compensate for camera latency. Because we process the <strong><a href="https://v6.docs.ctr-electronics.com/en/stable/docs/hardware-reference/pigeon2/index.html" target="_blank">Pigeon 2.0</a></strong> data at 250Hz, our gyro-seeding to the Limelight is incredibly precise, allowing for flawless localization even while spinning and traversing the Bump.</p>

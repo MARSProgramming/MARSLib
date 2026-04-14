@@ -34,9 +34,9 @@ motor.setVoltage(MathUtil.clamp(requestedVoltage, -maxAllowedVoltage, maxAllowed
       <li><strong>TIER 3 (Sheddable):</strong> Intakes, Feeders, and LEDs. If the voltage drops to 9V, these subsystems are aggressively clamped to a maximum output of 2-3 Volts until the battery recovers.</li>
   </ul>
 
-import PowerSheddingSim from '../../../components/PowerSheddingSim';
+import PowerSheddingSim from '../../../../components/PowerSheddingSim.tsx';
 
-<PowerSheddingSim />
+<PowerSheddingSim client:only="react" />
 
   <div class="callout callout-warning">
     <h4>Simulation Parity</h4>

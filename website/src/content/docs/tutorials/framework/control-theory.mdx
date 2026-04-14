@@ -5,9 +5,9 @@ id: control-theory
 title: "Control Theory Mastery"
 ---
 
-import ElevatorPidSim from '../../../components/ElevatorPidSim';
-import FlywheelKvSim from '../../../components/FlywheelKvSim';
-import ArmKgSim from '../../../components/ArmKgSim';
+import ElevatorPidSim from '../../../../components/ElevatorPidSim.tsx';
+import FlywheelKvSim from '../../../../components/FlywheelKvSim.tsx';
+import ArmKgSim from '../../../../components/ArmKgSim.tsx';
 
   <p>Basic PID loops are reacting to the past. To achieve World Championship fidelity, your mechanisms must predict the future. MARSLib employs advanced control theory algorithms, including <strong>Feedforwards</strong> and <strong>State Space Models</strong>.</p>
 
@@ -25,7 +25,7 @@ double pidVoltage = pid.calculate(currentPosition, targetPosition);
 motor.setVoltage(ffVoltage + pidVoltage);
 ```
 
-  <ElevatorPidSim />
+  <ElevatorPidSim client:only="react" />
 
   <h2>2. Manual Tuning Guide</h2>
   <p>If you cannot run SysId, you must manually tune your Feedforwards and PID loops. Always tune Feedforward (FF) first, as PID should only be correcting minor disturbances, not doing the heavy lifting.</p>
@@ -41,7 +41,7 @@ motor.setVoltage(ffVoltage + pidVoltage);
   <h2>3. Flywheel Inertia Recovery Simulator</h2>
   <p>Flywheels do not fight gravity, but they require massive energy to accelerate (Inertia) and maintain high speeds (Friction/Air Drag). When a game piece enters the shooter, it rapidly saps energy from the wheel. <code>kV</code> keeps the wheel spinning, while <code>kP</code> and <code>kD</code> are crucial for <strong>Recovery Time</strong>.</p>
 
-  <FlywheelKvSim />
+  <FlywheelKvSim client:only="react" />
 
   <p><strong>How to manually tune a Flywheel:</strong></p>
   <ol>
@@ -56,7 +56,7 @@ motor.setVoltage(ffVoltage + pidVoltage);
   <p>Unlike an Elevator where gravity pulls equally at all times, a rotating <strong>Arm</strong> or <strong>Intake Pivot</strong> experiences gravity differently depending on its angle. When perfectly horizontal (0&deg;), gravity exerts maximum torque. When perfectly vertical (90&deg; or -90&deg;), the center of mass aligns with the fulcrum, meaning gravity exerts <strong>zero torque</strong>.</p>
   <p>An <code>ArmFeedforward</code> recalculates gravity every 20ms using <code>kG * Math.cos(angle)</code>. Try moving the arm to 90&deg; below to see the required kG voltage drop to zero!</p>
 
-  <ArmKgSim />
+  <ArmKgSim client:only="react" />
 
   <p><strong>How to manually tune an Arm:</strong></p>
   <ol>

@@ -52,9 +52,9 @@ stateMachine.setExitAction(INTAKING_FLOOR, () -> {
 });
 ```
 
-import StateMachineSim from '../../../components/StateMachineSim';
+import StateMachineSim from '../../../../components/StateMachineSim.tsx';
 
-<StateMachineSim />
+<StateMachineSim client:only="react" />
 
   <h2>4. Live Mermaid Visualization</h2>
   <p>One of the most powerful features of <code>MARSStateMachine</code> is that it automatically generates a <strong><a href="https://mermaid.js.org/" target="_blank">Mermaid.js flowchart</a></strong>. This graph is sent over telemetry and can be viewed live in <strong><a href="https://github.com/Mechanical-Advantage/AdvantageScope" target="_blank">AdvantageScope</a></strong>.</p>
