@@ -1,61 +1,46 @@
 /**
- * Post-build script that reorganizes Astro 6's output into the layout
- * Cloudflare Pages expects:
+ * Post-build script that places the Astro server worker inside dist/client/
+ * where Cloudflare Pages expects the build output to be.
  *
- *   dist/              ← static assets (from dist/client/)
- *   dist/_worker.js    ← server worker entry (from dist/server/)
+ * Cloudflare Pages dashboard has Build Output Directory set to "dist/client".
+ * Cloudflare auto-detects _worker.js/ inside that directory as the SSR worker.
  *
- * Astro 6 outputs dist/client/ and dist/server/, but Cloudflare Pages
- * only auto-detects workers from a _worker.js file at the build output root.
+ * Layout after postbuild:
+ *   dist/client/              ← Cloudflare build output root
+ *   dist/client/_worker.js/   ← SSR worker (auto-detected)
+ *   dist/client/_routes.json  ← routing rules (already here from public/)
+ *   dist/client/index.html    ← static pages (already here)
  */
-import { cpSync, mkdirSync, rmSync, existsSync, readdirSync, renameSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, rmSync, existsSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const dist = 'dist';
 const clientDir = join(dist, 'client');
 const serverDir = join(dist, 'server');
-const workerDir = join(dist, '_worker.js');
+const workerDir = join(clientDir, '_worker.js');
 
 if (!existsSync(clientDir) || !existsSync(serverDir)) {
   console.log('[postbuild] Expected dist/client and dist/server not found, skipping.');
   process.exit(0);
 }
 
-// Step 1: Copy server files into dist/_worker.js/
-console.log('[postbuild] Creating _worker.js directory from server output...');
+// Step 1: Copy server files into dist/client/_worker.js/
+console.log('[postbuild] Copying server output into dist/client/_worker.js/ ...');
 mkdirSync(workerDir, { recursive: true });
 cpSync(serverDir, workerDir, { recursive: true });
 
-// Step 2: Create the _worker.js entry that Cloudflare expects
-// Cloudflare Pages looks for _worker.js/index.js as the entry point
+// Step 2: Create the entry point Cloudflare Pages expects
 writeFileSync(join(workerDir, 'index.js'), `export { default } from './entry.mjs';\n`);
 
-// Step 3: Move client assets to dist root (Cloudflare serves static from build output root)
-console.log('[postbuild] Moving client assets to dist root...');
-for (const entry of readdirSync(clientDir)) {
-  const src = join(clientDir, entry);
-  const dest = join(dist, entry);
-  // Don't overwrite _worker.js or the server/client dirs
-  if (entry === '_worker.js' || entry === 'server' || entry === 'client') continue;
-  if (existsSync(dest)) rmSync(dest, { recursive: true });
-  renameSync(src, dest);
-}
-
-// Step 4: Clean up original directories
-rmSync(clientDir, { recursive: true });
+// Step 3: Clean up dist/server/ (no longer needed)
 rmSync(serverDir, { recursive: true });
 
-// Step 5: Delete the .wrangler/deploy/config.json redirect
-// Astro generates this to point Cloudflare at dist/server/wrangler.json,
-// but we moved that to dist/_worker.js/. Deleting the redirect forces
-// Cloudflare to auto-detect the _worker.js directory instead.
+// Step 4: Delete the .wrangler/deploy/config.json redirect
+// Astro generates this pointing to dist/server/wrangler.json which no longer exists.
 const deployConfig = join('.wrangler', 'deploy', 'config.json');
 if (existsSync(deployConfig)) {
   rmSync(deployConfig);
   console.log('[postbuild] Deleted stale .wrangler/deploy/config.json redirect');
 }
 
-console.log('[postbuild] Reorganized output:');
-console.log('  dist/           ← static assets');
-console.log('  dist/_worker.js ← server worker');
-console.log('[postbuild] Done!');
+console.log('[postbuild] Done! _worker.js placed inside dist/client/ for Cloudflare Pages.');
