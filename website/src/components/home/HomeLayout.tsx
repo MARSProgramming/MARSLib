@@ -32,7 +32,7 @@ export const HomeHallOfFame = () => {
         <div style={{ display: 'flex', alignItems: 'center', background: 'var(--sl-color-bg-nav)', border: '1px solid var(--sl-color-hairline)', borderRadius: '12px', padding: '20px', gap: '20px' }}>
           <img src="/img/hall-of-fame.png" alt="FIRST Hall of Fame" style={{ width: '100px', height: '100px', objectFit: 'contain' }} />
           <div>
-            <h3 style={{ margin: '0 0 8px 0', color: 'var(--mars-red)' }}>FIRST HALL OF FAME INDUCTEE</h3>
+            <h2 style={{ margin: '0 0 8px 0', color: 'var(--mars-red)', fontSize: '1.2rem' }}>FIRST HALL OF FAME INDUCTEE</h2>
             <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--sl-color-text-muted)' }}>Championship Chairman's Award Winner — recognized for transforming the culture of STEM in West Virginia.</p>
           </div>
           <div style={{ marginLeft: 'auto', fontSize: '2rem', fontWeight: 'bold', color: 'var(--sl-color-text-muted)', opacity: 0.5 }}>2017</div>

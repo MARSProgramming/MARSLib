@@ -9,7 +9,7 @@ import DefaultFooter from '@astrojs/starlight/components/Footer.astro';
   <footer class="mars-mega-footer">
     <div class="footer-grid">
       <div class="footer-col">
-        <h3>Docs</h3>
+        <h2>Docs</h2>
         <ul>
           <li><a href="/tutorials/setup/getting-started/">Getting Started</a></li>
           <li><a href="/tutorials/setup/getting-started/">All Tutorials</a></li>
@@ -17,19 +17,19 @@ import DefaultFooter from '@astrojs/starlight/components/Footer.astro';
         </ul>
       </div>
       <div class="footer-col">
-        <h3>Community</h3>
+        <h2>Community</h2>
         <ul>
-          <li><a href="https://www.marsfirst.org">MARS Website</a></li>
-          <li><a href="https://www.firsthalloffame.org">Hall of Fame</a></li>
+          <li><a href="https://www.marsfirst.org" aria-label="Visit the official MARS team website">MARS Website</a></li>
+          <li><a href="https://www.firsthalloffame.org" aria-label="Learn about the FIRST Hall of Fame">Hall of Fame</a></li>
           <li><a href="/acknowledgements/">Acknowledgements</a></li>
-          <li><a href="https://www.thebluealliance.com/team/2614">TBA Profile</a></li>
+          <li><a href="https://www.thebluealliance.com/team/2614" aria-label="View the team stats on The Blue Alliance">TBA Profile</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h3>More</h3>
+        <h2>More</h2>
         <ul>
           <li><a href="/standards/">Core Standards</a></li>
-          <li><a href="https://github.com/MARSProgramming/MARSLib">GitHub</a></li>
+          <li><a href="https://github.com/MARSProgramming/MARSLib" aria-label="View the MARSLib source code on GitHub">GitHub</a></li>
         </ul>
       </div>
     </div>
@@ -65,7 +65,7 @@ import DefaultFooter from '@astrojs/starlight/components/Footer.astro';
       grid-template-columns: 1fr;
     }
   }
-  .footer-col h3 {
+  .footer-col h2 {
     color: var(--sl-color-white);
     font-size: 1.1rem;
     margin-bottom: 1rem;
