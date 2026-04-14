@@ -74,7 +74,7 @@ export const HomeTutorialGrid = () => {
           <p>Configure Dyn4j 2D physics integration, AdvantageScope 3D field layouts, and automated GitHub log offloading.</p>
         </a>
         
-        <a href="/tutorials/elite/uploader/" className="tutorial-card" style={{ borderTop: '4px solid var(--ai-cyan)' }}>
+        <a href="/tutorials/elite/ai-agents/" className="tutorial-card" style={{ borderTop: '4px solid var(--ai-cyan)' }}>
           <h3>🤖 AI Agents & Tooling</h3>
           <p>Install the MARSLib VS Code extension to access .agent skills, automate subsystem scaffolding, and run championship-grade logic audits.</p>
         </a>

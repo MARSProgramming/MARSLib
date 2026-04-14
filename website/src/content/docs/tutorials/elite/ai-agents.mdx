@@ -1,0 +1,68 @@
+---
+sidebar:
+  order: 5
+id: ai-agents
+title: "AI Agents & Tooling"
+description: "A comprehensive index of MARSLib's embedded AI skills and execution agents."
+---
+
+# AI Integration in MARSLib
+
+At MARS 2614, we don't just write code; we teach AI how to write code for us. MARSLib is fundamentally co-developed with Artificial Intelligence models (such as Claude/Z.ai), which act as active participants in scaffolding subsystems, auditing physics compliance, and enforcing architectural standards via our local `.agents/skills/` directory.
+
+When using an AI-agent within the MARSLib workspace, you can explicitly ask the agent to invoke specific "skills" by name to govern its execution boundaries. 
+
+---
+
+## Core Framework Skills
+
+| Agent Skill Name | Purpose & Workflow |
+|---|---|
+| **`marslib`** | The general-purpose framework architect. Use when adding new sub-systems or managing generic IO patterns. |
+| **`marslib-core-standards`** | Enforces the "Never Nester" rule, explicit mathematical documentation, and strict structural aesthetics on modified classes. |
+| **`marslib-audit`** | Executes a championship-grade code audit across the repository to enforce maximum reliability. |
+| **`marslib-skill-authoring`** | Helps author and serialize brand new `.agent` skills to scale the framework's intelligence. |
+
+## Subsystems & Physical Logic
+
+| Agent Skill Name | Purpose & Workflow |
+|---|---|
+| **`marslib-mechanisms`** | Scaffolds standard IO abstraction layers (`RotaryMechanismIO`, `LinearMechanismIO`) and test simulation layers. |
+| **`marslib-swerve`** | Extends and configures the standard SwerveDrive subsystem, 250Hz odometry logging, and `PhoenixOdometryThread` integration. |
+| **`marslib-superstructure`** | Orchestrates the `MARSSuperstructure` multi-state mechanical coordination layer. |
+| **`marslib-statemachine`** | Implements multi-state mechanisms, sequencing logic, and transition validation checks. |
+| **`marslib-operator`** | Configures Command Controller layouts, mapping triggers, and haptic rumble pipelines. |
+
+## Advanced Mathematics & Tuning
+
+| Agent Skill Name | Purpose & Workflow |
+|---|---|
+| **`marslib-control-theory`** | Tunes PID loops, continuous feedforwards, and mechanical slew limiters. |
+| **`marslib-math`** | Processes vector transformations, regression filters, and geometric logic interpolation. |
+| **`marslib-shotsetup`** | Tunes the internal Shot-On-The-Move (SOTM) iterative target-convergence solvers and physics trajectories. |
+| **`marslib-vision`** | Integrates Megatag fusion, multi-camera pipelining, and AdvantageScope 3D field layouts. |
+
+## Infrastructure & Resilience
+
+| Agent Skill Name | Purpose & Workflow |
+|---|---|
+| **`marslib-simulation`** | Registers Dyn4j physics bodies, adds field obstacles, and regulates bounding box interactions. |
+| **`marslib-testing`** | Automates the writing of JUnit 5 tests against physical simulation to validate code prior to dropping onto physical hardware. |
+| **`marslib-telemetry`** | Manages `AdvantageKit` log replay integration, variable reporting, and replay-only execution loops. |
+| **`marslib-diagnostics`** | Injects pre-match system health sweeps and parses CAN bus dropout assertions. |
+| **`marslib-power`** | Fine-tunes hardware current limits, limits CAN bus utilization, and enacts brownout protection. |
+
+## Web & IDE Tooling
+
+| Agent Skill Name | Purpose & Workflow |
+|---|---|
+| **`marslib-vscode-extension`** | Expands the standalone Visual Studio Code extension with new linters, trees, and dashboard commands. |
+| **`marslib-cloudflare`** | Deploys this very Starlight/Astro documentation hub to Cloudflare pages and mitigates 404/SSR worker errors. |
+| **`marslib-web-accessibility`** | Plugs into the `Pa11y` tests to execute automated WCAG 2.1 AA audits on DOM structure. |
+| **`advantagescope-layouts`** | Governs the `.json` structure of customized AdvantageScope dashboards. |
+
+---
+
+### Agentic Enforcement Tag
+
+Whenever an AI algorithm is tasked to structure a specific code loop (like the SOTM targeting loop or logging arrays), use the `@AGENT_ENFORCED` block tag right inside your code editor to explicitly warn human developers from accidentally refactoring crucial, mechanically generated syntax patterns.
