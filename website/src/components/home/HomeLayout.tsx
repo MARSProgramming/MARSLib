@@ -51,7 +51,7 @@ export const HomeTutorialGrid = () => {
       <div className="tutorial-grid">
         <a href="/tutorials/setup/getting-started/" className="tutorial-card" style={{ borderTop: '4px solid #2ecc71' }}>
           <h3>🚀 Zero to MARS</h3>
-          <p>Start here! Configure Vendordeps, construct your first RobotContainer, and scaffold a generic subsystem with MARSLib bindings.</p>
+          <p>Start here! Configure Vendordeps, construct your first RobotContainer, and scaffold subsystems automatically with our VS Code extension.</p>
         </a>
         
         <a href="/tutorials/framework/architecture/" className="tutorial-card" style={{ borderTop: '4px solid var(--mars-red)' }}>
@@ -75,8 +75,8 @@ export const HomeTutorialGrid = () => {
         </a>
         
         <a href="/tutorials/elite/uploader/" className="tutorial-card" style={{ borderTop: '4px solid var(--ai-cyan)' }}>
-          <h3>🤖 AI Agents & Skills</h3>
-          <p>Integrate .agent Markdown skills into your IDE to autonomously scaffold subsystems, fix WPILib PID errors, and write unit tests.</p>
+          <h3>🤖 AI Agents & Tooling</h3>
+          <p>Install the MARSLib VS Code extension to access .agent skills, automate subsystem scaffolding, and run championship-grade logic audits.</p>
         </a>
       </div>
     </div>

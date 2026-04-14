@@ -1,7 +1,7 @@
 {
   "fileName": "MARSLib.json",
   "name": "MARSLib",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "uuid": "4c947c61-0d33-4f51-b0be-3fe0cc0b0a88",
   "mavenUrls": [
     "https://maven.pkg.github.com/MARSLib/Releases",

@@ -1,0 +1,50 @@
+---
+sidebar:
+  order: 2
+id: vs-code-extension
+title: "MARSLib VS Code Extension"
+description: "Professionalize your FRC development with our custom VS Code extension."
+---
+
+The **MARSLib VS Code Extension** is the primary interface for the MARS development ecosystem. While standard FRC projects rely on the generic WPILib extension, MARSLib uses this bespoke tool to enforce architectural standards, automate redundant boilerplate, and provide a unified command center for robot operations.
+
+## 🚀 Key Features
+
+- **Project Lifecycle Management:** Integrated sidebar buttons for Building, Deploying, and Simulating your code without using the command line.
+- **AdvantageKit Scaffolding:** Instantly generate the 4-file IO layer (Interface, Real, Sim, and Subsystem) for new mechanisms, ensuring strict compliance with our abstraction patterns.
+- **Architectural Audits:** Runs real-time checks to ensure your code follows "Zero-Allocation" rules and thread-safe practices.
+- **Telemetry Integration:** Quick links to AdvantageScope layouts and simulation configurations.
+- **AI Agent Integration:** Native support for `.agent` skill files to assist in complex logic authoring.
+
+## 📥 Installation
+
+The extension is currently distributed as a `.vsix` package for internal team use.
+
+1. **Download:** Navigate to the [MARSLib VS Code Releases](https://github.com/MARSProgramming/marslib-vscode/releases) page.
+2. **Select Version:** Click on the latest release and download the `.vsix` file from the **Assets** section.
+3. **Open Extensions:** In VS Code, press `Ctrl` + `Shift` + `X` to open the Extensions view.
+4. **Install from VSIX:** 
+   - Click the **Views and More Actions** menu (the three dots `...`) in the top-right corner of the Extensions panel.
+   - Select **Install from VSIX...**
+   - Choose the downloaded `.vsix` file.
+5. **Verify:** Once installed, a MARS icon will appear in your Activity Bar (the vertical sidebar on the left).
+
+## 🛠️ The Control Center
+
+Click the MARS icon in the Activity Bar to open the **MARSLib Control Center**. 
+
+### Commands
+- **Build Robot:** Compiles the project using our optimized Gradle toolchains.
+- **Deploy to Robot:** Securely pushes the compiled BFS and JAR to the RoboRIO.
+- **Simulate Robot:** Launches the 2D physics simulation for rapid testing without hardware.
+- **New Subsystem:** Opens a wizard to scaffold a new AdvantageKit-ready mechanism.
+
+:::tip
+For the best experience, we recommend using this extension alongside the **WPILib VS Code** installation.
+:::
+
+---
+
+## 📖 External Resources
+- [GitHub Repository](https://github.com/MARSProgramming/marslib-vscode)
+- [Latest Releases](https://github.com/MARSProgramming/marslib-vscode/releases)
