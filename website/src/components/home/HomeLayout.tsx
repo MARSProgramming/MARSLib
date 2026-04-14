@@ -78,6 +78,11 @@ export const HomeTutorialGrid = () => {
           <h3>🤖 AI Agents & Tooling</h3>
           <p>Install the MARSLib VS Code extension to access .agent skills, automate subsystem scaffolding, and run championship-grade logic audits.</p>
         </a>
+
+        <a href="/tutorials/framework/sysid/" className="tutorial-card" style={{ borderTop: '4px solid #e74c3c' }}>
+          <h3>📻 SysId Characterization</h3>
+          <p>Automated system identification for calculating perfect feedforward constants passively during real matches.</p>
+        </a>
       </div>
     </div>
   );
