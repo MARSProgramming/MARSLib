@@ -15,7 +15,7 @@ export default defineConfig({
 		mode: 'directory',
 		routes: {
 			extend: {
-				include: ['/keystatic/*', '/api/keystatic/*']
+				include: ['/keystatic', '/keystatic/*', '/api/keystatic', '/api/keystatic/*']
 			}
 		}
 	}),
