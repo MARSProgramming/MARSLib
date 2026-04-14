@@ -12,7 +12,7 @@ import DefaultFooter from '@astrojs/starlight/components/Footer.astro';
         <h2>Docs</h2>
         <ul>
           <li><a href="/tutorials/setup/getting-started/">Getting Started</a></li>
-          <li><a href="/tutorials/setup/getting-started/">All Tutorials</a></li>
+          <li><a href="/tutorials/framework/sysid-tuning/">SysId Tuning</a></li>
           <li><a href="/controller-mappings/">Controller Mappings</a></li>
         </ul>
       </div>
@@ -41,6 +41,20 @@ import DefaultFooter from '@astrojs/starlight/components/Footer.astro';
     </div>
   </footer>
 </div>
+
+<script>
+  // Surgical WebAIM WAVE alert removal for Starlight's generic components
+  document.addEventListener("DOMContentLoaded", () => {
+    // Fix Unlabeled form control
+    document.querySelectorAll('starlight-theme-select select').forEach(s => s.setAttribute('aria-label', 'Select theme'));
+    // Fix Orphaned form label
+    document.querySelectorAll('label.sr-only').forEach(l => {
+      if(l.getAttribute('for') === 'theme-selector' && !document.getElementById('theme-selector')) {
+        l.remove();
+      }
+    });
+  });
+</script>
 
 <style>
   .custom-footer-wrapper {

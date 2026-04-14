@@ -3,7 +3,7 @@ import React from 'react';
 export const HomeHero = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginTop: '20px', marginBottom: '40px' }}>
-      <img src="/img/mars-logo.png" alt="MARSLib Logo" width="300" style={{ marginBottom: '20px', objectFit: 'contain' }} />
+      <img src="/img/mars-logo.png" alt="MARSLib" width="300" style={{ marginBottom: '20px', objectFit: 'contain' }} />
       <h1 style={{ fontSize: '3rem', margin: '0 0 10px 0' }}>
         <span style={{ color: '#ef4435' }}>MARS</span><span style={{ color: 'white' }}>Lib</span> Framework
       </h1>
@@ -30,7 +30,7 @@ export const HomeHallOfFame = () => {
     <div style={{ maxWidth: '1000px', margin: '60px auto 0 auto' }}>
       <a href="https://www.firsthalloffame.org" target="_blank" rel="noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
         <div style={{ display: 'flex', alignItems: 'center', background: 'var(--sl-color-bg-nav)', border: '1px solid var(--sl-color-hairline)', borderRadius: '12px', padding: '20px', gap: '20px' }}>
-          <img src="/img/hall-of-fame.png" alt="FIRST Hall of Fame" style={{ width: '100px', height: '100px', objectFit: 'contain' }} />
+          <img src="/img/hall-of-fame.png" alt="" aria-hidden="true" style={{ width: '100px', height: '100px', objectFit: 'contain' }} />
           <div>
             <h2 style={{ margin: '0 0 8px 0', color: 'var(--mars-red)', fontSize: '1.2rem' }}>FIRST HALL OF FAME INDUCTEE</h2>
             <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--sl-color-text-muted)' }}>Championship Chairman's Award Winner — recognized for transforming the culture of STEM in West Virginia.</p>
