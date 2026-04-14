@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 export default function StateMachineSim() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -123,7 +123,7 @@ export default function StateMachineSim() {
          </button>
       </div>
       
-      <div style={{ padding: '0 20px 20px 20px', display: 'flex', gap: '20px', alignItems: 'stretch', flexWrap: 'wrap', alignItems: 'flex-end' }}>
+      <div style={{ padding: '0 20px 20px 20px', display: 'flex', gap: '20px', alignItems: 'stretch', flexWrap: 'wrap' }}>
         {/* Active Logic Log */}
         <div style={{ flex: 1, minWidth: '200px', fontFamily: '"JetBrains Mono", monospace', fontSize: '11px', background: '#111', border: '1px solid #333', padding: '15px', borderRadius: '6px', height: '200px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div>
