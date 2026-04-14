@@ -9,7 +9,9 @@ import cloudflare from '@astrojs/cloudflare';
 // https://astro.build/config
 export default defineConfig({
 	output: 'static',
-	adapter: cloudflare(),
+	adapter: cloudflare({
+		imageService: 'cloudflare'
+	}),
 	vite: {
 		ssr: {
 			external: ['node:path', 'node:fs', 'node:url', 'node:util', 'path', 'fs', 'url', 'util', 'postcss', 'util-deprecate'],
