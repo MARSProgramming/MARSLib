@@ -4,9 +4,6 @@ description: "A zero-allocation, physics-simulated FRC framework"
 template: splash
 hero:
   tagline: "A zero-allocation, physics-simulated FRC framework with deterministic AdvantageKit logging, 250Hz odometry, and shot-on-the-move kinematics."
-  image:
-    alt: MARSLib Framework
-    file: ../../assets/mars-logo.png
   actions:
     - text: 🎓 TUTORIALS
       link: /tutorials/setup/getting-started/
@@ -17,6 +14,12 @@ hero:
 ---
 
 import SwerveSim from '../../components/SwerveSim.tsx';
+import { Image } from 'astro:assets';
+import marsLogo from '../../assets/mars-logo.png';
+
+<div style={{ display: 'flex', justifyContent: 'center', marginTop: '-40px', marginBottom: '40px' }}>
+  <Image src={marsLogo} alt="MARSLib Logo" width={300} style={{ filter: 'drop-shadow(0 0 20px rgba(179,36,22,0.15))' }} />
+</div>
 
 <div style={{ maxWidth: '800px', margin: '40px auto 0 auto', borderRadius: '8px', boxShadow: '0 8px 32px rgba(179,36,22,0.2)', overflow: 'hidden' }}>
    <SwerveSim client:only="react" />
