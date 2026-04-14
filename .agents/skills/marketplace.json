@@ -109,6 +109,10 @@
     {
       "name": "advantagescope-layouts",
       "source": "./advantagescope-layouts"
+    },
+    {
+      "name": "marslib-web-accessibility",
+      "source": "./marslib-web-accessibility"
     }
   ]
 }
