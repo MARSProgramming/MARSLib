@@ -110,7 +110,7 @@ export default config({
 			name: 'MARSLib CMS',
 			mark: () =>
 				React.createElement('img', {
-					src: '/mars-logo.png',
+					src: '/marsfirst.png',
 					height: 28,
 					alt: 'MARSLib Logo',
 				}),
