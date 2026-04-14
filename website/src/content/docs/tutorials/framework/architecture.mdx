@@ -10,6 +10,7 @@ MARSLib is designed with a strict zero-allocation abstraction layer. The framewo
 ## Architecture Diagram
 
 <Mermaid code={`
+%%{init: {'themeVariables': { 'edgeLabelBackground':'#111111', 'tertiaryTextColor':'#ffffff' } } }%%
 flowchart TD
     Z["User Project<br/>(RobotContainer.java)"] -->|Depends On| A("MARSLib Framework<br/>(Vendor Dependency)")
     A --> C[Swerve Subsystem]
