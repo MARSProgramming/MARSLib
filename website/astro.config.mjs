@@ -45,10 +45,22 @@ export default defineConfig({
 					autogenerate: { directory: 'tutorials' },
 				},
 				{
-					label: 'Reference',
+					label: 'Framework Reference',
 					autogenerate: { directory: 'reference' },
 				},
+				{
+					label: 'Core Standards',
+					link: '/standards/',
+				},
+				{
+					label: 'API Reference',
+					link: '/javadoc/index.html',
+					attrs: { target: '_self' }
+				},
 			],
+			components: {
+				Footer: './src/components/Footer.astro',
+			},
 		}),
 		react(),
 		markdoc(),

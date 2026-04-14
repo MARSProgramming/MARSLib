@@ -1,0 +1,92 @@
+---
+import DefaultFooter from '@astrojs/starlight/components/Footer.astro';
+---
+
+<div class="custom-footer-wrapper">
+  <!-- Render original Starlight Footer elements (Prev/Next/Edit) -->
+  <DefaultFooter {...Astro.props} />
+  
+  <footer class="mars-mega-footer">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h3>Docs</h3>
+        <ul>
+          <li><a href="/tutorials/setup/getting-started/">Getting Started</a></li>
+          <li><a href="/tutorials/setup/getting-started/">All Tutorials</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="https://www.marsfirst.org">MARS Website</a></li>
+          <li><a href="https://www.firsthalloffame.org">Hall of Fame</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>More</h3>
+        <ul>
+          <li><a href="/standards/">Core Standards</a></li>
+          <li><a href="https://github.com/MARSProgramming/MARSLib">GitHub</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-copyright">
+      Copyright © {new Date().getFullYear()} Mountaineer Area RoboticS — FRC Team 2614. Built with Astro & Starlight.
+    </div>
+  </footer>
+</div>
+
+<style>
+  .custom-footer-wrapper {
+    margin-top: 3rem;
+  }
+  .mars-mega-footer {
+    background: var(--ifm-footer-background-color, #141414);
+    padding: 3rem 2rem 1rem 2rem;
+    border-top: 1px solid var(--sl-color-hairline, #222);
+    /* Break out of Starlight content container padding to match Docusaurus full-width footer */
+    margin: 3rem calc(-1 * var(--sl-content-pad-x)) 0 calc(-1 * var(--sl-content-pad-x));
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  @media (max-width: 768px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .footer-col h3 {
+    color: var(--sl-color-white);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+  }
+  .footer-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .footer-col li {
+    margin-bottom: 0.5rem;
+  }
+  .footer-col a {
+    color: var(--sl-color-text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-col a:hover {
+    color: var(--sl-color-accent-high);
+  }
+  .footer-copyright {
+    text-align: center;
+    color: var(--sl-color-text-muted);
+    margin-top: 3rem;
+    font-size: 0.9rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 1rem;
+  }
+</style>
