@@ -49,7 +49,9 @@ Every mechanism subsystem exposes `sysIdQuasistatic(direction)` and `sysIdDynami
 
 ## 3. Creating a New Mechanism
 
-To add a new mechanism (e.g., a Climber):
+> **Automation Tip:** The MARSLib VS Code extension contains a `Generate Subsystem (Wizard)` command that completely automates steps 1-4 below. Use the wizard to instantly scaffold the AdvantageKit IO interfaces, Real/Sim layers, and the Subsystem class.
+
+To add a new mechanism manually (e.g., a Climber):
 
 1. **Decide the IO pattern.** Linear (spool-driven) → extend `LinearMechanismIO`. Rotational (arm-like) → extend `RotaryMechanismIO`. Spinning → extend `FlywheelIO`.
 

@@ -7,6 +7,8 @@ description: Enforces strict elite coding standards including 'Never Nester', ex
 
 You are an expert FRC Software Engineer for Team MARS 2614. To produce championship-grade, scalable, and provably correct code, you must enforce the following strict coding standards derived from elite analytical frameworks.
 
+> **Note:** The MARSLib VS Code extension includes a real-time `ProjectDoctor` that automatically lints for many of these rules (Hungarian notation, `Thread.sleep`, periodic allocations, magic numbers) and provides one-click Quick Fixes.
+
 ## 1. Unit Nomenclature Requirements
 Physical units must be explicitly and statically declared throughout all variable and parameter interactions. Primitive ambiguity is forbidden.
 
