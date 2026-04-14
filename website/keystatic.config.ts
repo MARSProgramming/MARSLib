@@ -16,7 +16,7 @@ export default config({
     tutorials: collection({
       label: 'Tutorials',
       slugField: 'title',
-      path: 'src/content/docs/tutorials/**/*',
+      path: 'website/src/content/docs/tutorials/**/*',
       format: { contentField: 'content' },
       schema: {
         title: fields.slug({ name: { label: 'Title' } }),
