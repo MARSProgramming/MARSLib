@@ -37,19 +37,8 @@ export default defineConfig({
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/MARSProgramming/MARSLib' }],
 			sidebar: [
 				{
-					label: 'Guides',
-					items: [
-						// Each item here is one entry in the navigation menu.
-						{ label: 'Example Guide', slug: 'guides/example' },
-					],
-				},
-				{
 					label: 'Tutorials',
 					autogenerate: { directory: 'tutorials' },
-				},
-				{
-					label: 'Framework Reference',
-					autogenerate: { directory: 'reference' },
 				},
 				{
 					label: 'Core Standards',

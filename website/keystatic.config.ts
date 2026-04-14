@@ -45,7 +45,6 @@ export default config({
 		navigation: {
 			'Getting Started': ['pages', 'setup'],
 			Tutorials: ['zeroToHero', 'framework', 'elite'],
-			Reference: ['guides', 'reference'],
 		},
 	},
 	storage: {
@@ -89,22 +88,6 @@ export default config({
 			label: 'Elite Techniques',
 			slugField: 'title',
 			path: 'website/src/content/docs/tutorials/elite/*',
-			format: contentFormat,
-			schema: starlightSchema,
-		}),
-
-		guides: collection({
-			label: 'Guides',
-			slugField: 'title',
-			path: 'website/src/content/docs/guides/*',
-			format: contentFormat,
-			schema: starlightSchema,
-		}),
-
-		reference: collection({
-			label: 'Reference',
-			slugField: 'title',
-			path: 'website/src/content/docs/reference/*',
 			format: contentFormat,
 			schema: starlightSchema,
 		}),
