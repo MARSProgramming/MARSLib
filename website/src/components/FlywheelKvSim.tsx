@@ -128,19 +128,19 @@ export default function FlywheelKvSim() {
             <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'monospace', fontSize: '12px', color: '#ccc', marginBottom: '5px' }}>
                 <span>kV (Velocity FF)</span><span>{kV.toFixed(2)}</span>
             </div>
-            <input type="range" min="0" max="0.3" step="0.01" value={kV} onChange={e => setKv(parseFloat(e.target.value))} style={{ width: '100%' }} />
+            <input aria-label="Simulation Configuration Slider" type="range" min="0" max="0.3" step="0.01" value={kV} onChange={e => setKv(parseFloat(e.target.value))} style={{ width: '100%' }} />
         </div>
         <div style={{ flex: 1, minWidth: '150px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'monospace', fontSize: '12px', color: '#ccc', marginBottom: '5px' }}>
                 <span>kP (Proportional)</span><span>{kP.toFixed(2)}</span>
             </div>
-            <input type="range" min="0" max="0.5" step="0.01" value={kP} onChange={e => setKp(parseFloat(e.target.value))} style={{ width: '100%' }} />
+            <input aria-label="Simulation Configuration Slider" type="range" min="0" max="0.5" step="0.01" value={kP} onChange={e => setKp(parseFloat(e.target.value))} style={{ width: '100%' }} />
         </div>
         <div style={{ flex: 1, minWidth: '150px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'monospace', fontSize: '12px', color: '#ccc', marginBottom: '5px' }}>
                 <span>Setpoint (rad/s)</span><span>{fwSet}</span>
             </div>
-            <input type="range" min="0" max="150" step="5" value={fwSet} onChange={e => setFwSet(parseInt(e.target.value))} style={{ width: '100%' }} />
+            <input aria-label="Simulation Configuration Slider" type="range" min="0" max="150" step="5" value={fwSet} onChange={e => setFwSet(parseInt(e.target.value))} style={{ width: '100%' }} />
         </div>
         <div style={{ display: 'flex', alignItems: 'center' }}>
             <button 
@@ -152,10 +152,10 @@ export default function FlywheelKvSim() {
       </div>
       <div style={{ display: 'flex', padding: '20px', gap: '20px', alignItems: 'center' }}>
         <div>
-          <canvas ref={wCanvasRef} width="120" height="120" style={{ background: '#1a1a1a', borderRadius: '50%' }} />
+          <canvas role="img" aria-label="Interactive Physics Simulation Environment" ref={wCanvasRef} width="120" height="120" style={{ background: '#1a1a1a', borderRadius: '50%' }} />
         </div>
         <div style={{ flex: 1, position: 'relative' }}>
-          <canvas ref={fwGCanvasRef} width="600" height="220" style={{ display: 'block', width: '100%', background: '#1a1a1a', borderRadius: '4px' }} />
+          <canvas role="img" aria-label="Interactive Physics Simulation Environment" ref={fwGCanvasRef} width="600" height="220" style={{ display: 'block', width: '100%', background: '#1a1a1a', borderRadius: '4px' }} />
         </div>
       </div>
     </div>

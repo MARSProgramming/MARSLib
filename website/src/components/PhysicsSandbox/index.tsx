@@ -220,7 +220,7 @@ export default function PhysicsSandbox(): JSX.Element {
           SCORE: {score}
         </div>
       </div>
-      <canvas ref={canvasRef} width={800} height={400} className={styles.canvas} />
+      <canvas role="img" aria-label="Interactive Physics Simulation Environment" ref={canvasRef} width={800} height={400} className={styles.canvas} />
       <div className={styles.footerLog}>
         {log}
       </div>

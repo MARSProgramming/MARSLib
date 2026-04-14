@@ -217,7 +217,7 @@ export default function AutoSim() {
 
   return (
     <div style={{ width: '100%', height: '480px', backgroundColor: '#0a0a0a', border: '1px solid #2a2a2a', borderRadius: '8px', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-      <canvas ref={canvasRef} style={{ display: 'block', width: '100%', flex: 1, touchAction: 'none' }} />
+      <canvas role="img" aria-label="Interactive Physics Simulation Environment" ref={canvasRef} style={{ display: 'block', width: '100%', flex: 1, touchAction: 'none' }} />
       <div style={{ padding: '15px', borderTop: '1px solid #2a2a2a', display: 'flex', gap: '20px', background: '#111', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ color: '#ccc', fontFamily: '"Orbitron", sans-serif', fontSize: '14px' }}>
             <strong style={{ color: '#29b6f6' }}>PATHPLANNER</strong> SPLINE GENERATOR

@@ -259,7 +259,7 @@ export default function PhysicsSim() {
         </button>
       </div>
       
-      <canvas 
+      <canvas role="img" aria-label="Interactive Physics Simulation Environment" 
         ref={canvasRef}
         width={800} 
         height={400} 

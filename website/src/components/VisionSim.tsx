@@ -147,7 +147,7 @@ export default function VisionSim() {
         </div>
       </div>
       
-      <canvas 
+      <canvas role="img" aria-label="Interactive Physics Simulation Environment" 
         ref={canvasRef}
         width={800} 
         height={400} 
@@ -157,15 +157,15 @@ export default function VisionSim() {
       <div style={{ display: 'flex', gap: '20px', marginTop: '20px', flexWrap: 'wrap', alignItems: 'flex-end' }}>
         <div style={{ flex: 1, minWidth: '180px' }}>
           <label style={{ color: 'var(--ifm-color-emphasis-600)', fontSize: '0.9rem', fontFamily: '"Orbitron", sans-serif' }}>Tags Visible: <span style={{ color: '#00d0ff' }}>{tagCount === 1 ? "1 Tag" : "2 Tags (MegaTagBoost)"}</span></label>
-          <input type="range" min="1" max="2" value={tagCount} step="1" onChange={(e) => setTagCount(parseInt(e.target.value))} style={{ width: '100%' }} />
+          <input aria-label="Simulation Configuration Slider" type="range" min="1" max="2" value={tagCount} step="1" onChange={(e) => setTagCount(parseInt(e.target.value))} style={{ width: '100%' }} />
         </div>
         <div style={{ flex: 1, minWidth: '180px' }}>
           <label style={{ color: 'var(--ifm-color-emphasis-600)', fontSize: '0.9rem', fontFamily: '"Orbitron", sans-serif' }}>Robot Spin Rate: <span style={{ color: '#00d0ff' }}>{yawRate}&deg;/s</span></label>
-          <input type="range" min="0" max="250" value={yawRate} step="5" onChange={(e) => setYawRate(parseFloat(e.target.value))} style={{ width: '100%' }} />
+          <input aria-label="Simulation Configuration Slider" type="range" min="0" max="250" value={yawRate} step="5" onChange={(e) => setYawRate(parseFloat(e.target.value))} style={{ width: '100%' }} />
         </div>
         <div style={{ flex: 1, minWidth: '180px' }}>
           <label style={{ color: 'var(--ifm-color-emphasis-600)', fontSize: '0.9rem', fontFamily: '"Orbitron", sans-serif' }}>Robot Pitch (Tilt): <span style={{ color: '#00d0ff' }}>{tiltVal}&deg;</span></label>
-          <input type="range" min="0" max="30" value={tiltVal} step="1" onChange={(e) => setTiltVal(parseFloat(e.target.value))} style={{ width: '100%' }} />
+          <input aria-label="Simulation Configuration Slider" type="range" min="0" max="30" value={tiltVal} step="1" onChange={(e) => setTiltVal(parseFloat(e.target.value))} style={{ width: '100%' }} />
         </div>
       </div>
       

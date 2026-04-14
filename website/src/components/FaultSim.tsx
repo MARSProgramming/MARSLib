@@ -176,7 +176,7 @@ export default function FaultSim() {
 
   return (
     <div style={{ width: '100%', minHeight: '400px', height: 'auto', backgroundColor: '#0a0a0a', border: '1px solid #2a2a2a', borderRadius: '8px', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-      <canvas ref={canvasRef} style={{ display: 'block', width: '100%', height: '320px', cursor: 'pointer' }} />
+      <canvas role="img" aria-label="Interactive Physics Simulation Environment" ref={canvasRef} style={{ display: 'block', width: '100%', height: '320px', cursor: 'pointer' }} />
       <div style={{ padding: '15px', borderTop: '1px solid #2a2a2a', display: 'flex', gap: '20px', background: '#111', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ display: 'flex', gap: '15px' }}>
             <button 

@@ -143,7 +143,7 @@ export default function SotmSim() {
         </div>
       </div>
       
-      <canvas 
+      <canvas role="img" aria-label="Interactive Physics Simulation Environment" 
         ref={canvasRef}
         width={800} 
         height={400} 
@@ -153,15 +153,15 @@ export default function SotmSim() {
       <div style={{ display: 'flex', gap: '20px', marginTop: '20px', flexWrap: 'wrap', alignItems: 'flex-end' }}>
         <div style={{ flex: 1, minWidth: '200px' }}>
           <label style={{ color: 'var(--ifm-color-emphasis-600)', fontSize: '0.9rem' }}>Robot Velocity: <span style={{ color: '#00d0ff' }}>{botVelocity.toFixed(1)} m/s</span></label>
-          <input type="range" min="0" max="8" value={botVelocity} step="0.1" onChange={(e) => setBotVelocity(parseFloat(e.target.value))} style={{ width: '100%' }} />
+          <input aria-label="Simulation Configuration Slider" type="range" min="0" max="8" value={botVelocity} step="0.1" onChange={(e) => setBotVelocity(parseFloat(e.target.value))} style={{ width: '100%' }} />
         </div>
         <div style={{ flex: 1, minWidth: '200px' }}>
           <label style={{ color: 'var(--ifm-color-emphasis-600)', fontSize: '0.9rem' }}>Robot Heading: <span style={{ color: '#00d0ff' }}>{botHeading}&deg;</span></label>
-          <input type="range" min="-180" max="180" value={botHeading} step="1" onChange={(e) => setBotHeading(parseInt(e.target.value))} style={{ width: '100%' }} />
+          <input aria-label="Simulation Configuration Slider" type="range" min="-180" max="180" value={botHeading} step="1" onChange={(e) => setBotHeading(parseInt(e.target.value))} style={{ width: '100%' }} />
         </div>
         <div style={{ flex: 1, minWidth: '200px' }}>
           <label style={{ color: 'var(--ifm-color-emphasis-600)', fontSize: '0.9rem' }}>Muzzle Velocity: <span style={{ color: '#00d0ff' }}>{shotSpeed.toFixed(1)} m/s</span></label>
-          <input type="range" min="5" max="30" value={shotSpeed} step="0.5" onChange={(e) => setShotSpeed(parseFloat(e.target.value))} style={{ width: '100%' }} />
+          <input aria-label="Simulation Configuration Slider" type="range" min="5" max="30" value={shotSpeed} step="0.5" onChange={(e) => setShotSpeed(parseFloat(e.target.value))} style={{ width: '100%' }} />
         </div>
       </div>
       

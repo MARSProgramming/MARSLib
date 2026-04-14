@@ -154,13 +154,13 @@ export default function ZeroAllocationSim() {
       </div>
       <div style={{ display: 'flex', padding: '20px', gap: '20px', alignItems: 'stretch', height: '400px' }}>
         <div style={{ flex: 1, position: 'relative' }}>
-          <canvas ref={loopCanvasRef} style={{ width: '100%', height: '100%', display: 'block', border: '1px solid #333', background: '#111', borderRadius: '6px' }}></canvas>
+          <canvas role="img" aria-label="Interactive Physics Simulation Environment" ref={loopCanvasRef} style={{ width: '100%', height: '100%', display: 'block', border: '1px solid #333', background: '#111', borderRadius: '6px' }}></canvas>
           <div style={{ position: 'absolute', top: '10px', left: '15px', fontFamily: '"JetBrains Mono", monospace', fontSize: '11px', color: '#e8e8e8' }}>
             LOOP TIME: <span style={{ color: loopTxt.color }}>{loopTxt.text}</span>
           </div>
         </div>
         <div style={{ flex: '0 0 100px', display: 'flex', flexDirection: 'column', position: 'relative' }}>
-          <canvas ref={heapCanvasRef} style={{ flex: 1, display: 'block', border: '1px solid #333', background: '#111', borderRadius: '6px' }}></canvas>
+          <canvas role="img" aria-label="Interactive Physics Simulation Environment" ref={heapCanvasRef} style={{ flex: 1, display: 'block', border: '1px solid #333', background: '#111', borderRadius: '6px' }}></canvas>
           <div style={{ textAlign: 'center', fontFamily: '"JetBrains Mono", monospace', fontSize: '10px', color: '#999', marginTop: '5px' }}>JVM HEAP</div>
         </div>
       </div>

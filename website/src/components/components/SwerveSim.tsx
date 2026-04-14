@@ -184,28 +184,28 @@ export default function SwerveSim() {
 
   return (
     <div style={{ width: '100%', height: '480px', backgroundColor: '#0a0a0a', border: '1px solid #2a2a2a', borderRadius: '8px', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-      <canvas ref={canvasRef} style={{ display: 'block', width: '100%', flex: 1 }} />
+      <canvas role="img" aria-label="Interactive Physics Simulation Environment" ref={canvasRef} style={{ display: 'block', width: '100%', flex: 1 }} />
       <div style={{ padding: '15px', borderTop: '1px solid #2a2a2a', display: 'flex', gap: '20px', background: '#111', flexWrap: 'wrap', alignItems: 'flex-end' }}>
         <div style={{ flex: 1, minWidth: '150px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'monospace', fontSize: '12px', color: '#ccc', marginBottom: '5px' }}>
                 <span>Vx (Forward/Back)</span>
                 <span>{vx.toFixed(1)} m/s</span>
             </div>
-            <input type="range" min="-5" max="5" step="0.1" value={vx} onChange={e => setVx(parseFloat(e.target.value))} style={{ width: '100%' }} />
+            <input aria-label="Simulation Configuration Slider" type="range" min="-5" max="5" step="0.1" value={vx} onChange={e => setVx(parseFloat(e.target.value))} style={{ width: '100%' }} />
         </div>
         <div style={{ flex: 1, minWidth: '150px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'monospace', fontSize: '12px', color: '#ccc', marginBottom: '5px' }}>
                 <span>Vy (Left/Right)</span>
                 <span>{vy.toFixed(1)} m/s</span>
             </div>
-            <input type="range" min="-5" max="5" step="0.1" value={vy} onChange={e => setVy(parseFloat(e.target.value))} style={{ width: '100%' }} />
+            <input aria-label="Simulation Configuration Slider" type="range" min="-5" max="5" step="0.1" value={vy} onChange={e => setVy(parseFloat(e.target.value))} style={{ width: '100%' }} />
         </div>
         <div style={{ flex: 1, minWidth: '150px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'monospace', fontSize: '12px', color: '#ccc', marginBottom: '5px' }}>
                 <span>Omega (Rotation)</span>
                 <span>{omega.toFixed(1)} rad/s</span>
             </div>
-            <input type="range" min="-5" max="5" step="0.1" value={omega} onChange={e => setOmega(parseFloat(e.target.value))} style={{ width: '100%' }} />
+            <input aria-label="Simulation Configuration Slider" type="range" min="-5" max="5" step="0.1" value={omega} onChange={e => setOmega(parseFloat(e.target.value))} style={{ width: '100%' }} />
         </div>
         <div style={{ display: 'flex', alignItems: 'center' }}>
             <button 

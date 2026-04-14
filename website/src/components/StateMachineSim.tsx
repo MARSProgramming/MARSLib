@@ -142,7 +142,7 @@ export default function StateMachineSim() {
         
         {/* Mechanism Canvas */}
         <div style={{ flex: '0 0 250px', position: 'relative', background: '#111', height: '200px', borderRadius: '6px', border: '1px solid #333' }}>
-            <canvas ref={canvasRef} width={250} height={200} style={{ width: '100%', height: '100%', display: 'block' }}></canvas>
+            <canvas role="img" aria-label="Interactive Physics Simulation Environment" ref={canvasRef} width={250} height={200} style={{ width: '100%', height: '100%', display: 'block' }}></canvas>
         </div>
       </div>
     </div>
