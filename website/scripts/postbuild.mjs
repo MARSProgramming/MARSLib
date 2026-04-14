@@ -45,6 +45,16 @@ for (const entry of readdirSync(clientDir)) {
 rmSync(clientDir, { recursive: true });
 rmSync(serverDir, { recursive: true });
 
+// Step 5: Delete the .wrangler/deploy/config.json redirect
+// Astro generates this to point Cloudflare at dist/server/wrangler.json,
+// but we moved that to dist/_worker.js/. Deleting the redirect forces
+// Cloudflare to auto-detect the _worker.js directory instead.
+const deployConfig = join('.wrangler', 'deploy', 'config.json');
+if (existsSync(deployConfig)) {
+  rmSync(deployConfig);
+  console.log('[postbuild] Deleted stale .wrangler/deploy/config.json redirect');
+}
+
 console.log('[postbuild] Reorganized output:');
 console.log('  dist/           ← static assets');
 console.log('  dist/_worker.js ← server worker');
