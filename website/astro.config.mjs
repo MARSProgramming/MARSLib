@@ -54,8 +54,8 @@ export default defineConfig({
 				},
 				{
 					label: 'API Reference',
-					link: '/javadoc/index.html',
-					attrs: { target: '_self' }
+					link: 'https://MARSProgramming.github.io/MARSLib/javadoc/index.html',
+					attrs: { target: '_blank' }
 				},
 			],
 			components: {
