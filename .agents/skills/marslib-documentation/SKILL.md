@@ -21,7 +21,14 @@ MARSLib documentation isn't just text; it's a "Recruit Training" platform that s
 - **Accents:** `--mars-red: #B32416`, `--mars-red-light: #d42e1e`
 - **Typography:** Orbitron for Headers (H1, H2, H3) and UI elements. Ubuntu for body text.
 
-## 3. Educational Paradigm
+## 3. Tutorial Header Numbering
+To achieve the "Cool Number Box" look for tutorial sections, wrap the header number in a `<span class="mars-num">` tag:
+```html
+<h2><span class="mars-num">1</span> How to use it</h2>
+```
+This is a standard across our documentation hub to provide a "Team MARS" premium feel.
+
+## 4. Educational Paradigm
 Tutorials should break complex topics down elegantly:
 - **Never just paste code.** Provide concise snippets wrapped in `<pre><code>` and explain the *why*, not just the *what*.
 - **Use external links.** Always link to official WPILib, AdvantageKit, or PathPlanner documentation at the bottom of the page in a dedicated "External Resources" section.

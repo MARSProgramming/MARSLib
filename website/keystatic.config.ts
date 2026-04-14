@@ -1,5 +1,5 @@
 import { config, fields, collection } from '@keystatic/core';
-import { block, wrapper } from '@keystatic/core/content-components';
+import { block, wrapper, mark } from '@keystatic/core/content-components';
 import React from 'react';
 
 const simBlock = (label: string) => block({
@@ -69,6 +69,15 @@ const starlightSchema = {
 			CodeStandard: wrapper({
 				label: 'Code Standard',
 				schema: {},
+			}),
+			span: mark({
+				label: 'Span',
+				icon: React.createElement('span', null, 'S'),
+				tag: 'span',
+				schema: {
+					class: fields.text({ label: 'Class', defaultValue: 'mars-num' }),
+				},
+				className: (props) => props.value.class,
 			}),
 			StandardHeader: block({
 				label: 'Standard Header',
