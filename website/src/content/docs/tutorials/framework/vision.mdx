@@ -14,12 +14,17 @@ In the FRC 2026: **REBUILT** game, absolute field localization is critical. MARS
   
 Vision poses are frequently wrong during high-speed gameplay. Before a measurement reached the Pose Estimator, it must survive five strict boundary checks:
 
-  <ul >
-    <li >**Z-Height Hallucinations:** If the pose estimates the robot is flying (Z > 0.5m), it's rejected.</li>
-    <li >**Out of Bounds:** If the pose is tracked outside the physical field, it's rejected.</li>
-    <li >**Motion Blur:** If the gyro reports > 120&deg;/s yaw rate, vision is entirely blocked.</li>
-    <li >**Beaching (Pitch/Roll):** If you ride over an obstacle and tilt > 15&deg;, the pose is rejected.</li>
-    <li >**Ambiguity:** Low quality single-tag solutions are discarded.</li>
+  
+    - **Z-Height Hallucinations:** If the pose estimates the robot is flying (Z > 0.5m), it's rejected.
+
+    - **Out of Bounds:** If the pose is tracked outside the physical field, it's rejected.
+
+    - **Motion Blur:** If the gyro reports > 120&deg;/s yaw rate, vision is entirely blocked.
+
+    - **Beaching (Pitch/Roll):** If you ride over an obstacle and tilt > 15&deg;, the pose is rejected.
+
+    - **Ambiguity:** Low quality single-tag solutions are discarded.
+
   
 
 
@@ -50,10 +55,13 @@ MARSLib enforces **Quadratic StdDev Scaling**. Trust in vision decays *exponenti
   
 To ensure tuning works globally, the `AprilTagVisionIOSim` in MARSLib purposefully injects:
 
-  <ul >
-    <li >**Gaussian Noise:** StdDev matched jitter scaled by distance.</li>
-    <li >**Dropped Frames:** A 5% chance every frame that no pose is returned.</li>
-    <li >**Latency:** Simulates a 10ms-30ms phase delay offset.</li>
+  
+    - **Gaussian Noise:** StdDev matched jitter scaled by distance.
+
+    - **Dropped Frames:** A 5% chance every frame that no pose is returned.
+
+    - **Latency:** Simulates a 10ms-30ms phase delay offset.
+
   
 
 
