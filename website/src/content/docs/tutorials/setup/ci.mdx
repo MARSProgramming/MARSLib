@@ -38,25 +38,25 @@ Instead of manually checking for misspelled variables, messy brackets, or logic 
 When you run `./gradlew build` locally, or push to GitHub, you trigger our rigorous pipeline. This is what it checks:
 
 
-  ### 1. Spotless Formatting
+  ### <span class="mars-num">1.</span> Spotless Formatting
 
   
 Spotless is our automated grammar checker. It forces everything (brackets, spacing, import lines) into the strict Google Java format. If your code is messy, you can run `./gradlew spotlessApply` to have it instantly fixed.
 
 
-  ### 2. PMD Static Analysis
+  ### <span class="mars-num">2.</span> PMD Static Analysis
 
   
 PMD is a tool that reads your raw code looking for **code smells**. Did you create an array but never use it? Did you leave a variable open that causes a memory leak? PMD catches it and instantly fails your build until you fix it.
 
 
-  ### 3. Dyn4j Physics Testing
+  ### <span class="mars-num">3.</span> Dyn4j Physics Testing
 
   
 The crown jewel of our pipeline is deterministic physics testing. We have over 89 automated tests (JUnit 5) that run against **Dyn4j**—a 2D collision engine. Rather than "mocking" or pretending the code worked, these CI tests actually spawn virtual swerve modules, drop a virtual ball, and run your Autonomous route to ensure physics limits (like motor stall torque) aren't violated.
 
 
-  ### 4. Test Coverage (JaCoCo)
+  ### <span class="mars-num">4.</span> Test Coverage (JaCoCo)
 
   
 Writing tests is only half the battle; knowing *what* we tested is equally critical. Our pipeline uses **JaCoCo** (Java Code Coverage) to generate reports every time tests run. 

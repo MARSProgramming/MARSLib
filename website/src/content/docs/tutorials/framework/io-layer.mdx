@@ -16,7 +16,7 @@ The most important architectural rule in MARSLib is the **separation of hardware
     If you call `motor.getVelocity()` directly in your subsystem, your code depends on physical hardware. You can't run it in sim accurately, you can't test it easily, and your logs won't capture what the motor was "actually" doing versus what your code "saw".
 :::
 
-  ## 1. The Interface
+  ## <span class="mars-num">1.</span> The Interface
 
   
 First, we define an interface that lists all inputs the subsystem needs from the hardware. We use `@AutoLog` from **[AdvantageKit](https://github.com/Mechanical-Advantage/AdvantageKit)** to automatically generate the logging boilerplate.
@@ -37,7 +37,7 @@ public interface FlywheelIO {
 }
 ```
 
-  ## 2. Hardware Implementation
+  ## <span class="mars-num">2.</span> Hardware Implementation
 
   
 The "Real" implementation talks to actual motors. It has no logicÃ¢â‚¬â€it only moves data between the hardware and the Inputs object.
@@ -64,7 +64,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 }
 ```
 
-  ## 3. Physics Implementation
+  ## <span class="mars-num">3.</span> Physics Implementation
 
   
 The "Sim" implementation uses math to calculate how a motor would behave. MARSLib uses **[WPILib Physics Sims](https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/introduction.html)** (like `DCMotorSim`) and **[MARSPhysicsWorld](https://marsprogramming.github.io/MARSLib/docs/tutorials/framework/simulation)** for high-fidelity physics.
@@ -83,7 +83,7 @@ public class FlywheelIOSim implements FlywheelIO {
 }
 ```
 
-  ## 4. Dependency Injection
+  ## <span class="mars-num">4.</span> Dependency Injection
 
   
 In `RobotContainer`, we decide which version to use based on the robot mode. The Subsystem itself only ever sees the `FlywheelIO` interface!

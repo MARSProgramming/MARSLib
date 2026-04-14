@@ -13,7 +13,7 @@ Every year, Chief Delphi lights up with the source code drops from World Champio
 In MARSLib, we do not copy-paste. We perform structurally rigid **Architecture Mining** governed by our AI Agentic Skills framework.
 
 
-  ## 1. The Abstraction Integrity Rule
+  ## <span class="mars-num">1.</span> The Abstraction Integrity Rule
 
   
 In 2024, Team 1690 released an incredible time-of-flight interpolation engine for shooting on the move. However, their repository was monolithic—a beautiful mess of interwoven singletons.
@@ -30,13 +30,13 @@ When mining this logic, you must strictly strip the target repository of its arc
     MARSLib natively enforces this boundary via the `marslib-elite-mining` skill. Lead engineers can command the AI to ingest a target repository file, extract the discrete state-space models, and map them purely into our AdvantageKit `IO` layer paradigm. The AI is forbidden from ingesting the hardware implementations of rival teams.
 :::
 
-  ## 2. Telemetry Rewiring
+  ## <span class="mars-num">2.</span> Telemetry Rewiring
 
   
 Elite teams often use complex Dashboard configurations or raw `SmartDashboard` calls. When bringing this logic into MARSLib, all telemetry calls must be gutted and replaced explicitly with AdvantageKit `Logger.recordOutput(...)` arrays, preserving determinism.
 
 
-  ## 3. Mathematical Normalization
+  ## <span class="mars-num">3.</span> Mathematical Normalization
 
   
 Team 254 uses custom `Twist2d` math. Team 2910 uses `ChassisSpeeds`. When ingesting kinematics, you must normalize the source mathematics into MARSLib's expected physical units utilizing standard [WPILib geometry structs](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/index.html) (e.g. `Translation2d` in Meters, not Inches; Radians, not Degrees). No raw sensor ticks are allowed past the IO layer interface.

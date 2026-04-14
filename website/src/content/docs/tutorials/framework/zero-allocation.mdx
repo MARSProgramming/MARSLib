@@ -17,7 +17,7 @@ In high-frequency robotics (250Hz+), the #1 cause of sudden, non-deterministic j
       If the GC triggers during a critical autonomous spline, your 20ms control loop might stretch to 40ms. This causes the robot's pose estimator to miss reality, leading to a missed shot or a collision.
 :::
 
-  ## 1. The Ephemeral Proxy Pattern
+  ## <span class="mars-num">1.</span> The Ephemeral Proxy Pattern
 
   
 MARSLib enforces zero-allocation using **Ephemeral Proxies**. Instead of creating new `Translation2d` objects every loop for math, we reuse static, pre-allocated memory buffers.
@@ -29,7 +29,7 @@ Try clicking **ALLOCATE OBJECT** in the simulator below to see how heavy object 
 
   <ZeroAllocationSim client:only="react" />
 
-  ## 2. MARSLib Constraints
+  ## <span class="mars-num">2.</span> MARSLib Constraints
 
   
 The `marslib-audit` skill strictly forbids the following patterns in "Hot Paths" (periodic loops):

@@ -278,4 +278,16 @@ sidebar-content a[aria-current="page"],
   font-weight: 800 !important;
 }
 
-
+/* Tutorial Header Number Styling */
+.mars-num {
+  display: inline-block;
+  background: var(--mars-red);
+  color: #ffffff;
+  padding: 0.1em 0.5em;
+  border-radius: 6px;
+  font-family: 'Orbitron', var(--ifm-heading-font-family);
+  font-weight: 800;
+  margin-right: 0.4em;
+  box-shadow: 0 4px 10px rgba(179,36,22,0.4);
+  line-height: 1;
+}

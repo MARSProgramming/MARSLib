@@ -10,7 +10,7 @@ title: "Pathfinding & Autonomous"
 To win on Einstein, a robot cannot simply drive straight lines from point A to point B in the autonomous period. The field is littered with obstacles, standard trajectories lack fluidity, and sudden game piece collisions require dynamic recalculations. MARSLib integrates deeply with **PathPlanner** to bring seamless, holistic pathfinding to the FRC field.
 
 
-  ## 1. Catmull-Rom Splines
+  ## <span class="mars-num">1.</span> Catmull-Rom Splines
 
   
 Instead of hardcoding angles and trapezoidal movement profiles manually, we utilize Catmull-Rom splines. Splining allows the robot's Holonomic Drive Controller to continuously traverse a curved trajectory without having to decelerate at individual waypoints.
@@ -22,7 +22,7 @@ Try dragging the waypoints (nodes) on the field simulator below to watch how the
 
   <AutoSim client:only="react" />
 
-  ## 2. A* NavGrid Traversal
+  ## <span class="mars-num">2.</span> A* NavGrid Traversal
 
   
 During the tele-op period, the driver may need to command the robot to auto-align or traverse from the Loading Zone directly to the Hub. MARSLib uses a NavGrid A* solver running on the Driver Station (or Coprocessor) to intelligently weave a safe path around the Stage/Ladder obstacles.
@@ -45,7 +45,7 @@ During the tele-op period, the driver may need to command the robot to auto-alig
     Calculating an entire field NavGrid requires traversing a massive 2D array graph. Executing this on the core RoboRIO thread can cause devastating loop overruns (exceeding 20ms). Always offload advanced Pathfinding math to the **Driver Station Laptop** or a dedicated coprocessor.
 :::
 
-  ## 3. Fusing Vision with Odometry
+  ## <span class="mars-num">3.</span> Fusing Vision with Odometry
 
   
 Path execution relies 100% on where the robot *thinks* it is on the field. Without AprilTags, the wheel encoders slowly drift over time. This implies that your Autonomous Splines will gradually shift away from their hardcoded positions as the match progresses.

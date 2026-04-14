@@ -9,7 +9,7 @@ title: "1. The Dev Ecosystem"
 Before we touch a single line of Java or look at a physical robot, you must understand the toolchain we use to build, track, and deploy code. FRC development is uniquely complex because it relies heavily on offline-capable environments and cross-platform utilities.
 
 
-  ## 1. Version Control (Git & GitHub)
+  ## <span class="mars-num">1.</span> Version Control (Git & GitHub)
 
   :::note
 **What is Git?**
@@ -34,7 +34,7 @@ Before we touch a single line of Java or look at a physical robot, you must unde
   
 
 
-  ## 2. Build Systems & Gradle
+  ## <span class="mars-num">2.</span> Build Systems & Gradle
 
   
 Unlike standard Java projects where you right-click a file and click "Run," FRC robots require compiling the Java into an executable and mathematically shipping it securely over a Radio connection to the RoboRIO.
@@ -50,7 +50,7 @@ We use **[Gradle](https://gradle.org/)** as our build manager. You will exclusiv
 Because FRC robots operate offline (you don't have internet on the competition field!), standard cloud-based dependency management fails. Instead, WPILib uses `.json` files wrapped as **Vendordeps**. These json files command Gradle to download third-party libraries (like Phoenix 6 or PathPlanner) to your local laptop *before* the match so that you can compile offline seamlessly.
 
 
-  ## 3. The FRC Tool Suite
+  ## <span class="mars-num">3.</span> The FRC Tool Suite
 
   
 You cannot code an FRC robot with Notepad. You'll need the following mandatory software:

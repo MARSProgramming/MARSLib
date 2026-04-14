@@ -12,7 +12,7 @@ Before you can begin programming the robot, you need to configure your local dev
 :::
 
 
-## 1. WPILib Installation
+## <span class="mars-num">1.</span> WPILib Installation
 
 WPILib is the official library for FIRST Robotics. It comes bundled with a custom version of Visual Studio Code, a localized JDK, and the necessary Gradle toolchains to compile FRC robot code.
 
@@ -21,13 +21,13 @@ WPILib is the official library for FIRST Robotics. It comes bundled with a custo
 3. Run the installer. When prompted, select **"Install for All Users"** and **"Download VS Code"** if you don't already have the WPILib VS Code.
 4. Do not use a standard VS Code installation. You must use the **WPILib VS Code** app installed on your desktop.
 
-## 2. MARSLib VS Code Extension
+## <span class="mars-num">2.</span> MARSLib VS Code Extension
 
 While WPILib provides a base extension, MARSLib uses a custom extension to enforce our architectural standards and streamline the development workflow. This extension handles robot project lifecycles, automates subsystem generation, and runs technical audits.
 
 **[Read the full Extension Guide & Download here &rarr;](/tutorials/setup/vs-code-extension/)**
 
-## 3. Installing Git & Authentication
+## <span class="mars-num">3.</span> Installing Git & Authentication
 
 
 MARSLib relies on Git for version control and deploying to our team servers. If you aren't familiar with Git, you should start by downloading it.
@@ -41,7 +41,7 @@ git config --global user.email "your.email@example.com"
 3. We highly recommend installing GitHub Desktop or using the built-in Git GUI within VS Code to manage your commits visually.
 
 
-## 4. Project Creation & Installation
+## <span class="mars-num">4.</span> Project Creation & Installation
 
 Now that your environment is ready, you should create a new empty WPILib project and install the library vendordeps. MARSLib heavily relies on AdvantageKit for logging.
 
@@ -77,7 +77,7 @@ repositories {
 }
 ```
 
-## 5. Configuring the Log Auto-Uploader
+## <span class="mars-num">5.</span> Configuring the Log Auto-Uploader
 
 MARSLib includes an automated script that securely uploads AdvantageKit `.wpilog` files directly to our private GitHub servers over the 2614 radio network. To authorize your robot to push to our network, you must configure a PAT.
 

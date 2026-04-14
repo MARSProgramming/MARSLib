@@ -9,7 +9,7 @@ title: "Telemetry Mastery"
 Driving blindly is a thing of the past. In MARSLib, we use Mechanical Advantage's **[AdvantageKit](https://github.com/Mechanical-Advantage/AdvantageKit)**, which guarantees a structurally clean decoupling of hardware states, ensuring deterministic Replay of any past FRC match. All of this telemetry data is then visualized dynamically in **[AdvantageScope](https://github.com/Mechanical-Advantage/AdvantageScope)**.
 
 
-  ## 1. AdvantageKit Basics
+  ## <span class="mars-num">1.</span> AdvantageKit Basics
 
   
 Every real hardware output (e.g. TalonFX ticks, Pigeon2 yaw, or CANdle states) must be logged through an `IO` abstraction layer using an `AutoLogged` object.
@@ -19,7 +19,7 @@ Every real hardware output (e.g. TalonFX ticks, Pigeon2 yaw, or CANdle states) m
 When you add a variable like `public double motorCurrentAmps = 0.0;` inside an IO struct, AdvantageKit immediately picks it up and pushes it to NetworkTables dynamically. The `Robot.java` loop uses this logged struct identically, whether running in physical competition or in Replay mode.
 
 
-  ## 2. AdvantageScope vs. Shuffleboard
+  ## <span class="mars-num">2.</span> AdvantageScope vs. Shuffleboard
 
   
 While MARSLib fundamentally relies on **[AdvantageScope](https://github.com/Mechanical-Advantage/AdvantageScope)** for sophisticated 3D visualizations, log replay, and time-series graphing, we still utilize **[Shuffleboard](https://docs.wpilib.org/en/stable/docs/software/dashboards/shuffleboard/index.html)** for certain live operations.
@@ -40,7 +40,7 @@ Shuffleboard is typically reserved for simple boolean toggles (like selecting au
   
 
 
-  ## 3. Importing MARS Layout Templates
+  ## <span class="mars-num">3.</span> Importing MARS Layout Templates
 
   
 AdvantageScope utilizes `layout.json` files that arrange tabs specifically to enhance driver feedback. To avoid creating views from scratch every time, import our central template!
@@ -63,7 +63,7 @@ AdvantageScope utilizes `layout.json` files that arrange tabs specifically to en
   
 
 
-  ## 4. Replay Mode &amp; Diagnostics
+  ## <span class="mars-num">4.</span> Replay Mode &amp; Diagnostics
 
   
 Did a mechanism break during a match? No problem. We have a bit-perfect replay of the software logic.
@@ -79,7 +79,7 @@ Did a mechanism break during a match? No problem. We have a bit-perfect replay o
   
 
 
-  ## 5. Simulation Replay Tuning
+  ## <span class="mars-num">5.</span> Simulation Replay Tuning
 
   
 AdvantageKit provides an unparalleled workflow called **Simulation Replay**. Because all sensor inputs are completely decoupled from control logic, you can execute a recorded log, but inject modified robot logic *while the log replays*.

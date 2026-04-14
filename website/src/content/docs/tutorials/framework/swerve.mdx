@@ -13,7 +13,7 @@ A standard FRC robot executes its control loop every 20ms (50Hz). This is fine f
 MARSLib solves this by utilizing the **PhoenixOdometryThread**.
 
 
-  ## 1. The 250Hz Thread
+  ## <span class="mars-num">1.</span> The 250Hz Thread
 
   
 Instead of relying on the main RoboRIO thread, our swerve architecture spins up an isolated background thread that communicates directly with the **[CTRE CANivore](https://v6.docs.ctr-electronics.com/en/stable/docs/canivore/canivore-intro.html)** bus. This thread calculates the robot's physical kinematics at 250Hz.
@@ -29,7 +29,7 @@ Instead of relying on the main RoboRIO thread, our swerve architecture spins up 
 
   <SwerveSim client:only="react" />
 
-  ## 2. MegaTag 2.0 Integration
+  ## <span class="mars-num">2.</span> MegaTag 2.0 Integration
 
   
 **[Limelight 4's](https://limelightvision.io/)** MegaTag 2.0 system relies heavily on the IMU Yaw rates to compensate for camera latency. Because we process the **[Pigeon 2.0](https://v6.docs.ctr-electronics.com/en/stable/docs/hardware-reference/pigeon2/index.html)** data at 250Hz, our gyro-seeding to the Limelight is incredibly precise, allowing for flawless localization even while spinning and traversing the Bump.
@@ -42,7 +42,7 @@ public void addVisionMeasurement(Pose2d visionPose, double timestamp, Matrix<N3,
 }
 ```
 
-  ## 3. 2D Kinematic Traction Control
+  ## <span class="mars-num">3.</span> 2D Kinematic Traction Control
 
   
 Standard [WPILib](https://docs.wpilib.org/en/stable/index.html) implementations apply independent `SlewRateLimiters` to the X and Y joystick axes. However, if the driver pushes diagonally, the robot attempts to accelerate at **1.41x** the limit, instantly breaking carpet friction.

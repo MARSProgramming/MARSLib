@@ -10,7 +10,7 @@ title: "Control Theory Mastery"
 Basic PID loops are reacting to the past. To achieve World Championship fidelity, your mechanisms must predict the future. MARSLib employs advanced control theory algorithms, including **Feedforwards** and **State Space Models**.
 
 
-  ## 1. Feedforward: Predicting the Physics
+  ## <span class="mars-num">1.</span> Feedforward: Predicting the Physics
 
   
 A PID loop only acts when there is an error. A **[Feedforward (FF)](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-feedforward.html)** model *anticipates* the physical energy required to reach a state. For a heavy elevator (like the **Ladder** climber), gravity is always pulling it down. A `ElevatorFeedforward` calculates the exact voltage needed to counteract gravity (kG) before the PID even kicks in.
@@ -29,7 +29,7 @@ motor.setVoltage(ffVoltage + pidVoltage);
 
   <ElevatorPidSim client:only="react" />
 
-  ## 2. Manual Tuning Guide
+  ## <span class="mars-num">2.</span> Manual Tuning Guide
 
   
 If you cannot run SysId, you must manually tune your Feedforwards and PID loops. Always tune Feedforward (FF) first, as PID should only be correcting minor disturbances, not doing the heavy lifting.
@@ -51,7 +51,7 @@ If you cannot run SysId, you must manually tune your Feedforwards and PID loops.
   
 
 
-  ## 3. Flywheel Inertia Recovery Simulator
+  ## <span class="mars-num">3.</span> Flywheel Inertia Recovery Simulator
 
   
 Flywheels do not fight gravity, but they require massive energy to accelerate (Inertia) and maintain high speeds (Friction/Air Drag). When a game piece enters the shooter, it rapidly saps energy from the wheel. `kV` keeps the wheel spinning, while `kP` and `kD` are crucial for **Recovery Time**.
@@ -77,7 +77,7 @@ Flywheels do not fight gravity, but they require massive energy to accelerate (I
   
 
 
-  ## 4. Rotating Arm (Cosine Feedforward)
+  ## <span class="mars-num">4.</span> Rotating Arm (Cosine Feedforward)
 
   
 Unlike an Elevator where gravity pulls equally at all times, a rotating **Arm** or **Intake Pivot** experiences gravity differently depending on its angle. When perfectly horizontal (0&deg;), gravity exerts maximum torque. When perfectly vertical (90&deg; or -90&deg;), the center of mass aligns with the fulcrum, meaning gravity exerts **zero torque**.

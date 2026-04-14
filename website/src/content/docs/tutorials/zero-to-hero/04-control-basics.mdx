@@ -9,7 +9,7 @@ title: "4. Control Theory Crash Course"
 If you tell an elevator motor, "Go up at 6 Volts," when does it know to stop? If it reaches the target and instantly cuts voltage to zero, gravity will pull the heavy elevator right back down. We need **Closed-Loop Control**.
 
 
-  ## 1. PID Control
+  ## <span class="mars-num">1.</span> PID Control
 
   
 The standard algorithm for reaching a target is **[PID](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-pid.html)** (Proportional, Integral, Derivative).
@@ -34,7 +34,7 @@ The standard algorithm for reaching a target is **[PID](https://docs.wpilib.org/
 
 <ElevatorPidSim client:only="react" />
 
-  ## 2. FeedForward (FF)
+  ## <span class="mars-num">2.</span> FeedForward (FF)
 
   
 PID is reactive. It only applies voltage if there is an existing Error. Why is this bad? If an elevator needs 1 Volt just to hold its heavy weight against gravity, a pure PID loop will droop down, generate Error, push up, reach the target, cut power, droop down... bouncing forever!
@@ -53,7 +53,7 @@ Instead, we proactively "Feed Forward" physics math into the motor before PID ev
   
 
 
-  ## 3. The MARSLib Native Advantage
+  ## <span class="mars-num">3.</span> The MARSLib Native Advantage
 
   
 Tuning `kP` and `kV` correctly on a 150lb physical robot is inherently dangerous. A typo in a `kP` constant could command an elevator to punch through the robot's own chassis frame.
