@@ -10,6 +10,11 @@ import cloudflare from '@astrojs/cloudflare';
 export default defineConfig({
 	output: 'static',
 	adapter: cloudflare(),
+	vite: {
+		ssr: {
+			external: ['node:path', 'node:fs', 'node:url', 'node:util', 'path', 'fs', 'url', 'util', 'postcss', 'util-deprecate'],
+		},
+	},
 	integrations: [
 		starlight({
 			title: 'My Docs',
