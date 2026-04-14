@@ -28,7 +28,10 @@ export default defineConfig({
 			customCss: [
 				'./src/styles/custom.css',
 			],
-			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/withastro/starlight' }],
+			logo: {
+				src: './public/img/mars-logo.png',
+			},
+			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/MARSProgramming/MARSLib' }],
 			sidebar: [
 				{
 					label: 'Guides',

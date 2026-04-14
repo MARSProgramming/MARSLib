@@ -21,6 +21,12 @@
   --ifm-background-color: #0a0a0a;
   --ifm-navbar-background-color: rgba(10, 10, 10, 0.85);
   --ifm-footer-background-color: #141414;
+  
+  /* Starlight Native Variables Mapping */
+  --sl-color-accent-low: #3c0c07;
+  --sl-color-accent: #B32416;
+  --sl-color-accent-high: #f26d60;
+  --sl-color-text-accent: #f26d60;
 }
 
 [data-theme='dark'] {
