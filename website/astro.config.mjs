@@ -11,7 +11,7 @@ export default defineConfig({
 	output: 'server',
 	adapter: cloudflare({
 		imageService: 'cloudflare',
-		mode: 'advanced',
+		mode: 'directory',
 		routes: {
 			extend: {
 				include: ['/keystatic', '/keystatic/*', '/api/keystatic', '/api/keystatic/*']
