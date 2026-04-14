@@ -2,12 +2,12 @@ import { config, fields, collection } from '@keystatic/core';
 import React from 'react';
 
 /**
- * Shared schema matching Starlight's frontmatter fields.
+ * Shared Starlight frontmatter schema.
  *
- * The content field uses fields.mdx() so Keystatic recognises .mdx files.
- * Complex MDX files with JSX imports may show a parse error when opened
- * in the editor, but they will still appear in the collection list and
- * their frontmatter metadata can be managed.
+ * Uses fields.emptyContent() to tell Keystatic these are .mdx content files
+ * without trying to parse the MDX body. The tutorials use JSX imports and
+ * raw HTML that Keystatic's structured MDX editor cannot handle.
+ * Content editing is done in VS Code; the CMS manages metadata only.
  */
 const starlightSchema = {
 	title: fields.slug({ name: { label: 'Title' } }),
@@ -29,10 +29,10 @@ const starlightSchema = {
 		{ label: 'Sidebar Settings' }
 	),
 	head: fields.text({ label: 'Custom Head Tag (raw)', multiline: true }),
-	content: fields.mdx({ label: 'Content' }),
+	body: fields.emptyContent({ extension: 'mdx' }),
 };
 
-const contentFormat = { contentField: 'content' } as const;
+const contentFormat = { contentField: 'body' } as const;
 
 export default config({
 	ui: {
@@ -58,6 +58,7 @@ export default config({
 		pages: collection({
 			label: 'Site Pages',
 			slugField: 'title',
+			entryLayout: 'form',
 			path: 'website/src/content/docs/*',
 			format: contentFormat,
 			schema: starlightSchema,
@@ -66,6 +67,7 @@ export default config({
 		setup: collection({
 			label: 'Setup & CI',
 			slugField: 'title',
+			entryLayout: 'form',
 			path: 'website/src/content/docs/tutorials/setup/*',
 			format: contentFormat,
 			schema: starlightSchema,
@@ -74,6 +76,7 @@ export default config({
 		zeroToHero: collection({
 			label: 'Zero → Hero',
 			slugField: 'title',
+			entryLayout: 'form',
 			path: 'website/src/content/docs/tutorials/zero-to-hero/*',
 			format: contentFormat,
 			schema: starlightSchema,
@@ -82,6 +85,7 @@ export default config({
 		framework: collection({
 			label: 'Framework Tutorials',
 			slugField: 'title',
+			entryLayout: 'form',
 			path: 'website/src/content/docs/tutorials/framework/*',
 			format: contentFormat,
 			schema: starlightSchema,
@@ -90,6 +94,7 @@ export default config({
 		elite: collection({
 			label: 'Elite Techniques',
 			slugField: 'title',
+			entryLayout: 'form',
 			path: 'website/src/content/docs/tutorials/elite/*',
 			format: contentFormat,
 			schema: starlightSchema,
