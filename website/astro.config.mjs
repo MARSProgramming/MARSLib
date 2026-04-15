@@ -71,11 +71,8 @@ export default defineConfig({
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/MARSProgramming/MARSLib' }],
 			sidebar: [
 				{
-					label: 'Start Here',
-					items: [
-						{ label: 'Getting Started', autogenerate: { directory: 'getting-started' } },
-						{ label: 'Learning Paths', autogenerate: { directory: 'learning-paths' } }
-					]
+					label: 'Getting Started',
+					autogenerate: { directory: 'getting-started' }
 				},
 				{
 					label: 'Framework Architecture',
