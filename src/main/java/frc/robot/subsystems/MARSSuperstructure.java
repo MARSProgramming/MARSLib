@@ -61,7 +61,6 @@ public class MARSSuperstructure extends SubsystemBase {
   private double goalIntakeAngle = 0.0;
 
   private final Supplier<Double> tiltRadiansSupplier;
-  private final Supplier<Double> tiltRadiansSupplier;
 
   /**
    * Constructs the superstructure orchestrator.

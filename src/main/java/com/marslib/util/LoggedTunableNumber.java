@@ -158,6 +158,7 @@ public class LoggedTunableNumber implements Sendable {
    * over every registered tunable globally, parses its subsystem path prefix, and buckets it into
    * beautifully sorted List layouts seamlessly for 0-friction calibration logging.
    */
+  @SuppressWarnings("StringSplitter")
   public static void buildTuningDashboard() {
     if (dashboardBuilt) {
       return;
@@ -176,9 +177,9 @@ public class LoggedTunableNumber implements Sendable {
     Map<String, List<LoggedTunableNumber>> sortedGroups = new TreeMap<>();
     synchronized (registeredTunables) {
       for (LoggedTunableNumber tunable : registeredTunables) {
-        List<String> paths = com.google.common.base.Splitter.on('/').splitToList(tunable.key);
+        String[] paths = tunable.key.split("/", -1);
         // Handle basic variables vs nested components gracefully
-        String groupName = paths.size() > 1 ? paths.get(0) : "Global Adjustments";
+        String groupName = paths.length > 1 ? paths[0] : "Global Adjustments";
         sortedGroups.computeIfAbsent(groupName, k -> new ArrayList<>()).add(tunable);
       }
     }
@@ -195,8 +196,8 @@ public class LoggedTunableNumber implements Sendable {
               .withPosition(currentX, currentY);
 
       for (LoggedTunableNumber tunable : entry.getValue()) {
-        List<String> paths = com.google.common.base.Splitter.on('/').splitToList(tunable.key);
-        layout.add(paths.get(paths.size() - 1), tunable);
+        String[] paths = tunable.key.split("/", -1);
+        layout.add(paths[paths.length - 1], tunable);
       }
 
       currentX += 2;
