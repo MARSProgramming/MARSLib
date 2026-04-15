@@ -1,0 +1,564 @@
+---
+title: "Java Basics Quiz"
+description: "Test your Java programming knowledge with this interactive quiz."
+sidebar:
+  order: 1
+---
+
+# Java Basics Quiz
+
+Test your Java skills! This quiz checks if you're ready for FRC programming.
+
+**Each question shows the answer immediately** so you can learn as you go.
+
+---
+
+## Question 1: Variables
+
+**What does this code print?**
+
+```java
+int score = 10;
+score = score + 5;
+System.out.println(score);
+```
+
+<details>
+<summary>Show Answer</summary>
+
+**Answer: 15**
+
+**Why?** 
+- First line: `score` is set to 10
+- Second line: `score + 5` = 15, then `score = 15`
+- Third line: Prints 15
+
+**Think of it like**:
+- You have a box labeled "score"
+- Put 10 in the box
+- Add 5 more to the box
+- Now the box has 15
+</details>
+
+---
+
+## Question 2: Strings
+
+**What does this code print?**
+
+```java
+String name = "FRC";
+String greeting = "Hello " + name;
+System.out.println(greeting);
+```
+
+<details>
+<summary>Show Answer</summary>
+
+**Answer: Hello FRC**
+
+**Why?**
+- `+` joins strings together (called concatenation)
+- `"Hello " + "FRC"` = `"Hello FRC"`
+
+**Think of it like**:
+- Glue two pieces of paper together
+- One says "Hello ", the other says "FRC"
+- After gluing: "Hello FRC"
+</details>
+
+---
+
+## Question 3: If Statements
+
+**What does this code print?**
+
+```java
+int speed = 7;
+if (speed > 5) {
+    System.out.println("Fast!");
+} else {
+    System.out.println("Slow");
+}
+```
+
+<details>
+<summary>Show Answer</summary>
+
+**Answer: Fast!**
+
+**Why?**
+- `speed` is 7
+- `7 > 5` is true
+- Run the code inside `if`
+- Skip the code inside `else`
+
+**Think of it like**:
+- "Is the speed greater than 5?"
+- Yes! Print "Fast!"
+- No need to check the "else" part
+</details>
+
+---
+
+## Question 4: If-Else If
+
+**What does this code print?**
+
+```java
+int score = 85;
+if (score >= 90) {
+    System.out.println("A");
+} else if (score >= 80) {
+    System.out.println("B");
+} else {
+    System.out.println("C");
+}
+```
+
+<details>
+<summary>Show Answer</summary>
+
+**Answer: B**
+
+**Why?**
+- `score` is 85
+- `85 >= 90`? No, skip first block
+- `85 >= 80`? Yes! Print "B"
+- Skip the `else` block
+
+**Think of it like**:
+- Check conditions in order
+- Stop at the first one that's true
+- Don't check the rest
+</details>
+
+---
+
+## Question 5: Loops
+
+**How many times does this print?**
+
+```java
+for (int i = 0; i < 3; i++) {
+    System.out.println("Hello");
+}
+```
+
+<details>
+<summary>Show Answer</summary>
+
+**Answer: 3 times**
+
+**Why?**
+- `i = 0`: Print (i is 0, 0 < 3)
+- `i = 1`: Print (i is 1, 1 < 3)
+- `i = 2`: Print (i is 2, 2 < 3)
+- `i = 3`: Stop (i is 3, 3 < 3 is false)
+
+**Think of it like**:
+- Count: 0, 1, 2
+- That's 3 numbers
+- Print 3 times
+</details>
+
+---
+
+## Question 6: While Loops
+
+**What does this code print?**
+
+```java
+int count = 3;
+while (count > 0) {
+    System.out.println(count);
+    count = count - 1;
+}
+```
+
+<details>
+<summary>Show Answer</summary>
+
+**Answer:**
+```
+3
+2
+1
+```
+
+**Why?**
+- `count = 3`: 3 > 0? Yes, print 3, then count becomes 2
+- `count = 2`: 2 > 0? Yes, print 2, then count becomes 1
+- `count = 1`: 1 > 0? Yes, print 1, then count becomes 0
+- `count = 0`: 0 > 0? No, stop
+
+**Think of it like**:
+- Keep going while the condition is true
+- Stop when it becomes false
+</details>
+
+---
+
+## Question 7: Methods
+
+**What does this code print?**
+
+```java
+public int add(int a, int b) {
+    return a + b;
+}
+
+// Somewhere else:
+int result = add(3, 4);
+System.out.println(result);
+```
+
+<details>
+<summary>Show Answer</summary>
+
+**Answer: 7**
+
+**Why?**
+- Call `add(3, 4)`
+- `a = 3`, `b = 4`
+- `return 3 + 4` = 7
+- `result = 7`
+- Print 7
+
+**Think of it like**:
+- A method is a recipe
+- Give it ingredients (3 and 4)
+- It cooks them together (adds them)
+- Gives you the result (7)
+</details>
+
+---
+
+## Question 8: Boolean Logic
+
+**What does this code print?**
+
+```java
+boolean hasPermission = true;
+boolean isAdmin = false;
+if (hasPermission && isAdmin) {
+    System.out.println("Access granted");
+} else {
+    System.out.println("Access denied");
+}
+```
+
+<details>
+<summary>Show Answer</summary>
+
+**Answer: Access denied**
+
+**Why?**
+- `hasPermission` is true
+- `isAdmin` is false
+- `true && false` = false
+- Run the `else` block
+
+**Think of it like**:
+- `&&` means "both must be true"
+- One is false, so the whole thing is false
+- Like saying "I have a ticket AND I'm VIP"
+- If you don't have VIP, you can't get in
+</details>
+
+---
+
+## Question 9: Arrays
+
+**What does this code print?**
+
+```java
+int[] scores = {10, 20, 30};
+System.out.println(scores[1]);
+```
+
+<details>
+<summary>Show Answer</summary>
+
+**Answer: 20**
+
+**Why?**
+- Arrays start at index 0
+- `scores[0]` = 10
+- `scores[1]` = 20
+- `scores[2]` = 30
+
+**Think of it like**:
+- Mailboxes on a street
+- Address 0 has mail (10)
+- Address 1 has mail (20)
+- Address 2 has mail (30)
+- You check address 1: you get 20
+</details>
+
+---
+
+## Question 10: Objects
+
+**What does this code print?**
+
+```java
+public class Robot {
+    public String name;
+    
+    public Robot(String robotName) {
+        name = robotName;
+    }
+}
+
+Robot myRobot = new Robot("MARS");
+System.out.println(myRobot.name);
+```
+
+<details>
+<summary>Show Answer</summary>
+
+**Answer: MARS**
+
+**Why?**
+- Create a new Robot with name "MARS"
+- Constructor sets `name = "MARS"`
+- Access `myRobot.name`
+- Print "MARS"
+
+**Think of it like**:
+- A class is a blueprint for a house
+- An object is the actual house built from the blueprint
+- You can build many houses from one blueprint
+- Each house can have different features
+</details>
+
+---
+
+## Question 11: Null
+
+**What happens with this code?**
+
+```java
+String name = null;
+System.out.println(name.length());
+```
+
+<details>
+<summary>Show Answer</summary>
+
+**Answer: NullPointerException (crashes!)**
+
+**Why?**
+- `name` is `null` (nothing)
+- Can't call methods on nothing
+- Java throws an error
+
+**How to fix**:
+```java
+String name = null;
+if (name != null) {
+    System.out.println(name.length());
+}
+```
+
+**Think of it like**:
+- Trying to open a door that doesn't exist
+- You can't do it!
+- Check if the door exists first
+</details>
+
+---
+
+## Question 12: Increment
+
+**What does this code print?**
+
+```java
+int count = 5;
+count++;
+System.out.println(count);
+```
+
+<details>
+<summary>Show Answer</summary>
+
+**Answer: 6**
+
+**Why?**
+- `count++` means "add 1 to count"
+- Same as `count = count + 1`
+- 5 + 1 = 6
+
+**Think of it like**:
+- A shortcut for adding 1
+- programmers are lazy!
+- `++` is shorter than `+ 1`
+</details>
+
+---
+
+## Question 13: Modulo
+
+**What does this code print?**
+
+```java
+int x = 10 % 3;
+System.out.println(x);
+```
+
+<details>
+<summary>Show Answer</summary>
+
+**Answer: 1**
+
+**Why?**
+- `%` is the modulo operator (remainder)
+- 10 ÷ 3 = 3 with remainder 1
+- So 10 % 3 = 1
+
+**Think of it like**:
+- You have 10 cookies
+- Divide into groups of 3
+- You get 3 groups (9 cookies)
+- 1 cookie left over
+- That's the remainder!
+</details>
+
+---
+
+## Question 14: Equality
+
+**What does this code print?**
+
+```java
+String a = new String("hello");
+String b = new String("hello");
+if (a == b) {
+    System.out.println("Same");
+} else {
+    System.out.println("Different");
+}
+```
+
+<details>
+<summary>Show Answer</summary>
+
+**Answer: Different**
+
+**Why?**
+- `==` checks if they're the SAME object
+- `.equals()` checks if they have the SAME VALUE
+- `a` and `b` are different objects with same value
+
+**How to fix**:
+```java
+if (a.equals(b)) {
+    System.out.println("Same");  // This prints!
+}
+```
+
+**Think of it like**:
+- Two different cookies
+- Both are chocolate chip
+- They're not the SAME cookie
+- But they're the same TYPE of cookie
+</details>
+
+---
+
+## Question 15: Scope
+
+**What does this code print?**
+
+```java
+int x = 5;
+if (true) {
+    int x = 10;  // Line A
+    System.out.println(x);  // Line B
+}
+System.out.println(x);  // Line C
+```
+
+<details>
+<summary>Show Answer</summary>
+
+**Answer: This code doesn't compile!**
+
+**Why?**
+- Can't declare `x` twice in the same scope
+- The outer `x` is still visible inside the if
+- Java doesn't know which `x` you mean
+
+**Fix**:
+```java
+int x = 5;
+if (true) {
+    x = 10;  // Just assign, don't redeclare
+}
+System.out.println(x);  // Prints 10
+```
+
+**Think of it like**:
+- You can't have two people with the same name in the same room
+- But you can have different people with same name in different rooms
+</details>
+
+---
+
+## Scoring
+
+**Count your correct answers**:
+
+- **13-15 correct**: 🌟 Amazing! You're ready for advanced FRC programming!
+- **10-12 correct**: 👍 Great job! You understand most Java basics.
+- **7-9 correct**: 👌 Good start! Review the questions you missed.
+- **Below 7**: 📚 Keep learning! Try the [Beginner Learning Path](/learning-paths/beginner).
+
+---
+
+## What to Learn Next
+
+**If you got 13-15 correct**:
+- → Ready for [Intermediate Learning Path](/learning-paths/intermediate)
+- → Learn about [FRC Programming](/tutorials/frc-programming)
+- → Build your first [Robot Command](/tutorials/commands)
+
+**If you got 7-12 correct**:
+- → Review [Java Basics](/tutorials/java-basics)
+- → Practice more [Examples](/tutorials/examples)
+- → Try the [Beginner Learning Path](/learning-paths/beginner)
+
+**If you got below 7**:
+- → Start with [Beginner Learning Path](/learning-paths/beginner)
+- → Learn [Java from Scratch](/tutorials/java-from-scratch)
+- → Ask questions in [our community](https://github.com/MARSProgramming/MARSLib/discussions)
+
+---
+
+## Practice More
+
+**Write your own code**:
+
+1. Make a calculator that adds two numbers
+2. Write a program that counts to 10
+3. Create a method that finds the larger of two numbers
+4. Build an array of your favorite foods
+
+**Test yourself**:
+```java
+// Challenge 1: Make this print "Hello World" 5 times
+// Your code here
+
+// Challenge 2: Make a method that returns true if a number is even
+// Your code here
+
+// Challenge 3: Find the largest number in this array: {5, 2, 9, 1, 7}
+// Your code here
+```
+
+---
+
+**Remember**: Programming is a skill. Keep practicing and you'll get better!
+
+**Stuck on a question?** [Ask for help](https://github.com/MARSProgramming/MARSLib/discussions) - we're here to help you learn!

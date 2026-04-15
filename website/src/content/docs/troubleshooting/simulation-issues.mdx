@@ -1,0 +1,574 @@
+---
+title: "Simulation Troubleshooting"
+description: "Fix common simulation problems and test your robot code without hardware."
+sidebar:
+  order: 6
+---
+
+# Simulation Troubleshooting
+
+Can't test your robot code in simulation? This guide helps you fix common simulation problems quickly.
+
+---
+
+## Quick Test: Is Simulation Working?
+
+**Run this command**:
+```bash
+# In VS Code terminal
+./gradlew simulateJava
+```
+
+**What should happen**:
+- Robot simulation window opens
+- SimGUI shows field
+- Robot appears on field
+- No red error messages
+
+**If you see errors**: Follow the troubleshooting steps below.
+
+---
+
+## Problem: Simulation Won't Start
+
+### Symptom: "Command failed" or "Build failed"
+
+**Quick fixes to try**:
+
+**1. Check Java version**:
+```bash
+java -version
+```
+
+You should see: Java 17 or 21
+- If not, install correct Java version
+- Update JAVA_HOME environment variable
+
+**2. Clean and rebuild**:
+```bash
+./gradlew clean
+./gradlew build
+./gradlew simulateJava
+```
+
+**3. Check Gradle wrapper**:
+```bash
+./gradlew --version
+```
+
+Should show Gradle 8.x or higher
+- If not, reimport Gradle project in VS Code
+
+---
+
+### Symptom: "Class not found" errors
+
+**The problem**: Java can't find your classes
+
+**Quick fixes**:
+
+**1. Check package names**:
+```java
+// Wrong: File is in src/main/java/frc/robot
+package com.example.robot;  // Wrong package!
+
+// Right: 
+package frc.robot;  // Matches directory!
+```
+
+**2. Check imports**:
+```java
+// Make sure you import what you use
+import frc.robot.subsystems.Drivetrain;
+import frc.robot.commands.ExampleCommand;
+```
+
+**3. Rebuild project**:
+```bash
+./gradlew clean build
+```
+
+---
+
+### Symptom: "NoSuchMethodError"
+
+**The problem**: Method doesn't exist or signature doesn't match
+
+**Quick fixes**:
+
+**1. Check method signature**:
+```java
+// Calling code
+drivetrain.drive(1.0, 0.5);  // 2 arguments
+
+// Method signature
+public void drive(double speed) { ... }  // Only 1 argument!
+
+// Fix: Make signatures match
+public void drive(double speed, double rotation) { ... }
+```
+
+**2. Check WPILib version**:
+```gradle
+// In build.gradle
+dependencies {
+    implementation "edu.wpi.first.wpilibj:wpilibj-java:2024.+"  // Make sure versions match
+}
+```
+
+---
+
+## Problem: Simulation Crashes
+
+### Symptom: Simulation window opens, then crashes
+
+**Common causes and fixes**:
+
+**1. Graphics driver issues**:
+
+**Windows**: Update graphics drivers
+```bash
+# Check for Windows updates
+# Or visit NVIDIA/AMD website for latest drivers
+```
+
+**Linux**: Install required packages
+```bash
+sudo apt-get update
+sudo apt-get install libgl1-mesa-glx libxext-dev libxrender-dev libxtst-dev libxrandr-dev
+```
+
+**macOS**: Update macOS and XQuartz
+
+**2. Memory issues**:
+
+**Increase Gradle memory**:
+```gradle
+// In gradle.properties
+org.gradle.jvmargs=-Xmx4096m  // Increase from default
+```
+
+**3. Null pointer exceptions**:
+
+**Check for uninitialized objects**:
+```java
+// Wrong:
+private Drivetrain drivetrain;
+
+public Robot() {
+    drivetrain.drive(0, 0, 0);  // Crashes! drivetrain is null
+}
+
+// Right:
+private final Drivetrain drivetrain = new Drivetrain();
+
+public Robot() {
+    // Now this works!
+}
+```
+
+---
+
+## Problem: Robot Doesn't Move in Simulation
+
+### Symptom: Simulation runs, but robot stays still
+
+**Debug steps**:
+
+**1. Check if commands are scheduled**:
+```java
+@Override
+public void execute() {
+    System.out.println("Command running!");  // Check console
+    drivetrain.drive(x, y, rot);
+}
+```
+
+If you don't see "Command running!", command isn't scheduled.
+
+**2. Check subsystem periodic**:
+```java
+@Override
+public void periodic() {
+    System.out.println("Drivetrain periodic: " + speed);
+    motor.set(speed);
+}
+```
+
+If you don't see this, subsystem isn't running.
+
+**3. Check simulation initialization**:
+```java
+// In Drivetrain subsystem
+public Drivetrain() {
+    // For simulation, you MUST use simulation IO
+    if (RobotBase.isSimulation()) {
+        gyroIO = new GyroIOSim();  // Simulation IO
+    } else {
+        gyroIO = new GyroIOTalonFX();  // Real hardware
+    }
+}
+```
+
+---
+
+## Problem: Simulation behaves differently than real robot
+
+### Symptom: "It works in sim but not on real robot!"
+
+**Common causes**:
+
+**1. Physics not realistic enough**:
+
+**Adjust simulation physics**:
+```java
+// In simulation IO
+@Override
+public void periodic() {
+    // Add realistic delays
+    velocity = velocity * 0.95 + targetVelocity * 0.05;
+    
+    // Add noise
+    velocity += (Math.random() - 0.5) * 0.01;
+}
+```
+
+**2. Timing differences**:
+
+**Simulation runs faster than real time!**
+```java
+// Don't assume real-time
+@Override
+public void periodic() {
+    double now = Timer.getFPGATimestamp();
+    double dt = now - lastTime;
+    lastTime = now;
+    
+    // Use dt for calculations
+    position += velocity * dt;
+}
+```
+
+**3. Hardware differences**:
+
+**Real hardware has delays sim doesn't**:
+```java
+// Add artificial delay in sim
+public void setVelocity(double velocity) {
+    if (RobotBase.isSimulation()) {
+        // Simulate CAN bus delay
+        Timer.delay(0.01);  // 10ms delay
+    }
+    motor.setVelocity(velocity);
+}
+```
+
+---
+
+## Problem: Field visualization doesn't work
+
+### Symptom: SimGUI shows field but no robot
+
+**Quick fixes**:
+
+**1. Check if pose is being published**:
+```java
+// In Drivetrain subsystem
+@Override
+public void periodic() {
+    // Send pose to dashboard
+    SmartDashboard.putData("Robot", field.getObject("robot"));
+    field.getObject("robot").setPose(pose);
+}
+```
+
+**2. Check field object name**:
+```java
+// In SimGUI
+// Make sure field object name matches code!
+field.getObject("robot")  // Must match this name!
+```
+
+**3. Send pose to NetworkTables**:
+```java
+// In periodic()
+SmartDashboard.putNumber("PoseX", pose.getX());
+SmartDashboard.putNumber("PoseY", pose.getY());
+SmartDashboard.putNumber("PoseTheta", pose.getRotation().getDegrees());
+```
+
+---
+
+## Problem: Joysticks don't work in simulation
+
+### Symptom: Joystick input does nothing
+
+**Quick fixes**:
+
+**1. Check if joystick is connected**:
+```java
+@Override
+public void periodic() {
+    double x = joystick.getX();
+    double y = joystick.getY();
+    
+    SmartDashboard.putNumber("JoystickX", x);  // Check dashboard
+    SmartDashboard.putNumber("JoystickY", y);
+}
+```
+
+If values stay at 0, joystick not detected.
+
+**2. Check joystick port**:
+```java
+// Make sure port matches joystick selection
+private final XboxController driver = new XboxController(0);  // Port 0
+
+// Or check all ports:
+for (int i = 0; i < 6; i++) {
+    XboxController test = new XboxController(i);
+    if (test.getAButton()) {
+        System.out.println("Joystick on port " + i);
+    }
+}
+```
+
+**3. Use keyboard in simulation**:
+```java
+// Add keyboard controls for simulation
+@Override
+public void periodic() {
+    double x = 0;
+    double y = 0;
+    
+    if (DriverStation.isSimulation()) {
+        // Keyboard controls
+        if (Keyboard.isKeyDown(Key.W)) y = -1;
+        if (Keyboard.isKeyDown(Key.S)) y = 1;
+        if (Keyboard.isKeyDown(Key.A)) x = -1;
+        if (Keyboard.isKeyDown(Key.D)) x = 1;
+    } else {
+        // Real joystick
+        x = joystick.getX();
+        y = joystick.getY();
+    }
+    
+    drivetrain.drive(x, y, 0);
+}
+```
+
+---
+
+## Problem: Simulation is too slow
+
+### Symptom: Simulation lags or stutters
+
+**Quick fixes**:
+
+**1. Reduce physics complexity**:
+```java
+// Don't update physics too fast
+@Override
+public void periodic() {
+    if (Timer.getFPGATimestamp() - lastPhysicsUpdate > 0.02) {
+        updatePhysics();
+        lastPhysicsUpdate = Timer.getFPGATimestamp();
+    }
+}
+```
+
+**2. Reduce logging**:
+```java
+// Don't log every iteration
+private double lastLogTime = 0;
+
+@Override
+public void periodic() {
+    double now = Timer.getFPGATimestamp();
+    
+    // Only log every 1 second
+    if (now - lastLogTime > 1.0) {
+        System.out.println("Pose: " + pose);
+        lastLogTime = now;
+    }
+}
+```
+
+**3. Close unnecessary programs**:
+- Close web browsers
+- Close other IDE windows
+- Check CPU usage in Task Manager
+
+---
+
+## Problem: Units don't match
+
+### Symptom: "Robot moves wrong distance in sim"
+
+**The problem**: Units confusion!
+
+**Common unit mistakes**:
+
+```java
+// WRONG: Mixing units
+double velocityMetersPerSecond = motor.getVelocity();  // Returns RPM!
+
+// RIGHT: Convert units
+double velocityRPM = motor.getVelocity();
+double velocityMetersPerSecond = Units.RotationsPerMinute.toRadiansPerSecond(velocityRPM) * wheelRadius;
+```
+
+**Use WPILib Units class**:
+```java
+import edu.wpi.first.units.Units;
+
+// Convert anything!
+double meters = Units.Inches.of(24).in(Units.Meters);  // 24 inches to meters
+double rpm = Units.MetersPerSecond.of(5).in(Units.RotationsPerMinute);  // m/s to RPM
+```
+
+---
+
+## Advanced: Writing Simulation Tests
+
+### Unit Tests for Simulation
+
+**Test your simulation IO**:
+```java
+@Test
+public void testDrivetrainSimulation() {
+    // Create simulation
+    Drivetrain drivetrain = new Drivetrain();
+    
+    // Simulate for 5 seconds
+    for (int i = 0; i < 250; i++) {  // 250 * 20ms = 5 seconds
+        drivetrain.drive(1.0, 0, 0);  // Drive forward
+        drivetrain.periodic();
+        Timer.delay(0.02);
+    }
+    
+    // Check robot moved forward
+    assertTrue(drivetrain.getPose().getX() > 1.0, "Robot should move forward");
+}
+```
+
+**Test vision in simulation**:
+```java
+@Test
+public void testVisionInSimulation() {
+    VisionSubsystem vision = new VisionSubsystem();
+    
+    // Simulate AprilTag detection
+    vision.simulateDetectedTag(new AprilTag(1, new Pose3d(5, 0, 0, new Rotation3d())));
+    
+    vision.periodic();
+    
+    // Check target detected
+    assertTrue(vision.hasTarget(), "Should detect AprilTag");
+    assertEquals(5.0, vision.getTargetDistance(), 0.1, "Target at 5 meters");
+}
+```
+
+---
+
+## Simulation Best Practices
+
+### Do's and Don'ts
+
+**DO**:
+- ✅ Test everything in simulation first
+- ✅ Use simulation IO classes
+- ✅ Add debug prints
+- ✅ Test edge cases
+- ✅ Write simulation tests
+
+**DON'T**:
+- ❌ Assume simulation = real world
+- ❌ Ignore simulation warnings
+- ❌ Skip simulation testing
+- ❌ Test only on real robot
+- ❌ Assume perfect physics
+
+---
+
+## Quick Simulation Checklist
+
+**Before testing in simulation**:
+- [ ] Java version correct (17 or 21)
+- [ ] Project builds successfully
+- [ ] Simulation IO classes implemented
+- [ ] All imports correct
+- [ ] No compilation errors
+
+**When simulation runs**:
+- [ ] Robot appears on field
+- [ ] Robot responds to joystick
+- [ ] Console shows no errors
+- [ ] Dashboard shows data
+- [ ] Commands execute correctly
+
+**Before testing on real robot**:
+- [ ] Everything works in simulation
+- [ ] Simulation tests pass
+- [ ] Code reviewed by teammate
+- [ ] Safety check: Can't move unexpectedly
+
+---
+
+## Common Simulation Commands
+
+```bash
+# Run simulation
+./gradlew simulateJava
+
+# Run specific simulation test
+./gradlew simulateJavaTest --tests DrivetrainSimulationTest
+
+# Clean and rebuild
+./gradlew clean build simulateJava
+
+# Run with more memory
+./gradlew simulateJava -Dorg.gradle.jvmargs="-Xmx4096m"
+
+# Run simulation in debug mode
+./gradlew simulateJava --debug-jvm
+```
+
+---
+
+## Getting Help with Simulation
+
+**When simulation problems persist**:
+
+**Gather this information**:
+1. What command did you run?
+2. What error message appeared?
+3. What did you expect to happen?
+4. What actually happened?
+5. Your OS and Java version
+
+**Where to get help**:
+- [FRC Discord #programming](https://discord.gg/frc)
+- [Chief Delphi](https://www.chiefdelphi.com)
+- [MARSLib Discussions](https://github.com/MARSProgramming/MARSLib/discussions)
+
+**Include**:
+- Error messages (full text)
+- Code snippets (relevant parts)
+- Screenshots (if helpful)
+
+---
+
+## Next Steps
+
+**Once simulation works**:
+- [Test all subsystems](/tutorials/testing)
+- [Write auto tests](/tutorials/unit-tests)
+- [Practice autonomous](/tutorials/autonomous/testing)
+- [Prepare for real robot](/tutorials/deployment)
+
+---
+
+**Remember**: Good simulation testing saves hours of debugging on real robot!
+
+**Still stuck?** [Share your simulation problem](https://github.com/MARSProgramming/MARSLib/discussions) - we'll help you figure it out!

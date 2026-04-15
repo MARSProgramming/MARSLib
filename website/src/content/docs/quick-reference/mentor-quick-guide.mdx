@@ -1,0 +1,595 @@
+---
+title: "Mentor Quick Guide"
+description: "Essential reference for FRC mentors and teachers. Quick answers to common questions."
+sidebar:
+  order: 10
+---
+
+# Mentor Quick Guide
+
+Everything you need to help your team succeed! This guide gives you quick answers for common mentor situations.
+
+---
+
+## Your Role as Mentor
+
+**You are a guide, not a doer**.
+
+**Good mentors**:
+- Ask questions instead of giving answers
+- Let students make mistakes
+- Celebrate student success
+- Teach problem-solving skills
+
+**Remember**: The robot should be built and programmed by students!
+
+---
+
+## Quick: Should Students Handle This?
+
+**Use this decision tree**:
+
+```
+Can a student do this?
+├─ YES → Let them do it!
+└─ NO → Is it safety-critical?
+    ├─ YES → You handle it
+    └─ NO → Teach a student, watch them do it
+```
+
+**Examples**:
+
+| Task | Who Does It? |
+|------|-------------|
+| Writing robot code | Students |
+| Debugging problems | Students (with guidance) |
+| Using power tools | Students (after training) |
+| Electrical safety checks | Mentor |
+| Crane operation | Mentor (or trained adult) |
+| Competition strategy | Students (with mentor guidance) |
+
+---
+
+## Common Student Problems
+
+### Problem: "My Code Doesn't Work!"
+
+**Don't**: Just fix it for them
+
+**Do**: Ask these questions:
+1. "What were you trying to do?"
+2. "What did you expect to happen?"
+3. "What actually happened?"
+4. "What have you tried so far?"
+5. "Let's add some debug prints to see what's happening"
+
+**Teaching moment**: Show them how to debug, don't just debug!
+
+---
+
+### Problem: Students Are Stuck
+
+**Signs of stuckness**:
+- Same problem for 30+ minutes
+- Frustration or giving up
+- Making random changes without thinking
+
+**Help them get unstuck**:
+1. "Let's take a break and think"
+2. "Explain the problem to me like I'm 5"
+3. "What's the simplest thing that could work?"
+4. "Let's break this into smaller steps"
+
+**Time limit**: After 1 hour, provide more direct guidance
+
+---
+
+### Problem: Students Want Your Help Too Much
+
+**Gently encourage independence**:
+- "I think you can figure this out"
+- "Try it and see what happens"
+- "What does the documentation say?"
+- "Ask a teammate first"
+
+**Set boundaries**:
+- "I'm going to get coffee, figure this out while I'm gone"
+- "I'll help in 10 minutes if you're still stuck"
+
+---
+
+## Build Season Timeline
+
+### Week 1: Design and Planning
+
+**Your focus**:
+- Help students understand the game
+- Guide strategy discussions
+- Keep decisions student-driven
+- Ensure safety from day 1
+
+**Red flags to watch for**:
+- Students trying to build too complex
+- Not enough time for programming
+- Skipping design process
+
+**What to say**:
+- "Let's prototype this first"
+- "Can we simplify this?"
+- "Have you thought about how to program this?"
+
+---
+
+### Week 2-4: Building and Programming
+
+**Your focus**:
+- Keep students safe
+- Provide technical guidance when asked
+- Monitor progress gently
+- Encourage testing
+
+**Daily check-ins** (5 minutes):
+- "What did you accomplish today?"
+- "What's blocking you?"
+- "What's the plan for tomorrow?"
+
+**Don't**:
+- Take over keyboard
+- Make decisions for them
+- Work on robot without students watching
+
+---
+
+### Week 5-6: Integration and Testing
+
+**Your focus**:
+- Help systems work together
+- Encourage practice driving
+- Prepare for competition
+- Document everything
+
+**Key questions**:
+- "What happens if this fails during competition?"
+- "How can we test this?"
+- "What's our backup plan?"
+
+---
+
+### Week 7: Bag and Tag (or Stop Build)
+
+**Your focus**:
+- Ensure robot is competition-ready
+- Help students organize pit area
+- Practice competition scenarios
+- Celebrate completion!
+
+**Competition readiness checklist**:
+- [ ] All code committed to Git
+- [ ] Autonomous modes tested
+- [ ] Backup code ready
+- [ ] Spare parts organized
+- [ ] Students trained on pit operations
+
+---
+
+## Teaching Moments
+
+### When Students Make Mistakes
+
+**Don't**: Fix it immediately
+
+**Do**: 
+- "That didn't work as expected. What do you think happened?"
+- "How can we figure out what went wrong?"
+- "What would you do differently next time?"
+
+**Best learning happens from mistakes!**
+
+---
+
+### When Students Have Success
+
+**Celebrate!** But also:
+- "Great job! Can you explain how you did it?"
+- "Now teach this to a teammate"
+- "What's the next challenge?"
+
+**Reinforce the problem-solving, not just the solution**
+
+---
+
+### When Team Has Conflict
+
+**Mediate, don't dictate**:
+- Help them understand each other
+- Find compromise solutions
+- Keep focus on team goals
+- Remind them: "We're all on the same team"
+
+**If unsafe behavior**: Step in immediately
+
+---
+
+## Technical Quick Reference
+
+### Common Code Problems
+
+**Robot won't move**:
+1. Check command is scheduled (print in execute())
+2. Check subsystem requirements
+3. Check motor power output
+4. Check joystick input
+
+**Auto crashes**:
+1. Check RioLog for error
+2. Look for NullPointerException
+3. Check path file names
+4. Verify all objects initialized
+
+**Vision not working**:
+1. Check camera network connection
+2. Verify pipeline settings
+3. Check lighting conditions
+4. Test camera in web interface
+
+**Loop time too high** (>10ms):
+1. Check for allocations in periodic()
+2. Reduce NetworkTables traffic
+3. Lower CAN update rates
+4. Remove print statements
+
+### When to Call for Help
+
+**Contact technical support**:
+- Robot won't connect to field
+- Repeated RoboRIO crashes
+- Unknown hardware failure
+- Safety concerns
+
+**Before calling**:
+- Gather details
+- Check troubleshooting guides
+- Try basic fixes
+
+---
+
+## Competition Day Tips
+
+### Before Matches
+
+**Mentor role**:
+- Stay in pit area
+- Keep students calm
+- Monitor robot performance
+- Be ready to help if needed
+
+**What to bring**:
+- Laptop with all software
+- Backup code on USB
+- Spare parts
+- Tools
+- Snacks and water
+
+**Red flags**:
+- Students not communicating
+- Robot not tested before match
+- Battery not charged
+- Wrong auto mode selected
+
+---
+
+### During Matches
+
+**Mentor role**:
+- Watch from sidelines
+- Take notes on performance
+- Stay positive regardless of outcome
+- Let students drive!
+
+**After each match**:
+- Quick debrief with students
+- Note any issues
+- Plan adjustments if needed
+- Keep spirits up
+
+---
+
+### Pit Organization
+
+**Efficient pit setup**:
+```
+┌─────────────────────────────┐
+│  ROBOT WORK AREA            │
+│  (Safety glasses required!) │
+├─────────────────────────────┤
+│  PROGRAMMING AREA           │
+│  (Laptop, practice network) │
+├─────────────────────────────┤
+│  STORAGE                    │
+│  (Spare parts, tools)       │
+└─────────────────────────────┘
+```
+
+**Your pit jobs**:
+- Ensure safety
+- Keep area organized
+- Help students find things
+- Talk to judges (let students lead!)
+
+---
+
+## Student Development
+
+### New Programmers (Year 1)
+
+**Focus**: Basics and confidence
+- Teach Java fundamentals
+- Start with simple tasks
+- Pair with experienced students
+- Celebrate small wins
+
+**Warning sign**: Overwhelmed or frustrated
+**Fix**: Simplify tasks, provide more guidance
+
+---
+
+### Intermediate Programmers (Year 2)
+
+**Focus**: Independence and problem-solving
+- Assign challenging but doable tasks
+- Encourage teaching newer students
+- Let them lead subsystems
+- Guide, don't direct
+
+**Warning sign**: Not challenged enough
+**Fix**: Give more responsibility
+
+---
+
+### Advanced Programmers (Year 3+)
+
+**Focus**: Leadership and innovation
+- Let them lead technical decisions
+- Encourage mentoring others
+- Challenge them with complex tasks
+- Learn from them!
+
+**Your role**: Advisor, not teacher
+
+---
+
+## Quick Communication Tips
+
+### Talk Like a Mentor
+
+**Instead of**:
+- "Do this"
+- "Here's the fix"
+- "Let me do it"
+- "That's wrong"
+
+**Say**:
+- "What do you think we should do?"
+- "Let's figure this out together"
+- "Show me what you've tried"
+- "What happened when you tried that?"
+
+---
+
+### Give Feedback Effectively
+
+**Good feedback**:
+- Specific: "The way you organized that code made it easy to understand"
+- Timely: Give it right after the action
+- Actionable: "Next time, try testing each part separately"
+
+**Sandwich method**:
+1. Positive observation
+2. Constructive feedback
+3. Encouragement
+
+---
+
+## Safety Reminders
+
+### Non-Negotiable Safety Rules
+
+**Always enforce**:
+- Safety glasses in pit
+- No jewelry, loose hair, or loose clothing
+- Proper lifting techniques
+- Lockout/tagout when working on electrical
+- No horseplay
+
+**Your responsibility**:
+- Stop unsafe behavior immediately
+- Model safe practices yourself
+- Teach students to watch out for each other
+
+---
+
+## Time Management
+
+### Managing Limited Time
+
+**Build season crunch**:
+- Prioritize must-have features
+- Cut nice-to-have features
+- Focus on reliability over complexity
+- Get sleep! (you and students)
+
+**Meeting time**:
+- Start on time, end on time
+- Have clear objectives
+- Assign action items
+- Follow up next meeting
+
+---
+
+## Working with Other Mentors
+
+### Mentor Team
+
+**Divide responsibilities**:
+- Technical mentor: Programming and electronics
+- Mechanical mentor: Design and fabrication
+- Strategy mentor: Game analysis and tactics
+- General mentor: Organization and logistics
+
+**Communication**:
+- Regular check-ins
+- Share observations
+- Present united front to students
+- Support each other's decisions
+
+---
+
+## Parent Communication
+
+### Keep Parents Informed
+
+**Share with parents**:
+- Meeting schedule
+- Competition dates
+- What students are learning
+- How they can help
+
+**Get parents involved**:
+- Providing snacks
+- Transportation
+- Competition volunteering
+- Skill-based volunteering (machining, programming, etc.)
+
+---
+
+## Mental Health and Burnout
+
+### Watch for Signs
+
+**Student burnout**:
+- Missing meetings
+- Irritable or withdrawn
+- Not excited about robot
+- Grades suffering
+
+**What to do**:
+- Check in privately
+- Encourage breaks
+- Reduce workload
+- Remind: It's just a robot!
+
+**Mentor burnout**:
+- Feeling overwhelmed
+- Irritable with students
+- Dreading meetings
+- No fun anymore
+
+**What to do**:
+- Take breaks yourself
+- Share workload with other mentors
+- Remember: You're volunteering!
+- It's okay to step back if needed
+
+---
+
+## Quick Reference: Common Scenarios
+
+### Scenario: Student Wants to Add Feature
+
+**Ask**:
+- How long will this take?
+- What's the benefit?
+- What's the risk?
+- Do we have time?
+
+**Decision framework**:
+- If week 1-2: Probably yes
+- If week 3-4: Maybe, if quick
+- If week 5-6: Only if critical
+- If week 7: Absolutely not
+
+---
+
+### Scenario: Code Crashes During Competition
+
+**Stay calm!**
+1. Check RioLog for error
+2. Fix if obvious and quick (<2 min)
+3. Otherwise, deploy backup code
+4. Test in practice area
+5. Figure out root cause after match
+
+**Teach students**: This is why we have backup code!
+
+---
+
+### Scenario: Team Disagrees on Approach
+
+**Facilitate discussion**:
+- Have each side present their case
+- List pros and cons of each approach
+- Vote (with mentor tiebreaker if needed)
+- Commit to decision as a team
+- Review after competition
+
+**Remember**: There's often no "right" answer
+
+---
+
+## After the Season
+
+### Post-Season Activities
+
+**Celebrate!**
+- Reflect on accomplishments
+- Recognize student growth
+- Share experiences
+
+**Learn from experience**:
+- What went well?
+- What could be better?
+- What should we change next year?
+
+**Off-season**:
+- Summer projects (new skills)
+- Community outreach
+- Recruiting new members
+- Fall training for new students
+
+---
+
+## Resources for Mentors
+
+### Official FRC Resources
+
+- [FRC Manual](https://www.firstinspires.org/robotics/frc)
+- [FIRST Mentor Resources](https://www.firstinspires.org/robotics/frc/mentor-resources)
+- [Chief Delphi Forums](https://www.chiefdelphi.com)
+
+### MARSLib Resources
+
+- [Full Mentor Guide](/teaching/mentor-guide)
+- [Lesson Plans](/teaching/lesson-plans)
+- [Troubleshooting Guides](/troubleshooting/)
+
+---
+
+## Remember: You Make a Difference
+
+**Your impact**:
+- Students learn real-world skills
+- Build confidence and problem-solving
+- Prepare for college and careers
+- Have fun and make friends
+
+**Best mentor moments**:
+- When students figure it out themselves
+- When they teach each other
+- When they celebrate success
+- When they come back years later and say "thanks"
+
+---
+
+**Thank you for mentoring!** You're helping build the next generation of engineers and leaders.
+
+**Need mentor support?** [Join our mentor community](https://github.com/MARSProgramming/MARSLib/discussions)
