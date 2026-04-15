@@ -88,12 +88,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     for (int i = 0; i < followerIds.length; i++) {
       followers[i] = new TalonFX(followerIds[i], new com.ctre.phoenix6.CANBus(canBus));
       CANUtil.applyWithRetry(followers[i], config, "FlywheelFollower_" + followerIds[i]);
-      followers[i].setControl(
-          new com.ctre.phoenix6.controls.Follower(
-              leaderId,
-              opposeLeader[i]
-                  ? com.ctre.phoenix6.signals.MotorAlignmentValue.Opposed
-                  : com.ctre.phoenix6.signals.MotorAlignmentValue.Aligned));
+      followers[i].setControl(new com.ctre.phoenix6.controls.Follower(leaderId, opposeLeader[i]));
       followers[i].optimizeBusUtilization();
     }
   }

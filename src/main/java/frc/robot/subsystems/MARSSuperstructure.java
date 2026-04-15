@@ -61,7 +61,7 @@ public class MARSSuperstructure extends SubsystemBase {
   private double goalIntakeAngle = 0.0;
 
   private final Supplier<Double> tiltRadiansSupplier;
-  private final String[] stateNamesCache;
+  private final Supplier<Double> tiltRadiansSupplier;
 
   /**
    * Constructs the superstructure orchestrator.
@@ -94,11 +94,6 @@ public class MARSSuperstructure extends SubsystemBase {
     this.visionTargetSupplier = visionTargetSupplier;
     this.tiltRadiansSupplier = tiltRadiansSupplier;
 
-    stateNamesCache = new String[SuperstructureState.values().length];
-    for (SuperstructureState state : SuperstructureState.values()) {
-      stateNamesCache[state.ordinal()] = state.name();
-    }
-
     stateMachine =
         new MARSStateMachine<>(
             "Superstructure", SuperstructureState.class, SuperstructureState.STOWED);
@@ -126,9 +121,7 @@ public class MARSSuperstructure extends SubsystemBase {
 
     stateMachine.setOnTransition(
         (from, to) -> {
-          Logger.recordOutput(
-              "Superstructure/Transition",
-              stateNamesCache[from.ordinal()] + " -> " + stateNamesCache[to.ordinal()]);
+          Logger.recordOutput("Superstructure/Transition", from.name() + " -> " + to.name());
         });
   }
 
@@ -146,9 +139,9 @@ public class MARSSuperstructure extends SubsystemBase {
           if (!accepted) {
             Logger.recordOutput(
                 "Superstructure/TransitionRejectedReason",
-                stateNamesCache[stateMachine.getState().ordinal()]
+                stateMachine.getState().name()
                     + " -> "
-                    + stateNamesCache[targetState.ordinal()]
+                    + targetState.name()
                     + " is not a legal transition.");
           }
         },
@@ -307,7 +300,7 @@ public class MARSSuperstructure extends SubsystemBase {
   private void logOutputs(SuperstructureState currentState) {
     Logger.recordOutput("Superstructure/GoalCowlAngle", goalCowlAngle);
     Logger.recordOutput("Superstructure/GoalIntakeAngle", goalIntakeAngle);
-    Logger.recordOutput("Superstructure/CurrentState", stateNamesCache[currentState.ordinal()]);
+    Logger.recordOutput("Superstructure/CurrentState", currentState.name());
   }
 
   /**
