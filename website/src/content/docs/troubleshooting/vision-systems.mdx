@@ -1,0 +1,537 @@
+---
+title: "Vision Systems - Troubleshooting Guide"
+description: "Fix common vision system problems with cameras, AprilTags, and object detection."
+sidebar:
+  order: 3
+---
+
+# Vision Systems - Troubleshooting Guide
+
+Your vision system should help your robot see and track targets. When it doesn't work, use this guide to fix it fast.
+
+## Quick Check (1 minute)
+
+### 1. Is the Camera Connected?
+
+**Check physically**:
+- Is camera plugged into the robot?
+- Is the power cable connected?
+- Is the network cable secure?
+
+**Check in software**:
+- Open the camera's web interface (usually `http://10.XX.YY.Z:5800`)
+- Can you see the camera feed?
+- Is the camera showing up in Network Tables?
+
+### 2. Is the Vision Pipeline Running?
+
+**Check your vision software** (Limelight, PhotonVision, etc.):
+- Is the software running?
+- Is the correct pipeline selected?
+- Are there any error messages?
+
+**Check Network Tables**:
+- Open OutlineViewer or SmartDashboard
+- Look for vision data (usually under `/vision` or `/limelight`)
+- Do you see target data updating?
+
+### 3. Is Your Code Reading Vision Data?
+
+**Add debug output**:
+```java
+@Override
+public void periodic() {
+    var pose = vision.getPoseEstimate();
+    System.out.println("Vision pose: " + pose);  // Debug print
+    
+    if (pose.isPresent()) {
+        System.out.println("Target at: " + pose.get());
+    } else {
+        System.out.println("No target visible");
+    }
+}
+```
+
+**What to look for**:
+- ✅ **"Target at:"**: Camera sees target, code is working
+- ❌ **"No target visible"**: Camera doesn't see target OR code not reading data
+- ❌ **No output at all**: Vision IO not being called
+
+---
+
+## Common Problems and Solutions
+
+### Problem 1: Camera Shows "No Target" When Target is There
+
+**Symptoms**:
+- Camera feed shows target clearly
+- Vision software reports "No target"
+- Network Tables show no valid targets
+
+**Causes**:
+
+**1. Pipeline Not Configured Correctly**
+```
+Fix: Adjust pipeline settings
+```
+
+**For AprilTags (Limelight)**:
+1. Open Limelight web interface
+2. Go to Pipeline tab
+3. Set Pipeline Type to "AprilTag"
+4. Set AprilTag family to your game tags (36h11, 16h5, etc.)
+5. Set resolution to "640x480" or higher
+6. Save and apply
+
+**For Retroreflective Targets**:
+1. Check exposure: Too high = washed out, too low = can't see
+2. Adjust threshold: Make sure only target is highlighted
+3. Check contour filtering: Min area should be 0.1-1.0% of image
+
+**2. Wrong Target Type Selected**
+```
+Fix: Match pipeline to actual targets
+```
+
+- **AprilTags**: Use AprilTag pipeline
+- **Retroreflective**: Use Reflective pipeline  
+- **Colored objects**: Use color-specific pipeline
+
+**3. Camera Exposure Wrong**
+```
+Fix: Adjust exposure
+```
+
+**AprilTags**:
+- Keep exposure moderate (30-50)
+- Avoid direct sunlight on camera
+
+**Retroreflective**:
+- Lower exposure (5-15)
+- Use ring light if needed
+
+---
+
+### Problem 2: Vision Pose Jumps Around
+
+**Symptoms**:
+- Target position changes drastically frame to frame
+- Robot gets confused by vision updates
+- Pose estimate is unstable
+
+**Causes**:
+
+**1. Multiple Targets Visible**
+```
+Fix: Filter to specific target IDs
+```
+
+```java
+// Only use specific AprilTag
+public Optional<Pose2d> getPoseEstimate() {
+    var result = camera.getLatestResult();
+    
+    if (result.hasTargets()) {
+        // Filter to specific tag IDs
+        for (Phototarget target : result.getTargets()) {
+            if (target.getFiducialId() == 4 || target.getFiducialId() == 7) {
+                return Optional.of(target.getCameraRelativePose());
+            }
+        }
+    }
+    
+    return Optional.empty();
+}
+```
+
+**2. Not Averaging Results**
+```
+Fix: Use multiple readings
+```
+
+```java
+// Average last N readings
+private final Queue<Pose2d> poseHistory = new LinkedList<>();
+private static final int HISTORY_SIZE = 5;
+
+public Optional<Pose2d> getFilteredPose() {
+    if (poseHistory.size() < HISTORY_SIZE) {
+        return Optional.empty();
+    }
+    
+    // Calculate average pose
+    double avgX = 0, avgY = 0, avgRotation = 0;
+    for (Pose2d pose : poseHistory) {
+        avgX += pose.getX();
+        avgY += pose.getY();
+        avgRotation += pose.getRotation().getRadians();
+    }
+    
+    return Optional.of(new Pose2d(
+        avgX / HISTORY_SIZE,
+        avgY / HISTORY_SIZE,
+        Rotation2d.fromRadians(avgRotation / HISTORY_SIZE)
+    ));
+}
+```
+
+**3. Target Too Far Away**
+```
+Fix: Only use vision when close enough
+```
+
+```java
+// Ignore distant targets
+public Optional<Pose2d> getPoseEstimate() {
+    var result = camera.getLatestResult();
+    
+    if (result.hasTargets()) {
+        Phototarget best = result.getBestTarget();
+        double distance = best.getCameraRelativePose().getTranslation().getNorm();
+        
+        // Only use targets within 3 meters
+        if (distance < 3.0) {
+            return Optional.of(best.getCameraRelativePose());
+        }
+    }
+    
+    return Optional.empty();
+}
+```
+
+---
+
+### Problem 3: Vision Results Are Always Wrong
+
+**Symptoms**:
+- Vision reports targets in wrong locations
+- Distance/angle measurements are off
+- Robot drives to wrong positions
+
+**Causes**:
+
+**1. Camera Calibration Wrong**
+```
+Fix: Recalibrate camera
+```
+
+**Intrinsic calibration** (camera properties):
+1. Print calibration checkerboard
+2. Take 20+ pictures at different angles/distances
+3. Run calibration tool (OpenCV, ROS, or vendor tools)
+4. Update camera intrinsics in vision software
+
+**Extrinsic calibration** (camera mounting):
+1. Measure camera position relative to robot center
+2. Measure camera angle (pitch, yaw, roll)
+3. Update in vision software or code
+
+**2. Camera Mount Moved**
+```
+Fix: Re-measure camera position
+```
+
+```java
+// Camera is 0.2m forward, 0.1m left, 0.3m up from robot center
+// Camera is angled 15 degrees down
+private final Transform3d robotToCamera = new Transform3d(
+    new Translation3d(0.2, 0.1, 0.3),  // Position
+    new Rotation3d(0, -Units.degreesToRadians(15), 0)  // Angle (pitch down)
+);
+```
+
+**3. Wrong AprilTag Field Layout**
+```
+Fix: Update field layout
+```
+
+```java
+// Make sure you're using correct year's field layout
+AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(
+    AprilTagFieldLayout.k2024CrescendoResource  // Use current year!
+);
+```
+
+---
+
+### Problem 4: Vision Causes Robot to Shake
+
+**Symptoms**:
+- Robot vibrates when using vision
+- Drivetrain motors oscillate
+- Vision commands make robot unstable
+
+**Causes**:
+
+**1. Vision Updates Too Fast**
+```
+Fix: Limit vision update rate
+```
+
+```java
+// Only accept vision updates at 20Hz
+private double lastVisionUpdateTime = 0;
+
+public void addVisionMeasurement(Pose2d visionPose, double timestamp) {
+    if (timestamp - lastVisionUpdateTime > 0.05) {  // 50ms = 20Hz
+        drivetrain.addVisionMeasurement(visionPose, timestamp);
+        lastVisionUpdateTime = timestamp;
+    }
+}
+```
+
+**2. Vision Not Compatible with Odometry**
+```
+Fix: Check vision rejection logic
+```
+
+```java
+// Only use vision if it's close to odometry estimate
+public Optional<Pose2d> getPoseEstimate() {
+    var visionPose = getRawVisionPose();
+    var odomPose = drivetrain.getPose();
+    
+    if (visionPose.isPresent()) {
+        double distance = visionPose.get().getTranslation().getDistance(
+            odomPose.getTranslation()
+        );
+        
+        // Only use if vision is within 0.5m of odometry
+        if (distance < 0.5) {
+            return visionPose;
+        }
+    }
+    
+    return Optional.empty();
+}
+```
+
+**3. PID Gains Too High with Vision**
+```
+Fix: Use different gains for vision-based control
+```
+
+```java
+// Use more conservative gains when using vision
+private final PIDController visionTurnController = new PIDController(2.0, 0, 0.1);
+private final PIDController odomTurnController = new PIDController(4.0, 0, 0.5);
+
+@Override
+public void execute() {
+    PIDController controller = usingVision ? visionTurnController : odomTurnController;
+    double output = controller.calculate(currentHeading, targetHeading);
+    // ...
+}
+```
+
+---
+
+### Problem 5: Vision Works in Practice But Not Competition
+
+**Symptoms**:
+- Vision works perfectly at home
+- Same vision setup fails at competition
+- Can't figure out what changed
+
+**Competition-Specific Issues**:
+
+**1. Field Lighting Different**
+```
+Fix: Adjust pipeline for competition lighting
+```
+
+- Competition arenas often have different lighting
+- Adjust exposure/threshold settings
+- Test at venue if possible
+
+**2. Field AprilTag Positions Wrong**
+```
+Fix: Verify field layout
+```
+
+- Double-check you have correct year's field
+- Some venues have slightly different tag positions
+- Ask field supervisor if unsure
+
+**3. Network Issues**
+```
+Fix: Check camera connectivity
+```
+
+- Camera might be on different subnet
+- Firewall might block vision traffic
+- Verify camera IP address
+
+**4. Driver Station Camera Blocking Vision**
+```
+Fix: Coordinate with other teams
+```
+
+- Other teams' cameras might interfere
+- Use unique camera IDs/frequencies
+- Check for radio interference
+
+---
+
+## Testing Vision System
+
+### Step 1: Verify Camera Feed
+1. Open camera web interface
+2. Check image quality
+3. Verify you can see targets
+4. Note any issues (glare, blur, etc.)
+
+### Step 2: Test Pipeline
+1. Point camera at target
+2. Check if pipeline detects target
+3. Verify distance/angle measurements
+4. Test at different distances and angles
+
+### Step 3: Test Integration
+1. Add debug output to your code
+2. Verify vision data reaches your code
+3. Check pose estimation looks reasonable
+4. Test vision-based commands
+
+### Step 4: Full System Test
+1. Run autonomous routine using vision
+2. Verify robot behaves correctly
+3. Test at different positions
+4. Check for edge cases
+
+---
+
+## Quick Fixes to Try
+
+### Fix 1: Reset Vision Pipeline
+1. Stop vision software
+2. Power cycle camera
+3. Restart vision software
+4. Reload pipeline settings
+
+### Fix 2: Recalibrate Camera
+1. Print calibration target
+2. Run calibration routine
+3. Update camera intrinsics
+4. Test accuracy
+
+### Fix 3: Simplify Pipeline
+1. Switch to basic pipeline
+2. Disable advanced features
+3. Test if basic detection works
+4. Add complexity back gradually
+
+### Fix 4: Check Network Tables
+1. Open OutlineViewer
+2. Browse to vision folder
+3. Verify data is updating
+4. Check for errors/warnings
+
+---
+
+## Prevention Tips
+
+### Before Competition:
+- ✅ **Test** vision at multiple distances
+- ✅ **Test** with different lighting conditions
+- ✅ **Calibrate** camera properly
+- ✅ **Document** all settings
+- ✅ **Practice** troubleshooting vision issues
+
+### During Competition:
+- ✅ **Test** vision on practice field if available
+- ✅ **Check** camera mounting is secure
+- ✅ **Verify** lighting conditions
+- ✅ **Have backup** (odometry-only auto)
+- ✅ **Document** any issues for future matches
+
+---
+
+## Vision-Specific Troubleshooting
+
+### Limelight Issues
+
+**Problem**: Limelight web interface won't open
+**Solution**: Check IP address, usually `10.TE.AM.11:5800`
+
+**Problem**: Pipeline switching not working
+**Solution**: Use NetworkTables to switch: `limelightTable.getEntry("pipeline").setNumber(1);`
+
+**Problem**: LEDs not working
+**Solution**: Check LED mode in web interface, verify power connection
+
+### PhotonVision Issues
+
+**Problem**: Camera not detected
+**Solution**: Check USB connection, try different port
+
+**Problem**: High CPU usage
+**Solution**: Lower camera resolution, reduce FPS
+
+**Problem**: Pipeline not saving
+**Solution**: Check file permissions, verify storage space
+
+---
+
+## Performance Tips
+
+### Improve Vision Performance:
+1. **Lower resolution** if accuracy is sufficient
+2. **Reduce FPS** if updates are too fast
+3. **Filter targets** to only use necessary ones
+4. **Average readings** to reduce noise
+5. **Use spatial filtering** to reject impossible poses
+
+### Optimize Vision Integration:
+1. **Update vision** at consistent rate (20Hz is good)
+2. **Reject outliers** that disagree with odometry
+3. **Use timeouts** on old vision data
+4. **Smooth vision updates** with averaging
+5. **Fall back to odometry** if vision fails
+
+---
+
+## When to Get Help
+
+If vision still doesn't work after trying these fixes:
+
+### Good Help Request:
+```
+"My vision system isn't detecting targets correctly.
+
+Setup: Limelight 3, AprilTags 36h11, mounted 0.2m forward of robot center
+
+Symptoms:
+- Camera feed shows tags clearly
+- Pipeline reports 'No target' most of the time
+- When it does detect, distance is off by ~0.5m
+
+What I've tried:
+- Recalibrated camera intrinsics
+- Adjusted exposure (tried 10, 30, 50)
+- Switched to AprilTag pipeline
+- Verified correct AprilTag family
+
+NetworkTables show:
+- 'tv' (target valid) = 0 most of time
+- 'ta' (target area) varies wildly when target detected
+- 'tx'/'ty' (target angle) seem reasonable
+
+What should I check next?"
+```
+
+---
+
+## Related Guides
+
+- [Vision Setup Guide](/tutorials/vision/setup)
+- [AprilTag Tracking](/tutorials/vision/apriltags)
+- [PhotonVision Integration](/tutorials/vision/photonvision)
+- [Limelight Setup](/tutorials/vision/limelight)
+- [Odometry Integration](/tutorials/odometry/integrating-vision)
+
+---
+
+**Remember**: Vision systems are powerful but complex. Start simple, test thoroughly, and always have a backup plan (like odometry-only autonomous) when vision fails!
+
+**Still struggling?** [Share your vision challenges](https://github.com/MARSProgramming/MARSLib/discussions) - the community can help troubleshoot!
