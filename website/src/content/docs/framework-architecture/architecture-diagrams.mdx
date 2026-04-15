@@ -11,8 +11,7 @@ This page provides visual diagrams of MARSLib's core architecture, system intera
 
 ## System Architecture Overview
 
-```mermaid
-graph TB
+<Mermaid code={`graph TB
     subgraph "Robot Code"
         Robot[Robot.java]
         Main[Main Loop 50Hz]
@@ -57,12 +56,11 @@ graph TB
     style Robot fill:#B32416,color:#fff
     style Logger fill:#4CAF50,color:#fff
     style LogStorage fill:#2196F3,color:#fff
-```
+`} />
 
 ## Package Structure
 
-```mermaid
-graph LR
+<Mermaid code={`graph LR
     subgraph "com.marslib"
         core[core]
         swerve[swerve]
@@ -96,12 +94,11 @@ graph LR
     style swerve fill:#2196F3,color:#fff
     style vision fill:#4CAF50,color:#fff
     style state fill:#FF9800,color:#fff
-```
+`} />
 
 ## Data Flow: Swerve Drive
 
-```mermaid
-sequenceDiagram
+<Mermaid code={`sequenceDiagram
     participant Main as Main Loop
     participant Swerve as SwerveDrive
     participant IO as IO Layer
@@ -125,12 +122,11 @@ sequenceDiagram
     Hardware-->>Main: Cycle complete
     
     Note over Swerve,Logger: All data logged for analysis
-```
+`} />
 
 ## State Machine Flow
 
-```mermaid
-stateDiagram-v2
+<Mermaid code={`stateDiagram-v2
     [*] --> Idle
     
     Idle --> Autonomous: Auto Mode
@@ -154,12 +150,11 @@ stateDiagram-v2
         Zero-allocation patterns
         Deterministic timing
     end note
-```
+`} />
 
 ## Vision System Pipeline
 
-```mermaid
-graph TB
+<Mermaid code={`graph TB
     subgraph "Hardware"
         Camera1[Camera 1]
         Camera2[Camera 2]
@@ -199,12 +194,11 @@ graph TB
     
     style PoseEstimator fill:#B32416,color:#fff
     style Logger fill:#4CAF50,color:#fff
-```
+`} />
 
 ## Testing Architecture
 
-```mermaid
-graph TB
+<Mermaid code={`graph TB
     subgraph "Test Framework"
         TestHarness[MARS Test Harness]
         PhysicsSim[Physics Simulator]
@@ -238,12 +232,11 @@ graph TB
     
     style TestHarness fill:#B32416,color:#fff
     style Threshold fill:#4CAF50,color:#fff
-```
+`} />
 
 ## IO Abstraction Layer
 
-```mermaid
-classDiagram
+<Mermaid code={`classDiagram
     class GyroIO {
         <<interface>>
         +updateInputs()
@@ -276,12 +269,11 @@ classDiagram
     note for GyroIO "IO Abstraction Interface"
     note for GyroIOReal "Real Hardware Implementation"
     note for GyroIOSim "Simulation Implementation"
-```
+`} />
 
 ## Performance Monitoring Flow
 
-```mermaid
-graph LR
+<Mermaid code={`graph LR
     subgraph "Robot Code"
         Periodic[periodic 50Hz]
         Measure[Measure Performance]
@@ -311,12 +303,11 @@ graph LR
     
     style Dashboard fill:#B32416,color:#fff
     style Bottlenecks fill:#FF9800,color:#fff
-```
+`} />
 
 ## Memory Management
 
-```mermaid
-graph TB
+<Mermaid code={`graph TB
     subgraph "Zero-Allocation Pattern"
         Periodic[Periodic Method]
         PreAlloc[Pre-Allocated Objects]
@@ -351,12 +342,11 @@ graph TB
     style New1 fill:#F44336,color:#fff
     style New2 fill:#F44336,color:#fff
     style String1 fill:#F44336,color:#fff
-```
+`} />
 
 ## Integration with External Systems
 
-```mermaid
-graph TB
+<Mermaid code={`graph TB
     subgraph "MARSLib"
         Core[MARSLib Core]
         IO[IO Layer]
@@ -394,7 +384,7 @@ graph TB
     
     style Core fill:#B32416,color:#fff
     style AdvantageKit fill:#4CAF50,color:#fff
-```
+`} />
 
 ---
 

@@ -11,8 +11,7 @@ Understanding how your robot code works is easier with pictures! These diagrams 
 
 ## Robot Code Structure
 
-```mermaid
-graph TD
+<Mermaid code={`graph TD
     A[Robot.java] --> B[RobotContainer]
     B --> C[Subsystems]
     B --> D[Commands]
@@ -39,7 +38,7 @@ graph TD
     style C fill:#45b7d1
     style D fill:#96ceb4
     style E fill:#ffeaa7
-```
+`} />
 
 ### What This Means
 
@@ -51,8 +50,7 @@ graph TD
 
 ## Command Execution Flow
 
-```mermaid
-sequenceDiagram
+<Mermaid code={`sequenceDiagram
     participant User
     participant Scheduler
     participant Command
@@ -70,7 +68,7 @@ sequenceDiagram
         Command->>Subsystem: execute() (20ms)
         Command->>Command: isFinished()?
     end
-```
+`} />
 
 ### What This Means
 
@@ -82,8 +80,7 @@ sequenceDiagram
 
 ## Subsystem Data Flow
 
-```mermaid
-graph LR
+<Mermaid code={`graph LR
     A[Physical Hardware] --> B[IO Layer]
     B --> C[Subsystem]
     C --> D[Command]
@@ -98,7 +95,7 @@ graph LR
     style C fill:#45b7d1
     style D fill:#96ceb4
     style E fill:#ffeaa7
-```
+`} />
 
 ### What This Means
 
@@ -110,8 +107,7 @@ graph LR
 
 ## Simulation vs Real Robot
 
-```mermaid
-graph TD
+<Mermaid code={`graph TD
     A[Your Code] --> B{Which Mode?}
     B -->|Simulation| C[Simulated IO]
     B -->|Real Robot| D[Real IO]
@@ -129,7 +125,7 @@ graph TD
     style F fill:#96ceb4
     style G fill:#ff6b6b
     style H fill:#ff6b6b
-```
+`} />
 
 ### What This Means
 
@@ -142,8 +138,7 @@ This is why you can test without a robot!
 
 ## Periodic Loop Timing
 
-```mermaid
-graph TD
+<Mermaid code={`graph TD
     A[Start 20ms Loop] --> B[Read Sensors]
     B --> C[Run Commands]
     C --> D[Update Subsystems]
@@ -159,7 +154,7 @@ graph TD
     style E fill:#96ceb4
     style F fill:#ffeaa7
     style G fill:#ff6b6b
-```
+`} />
 
 ### What This Means
 
@@ -176,8 +171,7 @@ This happens **50 times every second!**
 
 ## Path Following Flow
 
-```mermaid
-graph LR
+<Mermaid code={`graph LR
     A[Planned Path] --> B[Path Follower]
     B --> C[Target Pose]
     C --> D[PID Controller]
@@ -195,7 +189,7 @@ graph LR
     style F fill:#45b7d1
     style G fill:#ff6b6b
     style H fill:#4ecdc4
-```
+`} />
 
 ### What This Means
 
