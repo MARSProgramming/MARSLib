@@ -90,11 +90,12 @@ export default defineConfig({
 					autogenerate: { directory: 'advanced' }
 				},
 				{
-					label: 'Operations & Maintenance',
-					items: [
-						{ label: 'Operations & Deploy', autogenerate: { directory: 'operations' } },
-						{ label: 'Troubleshooting Library', autogenerate: { directory: 'troubleshooting' } }
-					]
+					label: 'Operations & Deploy',
+					autogenerate: { directory: 'operations' }
+				},
+				{
+					label: 'Troubleshooting Library',
+					autogenerate: { directory: 'troubleshooting' }
 				},
 				{
 					label: 'Interactive Learning',

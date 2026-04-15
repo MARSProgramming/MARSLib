@@ -54,22 +54,22 @@ export const HomeTutorialGrid = () => {
           <p>Start here! Configure Vendordeps, construct your first RobotContainer, and scaffold subsystems automatically with our VS Code extension.</p>
         </a>
         
-        <a href="/core-concepts/architecture/" className="tutorial-card" style={{ borderTop: '4px solid var(--mars-red)' }}>
+        <a href="/framework-architecture/architecture/" className="tutorial-card" style={{ borderTop: '4px solid var(--mars-red)' }}>
           <h3>🏗️ Core Architecture</h3>
           <p>Learn the IO Layer AdvantageKit abstraction pattern, thread-safe fault management, and strict zero-allocation loop rules.</p>
         </a>
 
-        <a href="/core-concepts/io-layer/" className="tutorial-card" style={{ borderTop: '4px solid #e67e22' }}>
+        <a href="/framework-architecture/io-layer/" className="tutorial-card" style={{ borderTop: '4px solid #e67e22' }}>
           <h3>🦾 Mechanism Abstraction</h3>
           <p>Implement RotaryMechanismIO and LinearMechanismIO to dramatically speed up standard mechanism development.</p>
         </a>
 
-        <a href="/core-concepts/control-theory/" className="tutorial-card" style={{ borderTop: '4px solid #f1c40f' }}>
+        <a href="/subsystems/control-theory/" className="tutorial-card" style={{ borderTop: '4px solid #f1c40f' }}>
           <h3>🎮 Control Theory</h3>
           <p>Dive into Shoot-on-the-Move (SOTM) math, EliteShooterMath, Feedforwards, and WPILib SysId tuning integration.</p>
         </a>
 
-        <a href="/core-concepts/simulation/" className="tutorial-card" style={{ borderTop: '4px solid #9b59b6' }}>
+        <a href="/subsystems/simulation/" className="tutorial-card" style={{ borderTop: '4px solid #9b59b6' }}>
           <h3>🖥️ Simulation & Telemetry</h3>
           <p>Configure Dyn4j 2D physics integration, AdvantageScope 3D field layouts, and automated GitHub log offloading.</p>
         </a>
@@ -79,12 +79,22 @@ export const HomeTutorialGrid = () => {
           <p>Install the MARSLib VS Code extension to access .agent skills, automate subsystem scaffolding, and run championship-grade logic audits.</p>
         </a>
 
-        <a href="/core-concepts/sysid/" className="tutorial-card" style={{ borderTop: '4px solid #e74c3c' }}>
+        <a href="/framework-architecture/sysid/" className="tutorial-card" style={{ borderTop: '4px solid #e74c3c' }}>
           <h3>📻 SysId Characterization</h3>
           <p>Automated system identification for calculating perfect feedforward constants passively during real matches.</p>
         </a>
 
-        <a href="/accessibility/" className="tutorial-card" style={{ borderTop: '4px solid #3498db' }}>
+        <a href="/framework-architecture/fault-resilience/" className="tutorial-card" style={{ borderTop: '4px solid #e84393' }}>
+          <h3>🛡️ Fault Resilience</h3>
+          <p>Discover the military-grade two-layer fault system, real-time driver alerts, and structural hardware fallbacks.</p>
+        </a>
+
+        <a href="/troubleshooting/robot-wont-move/" className="tutorial-card" style={{ borderTop: '4px solid #f39c12' }}>
+          <h3>🔧 Troubleshooting</h3>
+          <p>Is the CAN bus dropping out? Robot not driving? Compilation errors? Follow our mechanical issue triage wizards.</p>
+        </a>
+
+        <a href="/contributing/accessibility/" className="tutorial-card" style={{ borderTop: '4px solid #3498db' }}>
           <h3>♿ Accessible by Design</h3>
           <p>Read our commitment to inclusive engineering. Learn how we use AI agents and Pa11y to enforce WCAG 2.1 AA DOM parity.</p>
         </a>
