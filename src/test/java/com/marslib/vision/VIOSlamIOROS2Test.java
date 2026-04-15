@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.networktables.StructPublisher;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,8 +50,9 @@ public class VIOSlamIOROS2Test {
     publisher.set(pose1, timestamp1Us);
     inst.flush();
     try {
-      Thread.sleep(20);
+      TimeUnit.MILLISECONDS.sleep(20);
     } catch (InterruptedException ignored) {
+      Thread.currentThread().interrupt();
     }
 
     publisher.set(pose2, timestamp2Us);
@@ -58,8 +60,9 @@ public class VIOSlamIOROS2Test {
 
     // Sleep to allow local NT4 events to propagate
     try {
-      Thread.sleep(50);
+      TimeUnit.MILLISECONDS.sleep(50);
     } catch (InterruptedException ignored) {
+      Thread.currentThread().interrupt();
     }
 
     VIOSlamIO.VIOSlamIOInputs inputs = new VIOSlamIO.VIOSlamIOInputs();
@@ -87,8 +90,9 @@ public class VIOSlamIOROS2Test {
 
     inst.flush();
     try {
-      Thread.sleep(50);
+      TimeUnit.MILLISECONDS.sleep(50);
     } catch (InterruptedException ignored) {
+      Thread.currentThread().interrupt();
     }
 
     io.updateInputs(inputs);

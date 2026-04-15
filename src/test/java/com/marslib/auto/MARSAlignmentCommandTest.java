@@ -80,7 +80,7 @@ public class MARSAlignmentCommandTest {
 
     Pose2d resultingPose = swerveDrive.getPose();
 
-    System.out.println("Resulting Pose After Physics Ticks: " + resultingPose);
+    org.littletonrobotics.junction.Logger.recordOutput("Test/ResultingPose", resultingPose);
 
     // We expect the robot to have physically traveled significantly towards (2, 2)
     // and rotated towards 90 degrees after 3 seconds of simulation time (150 ticks).

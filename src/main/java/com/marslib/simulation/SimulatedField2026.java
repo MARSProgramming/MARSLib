@@ -182,28 +182,28 @@ public class SimulatedField2026 {
     double blueDepotBottomRightCornerY = 1.646936;
 
     // Spawn center fuel
-    for (int x = 0; x < 12; x++) {
-      for (int y = 0; y < 30; y += efficiencyMode ? 3 : 1) {
-        double px = centerPieceBottomRightCornerX + Units.inchesToMeters(5.991 * x);
-        double py = centerPieceBottomRightCornerY + Units.inchesToMeters(5.95 * y);
+    for (int xIndex = 0; xIndex < 12; xIndex++) {
+      for (int yIndex = 0; yIndex < 30; yIndex += efficiencyMode ? 3 : 1) {
+        double px = centerPieceBottomRightCornerX + Units.inchesToMeters(5.991 * xIndex);
+        double py = centerPieceBottomRightCornerY + Units.inchesToMeters(5.95 * yIndex);
         fuelBodies.add(createFuel(px, py));
       }
     }
 
     // Spawn blue depot fuel
-    for (int x = 0; x < 4; x++) {
-      for (int y = 0; y < 6; y++) {
-        double px = blueDepotBottomRightCornerX + Units.inchesToMeters(5.991 * x);
-        double py = blueDepotBottomRightCornerY + Units.inchesToMeters(5.95 * y);
+    for (int xIndex = 0; xIndex < 4; xIndex++) {
+      for (int yIndex = 0; yIndex < 6; yIndex++) {
+        double px = blueDepotBottomRightCornerX + Units.inchesToMeters(5.991 * xIndex);
+        double py = blueDepotBottomRightCornerY + Units.inchesToMeters(5.95 * yIndex);
         fuelBodies.add(createFuel(px, py));
       }
     }
 
     // Spawn red depot fuel
-    for (int x = 0; x < 4; x++) {
-      for (int y = 0; y < 6; y++) {
-        double px = redDepotBottomRightCornerX + Units.inchesToMeters(5.991 * x);
-        double py = redDepotBottomRightCornerY + Units.inchesToMeters(5.95 * y);
+    for (int xIndex = 0; xIndex < 4; xIndex++) {
+      for (int yIndex = 0; yIndex < 6; yIndex++) {
+        double px = redDepotBottomRightCornerX + Units.inchesToMeters(5.991 * xIndex);
+        double py = redDepotBottomRightCornerY + Units.inchesToMeters(5.95 * yIndex);
         fuelBodies.add(createFuel(px, py));
       }
     }
