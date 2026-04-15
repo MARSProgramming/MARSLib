@@ -62,7 +62,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
    */
   public FlywheelIOTalonFX(
       int leaderId, int[] followerIds, boolean[] opposeLeader, String canBus, boolean invert) {
-    motor = new TalonFX(leaderId, canBus);
+    motor = new TalonFX(leaderId, new com.ctre.phoenix6.CANBus(canBus));
 
     var config = new com.ctre.phoenix6.configs.TalonFXConfiguration();
     config.MotorOutput.Inverted =
@@ -87,9 +87,14 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 
     followers = new TalonFX[followerIds.length];
     for (int i = 0; i < followerIds.length; i++) {
-      followers[i] = new TalonFX(followerIds[i], canBus);
+      followers[i] = new TalonFX(followerIds[i], new com.ctre.phoenix6.CANBus(canBus));
       CANUtil.applyWithRetry(followers[i], config, "FlywheelFollower_" + followerIds[i]);
-      followers[i].setControl(new com.ctre.phoenix6.controls.Follower(leaderId, opposeLeader[i]));
+      followers[i].setControl(
+          new com.ctre.phoenix6.controls.Follower(
+              leaderId,
+              opposeLeader[i]
+                  ? com.ctre.phoenix6.signals.MotorAlignmentValue.Opposed
+                  : com.ctre.phoenix6.signals.MotorAlignmentValue.Aligned));
       followers[i].optimizeBusUtilization();
     }
   }

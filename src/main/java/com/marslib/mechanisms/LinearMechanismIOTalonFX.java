@@ -86,7 +86,7 @@ public class LinearMechanismIOTalonFX implements LinearMechanismIO {
       boolean inverted) {
     this.gearRatio = gearRatio;
     this.spoolDiameterMeters = spoolDiameterMeters;
-    this.motor = new TalonFX(leaderId, canbus);
+    this.motor = new TalonFX(leaderId, new com.ctre.phoenix6.CANBus(canbus));
     this.hardwareFaultName = "LinearMechanism_" + leaderId;
 
     kP = new LoggedTunableNumber("LinearMechanism_" + leaderId + "/kP", 2.0);
@@ -124,9 +124,14 @@ public class LinearMechanismIOTalonFX implements LinearMechanismIO {
 
     followers = new TalonFX[followerIds.length];
     for (int i = 0; i < followerIds.length; i++) {
-      followers[i] = new TalonFX(followerIds[i], canbus);
+      followers[i] = new TalonFX(followerIds[i], new com.ctre.phoenix6.CANBus(canbus));
       CANUtil.applyWithRetry(followers[i], config, "LinearFollower_" + followerIds[i]);
-      followers[i].setControl(new com.ctre.phoenix6.controls.Follower(leaderId, opposeLeader[i]));
+      followers[i].setControl(
+          new com.ctre.phoenix6.controls.Follower(
+              leaderId,
+              opposeLeader[i]
+                  ? com.ctre.phoenix6.signals.MotorAlignmentValue.Opposed
+                  : com.ctre.phoenix6.signals.MotorAlignmentValue.Aligned));
       followers[i].optimizeBusUtilization();
     }
   }

@@ -78,3 +78,6 @@ Additionally, Keystatic natively injects custom React wrapper components via `ke
 - `<CodeViolation>...</CodeViolation>`
 - `<CodeStandard>...</CodeStandard>`
 - For interactive React simulations, use the injected components directly: `<ArmKgSim client:visible />`, `<PhysicsSim client:visible />`, `<SwerveSim client:visible />`, etc.
+
+**CRITICAL: Markdoc HTML Parsing Limitations**
+When injecting raw HTML tags (like `<span>` or `<div>`) into Keystatic-managed MDX files, Keystatic's Markdoc parser will crash with `Missing component definition` unless the tag is explicitly registered in `keystatic.config.ts` under the `components` block using `mark()` or `inline()`. Always ensure any new HTML tags you introduce to the markdown are whitelisted in the CMS schema first.

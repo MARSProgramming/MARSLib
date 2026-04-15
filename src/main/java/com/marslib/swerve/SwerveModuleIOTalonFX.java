@@ -43,8 +43,8 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
 
   public SwerveModuleIOTalonFX(
       int driveMotorId, int turnMotorId, String canbus, SwerveConfig config) {
-    driveMotor = new TalonFX(driveMotorId, canbus);
-    turnMotor = new TalonFX(turnMotorId, canbus);
+    driveMotor = new TalonFX(driveMotorId, new com.ctre.phoenix6.CANBus(canbus));
+    turnMotor = new TalonFX(turnMotorId, new com.ctre.phoenix6.CANBus(canbus));
     this.config = config;
 
     TalonFXConfiguration driveConfig = new TalonFXConfiguration();

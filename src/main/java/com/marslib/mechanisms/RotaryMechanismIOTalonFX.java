@@ -66,7 +66,7 @@ public class RotaryMechanismIOTalonFX implements RotaryMechanismIO {
    */
   public RotaryMechanismIOTalonFX(int motorId, String canbus, double gearRatio, boolean inverted) {
     this.gearRatio = gearRatio;
-    this.motor = new TalonFX(motorId, canbus);
+    this.motor = new TalonFX(motorId, new com.ctre.phoenix6.CANBus(canbus));
     this.hardwareFaultName = "RotaryMechanism_" + motorId;
 
     kP = new LoggedTunableNumber("RotaryMechanism_" + motorId + "/kP", 2.0);

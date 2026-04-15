@@ -34,7 +34,7 @@ public class LEDIOCANdle implements LEDIO {
    * @param numLeds The total number of LEDs (onboard + strip).
    */
   public LEDIOCANdle(int canId, String canbus, int numLeds) {
-    this.candle = new CANdle(canId, canbus);
+    this.candle = new CANdle(canId, new com.ctre.phoenix6.CANBus(canbus));
     // Control all LEDs from index 0 to numLeds-1
     this.solidColorRequest = new SolidColor(0, numLeds - 1);
   }

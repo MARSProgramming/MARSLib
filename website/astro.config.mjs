@@ -25,7 +25,7 @@ export default defineConfig({
 				enforce: 'pre',
 				transform(code, id) {
 					if (id.endsWith('.mdx') && !id.includes('node_modules')) {
-						const inject = `import { ArmKgSim, AutoSim, ElevatorPidSim, FaultSim, FlywheelKvSim, PhysicsSim, PowerSheddingSim, SotmSim, StateMachineSim, SwerveSim, SysIdSim, VisionSim, ZeroAllocationSim, RuleSection, CodeComparison, CodeViolation, CodeStandard, StandardHeader, SplashContainer, HomeHero, HomeSimulatorContainer, HomeHallOfFame, HomeTutorialGrid, SponsorsList } from '/src/components/index.ts';\nimport Mermaid from '/src/components/Mermaid.astro';\n\n`;
+						const inject = `import { ArmKgSim, AutoSim, ElevatorPidSim, FaultSim, FlywheelKvSim, PhysicsSim, PowerSheddingSim, SotmSim, StateMachineSim, SwerveSim, SysIdSim, VisionSim, ZeroAllocationSim, CodePlayground, FieldVisualizer, RuleSection, CodeComparison, CodeViolation, CodeStandard, StandardHeader, SplashContainer, HomeHero, HomeSimulatorContainer, HomeHallOfFame, HomeTutorialGrid, SponsorsList } from '/src/components/index.ts';\nimport Mermaid from '/src/components/Mermaid.astro';\n\n`;
 						
 						// Inject after frontmatter
 						const fmEndIndex = code.indexOf('---', 3);

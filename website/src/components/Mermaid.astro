@@ -1,8 +1,8 @@
 ---
 const { code } = Astro.props;
 ---
-<div class="mermaid-diagram-container" style="background: transparent; padding: 1rem; border-radius: 8px; display: flex; justify-content: center; overflow-x: auto;">
-  <pre class="mermaid" style="background: transparent; border: none; margin: 0;">
+<div class="mermaid-diagram-container" style="background: transparent; padding: 1rem; border-radius: 8px; width: 100%; overflow-x: auto; overflow-y: hidden;">
+  <pre class="mermaid" style="background: transparent; border: none; margin: 0; min-width: 800px; display: inline-block;">
     {code}
   </pre>
 </div>

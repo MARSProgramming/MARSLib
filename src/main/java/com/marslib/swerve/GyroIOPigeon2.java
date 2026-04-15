@@ -37,7 +37,7 @@ public class GyroIOPigeon2 implements GyroIO {
    * @param canbus The CAN bus name (e.g. "rio" or "canivore").
    */
   public GyroIOPigeon2(int canId, String canbus, SwerveConfig config) {
-    pigeon = new Pigeon2(canId, canbus);
+    pigeon = new Pigeon2(canId, new com.ctre.phoenix6.CANBus(canbus));
 
     yaw = pigeon.getYaw();
     pitch = pigeon.getPitch();
