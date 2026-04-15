@@ -68,7 +68,10 @@ export default defineConfig({
 				src: './src/assets/mars-logo.png',
 			},
 			favicon: '/img/mars-logo.png',
-			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/MARSProgramming/MARSLib' }],
+			social: [
+				{ icon: 'github', label: 'GitHub', href: 'https://github.com/MARSProgramming/MARSLib' },
+				{ icon: 'comment-alt', label: 'Community', href: 'https://github.com/MARSProgramming/MARSLib/discussions' }
+			],
 			sidebar: [
 				{
 					label: 'Getting Started',
