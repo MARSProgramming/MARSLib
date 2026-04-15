@@ -45,7 +45,7 @@
   --sl-color-bg-sidebar: #0a0a0a !important;
   --sl-color-text: #c2c2c2 !important;
   --sl-color-white: #ffffff !important;
-  color-scheme: dark !important;
+  color-scheme: dark only !important;
   background-color: var(--sl-color-bg) !important;
   color: var(--sl-color-text) !important;
 }

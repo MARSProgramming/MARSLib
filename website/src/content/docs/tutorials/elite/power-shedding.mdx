@@ -1,8 +1,7 @@
 ---
+title: "Dynamic Power Shedding"
 sidebar:
   order: 14
-id: power-shedding
-title: "Dynamic Power Shedding"
 ---
 
   
@@ -37,7 +36,7 @@ motor.setVoltage(MathUtil.clamp(requestedVoltage, -maxAllowedVoltage, maxAllowed
   ## <span class="mars-num">3</span> Subsystem Priority Classes
 
   
-Not all subsystems are created equal. When the `MARSPowerManager` detects a critical system voltage sag (e.g., `< 9.5V`), it initiates a lockdown phase. The framework groups mechanisms into three distinct tiers:
+Not all subsystems are created equal. When the `MARSPowerManager` detects a critical system voltage sag (e.g., `&lt; 9.5V`), it initiates a lockdown phase. The framework groups mechanisms into three distinct tiers:
 
   
 

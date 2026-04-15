@@ -1,0 +1,157 @@
+---
+title: "Swerve Drive Quick Reference"
+description: "Get your swerve drive moving in 5 minutes with this quick reference guide."
+sidebar:
+  order: 1
+---
+
+# Swerve Drive Quick Reference
+
+Get your swerve drive robot moving fast! This guide has the essentials.
+
+## Basic Setup (3 Steps)
+
+### 1. Create Your Drivetrain
+
+```java
+public class Drivetrain extends Subsystem {
+    private final SwerveDrive drive;
+    
+    public Drivetrain() {
+        drive = new SwerveDrive();
+    }
+    
+    public void drive(double vx, double vy, double omega) {
+        drive.drive(vx, vy, omega);
+    }
+}
+```
+
+### 2. Create a Drive Command
+
+```java
+public class DriveCommand extends Command {
+    private final Drivetrain drivetrain;
+    private final XboxController controller;
+    
+    public DriveCommand(Drivetrain drivetrain, XboxController controller) {
+        this.drivetrain = drivetrain;
+        this.controller = controller;
+        addRequirements(drivetrain);
+    }
+    
+    @Override
+    public void execute() {
+        double vx = -controller.getLeftY();
+        double vy = controller.getLeftX();
+        double omega = controller.getRightX();
+        drivetrain.drive(vx, vy, omega);
+    }
+}
+```
+
+### 3. Set Up Robot Container
+
+```java
+public class RobotContainer {
+    private final Drivetrain drivetrain = new Drivetrain();
+    private final XboxController driver = new XboxController(0);
+    
+    public RobotContainer() {
+        drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
+    }
+}
+```
+
+## Common Tasks
+
+### Drive to Position
+
+```java
+// Drive to specific point on field
+drivetrain.driveToPose(new Pose2d(3.0, 2.0, new Rotation2d()));
+```
+
+### Zero Odometry
+
+```java
+// Reset robot position to (0,0) facing forward
+drivetrain.seedFieldRelative();
+```
+
+### Get Current Pose
+
+```java
+// Get robot's current position
+Pose2d currentPose = drivetrain.getPose();
+System.out.println("X: " + currentPose.getX() + " Y: " + currentPose.getY());
+```
+
+### Turn to Face
+
+```java
+// Turn to face a specific direction
+drivetrain.driveToPose(new Pose2d(drivetrain.getPose().getTranslation(), 
+                                  new Rotation2d(Math.PI))); // Face 180°
+```
+
+## Troubleshooting
+
+### Robot Won't Move
+
+1. **Check joystick values**: Print them to see if they're being read
+2. **Verify default command**: Make sure drive command is set
+3. **Check modules**: Ensure all 4 modules are working
+
+### Robot Drifts
+
+1. **Check wheel alignment**: Make sure wheels point straight when idle
+2. **Verify odometry**: Reset position and check if drift persists
+3. **Check for collisions**: Physical impacts can misalign wheels
+
+### Poor Path Following
+
+1. **Tune PID gains**: Use SysId to identify gains
+2. **Check velocities**: Ensure motors can achieve requested speeds
+3. **Verify path**: Make sure path is realistic for your robot
+
+## Key Concepts
+
+### What the Numbers Mean
+
+- **vx, vy**: Forward and sideways speed (-1.0 to 1.0)
+- **omega**: Rotation speed (radians per second)
+- **Pose**: Position + rotation on field
+- **Odometry**: Robot's estimated position
+
+### Field-Relative vs Robot-Relative
+
+**Field-Relative**: 
+- Forward is always away from driver
+- Strafe is always left/right relative to driver
+- Use this for teleop!
+
+**Robot-Relative**:
+- Forward is wherever robot is facing
+- Use this for auto programming!
+
+## Quick Tips
+
+✅ **Always**: Test in simulation first
+✅ **Always**: Check joystick deadbands
+✅ **Always**: Print values when debugging
+✅ **Always**: Zero odometry before auto
+
+❌ **Never**: Create new objects in `periodic()`
+❌ **Never**: Ignore CAN errors
+❌ **Never**: Skip simulation testing
+
+## Next Steps
+
+- Learn [Path Following](/tutorials/advanced/path-following)
+- Understand [Odometry](/tutorials/framework/odometry)
+- Master [Auto Routines](/tutorials/autonomous)
+
+---
+
+**Need more help?** Check the [Swerve Drive Guide](/tutorials/framework/swerve-drive) or [FAQ](/faq)

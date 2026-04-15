@@ -1,0 +1,448 @@
+---
+title: "Compilation Errors - Troubleshooting Guide"
+description: "Fix common build and compilation errors in MARSLib robot code."
+sidebar:
+  order: 2
+---
+
+# Compilation Errors - Troubleshooting Guide
+
+Your code won't build? Don't worry! Most compilation errors are easy to fix once you know what they mean.
+
+## Quick Check (1 minute)
+
+### 1. What Type of Error?
+
+**Look at the error message:**
+
+- **Red squiggly lines in VS Code**: Syntax error
+- **Gradle build failed**: Compilation error
+- **Runtime error**: Code compiles but crashes when running
+- **Deployment failed**: Code compiles but won't upload to robot
+
+This guide covers **compilation errors** (when Gradle build fails).
+
+### 2. Check Gradle Output
+
+```bash
+# Run build and see full error
+./gradlew build
+
+# Or in VS Code, look at the Gradle tasks output
+```
+
+**Look for:**
+- ❌ Lines that say "error:" or "failed"
+- 📍 Line numbers where errors occur
+- 📝 File names that have problems
+
+---
+
+## Common Errors and Solutions
+
+### Error 1: "Cannot find symbol"
+
+**What it means:**
+Java doesn't know what you're talking about. You're using something that doesn't exist.
+
+**Example:**
+```
+Drivetrain.java:15: error: cannot find symbol
+        drive.drive(forward, strafe, rotate);
+            ^
+  symbol:   method drive(double,double,double)
+  location: variable drive of type SwerveDrive
+```
+
+**Common causes:**
+1. **Typo in method name**
+```java
+❌ drive.driveForeward(1.0);  // Typo!
+✅ drive.drive(1.0, 0, 0);    // Correct
+```
+
+2. **Wrong number of arguments**
+```java
+❌ drive.drive(1.0);           // Need 3 arguments
+✅ drive.drive(1.0, 0, 0);     // Correct
+```
+
+3. **Wrong import**
+```java
+❌ import com.wpi.first.wpilibj.SwerveDrive;  // Wrong package
+✅ import com.marslib.swerve.SwerveDrive;     // Correct
+```
+
+4. **Forgot to create object**
+```java
+❌ private SwerveDrive drive;     // Never created!
+✅ private SwerveDrive drive = new SwerveDrive();  // Created!
+```
+
+**Fix:**
+1. Check spelling of method names
+2. Verify you have the right number of parameters
+3. Check imports are correct
+4. Make sure objects are created before use
+
+---
+
+### Error 2: "Package does not exist"
+
+**What it means:**
+Java can't find the library or package you're trying to use.
+
+**Example:**
+```
+Drivetrain.java:3: error: package com.marslib.swerve does not exist
+import com.marslib.swerve.SwerveDrive;
+                           ^
+```
+
+**Common causes:**
+1. **MARSLib not added to dependencies**
+```gradle
+// In build.gradle, make sure you have:
+dependencies {
+    implementation 'org.team2614:MARSLib:2024.3.0'  // Add this!
+}
+```
+
+2. **Wrong package name**
+```java
+❌ import com.marslib.swervee.SwerveDrive;  // Typo!
+✅ import com.marslib.swerve.SwerveDrive;   // Correct
+```
+
+3. **Gradle not updated**
+```bash
+# Refresh Gradle to get new dependencies
+./gradlew --refresh-dependencies build
+```
+
+**Fix:**
+1. Add MARSLib to build.gradle
+2. Check package name spelling
+3. Run `./gradlew --refresh-dependencies`
+4. Restart VS Code if needed
+
+---
+
+### Error 3: "Incompatible types"
+
+**What it means:**
+You're trying to use the wrong type of data somewhere.
+
+**Example:**
+```
+DriveCommand.java:25: error: incompatible types: double cannot be converted to String
+        String speed = 5.0;
+                         ^
+```
+
+**Common causes:**
+1. **Wrong variable type**
+```java
+❌ String speed = 5.0;           // Can't put double in String
+✅ double speed = 5.0;           // Correct type
+```
+
+2. **Wrong method return type**
+```java
+❌ String position = drivetrain.getPosition();  // Returns double, not String
+✅ double position = drivetrain.getPosition();  // Correct type
+```
+
+3. **Missing cast**
+```java
+❌ double value = integerList.get(0);  // List returns Integer
+✅ double value = (double) integerList.get(0);  // Cast it
+```
+
+**Fix:**
+1. Check variable types match what you assign
+2. Verify method return types
+3. Add type casts if needed
+4. Use correct types for your data
+
+---
+
+### Error 4: "Method already defined"
+
+**What it means:**
+You have two methods with the same name and parameters in the same class.
+
+**Example:**
+```
+Drivetrain.java:30: error: method drive in class Drivetrain is already defined
+    public void drive(double forward, double strafe, double rotate) {
+         ^
+```
+
+**Common causes:**
+1. **Copied method twice**
+```java
+public void drive(double forward, double strafe, double rotate) {
+    // code here
+}
+
+// Oops, pasted it again!
+public void drive(double forward, double strafe, double rotate) {
+    // same code again
+}
+```
+
+2. **Forgot to delete old version**
+```java
+// Old version
+public void drive(double f, double s, double r) { ... }
+
+// New version (rename or delete old one!)
+public void drive(double forward, double strafe, double rotate) { ... }
+```
+
+**Fix:**
+1. Delete duplicate methods
+2. Rename one if they do different things
+3. Keep only the version you want
+
+---
+
+### Error 5: "Missing return statement"
+
+**What it means:**
+You said a method returns something, but it doesn't always return a value.
+
+**Example:**
+```
+Shooter.java:15: error: missing return statement
+    public double getSpeed() {
+           ^
+```
+
+**Common causes:**
+1. **Forgot return statement**
+```java
+❌ public double getSpeed() {
+    double speed = calculateSpeed();
+    // Forgot: return speed;
+}
+
+✅ public double getSpeed() {
+    double speed = calculateSpeed();
+    return speed;  // Add this!
+}
+```
+
+2. **Return not in all paths**
+```java
+❌ public double getSpeed() {
+    if (isReady) {
+        return currentSpeed;
+    }
+    // What if isReady is false? No return!
+}
+
+✅ public double getSpeed() {
+    if (isReady) {
+        return currentSpeed;
+    }
+    return 0.0;  // Always return something
+}
+```
+
+**Fix:**
+1. Add return statement to method
+2. Make sure all code paths return something
+3. Return default value if needed
+
+---
+
+### Error 6: "Reached end of file while parsing"
+
+**What it means:**
+You have missing closing braces `}` somewhere.
+
+**Example:**
+```
+RobotContainer.java:50: error: reached end of file while parsing
+}
+ ^
+```
+
+**Common causes:**
+1. **Missing closing brace**
+```java
+❌ public class RobotContainer {
+    public RobotContainer() {
+        // Missing closing brace for method
+    // Missing closing brace for class!
+
+✅ public class RobotContainer {
+    public RobotContainer() {
+        // code here
+    }  // Close method
+}  // Close class
+```
+
+2. **Too many opening braces**
+```java
+❌ public void myMethod() {
+    if (something) {
+        while (true) {
+            // Where are all the closing braces?
+
+✅ public void myMethod() {
+    if (something) {
+        while (true) {
+            // code here
+        }  // Close while
+    }  // Close if
+}  // Close method
+```
+
+**Fix:**
+1. Count opening braces `{` and closing braces `}`
+2. Make sure they match
+3. Use VS Code's bracket matching
+4. Indent code to see structure clearly
+
+---
+
+## Quick Fixes to Try
+
+### Fix 1: Clean and Rebuild
+```bash
+# Clean build artifacts
+./gradlew clean
+
+# Rebuild
+./gradlew build
+```
+
+### Fix 2: Refresh Gradle
+```bash
+# Update dependencies
+./gradlew --refresh-dependencies
+
+# Rebuild
+./gradlew build
+```
+
+### Fix 3: Check Java Version
+```bash
+# Make sure you're using Java 17
+java -version
+
+# Should say: 17.x.x
+```
+
+### Fix 4: Restart VS Code
+1. Close VS Code
+2. Reopen VS Code
+3. Wait for Gradle to sync
+4. Try building again
+
+---
+
+## Reading Error Messages
+
+### Anatomy of an Error Message
+
+```
+Drivetrain.java:15: error: cannot find symbol
+    drive.driveForeward(1.0);
+         ^
+  symbol:   method driveForeward(double)
+  location: variable drive of type SwerveDrive
+```
+
+**Breakdown:**
+- `Drivetrain.java:15` - File name and line number
+- `error: cannot find symbol` - What went wrong
+- `drive.driveForeward(1.0);` - The problematic code
+- `^` - Points to exact problem location
+- `symbol: method driveForeward(double)` - What Java can't find
+
+### Using Line Numbers
+1. Go to the file mentioned
+2. Find the line number
+3. Look at code around that line
+4. Check for typos, missing imports, etc.
+
+---
+
+## Prevention Tips
+
+### While Coding:
+✅ **Use VS Code autocomplete** - Prevents typos
+✅ **Import automatically** - Let VS Code manage imports
+✅ **Check for red squiggles** - Fix errors as you type
+✅ **Test compile frequently** - Don't wait until the end
+
+### Before Committing:
+✅ **Run full build** - `./gradlew build`
+✅ **Run tests** - `./gradlew test`
+✅ **Check all errors** - Don't ignore warnings
+✅ **Review changes** - Look for accidental edits
+
+---
+
+## When to Get Help
+
+If you can't fix the error:
+
+### Good Help Request:
+```
+"I'm getting a compilation error in Drivetrain.java:15
+
+Error message:
+'cannot find symbol: method driveForeward(double)'
+
+My code:
+drive.driveForeward(1.0);
+
+I've tried:
+- Checking imports (all look correct)
+- Spelling looks right
+- SwerveDrive object is created
+
+What am I missing?"
+```
+
+### What to Include:
+1. **Full error message**
+2. **Code around the error**
+3. **What you've tried**
+4. **File and line number**
+
+---
+
+## Common Mistakes to Avoid
+
+❌ **Don't**: Ignore errors and keep coding
+✅ **Do**: Fix errors as they appear
+
+❌ **Don't**: Delete code randomly hoping it fixes the error
+✅ **Do**: Read the error message carefully
+
+❌ **Don't**: Copy-paste code without understanding it
+✅ **Do**: Learn what the code does
+
+❌ **Don't**: Give up if you see lots of errors
+✅ **Do**: Fix them one at a time (often fixes others!)
+
+---
+
+## Related Guides
+
+- [Build System Guide](/contributing/getting-started)
+- [VS Code Setup](/tutorials/setup/vscode)
+- [Debugging Tips](/operations/debugging)
+- [Common Code Mistakes](/tutorials/beginner/common-mistakes)
+
+---
+
+**Remember**: Everyone encounters compilation errors. The more you see, the better you get at fixing them!
+
+**Still stuck?** [Share your error](https://github.com/MARSProgramming/MARSLib/discussions) and we'll help you figure it out!

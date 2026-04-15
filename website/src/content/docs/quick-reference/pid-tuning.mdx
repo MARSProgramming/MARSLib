@@ -1,0 +1,381 @@
+---
+title: "PID Tuning Quick Reference"
+description: "Tune PID controllers like a pro with this quick reference guide."
+sidebar:
+  order: 2
+---
+
+# PID Tuning Quick Reference
+
+Tune your PID controllers quickly and effectively. This guide has the essentials.
+
+## What is PID?
+
+**PID** = Proportional + Integral + Derivative
+
+It's a controller that adjusts output to reach a target. Think of it like a thermostat:
+- **P**: "We're far from target, apply more power"
+- **I**: "We've been off for a while, add more power"  
+- **D**: "We're approaching target fast, slow down"
+
+## Quick Setup (3 Steps)
+
+### 1. Create PID Controller
+
+```java
+// Simple PID
+PIDController controller = new PIDController(1.0, 0.0, 0.0);
+
+// With motion profiling (smooth movement)
+ProfiledPIDController controller = new ProfiledPIDController(
+    8.0, 0.0, 0.15,
+    new TrapezoidProfile.Constraints(2.0, 4.0)  // Max velocity, acceleration
+);
+```
+
+### 2. Use in Subsystem
+
+```java
+public class ArmSubsystem extends Subsystem {
+    private final PIDController controller;
+    private final MechanismIO io;
+    
+    public ArmSubsystem() {
+        controller = new PIDController(8.0, 0.0, 0.15);
+        io = new ArmIO();
+    }
+    
+    @Override
+    public void periodic() {
+        // Calculate output
+        double output = controller.calculate(io.getPosition());
+        
+        // Add feedforward (optional but recommended)
+        double feedforward = calculateFeedforward();
+        io.setVoltage(output + feedforward);
+    }
+    
+    public void setPosition(double meters) {
+        controller.setSetpoint(meters);
+    }
+}
+```
+
+### 3. Tune the Gains
+
+See tuning steps below!
+
+---
+
+## Tuning Steps (10 minutes)
+
+### Step 1: Zero Everything (Start Clean)
+
+```java
+PIDController controller = new PIDController(0.0, 0.0, 0.0);
+```
+
+### Step 2: Tune P (Proportional)
+
+**Goal**: Get to target but allow oscillation
+
+1. **Start**: P = 0.1
+2. **Increase**: Double P until it reaches target
+3. **Continue**: Increase until it oscillates slightly
+4. **Back off**: Reduce P by 50% from oscillation point
+
+**What to watch for**:
+- ✅ **Good**: Reaches target with slight overshoot
+- ❌ **Too low**: Never reaches target
+- ❌ **Too high**: Lots of oscillation
+
+### Step 3: Tune D (Derivative)
+
+**Goal**: Eliminate overshoot and oscillation
+
+1. **Start**: D = 0.0
+2. **Increase**: Add D in small increments (0.01, 0.05, 0.1)
+3. **Watch**: Oscillations should decrease
+4. **Stop**: When overshoot is minimal
+
+**What to watch for**:
+- ✅ **Good**: Reaches target smoothly, minimal overshoot
+- ❌ **Too low**: Still oscillating
+- ❌ **Too high**: Slow to reach target, may jitter
+
+### Step 4: Tune I (Integral)
+
+**Goal**: Eliminate steady-state error (never quite reaches target)
+
+1. **Start**: I = 0.0
+2. **Only use if**: System never quite reaches target
+3. **Increase**: Very slowly (0.001, 0.005, 0.01)
+4. **Watch**: Error should decrease over time
+
+**What to watch for**:
+- ✅ **Good**: Eventually reaches exact target
+- ❌ **Too low**: Never reaches exact target
+- ❌ **Too high**: Oscillation comes back, slow response
+
+---
+
+## Common Gains (Starting Points)
+
+### Elevator (Vertical Mechanism)
+```java
+new PIDController(8.0, 0.0, 0.15)  // Strong P, zero I, some D
+```
+
+### Arm (Rotational Mechanism)
+```java
+new PIDController(5.0, 0.0, 0.2)   // Moderate P, zero I, some D
+```
+
+### Flywheel (Spinning Wheel)
+```java
+new PIDController(0.5, 0.002, 0.0) // Low P, small I, zero D
+```
+
+### Drivetrain (Position)
+```java
+new PIDController(2.0, 0.0, 0.1)   // Moderate P, zero I, some D
+```
+
+**Note**: These are starting points! Always tune for your specific robot.
+
+---
+
+## Quick Tuning Method
+
+### The "No Math" Approach
+
+1. **Set P to 1.0, I to 0, D to 0**
+2. **Test**: Does it move?
+   - ❌ No: Increase P (try 2.0, 5.0, 10.0)
+   - ✅ Yes: Go to step 3
+
+3. **Check oscillation**:
+   - ✅ No oscillation: Increase P more
+   - ❌ Too much oscillation: Reduce P by 50%
+
+4. **Add D if needed**:
+   - Start with D = 0.1
+   - Increase until oscillation stops
+
+5. **Add I only if**:
+   - System never reaches exact target
+   - Start with I = 0.001
+   - Increase slowly
+
+**Time**: 5-10 minutes of testing
+
+---
+
+## Feedforward (Advanced)
+
+### What is Feedforward?
+
+Feedforward predicts what output is needed instead of just reacting to error.
+
+### When to Use It?
+- ✅ **Gravity**: Elevators, arms (need power to hold position)
+- ✅ **Friction**: Mechanisms with resistance
+- ✅ **Velocity**: When controlling speed, not position
+
+### Basic Feedforward
+
+```java
+// Simple gravity feedforward for elevator
+public double calculateFeedforward() {
+    double gravity = 0.5;  // Adjust based on mechanism
+    double position = io.getPosition();
+    return gravity * position;
+}
+
+@Override
+public void periodic() {
+    double pid = controller.calculate(io.getPosition());
+    double ff = calculateFeedforward();
+    io.setVoltage(pid + ff);  // Add both!
+}
+```
+
+---
+
+## Troubleshooting PID
+
+### Problem: Never Reaches Target
+
+**Causes**:
+1. P is too low
+2. System is blocked mechanically
+3. Motor can't provide enough power
+
+**Solutions**:
+```java
+// 1. Increase P
+controller.setP(10.0);  // Double it
+
+// 2. Add Integral (slowly)
+controller.setI(0.001);
+
+// 3. Check for mechanical issues
+// Verify nothing is blocking movement
+```
+
+### Problem: Lots of Oscillation
+
+**Causes**:
+1. P is too high
+2. D is too low
+3. I is causing windup
+
+**Solutions**:
+```java
+// 1. Reduce P
+controller.setP(controller.getP() / 2);
+
+// 2. Add Derivative
+controller.setD(0.1);
+
+// 3. Remove or reduce Integral
+controller.setI(0.0);
+
+// 4. Add I-zone (only use I near target)
+controller.setIntegratorRange(-0.1, 0.1);
+```
+
+### Problem: Slow Response
+
+**Causes**:
+1. P is too low
+2. D is too high
+3. Feedforward is wrong
+
+**Solutions**:
+```java
+// 1. Increase P
+controller.setP(controller.getP() * 1.5);
+
+// 2. Reduce D
+controller.setD(controller.getD() / 2);
+
+// 3. Check feedforward
+// Make sure feedforward isn't fighting PID
+```
+
+### Problem: Works in One Direction Only
+
+**Causes**:
+1. Gravity not compensated
+2. Asymmetric friction
+3. Mechanical binding
+
+**Solutions**:
+```java
+// 1. Add gravity feedforward
+public double calculateFeedforward() {
+    double gravity = 0.5;
+    return gravity * io.getPosition();
+}
+
+// 2. Use asymmetric gains (advanced)
+// Different P for up vs down
+```
+
+---
+
+## Testing Tips
+
+### While Tuning:
+- ✅ **Test in simulation first**
+- ✅ **Make small changes**
+- ✅ **Write down what you try**
+- ✅ **Test both directions**
+- ✅ **Check at different positions**
+
+### Safety:
+- ⚠️ **Have e-stop ready**
+- ⚠️ **Start with low power limits**
+- ⚠️ **Test with no load first**
+- ⚠️ **Stay clear of mechanism**
+
+---
+
+## Quick Reference Table
+
+| Symptom | Likely Cause | Try This |
+|---------|-------------|----------|
+| Won't move | P too low | Increase P |
+| Slow response | P too low, D too high | Increase P, decrease D |
+| Oscillates | P too high, D too low | Decrease P, add D |
+| Never reaches target | P too low, need I | Increase P or add small I |
+| Slow approach | I too high | Reduce I |
+| Jittery | D too high | Reduce D |
+| Works one way only | Need feedforward | Add gravity compensation |
+
+---
+
+## Advanced Tips
+
+### Multiple Setpoints
+```java
+// Different gains for different positions
+public void updateGains() {
+    double position = io.getPosition();
+    if (position < 0.5) {
+        controller.setPID(5.0, 0.0, 0.1);  // Low position
+    } else {
+        controller.setPID(8.0, 0.0, 0.2);  // High position
+    }
+}
+```
+
+### Profiled PID
+```java
+// Smooth motion with velocity limits
+ProfiledPIDController controller = new ProfiledPIDController(
+    8.0, 0.0, 0.15,
+    new TrapezoidProfile.Constraints(2.0, 4.0)  // Max vel, accel
+);
+
+controller.setGoal(1.0);  // Will move smoothly to 1.0m
+```
+
+### Tuning with SysId
+```java
+// Use SysId tool to identify gains automatically
+// Run: ./gradlew sysid
+// Feed results into PID controller
+```
+
+---
+
+## Common Mistakes
+
+❌ **Don't**: Change all gains at once
+✅ **Do**: Change one at a time
+
+❌ **Don't**: Ignore feedforward for gravity mechanisms
+✅ **Do**: Add feedforward for elevators/arms
+
+❌ **Don't**: Set I too high to fix steady-state error
+✅ **Do**: Fix mechanical issues first
+
+❌ **Don't**: Tune on real robot only
+✅ **Do**: Start in simulation
+
+---
+
+## Next Steps
+
+- [Control Theory Guide](/tutorials/control-theory/intro)
+- [SysId Tuning](/tutorials/advanced/sysid)
+- [Feedforward Guide](/tutorials/control-theory/feedforward)
+- [Mechanism Control](/tutorials/framework/mechanisms)
+
+---
+
+**Remember**: Good PID tuning takes practice. Start simple, test often, and write down what works!
+
+**Need help?** [Share your tuning struggles](https://github.com/MARSProgramming/MARSLib/discussions)

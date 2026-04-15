@@ -1,0 +1,670 @@
+---
+title: "Interactive Code Challenges"
+description: "Practice your robot programming skills with these hands-on coding exercises."
+sidebar:
+  order: 2
+---
+
+# Interactive Code Challenges
+
+Practice your robot programming skills! These challenges start simple and get progressively harder.
+
+## How to Use These Challenges
+
+1. **Read the problem** carefully
+2. **Think about the solution** before coding
+3. **Write the code** in your robot project
+4. **Test in simulation** to verify it works
+5. **Reveal the solution** to compare your approach
+
+---
+
+## Challenge 1: Drive in a Square
+
+### 🎯 Goal
+Make the robot drive in a 2m × 2m square and return to the starting position.
+
+### 📋 Requirements
+- Drive forward 2 meters
+- Turn 90 degrees right
+- Drive forward 2 meters
+- Turn 90 degrees right
+- Repeat until robot completes square
+- Should work in simulation
+
+### 💡 Hints
+
+<details>
+<summary>Hint 1: Think about the sequence</summary>
+
+You need to repeat these actions:
+1. Drive forward 2m
+2. Turn 90°
+3. Do this 4 times total
+</details>
+
+<details>
+<summary>Hint 2: Use Commands.sequence()</summary>
+
+`Commands.sequence()` runs commands one after another. Each action can be its own command.
+
+```java
+Commands.sequence(
+    command1,
+    command2,
+    command3
+);
+```
+</details>
+
+<details>
+<summary>Hint 3: Create a DriveDistance command</summary>
+
+You'll need a command that drives a specific distance. Use odometry to know when to stop.
+
+```java
+public boolean isFinished() {
+    double distance = startingPose.getTranslation().getDistance(
+        drivetrain.getPose().getTranslation()
+    );
+    return distance >= targetDistance;
+}
+```
+</details>
+
+### ✅ Solution
+
+<details>
+<summary>👁️ Reveal Solution</summary>
+
+```java
+// Command to drive specific distance
+public class DriveDistance extends Command {
+    private final Drivetrain drivetrain;
+    private final double distance;
+    private Pose2d startingPose;
+    
+    public DriveDistance(Drivetrain drivetrain, double meters) {
+        this.drivetrain = drivetrain;
+        this.distance = meters;
+        addRequirements(drivetrain);
+    }
+    
+    @Override
+    public void initialize() {
+        startingPose = drivetrain.getPose();
+    }
+    
+    @Override
+    public void execute() {
+        drivetrain.drive(1.0, 0, 0);  // Drive forward at full speed
+    }
+    
+    @Override
+    public boolean isFinished() {
+        double traveled = startingPose.getTranslation().getDistance(
+            drivetrain.getPose().getTranslation()
+        );
+        return traveled >= distance;
+    }
+    
+    @Override
+    public void end(boolean interrupted) {
+        drivetrain.drive(0, 0, 0);  // Stop
+    }
+}
+
+// Command to turn 90 degrees
+public class Turn90Degrees extends Command {
+    private final Drivetrain drivetrain;
+    private Rotation2d startingHeading;
+    
+    public Turn90Degrees(Drivetrain drivetrain) {
+        this.drivetrain = drivetrain;
+        addRequirements(drivetrain);
+    }
+    
+    @Override
+    public void initialize() {
+        startingHeading = drivetrain.getPose().getRotation();
+    }
+    
+    @Override
+    public void execute() {
+        drivetrain.drive(0, 0, Math.PI / 4);  // Turn at 45°/second
+    }
+    
+    @Override
+    public boolean isFinished() {
+        Rotation2d currentHeading = drivetrain.getPose().getRotation();
+        double degreesTurned = startingHeading.minus(currentHeading).getDegrees();
+        return Math.abs(degreesTurned) >= 90;
+    }
+    
+    @Override
+    public void end(boolean interrupted) {
+        drivetrain.drive(0, 0, 0);  // Stop
+    }
+}
+
+// Complete square auto
+public Command squareAuto() {
+    return Commands.sequence(
+        new DriveDistance(drivetrain, 2.0),
+        new Turn90Degrees(drivetrain),
+        new DriveDistance(drivetrain, 2.0),
+        new Turn90Degrees(drivetrain),
+        new DriveDistance(drivetrain, 2.0),
+        new Turn90Degrees(drivetrain),
+        new DriveDistance(drivetrain, 2.0),
+        new Turn90Degrees(drivetrain)
+    );
+}
+```
+</details>
+
+---
+
+## Challenge 2: precise Position Control
+
+### 🎯 Goal
+Make the robot drive to a specific position (3m, 2m) on the field and stop within 10cm.
+
+### 📋 Requirements
+- Start anywhere on field
+- Drive to position (3, 2)
+- Stop within 10cm of target
+- Face in the direction of movement
+- Work in simulation
+
+### 💡 Hints
+
+<details>
+<summary>Hint 1: Use PID Controller</summary>
+
+A PID controller can help you reach a precise position. MARSLib has built-in path following!
+
+</details>
+
+<details>
+<summary>Hint 2: Holonomic Drive</summary>
+
+Swerve drive can move in any direction while facing any direction. Use this to your advantage!
+
+</details>
+
+<details>
+<summary>Hint 3: PathPlanner</summary>
+
+PathPlanner can create paths to specific positions. You can load a path that goes to (3, 2).
+
+```java
+PathPlannerPath path = PathPlanner.loadPath("ToTarget", 3.0, 4.0);
+```
+</details>
+
+### ✅ Solution
+
+<details>
+<summary>👁️ Reveal Solution</summary>
+
+```java
+public class DriveToPosition extends Command {
+    private final Drivetrain drivetrain;
+    private final Pose2d targetPose;
+    private final PIDController xController;
+    private final PIDController yController;
+    private final PIDController thetaController;
+    
+    public DriveToPosition(Drivetrain drivetrain, double x, double y, double headingDegrees) {
+        this.drivetrain = drivetrain;
+        this.targetPose = new Pose2d(x, y, Rotation2d.fromDegrees(headingDegrees));
+        
+        // Tune these for your robot!
+        xController = new PIDController(2.0, 0, 0);
+        yController = new PIDController(2.0, 0, 0);
+        thetaController = new PIDController(3.0, 0, 0);
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        
+        addRequirements(drivetrain);
+    }
+    
+    @Override
+    public void execute() {
+        Pose2d currentPose = drivetrain.getPose();
+        
+        // Calculate velocities to reach target
+        double xVelocity = xController.calculate(currentPose.getX(), targetPose.getX());
+        double yVelocity = yController.calculate(currentPose.getY(), targetPose.getY());
+        double thetaVelocity = thetaController.calculate(
+            currentPose.getRotation().getRadians(),
+            targetPose.getRotation().getRadians()
+        );
+        
+        // Drive robot
+        drivetrain.driveRobotRelative(
+            new ChassisSpeeds(xVelocity, yVelocity, thetaVelocity)
+        );
+    }
+    
+    @Override
+    public boolean isFinished() {
+        Pose2d currentPose = drivetrain.getPose();
+        double distance = currentPose.getTranslation().getDistance(
+            targetPose.getTranslation()
+        );
+        double headingError = Math.abs(currentPose.getRotation().minus(
+            targetPose.getRotation()
+        ).getDegrees());
+        
+        // Stop when close enough
+        return distance < 0.1 && headingError < 5.0;
+    }
+    
+    @Override
+    public void end(boolean interrupted) {
+        drivetrain.drive(0, 0, 0);  // Stop
+    }
+}
+
+// Use the command
+public Command driveToTarget() {
+    return new DriveToPosition(drivetrain, 3.0, 2.0, 0.0);
+}
+```
+</details>
+
+---
+
+## Challenge 3: Pick Up and Score Game Piece
+
+### 🎯 Goal
+Create an auto routine that:
+1. Drives to a game piece
+2. Picks it up with intake
+3. Drives to scoring position
+4. Scores the piece
+
+### 📋 Requirements
+- Use at least 2 subsystems (drivetrain + intake/shooter)
+- Sequence commands properly
+- Handle timing for pickup and scoring
+- Work in simulation
+
+### 💡 Hints
+
+<details>
+<summary>Hint 1: Use Commands.sequence()</summary>
+
+Sequence commands run one after another:
+
+```java
+Commands.sequence(
+    driveToIntake,
+    intakePiece,
+    driveToScore,
+    scorePiece
+);
+```
+</details>
+
+<details>
+<summary>Hint 2: Use Commands.deadline() for timing</summary>
+
+`Commands.deadline()` runs a command but ends after a timeout:
+
+```java
+Commands.deadline(
+    Commands.waitSeconds(2.0),  // Timeout
+    new IntakeCommand(intake)   // Command that runs
+);
+```
+</details>
+
+<details>
+<summary>Hint 3: Create Intake and Shooter commands</summary>
+
+You need commands for:
+- `IntakeCommand` - runs intake until piece detected
+- `ScoreCommand` - runs shooter until piece scored
+
+</details>
+
+### ✅ Solution
+
+<details>
+<summary>👁️ Reveal Solution</summary>
+
+```java
+// Intake command - runs until has piece
+public class IntakeCommand extends Command {
+    private final Intake intake;
+    
+    public IntakeCommand(Intake intake) {
+        this.intake = intake;
+        addRequirements(intake);
+    }
+    
+    @Override
+    public void initialize() {
+        intake.intake();  // Start intake motor
+    }
+    
+    @Override
+    public void execute() {
+        // Keep running
+    }
+    
+    @Override
+    public boolean isFinished() {
+        return intake.hasPiece();  // Stop when we have a piece
+    }
+    
+    @Override
+    public void end(boolean interrupted) {
+        intake.stop();  // Stop intake motor
+    }
+}
+
+// Shooter command - runs for specific time
+public class ScoreCommand extends Command {
+    private final Shooter shooter;
+    private double startTime;
+    
+    public ScoreCommand(Shooter shooter) {
+        this.shooter = shooter;
+        addRequirements(shooter);
+    }
+    
+    @Override
+    public void initialize() {
+        startTime = Timer.getFPGATimestamp();
+        shooter.shoot();  // Start shooter
+    }
+    
+    @Override
+    public void execute() {
+        // Keep running
+    }
+    
+    @Override
+    public boolean isFinished() {
+        // Run for 2 seconds
+        return Timer.getFPGATimestamp() - startTime > 2.0;
+    }
+    
+    @Override
+    public void end(boolean interrupted) {
+        shooter.stop();  // Stop shooter
+    }
+}
+
+// Complete auto
+public Command pickupAndScore() {
+    return Commands.sequence(
+        // Drive to piece (using PathPlanner)
+        AutoBuilder.followPath(PathPlanner.loadPath("ToIntake", 3.0, 4.0)),
+        
+        // Intake the piece (timeout at 3 seconds in case no piece)
+        Commands.deadline(
+            Commands.waitSeconds(3.0),
+            new IntakeCommand(intake)
+        ),
+        
+        // Drive to scoring position
+        AutoBuilder.followPath(PathPlanner.loadPath("ToScore", 3.0, 4.0)),
+        
+        // Score the piece
+        new ScoreCommand(shooter)
+    );
+}
+```
+</details>
+
+---
+
+## Challenge 4: Balance on Charging Station
+
+### 🎯 Goal
+Make the robot automatically balance on the charging station (or any inclined surface).
+
+### 📋 Requirements
+- Detect when robot is on incline
+- Adjust position to find balance point
+- Stay balanced once level
+- Work on real charging station or simulation
+
+### 💡 Hints
+
+<details>
+<summary>Hint 1: Use Gyroscope</summary>
+
+The gyroscope tells you the robot's pitch (front/back tilt). Use this to detect the charging station.
+
+```java
+double pitch = drivetrain.getPitch();  // In radians
+```
+</details>
+
+<details>
+<summary>Hint 2: PID Control</summary>
+
+Use a PID controller to drive based on pitch angle:
+
+- Pitch > 0: Drive forward
+- Pitch < 0: Drive backward
+- Pitch ≈ 0: Stop (balanced!)
+
+</details>
+
+<details>
+<summary>Hint 3: Deadband</summary>
+
+Add a small deadband so tiny fluctuations don't cause movement:
+
+```java
+if (Math.abs(pitch) < 0.05) {
+    // Close enough to balanced, stop
+}
+```
+</details>
+
+### ✅ Solution
+
+<details>
+<summary>👁️ Reveal Solution</summary>
+
+```java
+public class BalanceCommand extends Command {
+    private final Drivetrain drivetrain;
+    private final PIDController controller;
+    
+    public BalanceCommand(Drivetrain drivetrain) {
+        this.drivetrain = drivetrain;
+        
+        // Tune these for your robot!
+        // P: How aggressively to correct imbalance
+        // D: Dampen oscillation
+        controller = new PIDController(2.0, 0.0, 0.5);
+        
+        addRequirements(drivetrain);
+    }
+    
+    @Override
+    public void execute() {
+        double pitch = drivetrain.getPitch();  // Get robot tilt
+        
+        // Calculate drive speed based on pitch
+        double output = controller.calculate(pitch, 0.0);  // Target = 0 (level)
+        
+        // Deadband - if we're close enough, stop
+        if (Math.abs(pitch) < 0.05) {  // ~3 degrees
+            drivetrain.drive(0, 0, 0);
+        } else {
+            drivetrain.drive(output, 0, 0);  // Drive forward/backward
+        }
+    }
+    
+    @Override
+    public boolean isFinished() {
+        // Never finish - driver will cancel when done
+        return false;
+    }
+}
+
+// Use it
+public Command autoBalance() {
+    return Commands.sequence(
+        // Drive onto charging station
+        new DriveDistance(drivetrain, 2.0),
+        // Balance
+        new BalanceCommand(drivetrain)
+    );
+}
+```
+</details>
+
+---
+
+## Challenge 5: Vision-Assisted Scoring
+
+### 🎯 Goal
+Use vision to automatically aim and score at a target.
+
+### 📋 Requirements
+- Detect target with camera
+- Aim robot at target
+- Drive to correct distance
+- Score when aligned
+
+### 💡 Hints
+
+<details>
+<summary>Hint 1: Vision gives you target position</summary>
+
+Your vision system should provide:
+- Target yaw (left/right angle)
+- Target distance (how far away)
+- Target pitch (up/down angle)
+
+</details>
+
+<details>
+<summary>Hint 2: PID for aiming</summary>
+
+Use PID to control rotation based on target yaw:
+- Yaw > 0: Turn right
+- Yaw < 0: Turn left
+- Yaw ≈ 0: Aimed!
+
+</details>
+
+<details>
+<summary>Hint 3: Distance control</summary>
+
+Use another PID for distance control:
+- Too far: Drive forward
+- Too close: Drive backward
+- Correct distance: Stop and score
+
+</details>
+
+### ✅ Solution
+
+<details>
+<summary>👁️ Reveal Solution</summary>
+
+```java
+public class VisionAimCommand extends Command {
+    private final Drivetrain drivetrain;
+    private final VisionIO vision;
+    private final Shooter shooter;
+    
+    private final PIDController turnController;
+    private final PIDController distanceController;
+    
+    public VisionAimCommand(Drivetrain drivetrain, VisionIO vision, Shooter shooter) {
+        this.drivetrain = drivetrain;
+        this.vision = vision;
+        this.shooter = shooter;
+        
+        turnController = new PIDController(3.0, 0, 0.5);
+        distanceController = new PIDController(2.0, 0, 0.3);
+        
+        addRequirements(drivetrain);
+    }
+    
+    @Override
+    public void execute() {
+        // Get target data from vision
+        Optional<VisionData> target = vision.getTarget();
+        
+        if (target.isEmpty()) {
+            // No target visible, stop
+            drivetrain.drive(0, 0, 0);
+            return;
+        }
+        
+        VisionData data = target.get();
+        
+        // Calculate outputs
+        double turnOutput = turnController.calculate(data.getYaw(), 0.0);
+        double driveOutput = distanceController.calculate(
+            data.getDistance(),
+            2.0  // Target distance: 2 meters
+        );
+        
+        // Drive robot
+        drivetrain.drive(driveOutput, 0, turnOutput);
+    }
+    
+    @Override
+    public boolean isFinished() {
+        // Check if aligned and at correct distance
+        Optional<VisionData> target = vision.getTarget();
+        if (target.isEmpty()) return false;
+        
+        VisionData data = target.get();
+        boolean aligned = Math.abs(data.getYaw()) < 0.05;  // ~3 degrees
+        boolean correctDistance = Math.abs(data.getDistance() - 2.0) < 0.1;  // 10cm
+        
+        return aligned && correctDistance;
+    }
+    
+    @Override
+    public void end(boolean interrupted) {
+        drivetrain.drive(0, 0, 0);
+        
+        // If we finished (not interrupted), score!
+        if (!interrupted) {
+            shooter.score();
+        }
+    }
+}
+```
+</details>
+
+---
+
+## Keep Practicing!
+
+These challenges are just the beginning. Keep creating your own challenges:
+
+### More Challenge Ideas:
+- **Curve Follower**: Follow a curved path precisely
+- **Obstacle Avoidance**: Navigate around obstacles
+- **Multi-Piece Auto**: Pick up and score multiple pieces
+- **Defensive Auto**: Block opponent while scoring
+- **Emergency Recovery**: Recover from tipover or collision
+
+### Tips for Creating Challenges:
+1. **Start with what you know** - Modify existing examples
+2. **Break it down** - Divide complex tasks into simple ones
+3. **Test often** - Verify each piece works
+4. **Learn from mistakes** - Debugging is learning!
+
+---
+
+**Ready for more?** Check out [Advanced Challenges](/interactive/exercises/advanced) when you master these!
+
+**Stuck on a challenge?** Ask for help on [Discussions](https://github.com/MARSProgramming/MARSLib/discussions) - explain what you've tried and what's not working.

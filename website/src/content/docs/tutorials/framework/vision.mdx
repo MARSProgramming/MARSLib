@@ -1,8 +1,7 @@
 ---
+title: "Vision Fusion & Filtration"
 sidebar:
   order: 10
-id: vision
-title: "Vision Fusion & Filtration"
 ---
 
   
@@ -15,13 +14,13 @@ In the FRC 2026: **REBUILT** game, absolute field localization is critical. MARS
 Vision poses are frequently wrong during high-speed gameplay. Before a measurement reached the Pose Estimator, it must survive five strict boundary checks:
 
   
-    - **Z-Height Hallucinations:** If the pose estimates the robot is flying (Z > 0.5m), it's rejected.
+    - **Z-Height Hallucinations:** If the pose estimates the robot is flying (Z &gt; 0.5m), it's rejected.
 
     - **Out of Bounds:** If the pose is tracked outside the physical field, it's rejected.
 
-    - **Motion Blur:** If the gyro reports > 120&deg;/s yaw rate, vision is entirely blocked.
+    - **Motion Blur:** If the gyro reports &gt; 120&deg;/s yaw rate, vision is entirely blocked.
 
-    - **Beaching (Pitch/Roll):** If you ride over an obstacle and tilt > 15&deg;, the pose is rejected.
+    - **Beaching (Pitch/Roll):** If you ride over an obstacle and tilt &gt; 15&deg;, the pose is rejected.
 
     - **Ambiguity:** Low quality single-tag solutions are discarded.
 

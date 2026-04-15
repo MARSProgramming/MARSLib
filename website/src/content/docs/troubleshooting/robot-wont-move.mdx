@@ -1,0 +1,324 @@
+---
+title: "Robot Won't Move - Troubleshooting Guide"
+description: "Step-by-step checklist to diagnose and fix why your robot won't move."
+sidebar:
+  order: 1
+---
+
+# Robot Won't Move - Troubleshooting Guide
+
+Your robot should move when you press the joystick. If it doesn't, follow this checklist to find and fix the problem.
+
+## Quick Check (30 seconds)
+
+### 1. Is Robot Code Running?
+- Look at the Driver Station
+- Is "Robot Code" showing **GREEN**?
+  - ❌ **RED/YELLOW**: Code isn't running
+  - ✅ **GREEN**: Code is running, skip to Step 2
+
+**If not green:**
+1. Check for errors in RioLog
+2. Reboot the RoboRIO
+3. Restart the Driver Station
+4. Redeploy code if needed
+
+### 2. Is Robot Enabled?
+- Look at Driver Station mode
+- Are you in **Teleop**, **Auto**, or **Test** mode?
+- Is the **ENABLE** button pressed?
+
+**If disabled:**
+1. Click the mode you want (usually Teleop)
+2. Click the ENABLE button
+3. Robot should move now
+
+### 3. Is Controller Connected?
+- Look at Driver Station USB tab
+- Do you see your controller?
+- Are the lights on the controller on?
+
+**If not connected:**
+1. Unplug and replug controller
+2. Try different USB port
+3. Replace controller batteries
+4. Try different controller
+
+---
+
+## Detailed Diagnosis (5 minutes)
+
+If quick check didn't fix it, work through these steps:
+
+### Step 1: Check Joystick Input (1 minute)
+
+**Print joystick values to see if they're being read:**
+
+```java
+@Override
+public void execute() {
+    double forward = -controller.getLeftY();
+    double strafe = controller.getLeftX();
+    double rotate = controller.getRightX();
+    
+    // Add this to debug
+    System.out.println("Joystick: F=" + forward + " S=" + strafe + " R=" + rotate);
+    
+    drivetrain.drive(forward, strafe, rotate);
+}
+```
+
+**What to look for:**
+- ✅ **Values changing**: Joystick works, problem is elsewhere
+- ❌ **Always zero**: Joystick not being read
+- ❌ **No output**: Command isn't running
+
+### Step 2: Verify Command is Running (1 minute)
+
+**Add debug print to see if command runs:**
+
+```java
+public DriveCommand(Drivetrain drivetrain, XboxController controller) {
+    this.drivetrain = drivetrain;
+    this.controller = controller;
+    addRequirements(drivetrain);
+    System.out.println("DriveCommand created!");  // Add this
+}
+
+@Override
+public void execute() {
+    System.out.println("DriveCommand executing!");  // Add this
+    // ... rest of code
+}
+```
+
+**What to look for:**
+- ✅ **"executing!" prints every 20ms**: Command is running
+- ❌ **Only "created!" once**: Command not scheduled
+- ❌ **No output at all**: Command not being created
+
+### Step 3: Check Default Command (1 minute)
+
+**Make sure drivetrain has a default command:**
+
+```java
+public RobotContainer() {
+    // In RobotContainer.java
+    drivetrain.setDefaultCommand(
+        new DriveCommand(drivetrain, driver)
+    );
+}
+```
+
+**Verify it's set:**
+1. Add print to RobotContainer constructor
+2. Look for "DriveCommand created!" in RioLog
+3. Check that default command is actually set
+
+### Step 4: Check Subsystem (1 minute)
+
+**Add debug to subsystem:**
+
+```java
+public void drive(double forward, double strafe, double rotate) {
+    System.out.println("Drive called: " + forward + ", " + strafe + ", " + rotate);
+    drive.drive(forward, strafe, rotate);
+}
+```
+
+**What to look for:**
+- ✅ **"Drive called!" prints**: Subsystem receiving commands
+- ❌ **No output**: Subsystem not being called
+
+### Step 5: Check Motor Configuration (2 minutes)
+
+**Verify motors are configured correctly:**
+
+```java
+// Check in your subsystem constructor
+public Drivetrain() {
+    // Add debug to verify motors are created
+    System.out.println("Creating drivetrain...");
+    drive = new SwerveDrive();
+    System.out.println("Drivetrain created!");
+}
+```
+
+**Check motor hardware:**
+1. Look for CAN errors in RioLog
+2. Verify motor IDs are correct
+3. Check that motors are getting power
+4. Try one motor at a time
+
+---
+
+## Common Problems and Solutions
+
+### Problem 1: Wrong Controller Port
+
+**Symptoms:**
+- Joystick values don't change
+- "DriveCommand executing!" but values are zero
+
+**Solution:**
+```java
+// Try different port numbers
+private final XboxController driver = new XboxController(0);  // Try 1, 2, 3
+```
+
+### Problem 2: Deadband Too Large
+
+**Symptoms:**
+- Robot moves only when joystick is at max
+- Small movements don't work
+
+**Solution:**
+```java
+// Reduce or remove deadband
+double forward = -controller.getLeftY();
+if (Math.abs(forward) < 0.1) forward = 0;  // Reduce from 0.2 to 0.1
+```
+
+### Problem 3: Command Not Scheduled
+
+**Symptoms:**
+- "DriveCommand created!" but never "executing!"
+- Command runs once then stops
+
+**Solution:**
+```java
+// Make sure it's set as DEFAULT command
+drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driver));
+
+// NOT scheduled with .schedule()
+// new DriveCommand(drivetrain, driver).schedule();  // Wrong way
+```
+
+### Problem 4: Subsystem Requirements Wrong
+
+**Symptoms:**
+- Command creates but doesn't execute
+- Other commands prevent this one from running
+
+**Solution:**
+```java
+public DriveCommand(Drivetrain drivetrain, XboxController controller) {
+    this.drivetrain = drivetrain;
+    this.controller = controller;
+    addRequirements(drivetrain);  // MUST have this!
+}
+```
+
+### Problem 5: Motors Not Connected
+
+**Symptoms:**
+- Everything looks good in code
+- Motors show in RioLog but don't move
+- No CAN errors
+
+**Solution:**
+1. Check motor power cables
+2. Verify motor controllers have power
+3. Check motor breakers (if applicable)
+4. Try swapping motor controllers
+
+### Problem 6: Simulation vs Real Robot
+
+**Symptoms:**
+- Works in simulation but not real robot
+- Code runs but no movement
+
+**Solution:**
+```java
+// Check you're using REAL IO, not SIM IO
+public Drivetrain() {
+    // Make sure you're not creating IOSim by accident
+    drive = new SwerveDrive();
+}
+```
+
+---
+
+## Quick Fixes to Try
+
+### Fix 1: Reboot Everything
+1. Disable robot
+2. Reboot RoboRIO
+3. Restart Driver Station
+4. Re-enable robot
+
+### Fix 2: Redeploy Code
+1. Stop code
+2. Build project: `./gradlew build`
+3. Deploy: `./gradlew deploy`
+4. Re-enable robot
+
+### Fix 3: Check Update Speed
+```java
+// Make sure signals are updating
+motor.setPosition(0).setUpdateFrequency(100);  // 100Hz
+```
+
+### Fix 4: Verify CAN Bus
+1. Check Phoenix Positioner shows motors
+2. Look for CAN errors in RioLog
+3. Verify CAN bus is connected
+
+---
+
+## When to Get Help
+
+If you've tried everything above:
+
+### What to Tell Us:
+1. **What you see**: RioLog output, Driver Station status
+2. **What you tried**: Which fixes you attempted
+3. **What happens**: Exact symptoms (what does/doesn't work)
+4. **Code snippet**: Relevant parts of your code
+
+### Good Help Request:
+```
+"My swerve drive won't move. I've verified:
+- Robot code is running (green on Driver Station)
+- Joystick values are printing (F=0.5, S=0.0, R=0.0)
+- Command is executing (prints every 20ms)
+- Subsystem drive() is being called
+- Motors show in Phoenix but don't move
+
+No CAN errors in RioLog. All motor IDs are correct.
+What should I check next?"
+```
+
+---
+
+## Prevention Tips
+
+### Before Competition:
+- ✅ Test all subsystems individually
+- ✅ Verify each motor works
+- ✅ Check all joystick mappings
+- ✅ Document controller ports
+
+### During Competition:
+- ✅ Keep this checklist handy
+- ✅ Have spare controllers ready
+- ✅ Know motor IDs and CAN bus layout
+- ✅ Practice quick diagnosis
+
+### After Fix:
+- ✅ Document what was wrong
+- ✅ Add check to prevent future issues
+- ✅ Tell team members what to watch for
+
+---
+
+## Related Guides
+
+- [Motor Configuration Guide](/tutorials/hardware/motor-setup)
+- [Controller Input Guide](/tutorials/hardware/controllers)
+- [CAN Bus Troubleshooting](/troubleshooting/can-bus)
+- [General Debugging Tips](/operations/debugging)
+
+---
+
+**Still stuck?** [Ask the community](https://github.com/MARSProgramming/MARSLib/discussions) - we're here to help!

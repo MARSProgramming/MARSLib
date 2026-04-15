@@ -51,7 +51,20 @@ export default defineConfig({
 				'./src/styles/custom.css',
 				'./src/styles/copy-button.css',
 			],
-			scripts: ['./src/scripts/copy-button.js', './src/scripts/search-shortcut.js'],
+			head: [
+				{
+					tag: 'meta',
+					attrs: { name: 'color-scheme', content: 'dark only' },
+				},
+				{
+					tag: 'script',
+					attrs: { src: '/src/scripts/copy-button.js', defer: true },
+				},
+				{
+					tag: 'script',
+					attrs: { src: '/src/scripts/search-shortcut.js', defer: true },
+				},
+			],
 			logo: {
 				src: './src/assets/mars-logo.png',
 			},

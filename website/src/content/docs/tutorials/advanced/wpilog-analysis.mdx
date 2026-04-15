@@ -1,10 +1,8 @@
 ---
+title: "WPILog Analysis Guide"
+description: "Master AdvantageKit WPILog analysis for robot performance debugging. Learn to parse logs, identify bottlenecks, and optimize robot performance."
 sidebar:
   order: 3
-id: wpilog-analysis
-title: "WPILog Analysis Guide"
-template: doc
-description: "Master AdvantageKit WPILog analysis for robot performance debugging. Learn to parse logs, identify bottlenecks, and optimize robot performance."
 ---
 
 # WPILog Analysis Guide
@@ -124,9 +122,9 @@ console.log(`CPU spikes detected: ${spikes.length} times`);
 ```
 
 **CPU Optimization Targets:**
-- **Normal Operation**: < 50% CPU usage
-- **Heavy Load**: < 80% CPU usage
-- **Critical Spikes**: < 95% CPU usage
+- **Normal Operation**: &lt; 50% CPU usage
+- **Heavy Load**: &lt; 80% CPU usage
+- **Critical Spikes**: &lt; 95% CPU usage
 
 ### Memory Analysis
 
@@ -148,9 +146,9 @@ if (memoryGrowth > 10) {
 ```
 
 **Memory Targets:**
-- **Total Memory**: < 200MB for robot code
-- **Growth Rate**: < 1MB per minute
-- **Per-Iteration**: < 100 bytes per periodic() call
+- **Total Memory**: &lt; 200MB for robot code
+- **Growth Rate**: &lt; 1MB per minute
+- **Per-Iteration**: &lt; 100 bytes per periodic() call
 
 ## Bottleneck Identification
 
@@ -325,7 +323,7 @@ if (growthRate > 5) {
 
 ### Issue: CPU Usage Too High
 
-**Symptoms:** CPU usage consistently > 80%
+**Symptoms:** CPU usage consistently &gt; 80%
 
 **Diagnosis:**
 ```typescript

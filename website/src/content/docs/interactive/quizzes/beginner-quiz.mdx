@@ -1,0 +1,300 @@
+---
+title: "Beginner Knowledge Quiz"
+description: "Test your understanding of MARSLib basics with this interactive quiz."
+sidebar:
+  order: 1
+---
+
+# Beginner Knowledge Quiz
+
+Test what you've learned! This quiz covers the basics from the beginner learning path.
+
+## Quiz Instructions
+
+- **Answer each question** to the best of your ability
+- **Check your answers** using the reveal buttons
+- **Track your progress** as you go
+- **Don't worry if you miss some** - learning takes time!
+
+---
+
+## Question 1: What is a Subsystem?
+
+**A)** A type of robot motor
+**B)** A part of your robot that performs a specific function
+**C)** A programming language for robots
+**D)** A tool for debugging code
+
+<details>
+<summary>👁️ Reveal Answer</summary>
+
+**Correct Answer: B)** A part of your robot that performs a specific function
+
+**Explanation**: A subsystem is a part of your robot like the drivetrain, shooter, or intake. Each subsystem manages a specific piece of hardware and provides methods to control it.
+
+**Examples**:
+- `Drivetrain` - controls the wheels and movement
+- `Shooter` - controls the shooting mechanism
+- `Intake` - controls picking up game pieces
+</details>
+
+---
+
+## Question 2: What Does IO Abstraction Mean?
+
+**A)** Input/Output operations only
+**B)** Separating robot code from specific hardware
+**C)** Internet connection for robots
+**D)** Internal organization of code
+
+<details>
+<summary>👁️ Reveal Answer</summary>
+
+**Correct Answer: B)** Separating robot code from specific hardware
+
+**Explanation**: IO Abstraction Layer means your robot code talks to an "interface" instead of directly to hardware. This lets you test with simulated hardware and easily swap real hardware.
+
+**Benefits**:
+- Test code without a robot
+- Change hardware without rewriting code
+- Same code works in simulation and on real robot
+</details>
+
+---
+
+## Question 3: What is a Command?
+
+**A)** A robot motor controller
+**B)** An action that your robot can perform
+**C)** A type of sensor
+**D)** A programming error
+
+<details>
+<summary>👁️ Reveal Answer</summary>
+
+**Correct Answer: B)** An action that your robot can perform
+
+**Explanation**: Commands represent actions like "drive forward," "shoot ball," or "move arm." Each command specifies what subsystems it needs and what to do when it runs.
+
+**Command Lifecycle**:
+1. `initialize()` - runs once when command starts
+2. `execute()` - runs every 20ms (50 times per second!)
+3. `isFinished()` - checks if command should stop
+4. `end()` - runs once when command stops
+</details>
+
+---
+
+## Question 4: How Often Does `periodic()` Run?
+
+**A)** Once per second
+**B)** Every 100 milliseconds (10 times per second)
+**C)** Every 20 milliseconds (50 times per second)
+**D)** Only when buttons are pressed
+
+<details>
+<summary>👁️ Reveal Answer</summary>
+
+**Correct Answer: C)** Every 20 milliseconds (50 times per second)
+
+**Explanation**: The `periodic()` method runs exactly 50 times every second. This is fast enough for smooth robot control but not so fast that it overwhelms the robot.
+
+**Important**: Keep `periodic()` code short and fast! If it takes too long, your robot will stutter.
+</details>
+
+---
+
+## Question 5: What is Zero-Allocation?
+
+**A)** Not spending any money on robot parts
+**B)** Avoiding creating new objects in time-critical code
+**C)** Setting all values to zero
+**D)** Using zero motors
+
+<details>
+<summary>👁️ Reveal Answer</summary>
+
+**Correct Answer: B)** Avoiding creating new objects in time-critical code
+
+**Explanation**: Zero-allocation means not creating new objects (with `new`) in `periodic()` methods. Creating objects causes Java to pause for garbage collection, which makes your robot stutter.
+
+**Good Practice**:
+```java
+// ✅ Create objects once
+private final Pose2d pose = new Pose2d();
+
+public void periodic() {
+    pose.setX(x);  // Reuse the object
+}
+```
+
+**Bad Practice**:
+```java
+// ❌ Creates new object every 20ms!
+public void periodic() {
+    Pose2d pose = new Pose2d(x, y);
+}
+```
+</details>
+
+---
+
+## Question 6: What is a Default Command?
+
+**A)** The first command that runs
+**B)** A command that runs automatically when no other command uses a subsystem
+**C)** The command used in autonomous
+**D)** A command that can't be interrupted
+
+<details>
+<summary>👁️ Reveal Answer</summary>
+
+**Correct Answer: B)** A command that runs automatically when no other command uses a subsystem
+
+**Explanation**: When you set a default command for a subsystem, it runs whenever no other command is using that subsystem. This is perfect for things like driving - you want the drive command to run unless you're doing something specific like auto.
+
+**Example**:
+```java
+// This runs whenever no other command needs drivetrain
+drivetrain.setDefaultCommand(new DriveCommand(drivetrain, controller));
+```
+</details>
+
+---
+
+## Question 7: What is Odometry?
+
+**A)** A type of motor
+**B)** How the robot knows its position on the field
+**C)** A programming language
+**D)** A sensor for detecting game pieces
+
+<details>
+<summary>👁️ Reveal Answer</summary>
+
+**Correct Answer: B)** How the robot knows its position on the field
+
+**Explanation**: Odometry (oh-DOM-it-ree) uses wheel sensors to track how far the robot has moved. It's like counting steps to know how far you've walked.
+
+**How It Works**:
+1. Wheel encoders measure rotation
+2. Robot calculates distance from wheel rotations
+3. Robot updates its position estimate
+4. Used for autonomous and field-relative driving
+</details>
+
+---
+
+## Question 8: What is Field-Relative Driving?
+
+**A)** Driving only on the competition field
+**B)** Driving relative to the driver, not the robot
+**C)** Driving relative to field boundaries
+**D)** A type of autonomous mode
+
+<details>
+<summary>👁️ Reveal Answer</summary>
+
+**Correct Answer: B)** Driving relative to the driver, not the robot
+
+**Explanation**: In field-relative driving, "forward" is always away from the driver, regardless of which way the robot is facing. This makes it much easier for drivers to control the robot.
+
+**Robot-Relative**: Forward = wherever robot is facing
+**Field-Relative**: Forward = away from driver
+
+**Use field-relative for teleop (driver control)!**
+</details>
+
+---
+
+## Question 9: What is PID?
+
+**A)** A type of motor controller
+**B)** A control algorithm for reaching targets
+**C)** A programming language
+**D)** A sensor type
+
+<details>
+<summary>👁️ Reveal Answer</summary>
+
+**Correct Answer: B)** A control algorithm for reaching targets
+
+**Explanation**: PID (Proportional-Integral-Derivative) is a control algorithm that adjusts output to reach and maintain a target. It's like a thermostat - constantly checking and adjusting.
+
+**What the Letters Mean**:
+- **P**: Proportional - "We're far from target, apply more power"
+- **I**: Integral - "We've been off for a while, add more power"
+- **D**: Derivative - "We're approaching fast, slow down"
+
+**Common Uses**: Arm position, elevator height, shooter speed, drivetrain position
+</details>
+
+---
+
+## Question 10: Why Test in Simulation?
+
+**A)** It's faster than testing on real robot
+**B)** You can test without hardware
+**C)** You can catch bugs early
+**D)** All of the above
+
+<details>
+<summary>👁️ Reveal Answer</summary>
+
+**Correct Answer: D)** All of the above
+
+**Explanation**: Simulation lets you test code quickly without needing a robot. You can catch bugs early, test edge cases, and iterate faster. When you do test on the real robot, it should work the first time!
+
+**Benefits**:
+- Test at home without robot
+- Faster development cycle
+- Safer experimentation
+- Test edge cases safely
+- Verify logic before hardware arrives
+</details>
+
+---
+
+## Score Yourself
+
+**Count how many you got right:**
+
+- **8-10 correct**: 🌟 Excellent! You're ready for intermediate topics!
+- **5-7 correct**: 👍 Good job! Review the questions you missed.
+- **3-4 correct**: 📚 Keep learning! Review the beginner materials.
+- **0-2 correct**: 🔄 Don't worry! Start with the beginner learning path.
+
+---
+
+## What's Next?
+
+Based on your quiz results:
+
+**If you did well (7+ correct):**
+- ✅ Ready for intermediate topics
+- ✅ Can start working on advanced features
+- ✅ Consider helping teach others
+
+**If you need more practice (6 or fewer correct):**
+- 📚 Review [Beginner Learning Path](/learning-paths/beginner)
+- 📚 Study [Getting Started Guide](/beginner/getting-started)
+- 📚 Practice with simulation more
+- 📚 Ask questions on [Discussions](https://github.com/MARSProgramming/MARSLib/discussions)
+
+---
+
+## Keep Learning!
+
+**Every expert was once a beginner.** The more you practice, the better you'll get. Don't be afraid to make mistakes - that's how you learn!
+
+**Next Steps**:
+1. **Practice**: Write more robot code
+2. **Experiment**: Try new things in simulation
+3. **Ask Questions**: Get help when stuck
+4. **Teach Others**: Teaching reinforces your learning
+
+---
+
+**Want more quizzes?** Check out [Intermediate Quiz](/interactive/quizzes/intermediate) when you're ready for harder questions!
+
+**Need explanations?** Review the [Plain Language Glossary](/docs/PLAIN_LANGUAGE_GLOSSARY.md) for simple definitions of technical terms.

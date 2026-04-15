@@ -1,0 +1,484 @@
+---
+title: "Autonomous Quick Reference"
+description: "Create autonomous routines quickly with this essential guide."
+sidebar:
+  order: 3
+---
+
+# Autonomous Quick Reference
+
+Make your robot drive itself! This guide has the essentials for autonomous programming.
+
+## Quick Setup (4 Steps)
+
+### 1. Set Up AutoBuilder
+
+```java
+public class RobotContainer {
+    public RobotContainer() {
+        // Configure PathPlanner AutoBuilder
+        AutoBuilder.configure(
+            this::getPose,                    // Pose supplier
+            this::setPose,                    // Pose consumer
+            this::getRobotRelativeSpeeds,     // ChassisSpeeds supplier
+            this::driveRobotRelative,         // ChassisSpeeds consumer
+            new PathConstraints(3.0, 4.0, 5.0), // Max vel, accel, angular vel
+            this::shouldFlipPath,             // Mirror for alliance
+            this                              // Reference to subsystem
+        );
+    }
+    
+    private Pose2d getPose() {
+        return drivetrain.getPose();
+    }
+    
+    private void setPose(Pose2d pose) {
+        drivetrain.seedFieldRelative(pose);
+    }
+    
+    private ChassisSpeeds getRobotRelativeSpeeds() {
+        return drivetrain.getRobotRelativeSpeeds();
+    }
+    
+    private void driveRobotRelative(ChassisSpeeds speeds) {
+        drivetrain.driveRobotRelative(speeds);
+    }
+    
+    private boolean shouldFlipPath() {
+        // Mirror path if on red alliance
+        return DriverStation.getAlliance().get() == Alliance.Red;
+    }
+}
+```
+
+### 2. Create Named Commands
+
+```java
+// Register commands that PathPlanner can use
+NamedCommands.registerCommand("shoot", new ShootCommand(shooter));
+NamedCommands.registerCommand("intake", new IntakeCommand(intake));
+NamedCommands.registerCommand("aim", new AimCommand(drivetrain, vision));
+```
+
+### 3. Load Path from File
+
+```java
+// Load autonomous path
+public Command getAutonomousCommand() {
+    try {
+        return new PathPlannerAuto("Example Auto");
+    } catch (Exception e) {
+        System.out.println("Auto failed to load: " + e.getMessage());
+        return Commands.none();
+    }
+}
+```
+
+### 4. Create Path in PathPlanner GUI
+
+1. Open PathPlanner GUI
+2. Create new path
+3. Add waypoints
+4. Set robot position and heading
+5. Save as "Example Auto.path"
+
+---
+
+## Simple Auto (No PathPlanner)
+
+### Basic Time-Based Auto
+
+```java
+public class SimpleAuto extends Command {
+    private final Drivetrain drivetrain;
+    private double startTime;
+    
+    public SimpleAuto(Drivetrain drivetrain) {
+        this.drivetrain = drivetrain;
+        addRequirements(drivetrain);
+    }
+    
+    @Override
+    public void initialize() {
+        startTime = Timer.getFPGATimestamp();
+    }
+    
+    @Override
+    public void execute() {
+        double elapsed = Timer.getFPGATimestamp() - startTime;
+        
+        // Drive forward for 3 seconds
+        if (elapsed < 3.0) {
+            drivetrain.drive(1.0, 0, 0);  // Forward at full speed
+        } else {
+            drivetrain.drive(0, 0, 0);  // Stop
+        }
+    }
+    
+    @Override
+    public boolean isFinished() {
+        return Timer.getFPGATimestamp() - startTime > 3.5;
+    }
+}
+```
+
+### Distance-Based Auto
+
+```java
+public class DistanceAuto extends Command {
+    private final Drivetrain drivetrain;
+    private final double targetDistance;
+    private Pose2d startingPose;
+    
+    public DistanceAuto(Drivetrain drivetrain, double meters) {
+        this.drivetrain = drivetrain;
+        this.targetDistance = meters;
+        addRequirements(drivetrain);
+    }
+    
+    @Override
+    public void initialize() {
+        startingPose = drivetrain.getPose();
+    }
+    
+    @Override
+    public void execute() {
+        Pose2d currentPose = drivetrain.getPose();
+        double distance = currentPose.getTranslation().getDistance(
+            startingPose.getTranslation()
+        );
+        
+        if (distance < targetDistance) {
+            drivetrain.drive(1.0, 0, 0);
+        } else {
+            drivetrain.drive(0, 0, 0);
+        }
+    }
+    
+    @Override
+    public boolean isFinished() {
+        Pose2d currentPose = drivetrain.getPose();
+        double distance = currentPose.getTranslation().getDistance(
+            startingPose.getTranslation()
+        );
+        return distance >= targetDistance;
+    }
+}
+```
+
+---
+
+## Common Auto Patterns
+
+### Pattern 1: Drive and Shoot
+
+```java
+// Drive to position, then shoot
+public Command driveAndShoot() {
+    return Commands.sequence(
+        AutoBuilder.followPath(PathPlanner.loadPath("DriveToShoot", 3.0, 4.0)),
+        new ShootCommand(shooter)
+    );
+}
+```
+
+### Pattern 2: Score and Balance
+
+```java
+// Score game piece, then balance on charging station
+public Command scoreAndBalance() {
+    return Commands.sequence(
+        AutoBuilder.followPath(PathPlanner.loadPath("Score", 3.0, 4.0)),
+        new ScoreCommand(intake, shooter),
+        AutoBuilder.followPath(PathPlanner.loadPath("ToBalance", 2.0, 3.0)),
+        new BalanceCommand(drivetrain)
+    );
+}
+```
+
+### Pattern 3: Multi-Piece Pickup
+
+```java
+// Pick up multiple game pieces
+public Command twoPieceAuto() {
+    return Commands.sequence(
+        // Score preloaded piece
+        new ScoreCommand(shooter),
+        // Drive to piece 1
+        AutoBuilder.followPath(PathPlanner.loadPath("ToPiece1", 3.0, 4.0)),
+        // Intake piece 1
+        new IntakeCommand(intake).withTimeout(2.0),
+        // Drive to shoot position
+        AutoBuilder.followPath(PathPlanner.loadPath("ToShoot1", 3.0, 4.0)),
+        // Score piece 1
+        new ScoreCommand(shooter)
+        // Continue for more pieces...
+    );
+}
+```
+
+---
+
+## Path Following Tuning
+
+### Tune Path Follower
+
+```java
+// Create custom path follower config
+PathFollowerConfig config = new PathFollowerConfig(
+    5.0,    // Translational PID P (increase if robot drifts from path)
+    0.0,    // Translational PID I
+    0.0,    // Translational PID D
+    5.0,    // Rotational PID P (increase if robot doesn't face right direction)
+    0.0,    // Rotational PID I
+    0.0,    // Rotational PID D
+    0.5     // Max velocity error (tolerance)
+);
+
+AutoBuilder.configure(
+    poseSupplier, poseConsumer,
+    speedsSupplier, speedsConsumer,
+    config,              // Use custom config
+    shouldFlipPath,
+    this
+);
+```
+
+### What to Tune
+
+**Problem: Robot doesn't follow path accurately**
+- Increase translational P (try 6.0, 8.0, 10.0)
+
+**Problem: Robot doesn't face right direction**
+- Increase rotational P (try 6.0, 8.0, 10.0)
+
+**Problem: Robot oscillates around path**
+- Decrease P values or add D (try D = 0.1, 0.2, 0.5)
+
+---
+
+## Event Markers
+
+### Add Actions to Path
+
+```java
+// In PathPlanner GUI, add event markers along path
+// Name them: "shoot", "intake", "aim", etc.
+
+// Register commands in code
+NamedCommands.registerCommand("shoot", new ShootCommand(shooter));
+NamedCommands.registerCommand("intake", new IntakeCommand(intake));
+NamedCommands.registerCommand("aim", new AimCommand(drivetrain, vision));
+
+// Commands will run automatically when robot reaches marker!
+```
+
+### Conditional Auto
+
+```java
+// Choose different autos based on game situation
+public Command getAutonomousCommand() {
+    String autoMode = SmartDashboard.getString("Auto Mode", "Default");
+    
+    switch (autoMode) {
+        case "Left Side":
+            return new PathPlannerAuto("LeftAuto");
+        case "Right Side":
+            return new PathPlannerAuto("RightAuto");
+        case "Center":
+            return new PathPlannerAuto("CenterAuto");
+        default:
+            return new PathPlannerAuto("DefaultAuto");
+    }
+}
+```
+
+---
+
+## Testing Autonomous
+
+### In Simulation
+
+```java
+// Test auto in simulation
+@Test
+public void testAutonomous() {
+    MARSTestHarness.reset();
+    
+    // Run auto
+    Command auto = new PathPlannerAuto("TestAuto");
+    auto.schedule();
+    
+    // Run simulation
+    for (int i = 0; i < 150; i++) {  // 3 seconds
+        DriverStationSim.notifyNewData();
+        SimHooks.stepTiming(0.02);
+        CommandScheduler.getInstance().run();
+    }
+    
+    // Verify final position
+    Pose2d finalPose = drivetrain.getPose();
+    assertTrue(finalPose.getTranslation().getDistance(new Translation2d(2.0, 1.0)) < 0.1);
+}
+```
+
+### Quick Test Command
+
+```java
+// Test auto piece by piece
+public class TestAuto extends Command {
+    private int step = 0;
+    private double stepTime;
+    
+    @Override
+    public void initialize() {
+        step = 0;
+        stepTime = Timer.getFPGATimestamp();
+    }
+    
+    @Override
+    public void execute() {
+        double elapsed = Timer.getFPGATimestamp() - stepTime;
+        
+        switch (step) {
+            case 0:  // Drive forward
+                drivetrain.drive(1.0, 0, 0);
+                if (elapsed > 2.0) {
+                    step = 1;
+                    stepTime = Timer.getFPGATimestamp();
+                }
+                break;
+            case 1:  // Stop
+                drivetrain.drive(0, 0, 0);
+                break;
+        }
+    }
+}
+```
+
+---
+
+## Troubleshooting
+
+### Problem: Robot Doesn't Follow Path
+
+**Check**:
+```java
+// 1. Is odometry working?
+System.out.println("Pose: " + drivetrain.getPose());
+
+// 2. Is path loaded?
+try {
+    PathPlannerPath path = PathPlanner.loadPath("Test", 3.0, 4.0);
+    System.out.println("Path loaded: " + path);
+} catch (Exception e) {
+    System.out.println("Path load failed: " + e);
+}
+
+// 3. Is AutoBuilder configured?
+// Add debug prints to your suppliers
+```
+
+### Problem: Auto Starts Wrong
+
+**Check**:
+```java
+// 1. Is odometry zeroed before auto?
+@Override
+public void autonomousInit() {
+    drivetrain.seedFieldRelative();  // Reset position
+}
+
+// 2. Is robot in correct starting position?
+// Make sure real robot matches path start
+```
+
+### Problem: Different on Red vs Blue Alliance
+
+**Fix**:
+```java
+// Make sure shouldFlipPath() is correct
+private boolean shouldFlipPath() {
+    return DriverStation.getAlliance().get() == Alliance.Red;
+}
+```
+
+---
+
+## Quick Tips
+
+### Before Competition:
+- ✅ **Test all autos in simulation**
+- ✅ **Practice on real field if possible**
+- ✅ **Have backup simple autos**
+- ✅ **Document each auto mode**
+
+### During Competition:
+- ✅ **Test auto before each match**
+- ✅ **Have queue delays set correctly**
+- ✅ **Watch for field differences**
+- ✅ **Adjust odometry if needed**
+
+### Auto Selection:
+```java
+// Put on SmartDashboard
+SendableChooser<String> autoChooser = new SendableChooser<>();
+autoChooser.setDefaultOption("Default Auto", "Default");
+autoChooser.addOption("Left Side", "Left");
+autoChooser.addOption("Right Side", "Right");
+SmartDashboard.putData("Auto Mode", autoChooser);
+```
+
+---
+
+## Auto Checklist
+
+### Before Match:
+- [ ] Correct auto mode selected
+- [ ] Robot in correct starting position
+- [ ] Odometry zeroed
+- [ ] Game piece preloaded (if needed)
+- [ ] Delay set correctly
+
+### During Auto:
+- [ ] Watch for deviations
+- [ ] Monitor SmartDashboard
+- [ ] Be ready to disable if problem
+- [ ] Note any issues for fixing
+
+### After Auto:
+- [ ] Review performance
+- [ ] Check for odometry drift
+- [ ] Note any collisions
+- [ ] Plan adjustments if needed
+
+---
+
+## Common Mistakes
+
+❌ **Don't**: Forget to reset odometry before auto
+✅ **Do**: Call `drivetrain.seedFieldRelative()` in `autonomousInit()`
+
+❌ **Don't**: Hard-code all positions
+✅ **Do**: Use PathPlanner for complex paths
+
+❌ **Don't**: Ignore simulation testing
+✅ **Do**: Test thoroughly in simulation first
+
+❌ **Don't**: Use real robot for initial testing
+✅ **Do**: Start with simulation, verify on real robot
+
+---
+
+## Next Steps
+
+- [Path Following Guide](/tutorials/advanced/path-following)
+- [PathPlanner Integration](/tutorials/autonomous/pathplanner)
+- [Advanced Autos](/tutorials/autonomous/advanced)
+- [Auto Testing](/tutorials/autonomous/testing)
+
+---
+
+**Remember**: Good autonomous = reliable + simple + well-tested. Start simple, add complexity gradually!
+
+**Need auto help?** [Share your auto challenges](https://github.com/MARSProgramming/MARSLib/discussions)

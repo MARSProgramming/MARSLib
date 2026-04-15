@@ -1,10 +1,8 @@
 ---
+title: "Performance Analysis Dashboard"
+description: "Interactive performance analysis dashboard for MARSLib robots. Upload AdvantageKit WPILog files and visualize performance metrics, bottlenecks, and optimization opportunities."
 sidebar:
   order: 5
-id: performance-analysis
-title: "Performance Analysis Dashboard"
-template: doc
-description: "Interactive performance analysis dashboard for MARSLib robots. Upload AdvantageKit WPILog files and visualize performance metrics, bottlenecks, and optimization opportunities."
 ---
 
 # Performance Analysis Dashboard
@@ -42,17 +40,17 @@ public void periodic() {
 **Loop Time Analysis:**
 - **Average**: Mean loop execution time
 - **Min/Max**: Range of loop times
-- **Target**: < 10ms for 50Hz, < 4ms for 250Hz
+- **Target**: &lt; 10ms for 50Hz, &lt; 4ms for 250Hz
 
 **CPU Usage Monitoring:**
 - **Average**: Mean CPU utilization
 - **Peak**: Maximum CPU usage
-- **Target**: < 50% normal, < 80% heavy load
+- **Target**: &lt; 50% normal, &lt; 80% heavy load
 
 **Memory Tracking:**
 - **Average**: Mean memory consumption
 - **Growth**: Memory increase over time
-- **Target**: < 100MB, minimal growth
+- **Target**: &lt; 100MB, minimal growth
 
 ### 🎯 Bottlenecks Tab
 
@@ -60,7 +58,7 @@ public void periodic() {
 
 The dashboard automatically analyzes your log file and identifies:
 
-🔴 **Critical Issues** (>10ms or >80% CPU):
+🔴 **Critical Issues** (&gt;10ms or &gt;80% CPU):
 - Take immediate action
 - Impact robot performance
 - Can cause missed cycles
@@ -70,7 +68,7 @@ The dashboard automatically analyzes your log file and identifies:
 - May need optimization
 - Consider for next iteration
 
-🟢 **Good Performance** (<5ms, <50% CPU):
+🟢 **Good Performance** (&lt;5ms, &lt;50% CPU):
 - Operating efficiently
 - No action needed
 - Championship-tier performance
@@ -80,9 +78,9 @@ The dashboard automatically analyzes your log file and identifies:
 **Visual Performance Over Time:**
 
 The timeline chart shows loop time throughout the log duration:
-- **Green bars**: Good performance (<5ms)
+- **Green bars**: Good performance (&lt;5ms)
 - **Yellow bars**: Warning (5-10ms)
-- **Red bars**: Critical (>10ms)
+- **Red bars**: Critical (&gt;10ms)
 
 **Identify Patterns:**
 - **Spikes**: Sudden performance drops
@@ -117,9 +115,9 @@ The timeline chart shows loop time throughout the log duration:
 ### Interpretation Guide
 
 **✅ Excellent Performance:**
-- Loop time: < 5ms
-- CPU usage: < 50%
-- Memory: < 100MB
+- Loop time: &lt; 5ms
+- CPU usage: &lt; 50%
+- Memory: &lt; 100MB
 - Result: Championship-tier
 
 **⚠️ Warning Level:**
@@ -129,9 +127,9 @@ The timeline chart shows loop time throughout the log duration:
 - Result: Good, room for improvement
 
 **❌ Critical Issues:**
-- Loop time: > 10ms
-- CPU usage: > 80%
-- Memory: > 150MB
+- Loop time: &gt; 10ms
+- CPU usage: &gt; 80%
+- Memory: &gt; 150MB
 - Result: Needs immediate optimization
 
 ## Usage Examples
