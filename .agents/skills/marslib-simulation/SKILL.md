@@ -78,7 +78,21 @@ MARSLib simulates 3D arcing projectiles using `GamePieceSim.launch()`.
 - If frame times exceed 20ms: reduce damping, implement sleep thresholds, or reduce piece count
 - Monitor via `Logger.recordOutput("PhysicsSim/StepTimeMs", ...)`
 
-## 7. Telemetry
+## 7. CTRE Phoenix 6 Threading in Simulation
+**WARNING: "waitForAll" Spin Lock**
+When writing high-frequency CAN polling threads (e.g. 250Hz Odometry threads) utilizing `com.ctre.phoenix6.BaseStatusSignal.waitForAll`, be aware that in Simulation, `waitForAll` returns instantly.
+If placed inside an unprotected `while(true)` loop, this causes the thread to spin unchecked at 100% CPU usage, rapidly filling fixed-capacity queues and severely lagging the simulation state over time.
+
+Always throttle high-frequency CAN polling nodes in simulation:
+```java
+BaseStatusSignal.waitForAll(timeout, signals);
+if (RobotBase.isSimulation()) {
+  try { Thread.sleep((long)(1000.0 / hz)); }
+  catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+}
+```
+
+## 8. Telemetry
 - `PhysicsSim/StepTimeMs` — Physics engine step duration
 - `PhysicsSim/BodyCount` — Total active dyn4j bodies
 - `PhysicsSim/TotalCurrentDraw` — Aggregate current from all mechanisms

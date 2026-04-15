@@ -113,6 +113,14 @@ export default defineConfig({
 					autogenerate: { directory: 'contributing' }
 				},
 				{
+					label: 'Project Info',
+					items: [
+						{ label: 'FAQ', link: '/faq/' },
+						{ label: 'Changelog', link: '/changelog/' },
+						{ label: 'Acknowledgements', link: '/acknowledgements/' }
+					]
+				},
+				{
 					label: 'API Reference',
 					link: 'https://MARSProgramming.github.io/MARSLib/javadoc/index.html',
 					attrs: { target: '_blank' }
