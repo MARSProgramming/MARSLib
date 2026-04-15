@@ -8,6 +8,7 @@ package com.marslib.vision;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.networktables.StructSubscriber;
 import edu.wpi.first.networktables.TimestampedObject;
 
@@ -30,7 +31,7 @@ public class VIOSlamIOROS2 implements VIOSlamIO {
         NetworkTableInstance.getDefault()
             .getTable(tableName)
             .getStructTopic(topicName, Pose3d.struct)
-            .subscribe(new Pose3d());
+            .subscribe(new Pose3d(), PubSubOption.sendAll(true), PubSubOption.keepDuplicates(true));
 
     for (int i = 0; i <= MAX_RESULTS; i++) {
       poseCaches[i] = new Pose3d[i];

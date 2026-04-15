@@ -2,22 +2,22 @@ package com.marslib.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.marslib.testing.MARSTestHarness;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-@Disabled("Temporarily disabled to resolve wpiHal.dll native crash during coverage runs")
 public class LoggedTunableNumberTest {
 
   private final List<LoggedTunableNumber> activeTunables = new ArrayList<>();
 
   @BeforeEach
   public void setUp() {
+    MARSTestHarness.reset();
     activeTunables.clear();
     LoggedTunableNumber.clear();
     DriverStationSim.setFmsAttached(false);
@@ -30,6 +30,7 @@ public class LoggedTunableNumberTest {
       tunable.close();
     }
     LoggedTunableNumber.clear();
+    MARSTestHarness.cleanup();
   }
 
   private LoggedTunableNumber createTunable(String key, double defaultValue) {

@@ -75,7 +75,7 @@ To add a new server-rendered route:
 4. Verify the `_routes.json` has `"exclude": []` — never add blanket excludes.
 5. Build locally with `npm run build` and verify the route appears in the prerender output (SSR routes will NOT be listed in the prerendered static routes section).
 
-## 4. Common Deployment Fixes
+## 5. Common Deployment Fixes
 
 | Symptom | Cause | Fix |
 |---|---|---|
@@ -87,7 +87,21 @@ To add a new server-rendered route:
 | Keystatic returns blank/error page | `keystatic()` integration injected | Remove integration, use physical routes (Rule E) |
 | `wrangler.toml is not valid` warning | Missing `pages_build_output_dir` | Intentional — see Rule A. Cloudflare falls back to dashboard settings |
 
-## 5. Key Files Reference
+## 6. Cloudflare KV Database Persistence
+For student progress tracking, MARSLib uses a Cloudflare KV namespace called \`MARSLIB_KV\`.
+Because Astro is built in \`output: 'server'\` mode, your \`src/pages/api/...\` TypeScript endpoints can natively execute inside the edge worker and access this database.
+
+**To interact with KV:**
+```ts
+export const POST: APIRoute = async ({ request, locals }) => {
+  const kv = locals.runtime.env.MARSLIB_KV;
+  // KV is now fully accessible!
+  await kv.put("team414_progress", JSON.stringify(data));
+}
+```
+**Important:** Do NOT attempt to import \`@cloudflare/kv-asset-handler\` or connect from normal React components; you MUST pipe fetches through your own Astro API endpoints.
+
+## 7. Key Files Reference
 
 - `website/wrangler.toml` — Minimal: name, compat date, `nodejs_compat` only
 - `website/public/_routes.json` — Include-only list for worker routing
