@@ -51,9 +51,9 @@ Deeply nested conditional logic is unreadable and error-prone. Use immediate gua
 Whenever physics equations, motion kinematics, or control theory matrices are implemented in Java, you MUST include a comment block referencing the underlying math (e.g. Wiki, whitepaper link, or textbook citation).
 
 ## 5. Explicit, Descriptive Naming
-Disallow single-character or massively abbreviated variable names outside of standard mathematical iterating bounds (`i`, `j`).
-- **BAD:** `double x;`, `double m;`, `double diff;`
-- **GOOD:** `double trackLengthX;`, `double chassisMassKg;`, `double errorToleranceMeters;`
+Disallow single-character or massively abbreviated variable names. Even inside iterative loops, do NOT use `x` or `y` as counters (e.g. `for(int x=0...)`), because ProjectDoctor will flag them as ambiguous spatial coordinates. Use descriptive index names (e.g. `xIndex`, `yIndex`, `i`, `j`).
+- **BAD:** `double x;`, `double m;`, `int y = 0;`
+- **GOOD:** `double trackLengthX;`, `double chassisMassKg;`, `int yIndex = 0;`
 
 ## 6. File Limits
 - Restrict logic class lengths strictly to functional encapsulation. Refactor large loops into bounded helper libraries if a subsystem natively exceeds ~600 lines.
@@ -62,3 +62,8 @@ Disallow single-character or massively abbreviated variable names outside of sta
 When optimizing hot-loops (like 250Hz odometry or 50Hz teleop sequences) by using pre-allocated mutable proxy references (e.g. `private final ChassisSpeeds targetSpeeds = new ChassisSpeeds();`) instead of continuously allocating new objects with `new` or `fromFieldRelative()`, you MUST strictly enforce Ephemeral Struct rules:
 - **Total Overwrite:** The proxy object's internal properties (vx, vy, omega, etc.) must be completely re-calculated and explicitly assigned via `=` (never `+=` or `*=`) upon every 20ms execution using raw incoming data. You cannot safely read the previous tick's data from the proxy if it was potentially mutated downstream.
 - **Reference Passing:** If you pass the proxy reference into a downstream FRC kinematics or telemetry function block, assume the object is mathematically poisoned by the time it returns. If downstream classes require persistent snapshots of the data between ticks, you must explicitly clone the proxy (`new ChassisSpeeds(speeds...)`) or leverage native FRC math (e.g. `ChassisSpeeds.discretize`) that safely delegates new pointer construction.
+
+## 8. AdvantageKit First Logging
+Never use `System.out.println()` for logging, debugging, or test assertions. MARSLib uses a completely deterministic log-replay architecture via AdvantageKit.
+Using `System.out` bypasses the asynchronous logger, risking thread lockups on the RoboRIO and permanently losing data that won't appear in AdvantageScope logs.
+**Always use:** `Logger.recordOutput("Category/Subsystem", value);`
