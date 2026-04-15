@@ -10,12 +10,7 @@ export default defineConfig({
 	site: 'https://marslib.pages.dev',
 	output: 'server',
 	adapter: cloudflare({
-		imageService: 'cloudflare',
-		routes: {
-			extend: {
-				include: ['/keystatic', '/keystatic/*', '/api/keystatic', '/api/keystatic/*']
-			}
-		}
+		imageService: 'cloudflare'
 	}),
 	vite: {
 		ssr: {

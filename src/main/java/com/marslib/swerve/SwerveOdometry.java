@@ -83,23 +83,23 @@ public class SwerveOdometry {
     double[] timestamps = modules[0].getOdometryTimestamps();
 
     for (int i = 0; i < sampleCount; i++) {
-      for (int m = 0; m < 4; m++) {
-        SwerveModulePosition rawPos = modules[m].getCachedDelta(i);
+      for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
+        SwerveModulePosition rawPos = modules[moduleIndex].getCachedDelta(i);
 
         if (isFirstOdometryDrain) {
-          lastRawDistances[m] = rawPos.distanceMeters;
-          scaledPositions[m].distanceMeters = rawPos.distanceMeters;
+          lastRawDistances[moduleIndex] = rawPos.distanceMeters;
+          scaledPositions[moduleIndex].distanceMeters = rawPos.distanceMeters;
         }
 
-        double delta = rawPos.distanceMeters - lastRawDistances[m];
-        lastRawDistances[m] = rawPos.distanceMeters;
+        double delta = rawPos.distanceMeters - lastRawDistances[moduleIndex];
+        lastRawDistances[moduleIndex] = rawPos.distanceMeters;
 
-        scaledPositions[m].distanceMeters += delta * odometryTrust;
-        scaledPositions[m].angle = rawPos.angle;
+        scaledPositions[moduleIndex].distanceMeters += delta * odometryTrust;
+        scaledPositions[moduleIndex].angle = rawPos.angle;
 
         // GC-free: mutate pre-allocated position objects
-        positionsForFrame[m].distanceMeters = scaledPositions[m].distanceMeters;
-        positionsForFrame[m].angle = scaledPositions[m].angle;
+        positionsForFrame[moduleIndex].distanceMeters = scaledPositions[moduleIndex].distanceMeters;
+        positionsForFrame[moduleIndex].angle = scaledPositions[moduleIndex].angle;
       }
       isFirstOdometryDrain = false;
 

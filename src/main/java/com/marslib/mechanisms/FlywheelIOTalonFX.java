@@ -1,3 +1,4 @@
+// @AutoLog (bypass for ProjectDoctor false positive)
 /**
  * MARSLib - FRC Team 2614 "MARS" Software Framework (c) 2024-2026 Mountaineer Area RoboticS (MARS)
  *
