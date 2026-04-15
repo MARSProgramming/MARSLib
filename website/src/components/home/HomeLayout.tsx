@@ -10,7 +10,7 @@ export const HomeHero = () => {
       <p style={{ fontSize: '1.2rem', color: 'var(--sl-color-text-muted)', maxWidth: '700px', margin: '0 auto 30px auto' }}>A zero-allocation, physics-simulated FRC framework with deterministic AdvantageKit logging, 250Hz odometry, and shot-on-the-move kinematics.</p>
       
       <div style={{ display: 'flex', gap: '20px', justifyContent: 'center' }}>
-        <a href="/getting-started/getting-started/" style={{ background: 'var(--sl-color-accent)', color: 'white', padding: '12px 24px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', letterSpacing: '0.05em' }}>🎓 TUTORIALS</a>
+        <a href="/getting-started/01-setup-and-infrastructure/" style={{ background: 'var(--sl-color-accent)', color: 'white', padding: '12px 24px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', letterSpacing: '0.05em' }}>🎓 TUTORIALS</a>
         <a href="https://MARSProgramming.github.io/MARSLib/javadoc/index.html" style={{ background: 'transparent', border: '1px solid var(--sl-color-accent)', color: 'white', padding: '12px 24px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', letterSpacing: '0.05em' }}>BROWSE API DOCS</a>
       </div>
     </div>
@@ -49,7 +49,7 @@ export const HomeTutorialGrid = () => {
       <p style={{ textAlign: 'center', color: 'var(--sl-color-text-muted)', marginBottom: '40px' }}>Explore the framework conceptually or dig right into tutorials.</p>
       
       <div className="tutorial-grid">
-        <a href="/getting-started/getting-started/" className="tutorial-card" style={{ borderTop: '4px solid #2ecc71' }}>
+        <a href="/getting-started/01-setup-and-infrastructure/" className="tutorial-card" style={{ borderTop: '4px solid #2ecc71' }}>
           <h3>🚀 Zero to MARS</h3>
           <p>Start here! Configure Vendordeps, construct your first RobotContainer, and scaffold subsystems automatically with our VS Code extension.</p>
         </a>
