@@ -76,12 +76,50 @@ export default defineConfig({
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/MARSProgramming/MARSLib' }],
 			sidebar: [
 				{
+					label: 'Learning Paths',
+					items: [
+						{ label: 'Beginner', autogenerate: { directory: 'beginner' } },
+						{ label: 'Skill Paths', autogenerate: { directory: 'learning-paths' } }
+					]
+				},
+				{
 					label: 'Tutorials',
 					items: [
 						{ label: 'Zero-to-Hero (Start Here)', autogenerate: { directory: 'tutorials/zero-to-hero' } },
 						{ label: 'Setup & Infrastructure', autogenerate: { directory: 'tutorials/setup' } },
 						{ label: 'Framework Architecture', autogenerate: { directory: 'tutorials/framework' } },
 						{ label: 'Elite-Level Workflows', autogenerate: { directory: 'tutorials/elite' } }
+					]
+				},
+				{
+					label: 'Quick Reference',
+					items: [
+						{ label: 'Guides', autogenerate: { directory: 'quick-reference' } },
+						{ label: 'Troubleshooting Library', autogenerate: { directory: 'troubleshooting' } },
+						{ label: 'Performance', autogenerate: { directory: 'performance' } },
+						{ label: 'Glossary & Reference', autogenerate: { directory: 'reference' } }
+					]
+				},
+				{
+					label: 'Interactive & Teaching',
+					items: [
+						{ label: 'Interactive Learning', autogenerate: { directory: 'interactive' } },
+						{ label: 'Mentor Guides', autogenerate: { directory: 'teaching' } },
+						{ label: 'Visual Diagrams', autogenerate: { directory: 'visual-diagrams' } }
+					]
+				},
+				{
+					label: 'Operations',
+					items: [
+						{ label: 'Competition Readiness', autogenerate: { directory: 'competition' } },
+						{ label: 'Team Operations', autogenerate: { directory: 'operations' } }
+					]
+				},
+				{
+					label: 'Community',
+					items: [
+						{ label: 'Contribution Guides', autogenerate: { directory: 'contributing' } },
+						{ label: 'Community Guidelines', autogenerate: { directory: 'community' } }
 					]
 				},
 				{
