@@ -1,0 +1,494 @@
+---
+title: "Control Theory Basics"
+description: "Make your robot mechanisms move accurately and smoothly using PID controllers and feedforward."
+sidebar:
+  order: 11
+---
+
+# Control Theory Basics
+
+Learn how to make your robot mechanisms move accurately and smoothly, just like a thermostat keeps your room at the right temperature.
+
+---
+
+## What is Control Theory?
+
+**In simple terms**: Control theory is about making systems do what you want, automatically.
+
+**Think of it like a thermostat**:
+- You set the temperature to 70°F
+- The thermostat measures the current temperature
+- If it's too cold, it turns on the heat
+- If it's too hot, it turns off the heat
+- It keeps checking and adjusting automatically
+
+**In robotics**: We use the same idea to control:
+- Arm positions
+- Wheel speeds  
+- Elevator height
+- Shooter velocity
+
+---
+
+## Two Main Approaches
+
+### 1. PID Control: Reacting to Errors
+
+**PID** stands for **Proportional-Integral-Derivative**. It's a fancy name for a simple idea: **react to errors and fix them**.
+
+**Think of it like driving a car**:
+- **P (Proportional)**: If you're far from the target, steer more. If you're close, steer less.
+- **I (Integral)**: If you've been off-target for a while, steer more to catch up.
+- **D (Derivative)**: If you're approaching the target quickly, slow down to avoid overshooting.
+
+### 2. Feedforward: Planning Ahead
+
+**Feedforward** means predicting what your mechanism needs and providing it immediately.
+
+**Think of it like driving to a destination**:
+- **PID only**: Drive until you see a sign, then turn (reactive)
+- **Feedforward**: Look at a map ahead of time, plan your route (predictive)
+
+**Why use both?**
+- PID fixes mistakes after they happen
+- Feedforward prevents mistakes before they happen
+- Together, they work perfectly!
+
+---
+
+## Part 1: PID Controllers
+
+### How PID Works
+
+**The problem**: Your mechanism isn't where you want it to be
+
+**The solution**: PID automatically adjusts to get it there
+
+### P: Proportional (The "Now" Part)
+
+**What it does**: Reacts to the current error
+
+**How it works**: 
+- Calculate error: `error = target - current`
+- Multiply by P gain: `output = Kp × error`
+- Larger error = larger correction
+
+**Example**: Arm position control
+```java
+double targetPosition = 45.0;  // degrees
+double currentPosition = arm.getAngle();  // 30 degrees
+double error = targetPosition - currentPosition;  // 15 degrees
+
+double Kp = 0.5;
+double motorOutput = Kp × error;  // 0.5 × 15 = 7.5 volts
+```
+
+**In plain English**: "We're 15 degrees off, so apply 7.5 volts to get there"
+
+### I: Integral (The "Past" Part)
+
+**What it does**: Remembers past errors and fixes them
+
+**How it works**:
+- Add up errors over time
+- Multiply by I gain
+- Eliminates steady-state errors
+
+**When you need it**: 
+- Mechanism gets stuck close to target
+- Gravity or friction prevents reaching target
+- Small persistent error
+
+**Example**: Elevator can't quite reach top
+```java
+double Ki = 0.1;
+double integralSum = 0;
+
+// Every 20ms
+integralSum += error;  // Add error to sum
+double output = Ki × integralSum;
+```
+
+**In plain English**: "We keep falling short, so keep adding more power until we get there"
+
+### D: Derivative (The "Future" Part)
+
+**What it does**: Predicts the future and slows down approach
+
+**How it works**:
+- Calculate rate of change of error
+- Multiply by D gain  
+- Prevents overshooting
+
+**When you need it**:
+- Mechanism oscillates (wobbles)
+- Overshoots target and comes back
+- Needs to approach smoothly
+
+**Example**: Arm swings past target and oscillates
+```java
+double Kd = 0.3;
+double lastError = 0;
+
+// Every 20ms
+double errorRate = (error - lastError) / 0.020;  // Change per second
+double output = Kd × errorRate;
+lastError = error;
+```
+
+**In plain English**: "We're approaching fast, so slow down to avoid overshooting"
+
+---
+
+## Part 2: Feedforward Control
+
+### What is Feedforward?
+
+**Feedforward** = predicting what your mechanism needs based on physics
+
+**Think of it like this**:
+- A heavy elevator needs power just to hold still (fighting gravity)
+- A flywheel needs power to reach and maintain speed
+- An arm needs different power at different angles
+
+**Feedforward calculates these needs instantly**, rather than waiting for errors to happen.
+
+### Why Feedforward is Awesome
+
+**Benefits**:
+- ✅ Responds instantly (no waiting for errors)
+- ✅ More accurate (knows the physics)
+- ✅ Smoother operation (less oscillation)
+- ✅ Less work for PID (PID only fixes small errors)
+
+**Real-world example**:
+```
+Without feedforward: 
+1. Motor starts at 0V
+2. Elevator starts falling (error!)
+3. PID reacts slowly
+4. Elevator bounces up and down
+
+With feedforward:
+1. Motor starts at correct voltage instantly
+2. Elevator holds perfectly
+3. PID only makes small adjustments
+```
+
+---
+
+## Part 3: Feedforward + PID Together
+
+**The magic formula**: `Total Output = Feedforward + PID`
+
+**Why this works perfectly**:
+1. **Feedforward** handles the physics (gravity, friction, inertia)
+2. **PID** handles the small errors and disturbances
+
+**Real example**: Elevator control
+
+```java
+// Feedforward: Calculate voltage needed to hold position
+double ffVoltage = feedforward.calculate(velocity, position);
+
+// PID: Fix any small errors
+double pidVoltage = pid.calculate(measuredPosition, targetPosition);
+
+// Combine both
+double totalVoltage = ffVoltage + pidVoltage;
+
+motor.setVoltage(totalVoltage);
+```
+
+**What happens**:
+1. Feedforward provides exact voltage to fight gravity
+2. PID adds small corrections for accuracy
+3. Elevator moves smoothly and accurately
+
+---
+
+## Part 4: Tuning Your Controllers
+
+### Tuning Order Matters!
+
+**Always tune feedforward first**, then PID.
+
+**Why**: Feedforward does the heavy lifting. PID only needs to fix small errors.
+
+### Step 1: Tune Feedforward
+
+**Set all gains to zero**: `Kp = 0, Ki = 0, Kd = 0`
+
+**Tune kS (Static Friction)**:
+- Slowly increase kS until mechanism *just barely* starts moving
+- This overcomes static friction (stiction)
+
+**Tune kG (Gravity)**:
+- For elevators: Increase kG until elevator holds position without falling
+- For arms: Position arm horizontally (gravity is strongest here)
+- Increase kG until arm holds steady
+
+**Tune kV (Velocity)**:
+- Run mechanism at constant voltage (e.g., 6V)
+- Measure steady-state speed (e.g., 5 rad/s)
+- Calculate: `kV = voltage / speed = 6.0 / 5.0 = 1.2`
+
+**Tune kA (Acceleration)**:
+- Usually not needed for most mechanisms
+- Use SysId to calculate automatically (preferred)
+
+### Step 2: Tune PID
+
+**Now that feedforward handles physics, tune PID**:
+
+**Tune Kp (Proportional)**:
+- Increase Kp until mechanism responds quickly
+- Stop when it starts to oscillate (wobble)
+
+**Tune Kd (Derivative)**:
+- If mechanism overshoots or oscillates
+- Add Kd to dampen the motion
+- Think of Kd as shock absorber
+
+**Tune Ki (Integral)**:
+- Only use if mechanism gets stuck close to target
+- Use small Ki values
+- Too much Ki causes instability
+
+---
+
+## Interactive Tuning Simulators
+
+### Elevator PID Simulator
+
+**Learn how feedforward and PID work together for elevators**:
+
+<ElevatorPidSim client:only="react" />
+
+**Try this**:
+1. Set kG until elevator holds position
+2. Add Kp to make it respond faster
+3. Add Kd if it oscillates
+4. Watch how FF + PID work together
+
+### Flywheel Tuning Simulator
+
+**Learn how to tune a shooter flywheel**:
+
+<FlywheelKvSim client:only="react" />
+
+**Try this**:
+1. Adjust kV until velocity matches setpoint
+2. Click "INJECT BALL" to simulate shot
+3. Add Kp to recover quickly from shots
+4. Add Kd if it overshoots
+
+### Arm Feedforward Simulator
+
+**Learn how gravity changes with arm angle**:
+
+<ArmKgSim client:only="react" />
+
+**Notice this**:
+- kG voltage is highest at 0° (horizontal)
+- kG voltage drops to 0 at 90° (vertical)
+- This is because gravity pulls differently at different angles!
+
+---
+
+## Common Mechanism Tuning
+
+### Shooter (Flywheel)
+
+**Purpose**: Spin wheel at exact speed for accurate shots
+
+**Key parameters**:
+- **kV**: Maintain target speed
+- **kP**: Recover quickly after shots
+- **kD**: Prevent overshooting after shots
+
+**Tuning process**:
+1. Tune kV first (most important!)
+2. Add kP for faster recovery
+3. Add kD if it oscillates
+4. kI usually not needed
+
+**Real values example**:
+```
+kV = 0.12 (volts per rad/s)
+kP = 0.5
+kD = 0.01
+```
+
+### Elevator
+
+**Purpose**: Lift game pieces to different heights
+
+**Key parameters**:
+- **kG**: Fight gravity (most important!)
+- **kS**: Overcome static friction
+- **kV**: Control velocity
+- **kP/kD**: Smooth movement
+
+**Tuning process**:
+1. Tune kG to hold position
+2. Tune kS to break static friction
+3. Tune kV for velocity control
+4. Add kP for quick response
+5. Add kD for smooth stopping
+
+### Arm
+
+**Purpose**: Rotate arm to different angles
+
+**Key parameters**:
+- **kG**: Varies with angle (cosine compensation!)
+- **kS**: Overcome static friction
+- **kP/kD**: Smooth movement
+
+**Special consideration**: Gravity pulls differently at different angles!
+- 0° (horizontal): Maximum gravity pull
+- 90° (vertical): No gravity pull
+- Feedforward automatically calculates this!
+
+---
+
+## Advanced: SysId Tuning
+
+**What is SysId?**: A tool that calculates your feedforward gains automatically
+
+**Why use SysId**:
+- More accurate than manual tuning
+- Faster than trial-and-error
+- Consistent results every time
+
+**How to use SysId**:
+1. Run SysId routine on your mechanism
+2. Upload data to SysId tool
+3. Get calculated kS, kV, kA values
+4. Use these values in your code
+
+**When to use SysId**:
+- First time tuning a mechanism
+- After major mechanical changes
+- When manual tuning doesn't work well
+
+---
+
+## Troubleshooting Control Issues
+
+### Problem: Mechanism Oscillates
+
+**Symptoms**: Wobbles back and forth around target
+
+**Solutions**:
+- Reduce Kp
+- Add Kd (acts as shock absorber)
+- Check for mechanical backlash
+
+### Problem: Mechanism Won't Reach Target
+
+**Symptoms**: Gets close but stops short
+
+**Solutions**:
+- Add small amount of Ki
+- Check feedforward (kG for gravity)
+- Check for mechanical binding
+
+### Problem: Response is Too Slow
+
+**Symptoms**: Takes too long to reach target
+
+**Solutions**:
+- Increase Kp
+- Check feedforward values
+- Reduce friction in mechanism
+
+### Problem: Overshoots Target
+
+**Symptoms**: Goes past target, then comes back
+
+**Solutions**:
+- Add Kd
+- Reduce Kp
+- Check for mechanical play
+
+---
+
+## Competition Tips
+
+**Before competition**:
+- Tune all your mechanisms carefully
+- Test under realistic conditions
+- Document your tuned values
+- Have backup values ready
+
+**At competition**:
+- Monitor mechanism performance
+- Adjust if environmental conditions change
+- Keep tuning simple (don't over-tune)
+
+**Red flags**:
+- Mechanism works differently than practice
+- Temperature affects performance
+- Battery voltage impacts tuning
+
+---
+
+## Quick Reference
+
+### Feedforward Gains
+
+- **kS**: Static friction (overcome initial resistance)
+- **kG**: Gravity (hold against gravity)
+- **kV**: Velocity (maintain speed)
+- **kA**: Acceleration (reach target speed)
+
+### PID Gains
+
+- **Kp**: Proportional (react to current error)
+- **Ki**: Integral (fix persistent errors)
+- **Kd**: Derivative (smooth approach)
+
+### Tuning Order
+
+1. Feedforward first (kS → kG → kV → kA)
+2. PID second (Kp → Kd → Ki)
+
+### Common Mistakes
+
+- ❌ Tuning PID before feedforward
+- ❌ Using too much Ki
+- ❌ Over-tuning (chasing tiny improvements)
+- ❌ Ignoring mechanical issues
+
+---
+
+## Summary
+
+**Key concepts**:
+1. **PID** reacts to errors and fixes them
+2. **Feedforward** predicts needs and prevents errors
+3. **Together they work perfectly**
+4. **Tune feedforward first, then PID**
+5. **Use simulators to practice**
+
+**Your mechanisms will**:
+- Move more accurately
+- Respond more quickly
+- Operate more smoothly
+- Perform more reliably
+
+---
+
+## Next Steps
+
+- [SysId Tutorial](/tutorials/framework/sysid) - Automatic tuning tool
+- [Mechanism Control](/tutorials/mechanisms) - Specific mechanism examples
+- [Quick Reference: PID Tuning](/quick-reference/pid-tuning) - Fast tuning guide
+
+---
+
+**Remember**: Good control theory makes your robot mechanisms work like magic! Start simple, tune carefully, and test thoroughly.
+
+**Need tuning help?** [Share your challenges](https://github.com/MARSProgramming/MARSLib/discussions) - we've all struggled with tuning!

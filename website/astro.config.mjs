@@ -76,50 +76,46 @@ export default defineConfig({
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/MARSProgramming/MARSLib' }],
 			sidebar: [
 				{
-					label: 'Learning Paths',
+					label: 'Start Here',
 					items: [
-						{ label: 'Beginner', autogenerate: { directory: 'beginner' } },
-						{ label: 'Skill Paths', autogenerate: { directory: 'learning-paths' } }
+						{ label: 'Getting Started', autogenerate: { directory: 'getting-started' } },
+						{ label: 'Learning Paths', autogenerate: { directory: 'learning-paths' } }
 					]
 				},
 				{
-					label: 'Tutorials',
+					label: 'Core Concepts',
+					autogenerate: { directory: 'core-concepts' }
+				},
+				{
+					label: 'Advanced Workflows',
+					autogenerate: { directory: 'advanced' }
+				},
+				{
+					label: 'Operations & Maintenance',
 					items: [
-						{ label: 'Zero-to-Hero (Start Here)', autogenerate: { directory: 'tutorials/zero-to-hero' } },
-						{ label: 'Setup & Infrastructure', autogenerate: { directory: 'tutorials/setup' } },
-						{ label: 'Framework Architecture', autogenerate: { directory: 'tutorials/framework' } },
-						{ label: 'Elite-Level Workflows', autogenerate: { directory: 'tutorials/elite' } }
+						{ label: 'Operations & Deploy', autogenerate: { directory: 'operations' } },
+						{ label: 'Troubleshooting Library', autogenerate: { directory: 'troubleshooting' } }
 					]
 				},
 				{
-					label: 'Quick Reference',
+					label: 'Interactive Learning',
 					items: [
-						{ label: 'Guides', autogenerate: { directory: 'quick-reference' } },
-						{ label: 'Troubleshooting Library', autogenerate: { directory: 'troubleshooting' } },
-						{ label: 'Performance', autogenerate: { directory: 'performance' } },
-						{ label: 'Glossary & Reference', autogenerate: { directory: 'reference' } }
-					]
-				},
-				{
-					label: 'Interactive & Teaching',
-					items: [
-						{ label: 'Interactive Learning', autogenerate: { directory: 'interactive' } },
-						{ label: 'Mentor Guides', autogenerate: { directory: 'teaching' } },
+						{ label: 'Exercises & Quizzes', autogenerate: { directory: 'interactive' } },
 						{ label: 'Visual Diagrams', autogenerate: { directory: 'visual-diagrams' } }
 					]
 				},
 				{
-					label: 'Operations',
+					label: 'Reference',
 					items: [
-						{ label: 'Competition Readiness', autogenerate: { directory: 'competition' } },
-						{ label: 'Team Operations', autogenerate: { directory: 'operations' } }
+						{ label: 'Quick Reference Checklists', autogenerate: { directory: 'quick-reference' } },
+						{ label: 'Glossary', autogenerate: { directory: 'reference' } }
 					]
 				},
 				{
 					label: 'Community',
 					items: [
 						{ label: 'Contribution Guides', autogenerate: { directory: 'contributing' } },
-						{ label: 'Community Guidelines', autogenerate: { directory: 'community' } }
+						{ label: 'Community', autogenerate: { directory: 'community' } }
 					]
 				},
 				{

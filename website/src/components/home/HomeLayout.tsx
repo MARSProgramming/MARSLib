@@ -10,7 +10,7 @@ export const HomeHero = () => {
       <p style={{ fontSize: '1.2rem', color: 'var(--sl-color-text-muted)', maxWidth: '700px', margin: '0 auto 30px auto' }}>A zero-allocation, physics-simulated FRC framework with deterministic AdvantageKit logging, 250Hz odometry, and shot-on-the-move kinematics.</p>
       
       <div style={{ display: 'flex', gap: '20px', justifyContent: 'center' }}>
-        <a href="/tutorials/setup/getting-started/" style={{ background: 'var(--sl-color-accent)', color: 'white', padding: '12px 24px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', letterSpacing: '0.05em' }}>🎓 TUTORIALS</a>
+        <a href="/getting-started/getting-started/" style={{ background: 'var(--sl-color-accent)', color: 'white', padding: '12px 24px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', letterSpacing: '0.05em' }}>🎓 TUTORIALS</a>
         <a href="https://MARSProgramming.github.io/MARSLib/javadoc/index.html" style={{ background: 'transparent', border: '1px solid var(--sl-color-accent)', color: 'white', padding: '12px 24px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', letterSpacing: '0.05em' }}>BROWSE API DOCS</a>
       </div>
     </div>
@@ -49,37 +49,37 @@ export const HomeTutorialGrid = () => {
       <p style={{ textAlign: 'center', color: 'var(--sl-color-text-muted)', marginBottom: '40px' }}>Explore the framework conceptually or dig right into tutorials.</p>
       
       <div className="tutorial-grid">
-        <a href="/tutorials/setup/getting-started/" className="tutorial-card" style={{ borderTop: '4px solid #2ecc71' }}>
+        <a href="/getting-started/getting-started/" className="tutorial-card" style={{ borderTop: '4px solid #2ecc71' }}>
           <h3>🚀 Zero to MARS</h3>
           <p>Start here! Configure Vendordeps, construct your first RobotContainer, and scaffold subsystems automatically with our VS Code extension.</p>
         </a>
         
-        <a href="/tutorials/framework/architecture/" className="tutorial-card" style={{ borderTop: '4px solid var(--mars-red)' }}>
+        <a href="/core-concepts/architecture/" className="tutorial-card" style={{ borderTop: '4px solid var(--mars-red)' }}>
           <h3>🏗️ Core Architecture</h3>
           <p>Learn the IO Layer AdvantageKit abstraction pattern, thread-safe fault management, and strict zero-allocation loop rules.</p>
         </a>
 
-        <a href="/tutorials/framework/io-layer/" className="tutorial-card" style={{ borderTop: '4px solid #e67e22' }}>
+        <a href="/core-concepts/io-layer/" className="tutorial-card" style={{ borderTop: '4px solid #e67e22' }}>
           <h3>🦾 Mechanism Abstraction</h3>
           <p>Implement RotaryMechanismIO and LinearMechanismIO to dramatically speed up standard mechanism development.</p>
         </a>
 
-        <a href="/tutorials/framework/control-theory/" className="tutorial-card" style={{ borderTop: '4px solid #f1c40f' }}>
+        <a href="/core-concepts/control-theory/" className="tutorial-card" style={{ borderTop: '4px solid #f1c40f' }}>
           <h3>🎮 Control Theory</h3>
           <p>Dive into Shoot-on-the-Move (SOTM) math, EliteShooterMath, Feedforwards, and WPILib SysId tuning integration.</p>
         </a>
 
-        <a href="/tutorials/framework/simulation/" className="tutorial-card" style={{ borderTop: '4px solid #9b59b6' }}>
+        <a href="/core-concepts/simulation/" className="tutorial-card" style={{ borderTop: '4px solid #9b59b6' }}>
           <h3>🖥️ Simulation & Telemetry</h3>
           <p>Configure Dyn4j 2D physics integration, AdvantageScope 3D field layouts, and automated GitHub log offloading.</p>
         </a>
         
-        <a href="/tutorials/elite/ai-agents/" className="tutorial-card" style={{ borderTop: '4px solid var(--ai-cyan)' }}>
+        <a href="/advanced/ai-agents/" className="tutorial-card" style={{ borderTop: '4px solid var(--ai-cyan)' }}>
           <h3>🤖 AI Agents & Tooling</h3>
           <p>Install the MARSLib VS Code extension to access .agent skills, automate subsystem scaffolding, and run championship-grade logic audits.</p>
         </a>
 
-        <a href="/tutorials/framework/sysid/" className="tutorial-card" style={{ borderTop: '4px solid #e74c3c' }}>
+        <a href="/core-concepts/sysid/" className="tutorial-card" style={{ borderTop: '4px solid #e74c3c' }}>
           <h3>📻 SysId Characterization</h3>
           <p>Automated system identification for calculating perfect feedforward constants passively during real matches.</p>
         </a>
