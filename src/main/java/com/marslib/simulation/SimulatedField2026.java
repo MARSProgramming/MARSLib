@@ -9,8 +9,8 @@ import org.dyn4j.geometry.MassType;
 import org.dyn4j.geometry.Rectangle;
 
 /**
- * Native Dyn4j models of the 2026 FRC Field (Rebuilt). Provides static bodies that can be injected
- * into the MARSPhysicsWorld.
+ * Native Dyn4j models of the 2026 FRC Field (Rebuilt). Provides static boundaries and dynamic game
+ * pieces that can be injected into the MARSPhysicsWorld.
  */
 public class SimulatedField2026 {
 
@@ -38,8 +38,14 @@ public class SimulatedField2026 {
 
   private static final double BOUNDARY_THICKNESS = 0.2; // 20cm thick invisible borders
 
+  // Fuel Constants
+  private static final double FUEL_RADIUS_METERS = 0.075; // 7.5cm radius ~15cm diameter
+  private static final double FUEL_MASS_KG = 0.2268; // ~0.5 lbs
+  private static final double FUEL_FRICTION = 0.8;
+  private static final double FUEL_RESTITUTION = 0.5;
+
   /**
-   * Generates the static bodies for the 2026 field.
+   * Generates the static bodies for the 2026 Rebuilt field boundaries.
    *
    * @param addRampCollider Whether or not the ramps should be added as colliders.
    * @return A list of static Dyn4j bodies.
@@ -156,5 +162,72 @@ public class SimulatedField2026 {
     wall.setMass(MassType.INFINITE);
     wall.translate(centerX, centerY);
     return wall;
+  }
+
+  /**
+   * Generates the dynamic bodies for the fuel balls placed around the 2026 Rebuilt field.
+   *
+   * @param efficiencyMode Whether to cull the number of center-field fuel balls spawned for
+   *     performance.
+   * @return A list of dynamic Dyn4j bodies representing fuel balls.
+   */
+  public static List<Body> getFuelBodies(boolean efficiencyMode) {
+    List<Body> fuelBodies = new ArrayList<>();
+
+    double centerPieceBottomRightCornerX = 7.35737;
+    double centerPieceBottomRightCornerY = 1.724406;
+    double redDepotBottomRightCornerX = 0.02;
+    double redDepotBottomRightCornerY = 5.53;
+    double blueDepotBottomRightCornerX = 16.0274;
+    double blueDepotBottomRightCornerY = 1.646936;
+
+    // Spawn center fuel
+    for (int x = 0; x < 12; x++) {
+      for (int y = 0; y < 30; y += efficiencyMode ? 3 : 1) {
+        double px = centerPieceBottomRightCornerX + Units.inchesToMeters(5.991 * x);
+        double py = centerPieceBottomRightCornerY + Units.inchesToMeters(5.95 * y);
+        fuelBodies.add(createFuel(px, py));
+      }
+    }
+
+    // Spawn blue depot fuel
+    for (int x = 0; x < 4; x++) {
+      for (int y = 0; y < 6; y++) {
+        double px = blueDepotBottomRightCornerX + Units.inchesToMeters(5.991 * x);
+        double py = blueDepotBottomRightCornerY + Units.inchesToMeters(5.95 * y);
+        fuelBodies.add(createFuel(px, py));
+      }
+    }
+
+    // Spawn red depot fuel
+    for (int x = 0; x < 4; x++) {
+      for (int y = 0; y < 6; y++) {
+        double px = redDepotBottomRightCornerX + Units.inchesToMeters(5.991 * x);
+        double py = redDepotBottomRightCornerY + Units.inchesToMeters(5.95 * y);
+        fuelBodies.add(createFuel(px, py));
+      }
+    }
+
+    return fuelBodies;
+  }
+
+  private static Body createFuel(double x, double y) {
+    org.dyn4j.geometry.Circle circle = new org.dyn4j.geometry.Circle(FUEL_RADIUS_METERS);
+    BodyFixture fixture = new BodyFixture(circle);
+    fixture.setFriction(FUEL_FRICTION);
+    fixture.setRestitution(FUEL_RESTITUTION); // Bouncy fuel balls
+    fixture.setDensity(FUEL_MASS_KG / (Math.PI * FUEL_RADIUS_METERS * FUEL_RADIUS_METERS));
+
+    Body fuel = new Body();
+    fuel.addFixture(fixture);
+    fuel.setMass(MassType.NORMAL);
+    fuel.translate(x, y);
+    fuel.setLinearDamping(1.8);
+    fuel.setAngularDamping(0.8);
+
+    // Add user data for advantage scope serialization if needed
+    fuel.setUserData("Fuel");
+
+    return fuel;
   }
 }

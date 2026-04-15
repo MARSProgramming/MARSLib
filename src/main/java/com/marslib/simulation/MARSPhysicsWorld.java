@@ -88,6 +88,9 @@ public class MARSPhysicsWorld {
 
     // Populate the field with static game boundaries
     SimulatedField2026.getFieldBoundaries(true).forEach(physicsWorld::addBody);
+
+    // Auto-populate the dynamic fuel colliders (efficiency mode true to save test compute)
+    SimulatedField2026.getFuelBodies(true).forEach(physicsWorld::addBody);
   }
 
   public World<Body> getWorld() {
@@ -140,7 +143,16 @@ public class MARSPhysicsWorld {
       Logger.recordOutput("PhysicsWorld/" + mechanismName, pose3d);
     }
 
-    // Clear out deprecated maple-sim fuel array to prevent logging errors
-    Logger.recordOutput("PhysicsWorld/GamePieces", new Pose3d[0]);
+    // Export fuel balls to AdvantageScope (they have user data "Fuel" set by SimulatedField2026)
+    java.util.List<Pose3d> fuelPoses = new java.util.ArrayList<>();
+    for (int i = 0; i < physicsWorld.getBodyCount(); i++) {
+      Body dynBody = physicsWorld.getBody(i);
+      if ("Fuel".equals(dynBody.getUserData())) {
+        double px = dynBody.getTransform().getTranslationX();
+        double py = dynBody.getTransform().getTranslationY();
+        fuelPoses.add(new Pose3d(px, py, 0.075, new Rotation3d())); // Fuel lies 7.5cm above ground
+      }
+    }
+    Logger.recordOutput("PhysicsWorld/GamePieces", fuelPoses.toArray(new Pose3d[0]));
   }
 }
