@@ -170,6 +170,22 @@ Every time you push to GitHub, a GitHub Actions workflow executes `./gradlew tes
 ---
 
 
+  ## <span class="mars-num">7</span> Continuous SysId Auto-Tuning
+
+Thanks to MARSLib's tight integration with AdvantageKit's logging architecture, we never have to run traditional SysId Quasistatic/Dynamic sequences on real hardware if we don't want to.
+
+By utilizing the \`OnlineFeedforwardEstimator\` injected into our core subsystems proactively, you can perform **Continuous SysId Auto-Tuning** under the hood of normal operations. This algorithm acts as a Zero-GC, realtime Feedforward extractor. It continuously monitors mechanism telemetry (Voltage, Velocity, and Acceleration) during normal simulated or teleop driving and computes empirical \`kV\` and \`kA\` values on the fly. 
+
+To view these automatically generated mathematical constants, simply open AdvantageScope and graph:
+- \`<MechanismName>/AutoTune/Estimated_kV\`
+- \`<MechanismName>/AutoTune/Estimated_kA\`
+
+You can plug these values right into your PID/Feedforward constructors and achieve near-perfect trajectory tracking.
+
+
+---
+
+
   ## 📖 Further Reading & External Resources
 
   

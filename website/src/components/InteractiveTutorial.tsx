@@ -21,6 +21,8 @@ export default function InteractiveTutorial({ title, description, steps, onCompl
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set());
   const [showCode, setShowCode] = useState(false);
+  const [syncId, setSyncId] = useState('');
+  const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'success' | 'error'>('idle');
 
   const currentStepData = steps[currentStep];
   const progress = ((currentStep + 1) / steps.length) * 100;
@@ -41,14 +43,28 @@ export default function InteractiveTutorial({ title, description, steps, onCompl
     }
   };
 
-  const handleCheckpoint = () => {
+  const handleCheckpoint = async () => {
     if (currentStepData.checkpoint) {
       const newCompleted = new Set(completedSteps);
       newCompleted.add(currentStepData.id);
       setCompletedSteps(newCompleted);
 
       // Save progress to localStorage
-      localStorage.setItem(`tutorial-${title}-progress`, JSON.stringify([...newCompleted]));
+      const progressArray = [...newCompleted];
+      localStorage.setItem(`tutorial-${title}-progress`, JSON.stringify(progressArray));
+
+      // Sync to Cloudflare conditionally
+      if (syncId) {
+        try {
+          await fetch('/api/progress', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ syncId: `${syncId}-${title}`, progressData: progressArray })
+          });
+        } catch (e) {
+          console.error("Failed to sync progress to cloud", e);
+        }
+      }
     }
   };
 
@@ -56,6 +72,27 @@ export default function InteractiveTutorial({ title, description, steps, onCompl
     setCurrentStep(index);
     setShowCode(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleCloudSync = async () => {
+    if (!syncId) return;
+    setSyncStatus('syncing');
+    try {
+      const res = await fetch(`/api/progress?syncId=${syncId}-${title}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) {
+            setCompletedSteps(new Set(data));
+            localStorage.setItem(`tutorial-${title}-progress`, JSON.stringify(data));
+        }
+        setSyncStatus('success');
+        setTimeout(() => setSyncStatus('idle'), 3000);
+      } else {
+        setSyncStatus('error');
+      }
+    } catch (e) {
+      setSyncStatus('error');
+    }
   };
 
   // Load saved progress
@@ -84,6 +121,19 @@ export default function InteractiveTutorial({ title, description, steps, onCompl
         <div className="tutorial-title">
           <h1>{title}</h1>
           <p className="tutorial-description">{description}</p>
+          
+          <div className="cloud-sync-widget">
+            <input 
+              type="text" 
+              placeholder="Team Code / Sync ID" 
+              value={syncId} 
+              onChange={(e) => setSyncId(e.target.value)} 
+              className="sync-input"
+            />
+            <button onClick={handleCloudSync} disabled={!syncId || syncStatus === 'syncing'} className="sync-btn">
+              {syncStatus === 'syncing' ? 'Syncing...' : syncStatus === 'success' ? 'Synced!' : 'Cloud Sync'}
+            </button>
+          </div>
         </div>
 
         {/* Progress Bar */}
