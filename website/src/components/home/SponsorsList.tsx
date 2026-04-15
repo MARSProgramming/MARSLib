@@ -10,7 +10,6 @@ export const SponsorsList = () => {
       <a href="https://photonvision.org/" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/PhotonVision/photonvision-branding/master/PhotonVision%20Branding/Logos/Icon/PNG/PhotonVision-Icon-noBG.png" width="60" height="60" alt="PhotonVision" /></a>
       <a href="https://store.ctr-electronics.com/" target="_blank" rel="noreferrer"><img src="https://v6.docs.ctr-electronics.com/en/stable/_static/ctre.png" width="60" height="60" alt="CTRE" /></a>
       <a href="https://www.revrobotics.com/" target="_blank" rel="noreferrer"><img src="https://avatars.githubusercontent.com/u/13215904?s=200&v=4" width="60" height="60" alt="REV" /></a>
-      <a href="https://shenzhen-robotics-alliance.github.io/maple-sim/rebuilt/" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/Shenzhen-Robotics-Alliance/maple-sim/main/docs/media/icon.png" width="60" height="60" alt="MapleSim" /></a>
     </div>
   );
 };

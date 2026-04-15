@@ -6,17 +6,17 @@ import edu.wpi.first.math.geometry.Translation3d;
 /**
  * Field-level constants for the 2026 REBUILT game.
  *
- * <p>All dimensions are sourced from the maple-sim {@code Arena2026Rebuilt} field geometry and the
- * official FRC Game Manual to ensure simulation-to-reality parity.
+ * <p>All dimensions are sourced from the official FRC Game Manual and field CAD to ensure
+ * simulation-to-reality parity.
  */
 public final class FieldConstants {
 
   // ---- Field Dimensions ----
 
-  /** Standard FRC field length (meters). Matches maple-sim Arena2026Rebuilt. */
+  /** Standard FRC field length (meters). */
   public static final double FIELD_LENGTH_METERS = 16.54105;
 
-  /** Standard FRC field width (meters). Matches maple-sim Arena2026Rebuilt. */
+  /** Standard FRC field width (meters). */
   public static final double FIELD_WIDTH_METERS = 8.06926;
 
   /** Thickness of simulated field boundary walls (meters). */
@@ -110,7 +110,7 @@ public final class FieldConstants {
   // ---- Simulation Tuning ----
 
   /**
-   * Controls whether the maple-sim arena runs in efficiency mode.
+   * Controls whether the physics arena runs in efficiency mode.
    *
    * <p><b>OFF (false)</b>: Full realism — all game pieces spawned, both depots, all center field
    * pieces. Recommended for match-accurate simulation and autonomous testing.
@@ -119,7 +119,7 @@ public final class FieldConstants {
    * depot. Useful for faster iteration during mechanism development when full field population is
    * unnecessary.
    */
-  public static final boolean MAPLE_SIM_EFFICIENCY_MODE = true;
+  public static final boolean PHYSICS_SIM_EFFICIENCY_MODE = true;
 
   private FieldConstants() {}
 }
