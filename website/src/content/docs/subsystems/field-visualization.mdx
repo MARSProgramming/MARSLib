@@ -39,7 +39,6 @@ MARSLib's interactive 3D field visualizer helps you understand field layouts, Ap
 
 ### Basic Field Visualization
 ```jsx
-import FieldVisualizer from '@components/FieldVisualizer';
 
 <FieldVisualizer 
   field="CRESCENDO_2024"
@@ -137,7 +136,6 @@ List<Pose2d> waypoints = List.of(
 
 ### Access Field Data Programmatically
 ```typescript
-import { FIELDS, createFieldLayout, spawnGamePieces } from '@components/field/FieldData';
 
 // Get field dimensions
 const field2024 = FIELDS.CRESCENDO_2024;
@@ -160,7 +158,6 @@ console.log(pieces); // Array of game piece positions
 
 ### Position Validation
 ```typescript
-import { isInField } from '@components/field/FieldData';
 
 const isValid = isInField(8.0, 4.0, field2024.dimensions);
 console.log(isValid); // true - center of field is valid
@@ -263,9 +260,9 @@ Pose2d defenderPos = new Pose2d(8.0, 3.0, Rotation2d.fromDegrees(90));
 
 ## 📖 Further Reading
 
-- [Vision Systems](/tutorials/framework/vision) - AprilTag detection and localization
-- [Autonomous Pathing](/tutorials/framework/pathfinding) - Path planning and execution
-- [Simulation Best Practices](/tutorials/advanced/simulation-best-practices) - Physics simulation techniques
+- [Vision Systems](/subsystems/vision) - AprilTag detection and localization
+- [Autonomous Pathing](/framework-architecture/pathfinding) - Path planning and execution
+- [Simulation Best Practices](/advanced/simulation-best-practices) - Physics simulation techniques
 - [AdvantageScope](https://scopes.rocketjourney.com/) - Telemetry visualization tool
 
 **Ready to visualize?** Use the field visualizer to plan your autonomous routines!

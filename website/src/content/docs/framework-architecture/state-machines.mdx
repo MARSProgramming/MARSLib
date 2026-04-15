@@ -47,23 +47,50 @@ stateMachine.addWildcardTo(STOW); // Can always go back to STOW in an emergency
     Before ever running a physical state machine transition on the field, the involved subsystems must pass their `SystemTestable` pre-match assertions. Ensure the hardware actually works via `MARSFaultManager` sweeps to prevent hardware collisions.
 :::
 
-  ## <span class="mars-num">3</span> Entry & Exit Actions
+  ## <span class="mars-num">3</span> Complete Subsystem Example
 
   
-Often, you want something to happen exactly once when a state changes. For example, when entering `INTAKING_FLOOR`, you want to deploy the pivot.
+Putting it all together, here is what a clean, elite subsystem implementing `MARSStateMachine` entry/exit actions looks like:
 
 
   ```java
-stateMachine.setEntryAction(INTAKING_FLOOR, () -> {
-  pivot.setGoal(IntakeConstants.DEPLOY_POS);
-  intakeWheels.run(1.0);
-});
+public class Superstructure extends SubsystemBase {
+    private final MARSStateMachine<SuperstructureState> stateMachine;
+    private final Pivot pivot;
+    private final Rollers rollers;
 
-stateMachine.setExitAction(INTAKING_FLOOR, () -> {
-  pivot.setGoal(IntakeConstants.STOW_POS);
-});
+    public Superstructure(Pivot pivot, Rollers rollers) {
+        this.pivot = pivot;
+        this.rollers = rollers;
+
+        stateMachine = new MARSStateMachine<>("Superstructure", 
+            SuperstructureState.class, SuperstructureState.STOW);
+
+        // 1. Map Valid Paths
+        stateMachine.addTransition(SuperstructureState.STOW, SuperstructureState.INTAKING_FLOOR);
+        stateMachine.addBidirectional(SuperstructureState.INTAKING_FLOOR, SuperstructureState.HUB_SCORE);
+        stateMachine.addWildcardTo(SuperstructureState.STOW);
+
+        // 2. Bind Hardware Actions
+        stateMachine.setEntryAction(SuperstructureState.INTAKING_FLOOR, () -> {
+            pivot.setGoal(IntakeConstants.DEPLOY_POS);
+            rollers.setVoltage(12.0);
+        });
+
+        stateMachine.setExitAction(SuperstructureState.INTAKING_FLOOR, () -> {
+            rollers.setVoltage(0.0);
+        });
+        
+        stateMachine.setEntryAction(SuperstructureState.STOW, () -> {
+            pivot.setGoal(IntakeConstants.STOW_POS);
+        });
+    }
+
+    public void requestState(SuperstructureState goal) {
+        stateMachine.requestTransition(goal);
+    }
+}
 ```
-
 
 <StateMachineSim client:only="react" />
 
@@ -89,7 +116,3 @@ One of the most powerful features of `MARSStateMachine` is that it automatically
   
 
     - [WPILib Official Documentation](https://docs.wpilib.org/en/stable/) - The definitive baseline resource.
-
-  
-
-

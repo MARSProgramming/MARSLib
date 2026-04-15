@@ -1,0 +1,138 @@
+---
+title: "Coding Do's & Don'ts"
+description: "A rapid-reference guide of elite coding patterns vs beginner anti-patterns."
+sidebar:
+  order: 4
+---
+
+When developing championship-grade software, certain paradigms guarantee architectural safety while others introduce race conditions and technical debt. Use this rapid-reference guide to eliminate common "rookie mistakes" while adopting elite logic structures.
+
+---
+
+## 🏗️ Hardware Architecture
+
+### ❌ Don't: Direct Hardware Instantiation in Logic
+Directly polling CAN devices inside subsystem logic creates untestable code that cannot be simulated.
+
+```java
+public class Shooter extends SubsystemBase {
+    // BAD! Bound directly to CTRE hardware, cannot be mocked.
+    private final TalonFX flywheel = new TalonFX(10); 
+
+    public void periodic() {
+        if (flywheel.getVelocity().getValueAsDouble() > 5000) {
+            // ...
+        }
+    }
+}
+```
+
+### ✅ Do: Use the IO Interface Abstraction
+Always define an `IO` interface, allowing you to seamlessly swap between Real hardware, Replay logs, and Physics Simulators without touching your logic.
+
+```java
+public class Shooter extends SubsystemBase {
+    private final ShooterIO io;
+    private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
+
+    public Shooter(ShooterIO io) {
+        this.io = io; // PERFECT! Injected dependency.
+    }
+
+    public void periodic() {
+        io.updateInputs(inputs);
+        Logger.processInputs("Shooter", inputs);
+
+        if (inputs.flywheelVelocityRadPerSec > 500) {
+            // ...
+        }
+    }
+}
+```
+
+---
+
+## ⏱️ Loop Timing & Telemetry
+
+### ❌ Don't: Rely on Fixed 20ms Delays
+Using hard-coded 20ms delay multipliers (`* 0.02`) or using `Thread.sleep()` in commands blocks the main WPILib thread and shatters robot predictability.
+
+```java
+public void execute() {
+    // BAD! What if the robot loop drops to 25ms due to CAN utilization?
+    position += velocity * 0.02; 
+    
+    // FATAL! Blocks the entire robot pipeline. Watchdog will crash.
+    try { Thread.sleep(500); } catch (Exception e) {}
+}
+```
+
+### ✅ Do: Use Dynamic Delta-Time & Timers
+Always use `Timer.getFPGATimestamp()` to calculate precise frame delta $dt$, guaranteeing that kinematic math remains robust even if the CAN bus drops frames.
+
+```java
+private double lastTime = Timer.getFPGATimestamp();
+
+public void execute() {
+    double currentTime = Timer.getFPGATimestamp();
+    double dt = currentTime - lastTime;
+    lastTime = currentTime;
+
+    // PERFECT! Math scales perfectly with loop time.
+    position += velocity * dt; 
+}
+```
+
+---
+
+## 📝 Naming Conventions & Linting
+
+### ❌ Don't: Use Hungarian Notation or Ambiguous Names
+Prefixing variables with their types (`strPath`, `m_robot`, `boolActive`) is an outdated C++ convention that pollutes Java clarity.
+
+```java
+// BAD: Hungarian notation violates MARSLib standards
+private double m_kP; 
+private TalonSRX obj_motor;
+
+public void update(double v) { // BAD: What does 'v' mean? Volts? Velocity?
+    obj_motor.set(v);
+}
+```
+
+### ✅ Do: Use Explicit, Contextual Nomenclature
+State units intrinsically in the variable name if they are continuous primitives.
+
+```java
+// PERFECT: Clear meaning without type-prefix pollution.
+private double kP; 
+private CANSparkMax leftDriveMotor;
+
+public void updateFlywheel(double velocityRadPerSec) { 
+    leftDriveMotor.set(velocityRadPerSec);
+}
+```
+
+---
+
+## 🔍 Printing & Debugging
+
+### ❌ Don't: Use System Print Statements
+If you use `System.out.println` on an FRC robot, that message is highly likely to be lost during match play or disconnected driver station events.
+
+```java
+public void initialize() {
+    // BAD! Clutters the RIOLog and disappears without a trace in AdvantageScope.
+    System.out.println("Shooter command started!"); 
+}
+```
+
+### ✅ Do: Use AdvantageKit Deterministic Logging
+Log events through AdvantageKit. Everything logged this way is recorded to the USB drive and is permanently available for offline simulation replays.
+
+```java
+public void initialize() {
+    // PERFECT! Can be plotted seamlessly in AdvantageScope after the match.
+    Logger.recordOutput("Shooter/State", "SpinningUp");
+}
+```

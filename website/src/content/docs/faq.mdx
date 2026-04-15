@@ -67,7 +67,7 @@ cd MARSLib
 ./gradlew publishToMavenLocal
 ```
 
-[Full Setup Guide](/tutorials/setup/getting-started)
+[Full Setup Guide](/getting-started/01-setup-and-infrastructure)
 
 ## 🔧 Technical Questions
 
@@ -100,7 +100,7 @@ GyroIO gyroIO = new GyroIOPigeon2();  // Real Pigeon2
 GyroIO gyroIO = new GyroIOSim();  // Simulated gyro
 ```
 
-[Learn More](/tutorials/framework/io-abstraction)
+[Learn More](/framework-architecture/io-layer)
 
 ### Why does MARSLib emphasize zero-allocation?
 
@@ -118,7 +118,7 @@ GyroIO gyroIO = new GyroIOSim();  // Simulated gyro
 - Use primitive arrays instead of collections
 - Avoid string concatenation in loops
 
-[Zero-Allocation Guide](/tutorials/advanced/zero-allocation)
+[Zero-Allocation Guide](/framework-architecture/zero-allocation)
 
 ### How accurate is MARSLib simulation?
 
@@ -141,7 +141,7 @@ GyroIO gyroIO = new GyroIOSim();  // Simulated gyro
 - Manufacturing variations not simulated
 - Battery voltage idealized
 
-[Simulation Guide](/tutorials/advanced/simulation-best-practices)
+[Simulation Guide](/advanced/simulation-best-practices)
 
 ## 📊 Performance & Testing
 
@@ -193,7 +193,7 @@ GyroIO gyroIO = new GyroIOSim();  // Simulated gyro
 - Memory: &lt; 100MB
 - CPU: &lt; 50%
 
-[Performance Guide](/tutorials/elite/performance-analysis)
+[Performance Guide](/advanced/performance-analysis)
 
 ### What test coverage does MARSLib have?
 
@@ -387,7 +387,7 @@ GyroIO gyroIO = new GyroIOSim();  // Simulated gyro
 - Old code remains WPILib
 - Slow migration over seasons
 
-[WPILib Migration Guide](/tutorials/migration/from-wpilib)
+[WPILib Migration Guide](/getting-started/migration/from-wpilib)
 
 ### Is MARSLib compatible with PhotonVision?
 
@@ -461,7 +461,7 @@ machine.periodic();  // Call in robotPeriodic
 - Transition logging
 - Automatic lifecycle management
 
-[State Machine Guide](/tutorials/framework/state-machines)
+[State Machine Guide](/framework-architecture/state-machines)
 
 ### Can I use PathPlanner with MARSLib?
 
@@ -487,7 +487,7 @@ AutoBuilder.configure(
 );
 ```
 
-[PathPlanner Integration](/tutorials/advanced/path-following)
+[PathPlanner Integration](/subsystems/pathfinding)
 
 ---
 

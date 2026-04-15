@@ -52,7 +52,6 @@ public void periodic() {
 
 ### Quick Analysis Workflow
 ```typescript
-import { parseWPILog, calculatePerformanceMetrics, analyzeBottlenecks } from '@components/performance/LogParser';
 
 // 1. Parse log file
 const log = await parseWPILog(file);
@@ -74,7 +73,6 @@ bottlenecks.forEach(b => {
 
 **Extract Loop Times:**
 ```typescript
-import { filterByKey, extractTimeSeries } from '@components/performance/LogParser';
 
 // Get all loop time entries
 const loopEntries = filterByKey(log, /LoopTime|Perf/);
@@ -156,7 +154,6 @@ if (memoryGrowth > 10) {
 
 **Analyzing Subsystem Performance:**
 ```typescript
-import { analyzeBottlenecks } from '@components/performance/LogParser';
 
 const bottlenecks = analyzeBottlenecks(log);
 
@@ -216,7 +213,6 @@ if (avgSecond > avgFirst * 1.1) {
 
 **Analyze Specific Time Period:**
 ```typescript
-import { getEntriesInTimeRange } from '@components/performance/LogParser';
 
 // Analyze autonomous period (first 15 seconds)
 const autoStart = log.startTime;
@@ -235,7 +231,6 @@ console.log(`Average autonomous loop time: ${avgAutoLoop.toFixed(3)}ms`);
 
 **Find Periodic Issues:**
 ```typescript
-import { detectAnomalies } from '@components/performance/LogParser';
 
 const loopTimeSeries = extractTimeSeries(log, 'Perf/LoopTimeMs');
 
@@ -352,7 +347,6 @@ subsystems.forEach(subsystem => {
 ### Automated Analysis
 ```typescript
 // scripts/analyze-log.js
-import { parseWPILog, generateSummaryReport } from '@components/performance/LogParser';
 
 async function analyzeLogFile(filePath: string) {
   const file = await fetch(filePath).then(r => r.blob()).then(blob => new File([blob], filePath));
@@ -389,7 +383,7 @@ analyzeLogFile(process.argv[2]);
 
 ## 📖 Further Reading
 
-- [Performance Tuning Guide](/tutorials/advanced/performance-tuning) - Optimization techniques
+- [Performance Tuning Guide](/advanced/performance-tuning) - Optimization techniques
 - [AdvantageScope Documentation](https://scopes.rocketjourney.com/) - Visualization tool
 - [AdvantageKit Documentation](https://docs.advantagekit.org/) - Logging framework
 - [Testing Guide](/contributing/testing-guide) - Digital Twin testing approach

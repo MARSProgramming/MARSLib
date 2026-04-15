@@ -74,7 +74,7 @@ export default defineConfig({
 			],
 			sidebar: [
 				{
-					label: 'Getting Started',
+					label: 'Zero to Hero: Onboarding',
 					autogenerate: { directory: 'getting-started' }
 				},
 				{
