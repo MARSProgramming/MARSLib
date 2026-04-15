@@ -25,6 +25,9 @@ public class LidarIOSim {
   private static final int NUM_RAYS = 16;
   private static final double MAX_RAY_DISTANCE_METERS = 3.0; // Max Range
 
+  private static final DetectFilter<org.dyn4j.dynamics.Body, org.dyn4j.dynamics.BodyFixture>
+      DETECT_FILTER = new DetectFilter<>(true, true, null);
+
   /**
    * Performs the raycast sweep around the robot and logs the hits as a 3D Point Cloud.
    *
@@ -51,7 +54,7 @@ public class LidarIOSim {
 
       // Perform broad-phase raycast finding the closest object
       RaycastResult<org.dyn4j.dynamics.Body, org.dyn4j.dynamics.BodyFixture> result =
-          world.raycastClosest(ray, MAX_RAY_DISTANCE_METERS, new DetectFilter<>(true, true, null));
+          world.raycastClosest(ray, MAX_RAY_DISTANCE_METERS, DETECT_FILTER);
 
       if (result != null && result.getRaycast().getDistance() > 0.01) {
         // We hit something! Convert the distance back to an absolute field Point3d
