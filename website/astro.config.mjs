@@ -58,6 +58,10 @@ export default defineConfig({
 				},
 				{
 					tag: 'script',
+					content: "if (typeof document !== 'undefined') { document.documentElement.dataset.theme = 'dark'; new MutationObserver(function() { if (document.documentElement.dataset.theme !== 'dark') { document.documentElement.dataset.theme = 'dark'; } }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] }); }"
+				},
+				{
+					tag: 'script',
 					attrs: { src: '/src/scripts/copy-button.js', defer: true },
 				},
 				{

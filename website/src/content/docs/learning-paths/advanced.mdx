@@ -1,0 +1,461 @@
+---
+title: "Advanced Learning Path"
+description: "Master championship-level features: state machines, multi-robot coordination, and advanced optimization."
+sidebar:
+  order: 3
+---
+
+# Advanced Learning Path (Weeks 5-6)
+
+Ready to become a robotics expert? This path covers championship-level features that separate good robots from great robots.
+
+## What You'll Master
+
+By the end of this 4-week program, you'll expert in:
+- **State Machines**: Advanced behavior management
+- **Multi-Robot Coordination**: Control multiple robots together
+- **Advanced Vision**: Custom vision pipelines and algorithms
+- **Championship Optimization**: Performance at the highest level
+
+**Prerequisites**: Complete [Intermediate Learning Path](/learning-paths/intermediate) or significant competition experience
+
+---
+
+## Week 5: Advanced Control Patterns
+
+### Day 29-30: State Machine Mastery
+
+**✅ Goals**:
+- Design hierarchical state machines
+- Implement state transitions
+- Handle complex robot behaviors
+- Debug state machine issues
+
+**📚 Read**:
+- [State Machine Guide](/tutorials/advanced/state-machines)
+- [State Machine Patterns](/tutorials/advanced/state-patterns)
+- [Hierarchical States](/tutorials/advanced/hierarchical-states)
+
+**🎯 Activities**:
+1. Design multi-mode state machine
+2. Implement error recovery states
+3. Add state persistence
+4. Create state machine debugger
+
+**⏱️ Time**: 4-6 hours
+
+---
+
+### Day 31-32: Advanced Control Theory
+
+**✅ Goals**:
+- Master feedforward control
+- Implement motion profiles
+- Tune complex PID systems
+- Use advanced control algorithms
+
+**📚 Read**:
+- [Feedforward Control](/tutorials/control-theory/feedforward)
+- [Motion Profiling](/tutorials/control-theory/motion-profiles)
+- [Advanced PID](/tutorials/control-theory/advanced-pid)
+
+**🎯 Activities**:
+1. Implement profiled PID for arm
+2. Add feedforward to shooter
+3. Create custom motion profile
+4. Tune complex control systems
+
+**⏱️ Time**: 4-6 hours
+
+---
+
+## Week 6: Expert Features
+
+### Day 33-34: Multi-Robot Coordination
+
+**✅ Goals**:
+- Coordinate multiple robots
+- Implement robot-to-robot communication
+- Design collaborative autonomous
+- Handle multi-robot scenarios
+
+**📚 Read**:
+- [Multi-Robot Systems](/tutorials/advanced/multi-robot)
+- [Inter-Robot Communication](/tutorials/advanced/robot-comms)
+- [Collaborative Autos](/tutorials/advanced/collaborative-auto)
+
+**🎯 Activities**:
+1. Set up robot-to-robot communication
+2. Create coordinated autonomous
+3. Implement multi-robot positioning
+4. Test multi-robot scenarios
+
+**💡 Victory Moment**: Multiple robots working together autonomously!
+
+**⏱️ Time**: 4-6 hours
+
+---
+
+### Day 35-36: Advanced Vision Systems
+
+**✅ Goals**:
+- Implement custom vision pipelines
+- Optimize vision performance
+- Create vision redundancy
+- Handle vision challenges
+
+**📚 Read**:
+- [Custom Vision Pipelines](/tutorials/advanced/custom-vision)
+- [Vision Optimization](/tutorials/advanced/vision-optimization)
+- [Vision Redundancy](/tutorials/advanced/vision-redundancy)
+
+**🎯 Activities**:
+1. Create custom vision pipeline
+2. Optimize vision for performance
+3. Implement multi-camera fusion
+4. Handle vision failure gracefully
+
+**⏱️ Time**: 4-6 hours
+
+---
+
+### Day 37-38: Championship Optimization
+
+**✅ Goals**:
+- Achieve Einstein-level performance
+- Optimize every subsystem
+- Monitor and maintain peak performance
+- Build championship-ready code
+
+**📚 Read**:
+- [Einstein-Level Optimization](/tutorials/advanced/einstein)
+- [Performance Monitoring](/tutorials/advanced/monitoring)
+- [Advanced Profiling](/tutorials/advanced/profiling)
+
+**🎯 Activities**:
+1. Profile entire robot system
+2. Optimize to &lt;5ms loop times
+3. Eliminate all performance bottlenecks
+4. Build comprehensive monitoring
+
+**🏆 Expert Status**: You're now a MARSLib expert ready for championship competition!
+
+**⏱️ Time**: 4-6 hours
+
+---
+
+## Advanced Project
+
+### Days 39-40: Championship Integration Project
+
+**✅ Goals**:
+- Integrate all advanced features
+- Build championship-caliber robot
+- Test under realistic conditions
+- Document advanced implementations
+
+**🎯 Project Options**:
+
+**Option A: Einstein-Winning Auto**
+```
+- Multi-piece autonomous with vision
+- Adaptive path following
+- Error recovery and redundancy
+- Performance-optimized routines
+```
+
+**Option B: Advanced Multi-Robot**
+```
+- Coordinate 2-3 robots seamlessly
+- Advanced inter-robot communication
+- Collaborative scoring strategies
+- Fault-tolerant coordination
+```
+
+**Option C: Custom Vision Pipeline**
+```
+- Deep learning integration
+- Custom object detection
+- Advanced vision optimization
+- Real-time performance tracking
+```
+
+**⏱️ Time**: 8-12 hours
+
+---
+
+## After 6 Weeks: You Can!
+
+✅ **Design state machines** for complex behaviors
+✅ **Coordinate multiple robots** effectively
+✅ **Implement advanced vision** systems
+✅ **Optimize to championship-level** performance
+✅ **Debug and fix** any robot problem
+✅ **Teach advanced concepts** to others
+✅ **Innovate and create** new solutions
+
+---
+
+## Expert Topics Covered
+
+### State Machines
+- **Hierarchical states**: Parent-child state relationships
+- **State persistence**: Remembering state across modes
+- **Transition logic**: Complex state switching
+- **Error recovery**: Graceful failure handling
+- **State debugging**: Tools and techniques
+
+### Advanced Control
+- **Feedforward control**: Predictive control strategies
+- **Motion profiling**: Smooth motion trajectories
+- **Multi-variable control**: Controlling multiple parameters
+- **Adaptive control**: Systems that adjust automatically
+
+### Multi-Robot Systems
+- **Communication protocols**: How robots talk to each other
+- **Coordination strategies**: Working together effectively
+- **Collision avoidance**: Safe multi-robot operation
+- **Collaborative autonomous**: Joint planning and execution
+
+### Advanced Vision
+- **Custom pipelines**: Tailored vision processing
+- **Performance optimization**: Making vision faster
+- **Sensor fusion**: Combining multiple sensors
+- **Advanced algorithms**: Beyond basic tracking
+
+---
+
+## Expert Techniques
+
+### Advanced Debugging
+
+**Distributed Logging**:
+```java
+// Advanced logging system
+public class AdvancedLogger {
+    private static final Map<String, Long> lastLog = new HashMap<>();
+    
+    public static void log(String component, String message) {
+        long now = Timer.getFPGATimestamp();
+        Long last = lastLog.get(component);
+        
+        if (last == null || now - last > 1.0) {  // 1 second minimum
+            System.out.println("[" + component + "] " + message);
+            lastLog.put(component, now);
+        }
+    }
+}
+```
+
+### Performance Monitoring
+
+**Real-time metrics**:
+```java
+// Advanced performance tracking
+public class PerformanceMonitor {
+    private final RollingCounter loopTime = new RollingCounter(100);
+    private final RollingCounter canUtilization = new RollingCounter(100);
+    
+    public void recordLoopTime(double timeMs) {
+        loopTime.add(timeMs);
+        
+        if (loopTime.getAverage() > 10.0) {
+            DriverStation.reportWarning("High loop time: " + timeMs, false);
+        }
+    }
+    
+    public Map<String, Double> getMetrics() {
+        Map<String, Double> metrics = new HashMap<>();
+        metrics.put("LoopTime_avg", loopTime.getAverage());
+        metrics.put("LoopTime_max", loopTime.getMax());
+        metrics.put("CANUtil_avg", canUtilization.getAverage());
+        return metrics;
+    }
+}
+```
+
+### Advanced Error Handling
+
+**Resilient systems**:
+```java
+// Advanced error recovery
+public class ErrorRecovery {
+    private int consecutiveFailures = 0;
+    private static final int MAX_FAILURES = 3;
+    
+    public void handleError(Exception e, String operation) {
+        consecutiveFailures++;
+        
+        if (consecutiveFailures >= MAX_FAILURES) {
+            // Too many failures, enter safe mode
+            enterSafeMode(operation);
+        } else {
+            // Try to recover
+            recover(e);
+        }
+    }
+    
+    private void enterSafeMode(String operation) {
+        System.out.println("Too many failures in " + operation);
+        // Stop all motion
+        // Notify drivers
+        // Log incident
+    }
+}
+```
+
+---
+
+## Expert Challenges
+
+### Challenge 1: Self-Optimizing Robot
+
+**Goal**: Robot that tunes itself during competition
+
+**Requirements**:
+- Automatically tune PID gains
+- Adapt to field conditions
+- Optimize performance in real-time
+- Handle environmental changes
+
+### Challenge 2: Predictive Maintenance
+
+**Goal**: Robot that predicts and prevents failures
+
+**Requirements**:
+- Monitor component health
+- Predict failures before they happen
+- Alert operators to issues
+- Switch to backup systems automatically
+
+### Challenge 3: Game Strategy AI
+
+**Goal**: System that analyzes match and suggests strategy
+
+**Requirements**:
+- Analyze scouting data
+- Suggest optimal strategy
+- Adapt to game situations
+- Coordinate with alliance partners
+
+---
+
+## Expert Assessment
+
+### Performance Targets
+
+**Einstein-Level Performance**:
+- ✅ Loop time: &lt;5ms consistently
+- ✅ CAN utilization: &lt;60%
+- ✅ Uptime: 99.9% during matches
+- ✅ Auto reliability: 100%
+- ✅ Teleop precision: Championship level
+
+### Code Quality
+
+**Championship Code**:
+- Zero allocations in periodic()
+- Comprehensive error handling
+- Extensive documentation
+- Performance monitoring
+- Comprehensive testing
+
+---
+
+## Expert Resources
+
+### Advanced Topics
+
+**Control Theory**:
+- [Advanced Control Theory](/tutorials/control-theory/advanced)
+- [System Identification](/tutorials/advanced/sysid)
+- [Optimization Algorithms](/tutorials/advanced/optimization)
+
+**Robotics**:
+- [Multi-Robot Systems](/tutorials/advanced/multi-robot)
+- [Advanced Vision](/tutorials/advanced/vision)
+- [Path Planning](/tutorials/advanced/path-planning)
+
+**Software Engineering**:
+- [Advanced Architecture](/tutorials/advanced/architecture)
+- [Design Patterns](/tutorials/advanced/patterns)
+- [Testing Strategies](/tutorials/advanced/testing)
+
+---
+
+## Next Steps
+
+### Mastery Achieved!
+
+You're now ready for:
+- **Championship competition** at the highest level
+- **Teaching others** advanced concepts
+- **Innovating** new solutions
+- **Leading** technical teams
+- **Contributing** to MARSLib itself
+
+### Continued Learning
+
+**Beyond MARSLib**:
+- Study advanced computer science
+- Learn professional software engineering
+- Explore cutting-edge robotics
+- Contribute to open-source projects
+- Share knowledge with community
+
+---
+
+## Expert Checklist
+
+### Advanced Skills
+
+**State Machines**:
+- [ ] Designed hierarchical state machine
+- [ ] Implemented state persistence
+- [ ] Added error recovery
+- [ ] Debugged state transitions
+
+**Advanced Control**:
+- [ ] Mastered feedforward control
+- [ ] Implemented motion profiles
+- [ ] Tuned complex PID systems
+- [ ] Created custom controllers
+
+**Multi-Robot**:
+- [ ] Coordinated multiple robots
+- [ ] Implemented robot-to-robot comms
+- [ ] Created collaborative autos
+- [ ] Tested multi-robot scenarios
+
+**Optimization**:
+- [ ] Achieved &lt;5ms loop times
+- [ ] Eliminated performance bottlenecks
+- [ ] Built comprehensive monitoring
+- [ ] Optimized entire robot system
+
+---
+
+## Expert Recognition
+
+### You're Now Ready For
+
+- **Championship Finals** (Einstein Field)
+- **Technical Leadership** roles
+- **Mentoring others** in advanced topics
+- **Contributing** to MARSLib development
+- **Innovating** new robotics solutions
+
+### Expert Status
+
+**MARSLib Expert**:
+- Complete mastery of framework
+- Can teach advanced topics
+- Can contribute to core framework
+- Ready for championship competition
+- Qualified for technical leadership
+
+---
+
+**Congratulations!** You've completed the full advanced learning path and are now a MARSLib expert ready for championship success!
+
+**Share your expertise**: [Teach others](/teaching/mentor-guide) and [contribute to the community](/community/contributing)!
