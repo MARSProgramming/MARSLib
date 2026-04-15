@@ -13,18 +13,17 @@ import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import java.util.HashMap;
 import java.util.Map;
 import org.dyn4j.dynamics.Body;
+import org.dyn4j.geometry.Vector2;
 import org.dyn4j.world.World;
-import org.ironmaple.simulation.seasonspecific.rebuilt2026.Arena2026Rebuilt;
 import org.littletonrobotics.junction.Logger;
 
 /**
  * Singleton 2D physics world managing all rigid-body interactions on the FRC field.
  *
- * <p>This class acts as an adapter, owning the maple-sim {@link Arena2026Rebuilt} instance and is
- * responsible for:
+ * <p>This class acts as a native Dyn4j physics registry and is responsible for:
  *
  * <ul>
- *   <li>Initializing the field boundaries and obstacles via maple-sim.
+ *   <li>Initializing the field boundaries and obstacles via SimulatedField2026.
  *   <li>Stepping the physics simulation and computing battery voltage sag.
  *   <li>Exporting all body poses to AdvantageKit for 3D visualization.
  * </ul>
@@ -38,17 +37,6 @@ public class MARSPhysicsWorld {
   private static final int STALE_ACCESS_THRESHOLD = 500;
 
   private static final int STALE_BODY_THRESHOLD = 20;
-
-  /** Internal wrapper to expose the protected dyn4j world from SimulatedArena. */
-  private static class ArenaWrapper extends Arena2026Rebuilt {
-    public ArenaWrapper(boolean addRampCollider) {
-      super(addRampCollider);
-    }
-
-    public World<Body> getDyn4jWorld() {
-      return this.physicsWorld;
-    }
-  }
 
   public static MARSPhysicsWorld getInstance() {
     if (instance == null) {
@@ -70,23 +58,19 @@ public class MARSPhysicsWorld {
 
   @SuppressWarnings("PMD.NullAssignment")
   public static void resetInstance() {
-    if (instance != null && instance.arena != null) {
-      // Safe tear down if needed
-      org.ironmaple.simulation.motorsims.SimulatedBattery.clearElectricalAppliances();
-    }
     instance = null;
     accessCountSinceReset = 0;
   }
 
   public World<Body> getDyn4jWorld() {
-    return arena.getDyn4jWorld();
+    return physicsWorld;
   }
 
   public int getBodyCount() {
-    return arena.getDyn4jWorld().getBodyCount();
+    return physicsWorld.getBodyCount();
   }
 
-  private final ArenaWrapper arena;
+  private final World<Body> physicsWorld;
   private final Map<String, Body> mechanismBodies;
 
   private double frameCurrentDrawAmps = 0.0;
@@ -95,19 +79,15 @@ public class MARSPhysicsWorld {
   @SuppressWarnings("PMD.AssignmentToNonFinalStatic")
   private MARSPhysicsWorld() {
     instance = this;
-    // By default, full realism mode (efficiency mode OFF)
-    arena = new ArenaWrapper(true);
-    arena.setEfficiencyMode(false);
+
+    physicsWorld = new World<>();
+    // Top-down 2D simulation has zero gravity
+    physicsWorld.setGravity(new Vector2(0.0, 0.0));
 
     mechanismBodies = new HashMap<>();
 
-    // Populate the field with game pieces immediately upon initialization
-    arena.resetFieldForAuto();
-  }
-
-  /** Return the underlying maple-sim Arena2026Rebuilt instance. */
-  public Arena2026Rebuilt getArena() {
-    return arena;
+    // Populate the field with static game boundaries
+    SimulatedField2026.getFieldBoundaries(true).forEach(physicsWorld::addBody);
   }
 
   public World<Body> getWorld() {
@@ -116,20 +96,16 @@ public class MARSPhysicsWorld {
 
   public void registerMechanismBody(String name, Body body) {
     mechanismBodies.put(name, body);
-    arena.getDyn4jWorld().addBody(body);
+    physicsWorld.addBody(body);
   }
 
   public void addFrameCurrentDrawAmps(double amps) {
     frameCurrentDrawAmps += amps;
   }
 
-  public void addCustomSimulation(org.ironmaple.simulation.SimulatedArena.Simulatable simulatable) {
-    arena.addCustomSimulation(simulatable);
-  }
-
   public void update(double dtSeconds) {
-    // Delegate to maple-sim's simulation step
-    arena.simulationPeriodic();
+    // Step the dyn4j environment
+    physicsWorld.step(1, dtSeconds);
 
     // Compute battery voltage sag
     Logger.recordOutput("PhysicsWorld/FrameCurrentDraw_A", frameCurrentDrawAmps);
@@ -137,6 +113,7 @@ public class MARSPhysicsWorld {
     loadedVoltage = Math.max(6.0, loadedVoltage);
     simulatedVoltage = loadedVoltage;
     RoboRioSim.setVInVoltage(loadedVoltage);
+
     Logger.recordOutput("PhysicsWorld/ComputedVoltage", loadedVoltage);
     Logger.recordOutput("PhysicsWorld/Heartbeat", edu.wpi.first.wpilibj.Timer.getFPGATimestamp());
 
@@ -162,9 +139,8 @@ public class MARSPhysicsWorld {
       Pose3d pose3d = new Pose3d(xMeters, yMeters, 0.0, new Rotation3d(0.0, 0.0, yawRads));
       Logger.recordOutput("PhysicsWorld/" + mechanismName, pose3d);
     }
-    // Export field game pieces
-    Pose3d[] fuelPoses = arena.getGamePiecesArrayByType("Fuel");
-    Logger.recordOutput("PhysicsWorld/FuelCount", fuelPoses.length);
-    Logger.recordOutput("PhysicsWorld/GamePieces", fuelPoses);
+
+    // Clear out deprecated maple-sim fuel array to prevent logging errors
+    Logger.recordOutput("PhysicsWorld/GamePieces", new Pose3d[0]);
   }
 }

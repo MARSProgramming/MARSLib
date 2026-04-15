@@ -6,9 +6,6 @@
  */
 package com.marslib.swerve;
 
-import static edu.wpi.first.units.Units.Kilograms;
-import static edu.wpi.first.units.Units.Meters;
-
 import com.marslib.diagnostics.SystemTestable;
 import com.marslib.power.MARSPowerManager;
 import com.marslib.util.OnlineFeedforwardEstimator;
@@ -26,9 +23,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import java.util.Arrays;
 import java.util.function.Supplier;
-import org.ironmaple.simulation.drivesims.COTS;
-import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
-import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -52,7 +46,7 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
 
   private double lastDriveVelocityForSysId = 0.0;
 
-  private final SwerveDriveSimulation simDrive;
+  private final com.marslib.simulation.SwerveChassisPhysics simChassis;
   private final com.marslib.simulation.LidarIOSim lidarSim;
 
   private final SwerveSetpointGenerator setpointGenerator;
@@ -93,35 +87,22 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
     this.diagnostics = new SwerveDiagnostics(this, this.modules);
 
     if (gyroIOSim != null) {
-      DriveTrainSimulationConfig driveSimConfig =
-          DriveTrainSimulationConfig.Default()
-              .withRobotMass(Kilograms.of(config.robotMassKg()))
-              .withBumperSize(
-                  Meters.of(config.bumperLengthMeters()), Meters.of(config.bumperWidthMeters()))
-              .withTrackLengthTrackWidth(
-                  Meters.of(config.wheelbaseMeters()), Meters.of(config.trackWidthMeters()))
-              .withSwerveModule(
-                  COTS.ofMark4(
-                      edu.wpi.first.math.system.plant.DCMotor.getKrakenX60Foc(1),
-                      edu.wpi.first.math.system.plant.DCMotor.getKrakenX60Foc(1),
-                      config.wheelCOFStatic(),
-                      2));
+      simChassis =
+          new com.marslib.simulation.SwerveChassisPhysics(
+              config.robotMassKg(),
+              config.bumperWidthMeters(),
+              config.bumperLengthMeters(),
+              config.wheelCOFStatic());
+      simChassis.setPose(odometry.getPose());
 
-      simDrive = new SwerveDriveSimulation(driveSimConfig, odometry.getPose());
       com.marslib.simulation.MARSPhysicsWorld.getInstance()
-          .getArena()
-          .addDriveTrainSimulation(simDrive);
+          .registerMechanismBody("SwerveDrive", simChassis.getBody());
 
       lidarSim = new com.marslib.simulation.LidarIOSim();
 
-      for (int i = 0; i < modules.length; i++) {
-        modules[i].injectModuleSimulation(simDrive.getModules()[i]);
-      }
-
-      gyroIOSim.setGyroSimulation(simDrive.getGyroSimulation());
-      gyroIOSim.setSwerveDriveSimulation(simDrive);
+      gyroIOSim.setSwerveChassisPhysics(simChassis);
     } else {
-      simDrive = null;
+      simChassis = null;
       lidarSim = null;
     }
 
@@ -163,8 +144,11 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
       modules[i].periodic();
     }
 
-    if (simDrive != null) {
-      Pose2d simBoundedPose = simDrive.getSimulatedDriveTrainPose();
+    if (simChassis != null) {
+      // Step the global tracking physics loop
+      simChassis.applyKinematicSpeeds(prevSetpoint.chassisSpeeds, config.loopPeriodSecs());
+
+      Pose2d simBoundedPose = simChassis.getPose();
       if (simBoundedPose.getX() != lastSimPoseCache.getX()
           || simBoundedPose.getY() != lastSimPoseCache.getY()
           || simBoundedPose.getRotation().getRadians()
@@ -296,7 +280,7 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
   }
 
   public Pose3d getSimPose3d() {
-    Pose2d pose2d = simDrive != null ? simDrive.getSimulatedDriveTrainPose() : getPose();
+    Pose2d pose2d = simChassis != null ? simChassis.getPose() : getPose();
     return new Pose3d(
         pose2d.getX(),
         pose2d.getY(),
@@ -306,7 +290,7 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
   }
 
   public void resetPose(Pose2d pose) {
-    if (simDrive != null) simDrive.setSimulationWorldPose(pose);
+    if (simChassis != null) simChassis.setPose(pose);
     odometry.resetPose(pose, gyroInputs, modules);
   }
 

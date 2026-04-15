@@ -6,24 +6,27 @@
  */
 package com.marslib.swerve;
 
-import static edu.wpi.first.units.Units.Radians;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.Volts;
-
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.Timer;
-import org.ironmaple.simulation.drivesims.SwerveModuleSimulation;
-import org.ironmaple.simulation.motorsims.SimulatedMotorController.GenericMotorController;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 /**
  * Simulation IO layer for a single swerve module.
  *
- * <p>Both the drive and turn motor physics are handled by the maple-sim {@link
- * SwerveModuleSimulation}.
+ * <p>Both the drive and turn motor physics are handled purely by WPILib's native {@link
+ * DCMotorSim}.
  */
 public class SwerveModuleIOSim implements SwerveModuleIO {
-  private SwerveModuleSimulation simModule;
-  private GenericMotorController driveCont;
-  private GenericMotorController steerCont;
+  // Generic Swerve Module estimations (Kraken X60 FOC)
+  private final DCMotorSim driveSim =
+      new DCMotorSim(
+          LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60Foc(1), 0.025, 6.12),
+          DCMotor.getKrakenX60Foc(1));
+  private final DCMotorSim steerSim =
+      new DCMotorSim(
+          LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60Foc(1), 0.004, 15.0),
+          DCMotor.getKrakenX60Foc(1));
 
   private double driveAppliedVolts = 0.0;
   private double turnAppliedVolts = 0.0;
@@ -35,43 +38,25 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
   @SuppressWarnings("PMD.UnusedFormalParameter")
   public SwerveModuleIOSim(int moduleIndex) {}
 
-  public void setModuleSimulation(SwerveModuleSimulation sim) {
-    this.simModule = sim;
-    this.driveCont = sim.useGenericMotorControllerForDrive();
-    this.steerCont = sim.useGenericControllerForSteer();
-  }
-
   @Override
   public void updateInputs(SwerveModuleIOInputs inputs) {
+    // Step the physics sims by the standard 20ms WPILib loop duration
+    driveSim.update(0.02);
+    steerSim.update(0.02);
+
     inputs.hasHardwareConnected = true;
 
-    if (simModule != null) {
-      inputs.driveVelocityRadPerSec = simModule.getDriveWheelFinalSpeed().in(RadiansPerSecond);
-      inputs.turnVelocityRadPerSec = simModule.getSteerAbsoluteEncoderSpeed().in(RadiansPerSecond);
+    inputs.driveVelocityRadPerSec = driveSim.getAngularVelocityRadPerSec();
+    inputs.turnVelocityRadPerSec = steerSim.getAngularVelocityRadPerSec();
 
-      drivePositionsRadBuffer[0] = simModule.getDriveWheelFinalPosition().in(Radians);
-      inputs.drivePositionsRad = drivePositionsRadBuffer;
+    drivePositionsRadBuffer[0] = driveSim.getAngularPositionRad();
+    inputs.drivePositionsRad = drivePositionsRadBuffer;
 
-      turnPositionsRadBuffer[0] = simModule.getSteerAbsoluteFacing().getRadians();
-      inputs.turnPositionsRad = turnPositionsRadBuffer;
+    turnPositionsRadBuffer[0] = steerSim.getAngularPositionRad();
+    inputs.turnPositionsRad = turnPositionsRadBuffer;
 
-      inputs.driveCurrentAmps =
-          simModule.getDriveMotorSupplyCurrent().in(edu.wpi.first.units.Units.Amps);
-      inputs.turnCurrentAmps =
-          simModule.getSteerMotorSupplyCurrent().in(edu.wpi.first.units.Units.Amps);
-    } else {
-      inputs.driveVelocityRadPerSec = 0.0;
-      inputs.turnVelocityRadPerSec = 0.0;
-
-      drivePositionsRadBuffer[0] = 0.0;
-      inputs.drivePositionsRad = drivePositionsRadBuffer;
-
-      turnPositionsRadBuffer[0] = 0.0;
-      inputs.turnPositionsRad = turnPositionsRadBuffer;
-
-      inputs.driveCurrentAmps = 0.0;
-      inputs.turnCurrentAmps = 0.0;
-    }
+    inputs.driveCurrentAmps = driveSim.getCurrentDrawAmps();
+    inputs.turnCurrentAmps = steerSim.getCurrentDrawAmps();
 
     inputs.driveAppliedVolts = driveAppliedVolts;
     inputs.turnAppliedVolts = turnAppliedVolts;
@@ -83,17 +68,13 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
   @Override
   public void setDriveVoltage(double volts) {
     driveAppliedVolts = volts;
-    if (driveCont != null) {
-      driveCont.requestVoltage(Volts.of(volts));
-    }
+    driveSim.setInputVoltage(volts);
   }
 
   @Override
   public void setTurnVoltage(double volts) {
     turnAppliedVolts = volts;
-    if (steerCont != null) {
-      steerCont.requestVoltage(Volts.of(volts));
-    }
+    steerSim.setInputVoltage(volts);
   }
 
   public double getSimDriveVoltage() {

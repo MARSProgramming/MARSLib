@@ -82,10 +82,6 @@ public class LinearMechanismIOSim implements LinearMechanismIO {
     MARSPhysicsWorld.getInstance().registerMechanismBody(mechanismName, carriageBody);
     MARSPhysicsWorld.getInstance().getWorld().addJoint(joint);
 
-    // Apply force constantly across all sub-ticks to prevent dyn4j wiping it after 1 step
-    MARSPhysicsWorld.getInstance()
-        .addCustomSimulation((int subtick) -> carriageBody.applyForce(simulatedForce));
-
     // Internal profiled PID mimics the TalonFX Motion Magic controller in sim.
     // kP=500.0 provides stiff tracking without ff; constraints model FRC elevator profile:
     //   maxVelocity = 2.0 m/s, maxAcceleration = 4.0 m/s²
@@ -145,6 +141,9 @@ public class LinearMechanismIOSim implements LinearMechanismIO {
         closedLoop ? internalController.getSetpoint().velocity : 0.0;
     inputs.appliedVolts = appliedVolts;
     inputs.currentAmps = new double[] {Math.abs(currentDrawAmps)};
+
+    // Apply force to physics engine for next step
+    carriageBody.applyForce(simulatedForce);
   }
 
   @Override

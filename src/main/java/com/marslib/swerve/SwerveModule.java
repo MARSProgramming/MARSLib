@@ -194,21 +194,4 @@ public class SwerveModule {
   public void setTurnVoltage(double volts) {
     io.setTurnVoltage(volts);
   }
-
-  /**
-   * Injects the maple-sim module simulation reference into the underlying IO layer if it is a
-   * {@link SwerveModuleIOSim}. This ensures the sim IO reads encoder readings from the single
-   * physics engine rather than running its own duplicate motor simulation.
-   *
-   * <p>No-op if the IO layer is not a sim implementation.
-   *
-   * @param simModule The {@link org.ironmaple.simulation.drivesims.SwerveModuleSimulation} instance
-   *     to inject.
-   */
-  public void injectModuleSimulation(
-      org.ironmaple.simulation.drivesims.SwerveModuleSimulation simModule) {
-    if (io instanceof SwerveModuleIOSim) {
-      ((SwerveModuleIOSim) io).setModuleSimulation(simModule);
-    }
-  }
 }

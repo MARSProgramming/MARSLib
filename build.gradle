@@ -131,7 +131,7 @@ dependencies {
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    // dyn4j is provided by the maple-sim vendordep (vendordeps/maple-sim.json)
+    implementation 'org.dyn4j:dyn4j:4.2.2'
 
     def akitJson = new groovy.json.JsonSlurper().parseText(new File(projectDir.getAbsolutePath() + "/vendordeps/AdvantageKit.json").text)
     annotationProcessor "org.littletonrobotics.akit:akit-autolog:$akitJson.version"

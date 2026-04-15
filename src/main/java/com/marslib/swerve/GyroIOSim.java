@@ -6,31 +6,21 @@
  */
 package com.marslib.swerve;
 
-import static edu.wpi.first.units.Units.RadiansPerSecond;
+import com.marslib.simulation.SwerveChassisPhysics;
+import edu.wpi.first.math.geometry.Pose2d;
 
-import org.ironmaple.simulation.drivesims.GyroSimulation;
-import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
-
-/** Simulated gyro IO layer that derives yaw from the maple-sim physics engine. */
+/** Simulated gyro IO layer that derives yaw from the native Dyn4j physics engine. */
 public class GyroIOSim implements GyroIO {
-  private GyroSimulation gyroSim;
+  private SwerveChassisPhysics simChassis;
 
-  private SwerveDriveSimulation simDrive;
-
-  public void setGyroSimulation(GyroSimulation gyroSim) {
-    this.gyroSim = gyroSim;
-  }
-
-  public void setSwerveDriveSimulation(SwerveDriveSimulation simDrive) {
-    this.simDrive = simDrive;
+  public void setSwerveChassisPhysics(SwerveChassisPhysics simChassis) {
+    this.simChassis = simChassis;
   }
 
   public boolean enableCanStarvation = false;
-  private double lastYawCached = 0.0;
-  private final double[] yawPositionsBuffer = new double[1];
-  private final double[] lastTiltCache = new double[2];
-
   public double canStarvationProbability = 0.02;
+
+  private final double[] yawPositionsBuffer = new double[1];
 
   @Override
   public void updateInputs(GyroIOInputs inputs) {
@@ -42,9 +32,11 @@ public class GyroIOSim implements GyroIO {
       }
     }
 
-    if (gyroSim != null) {
-      inputs.yawPositionRad = gyroSim.getGyroReading().getRadians();
-      inputs.yawVelocityRadPerSec = gyroSim.getMeasuredAngularVelocity().in(RadiansPerSecond);
+    if (simChassis != null) {
+      Pose2d simPose = simChassis.getPose();
+      inputs.yawPositionRad = simPose.getRotation().getRadians();
+      // Directly pull the angular velocity from the physics body
+      inputs.yawVelocityRadPerSec = simChassis.getBody().getAngularVelocity();
     } else {
       inputs.yawPositionRad = 0.0;
       inputs.yawVelocityRadPerSec = 0.0;
@@ -54,27 +46,8 @@ public class GyroIOSim implements GyroIO {
     yawPositionsBuffer[0] = inputs.yawPositionRad;
     inputs.odometryYawPositions = yawPositionsBuffer;
 
-    if (simDrive != null) {
-      edu.wpi.first.math.geometry.Pose2d simPose = simDrive.getSimulatedDriveTrainPose();
-
-      // Only recompute tilt if pose has moved significantly to avoid Arena allocation
-      if (Math.abs(simPose.getX() - lastYawCached) > 0.001
-          || Math.abs(simPose.getY() - lastYawCached) > 0.001) {
-        double[] tilt =
-            org.ironmaple.simulation.seasonspecific.rebuilt2026.Arena2026Rebuilt
-                .getSimulatedBumpTilt_rads(simPose);
-        lastTiltCache[0] = tilt[0];
-        lastTiltCache[1] = tilt[1];
-        lastYawCached = simPose.getX(); // Using X as a rough dirty bit
-      }
-
-      inputs.pitchPositionRad = lastTiltCache[0];
-      inputs.rollPositionRad = lastTiltCache[1];
-    } else {
-      inputs.pitchPositionRad = 0.0;
-      inputs.rollPositionRad = 0.0;
-    }
-
+    inputs.pitchPositionRad = 0.0;
+    inputs.rollPositionRad = 0.0;
     inputs.pitchVelocityRadPerSec = 0.0;
     inputs.rollVelocityRadPerSec = 0.0;
   }

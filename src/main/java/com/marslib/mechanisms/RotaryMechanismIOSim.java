@@ -86,10 +86,6 @@ public class RotaryMechanismIOSim implements RotaryMechanismIO {
     MARSPhysicsWorld.getInstance().registerMechanismBody(mechanismName, armBody);
     MARSPhysicsWorld.getInstance().getWorld().addJoint(joint);
 
-    // Apply torque constantly across all sub-ticks to prevent dyn4j wiping it after 1 step
-    MARSPhysicsWorld.getInstance()
-        .addCustomSimulation((int subtick) -> armBody.applyTorque(simulatedTorque));
-
     // Internal profiled PID mimics the TalonFX Motion Magic controller in sim.
     // kP=5.0 provides stiff tracking; constraints model a typical FRC arm profile:
     //   maxVelocity = 10.0 rad/s, maxAcceleration = 20.0 rad/s²
@@ -144,6 +140,9 @@ public class RotaryMechanismIOSim implements RotaryMechanismIO {
     inputs.targetVelocityRadPerSec = closedLoop ? internalController.getSetpoint().velocity : 0.0;
     inputs.appliedVolts = appliedVolts;
     inputs.currentAmps = new double[] {Math.abs(currentDrawAmps)};
+
+    // Apply torque to physics engine for next step
+    armBody.applyTorque(simulatedTorque);
   }
 
   @Override
