@@ -14,6 +14,7 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.marslib.util.CANUtil;
 
 /**
  * Real hardware implementation of {@link FlywheelIO} using a CTRE TalonFX motor controller.
@@ -32,6 +33,8 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   private final VelocityVoltage velocityRequest = new VelocityVoltage(0.0).withUpdateFreqHz(0);
 
   private double targetVelocityRadPerSec = 0.0;
+
+  private final double[] currentAmpsCache = new double[1];
 
   private final TalonFX[] followers;
 
@@ -72,7 +75,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     config.Slot0.kI = 0.0;
     config.Slot0.kD = 0.0;
 
-    motor.getConfigurator().apply(config);
+    CANUtil.applyWithRetry(motor, config, "Flywheel_" + leaderId);
 
     velocitySignal = motor.getVelocity();
     voltageSignal = motor.getMotorVoltage();
@@ -85,7 +88,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     followers = new TalonFX[followerIds.length];
     for (int i = 0; i < followerIds.length; i++) {
       followers[i] = new TalonFX(followerIds[i], canBus);
-      followers[i].getConfigurator().apply(config);
+      CANUtil.applyWithRetry(followers[i], config, "FlywheelFollower_" + followerIds[i]);
       followers[i].setControl(new com.ctre.phoenix6.controls.Follower(leaderId, opposeLeader[i]));
       followers[i].optimizeBusUtilization();
     }
@@ -100,7 +103,8 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     inputs.velocityRadPerSec = velocitySignal.getValueAsDouble() * Math.PI * 2.0;
     inputs.targetVelocityRadPerSec = targetVelocityRadPerSec;
     inputs.appliedVolts = voltageSignal.getValueAsDouble();
-    inputs.currentAmps = new double[] {statorCurrentSignal.getValueAsDouble()};
+    currentAmpsCache[0] = statorCurrentSignal.getValueAsDouble();
+    inputs.currentAmps = currentAmpsCache;
   }
 
   @Override
@@ -128,6 +132,6 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     MotorOutputConfigs config = new MotorOutputConfigs();
     motor.getConfigurator().refresh(config);
     config.NeutralMode = enable ? NeutralModeValue.Brake : NeutralModeValue.Coast;
-    motor.getConfigurator().apply(config);
+    CANUtil.applyWithRetry(motor, config, "Flywheel_BrakeMode");
   }
 }

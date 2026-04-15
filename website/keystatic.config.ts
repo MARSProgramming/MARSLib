@@ -51,6 +51,18 @@ const starlightSchema = {
 			SysIdSim: simBlock('SysId Simulator'),
 			VisionSim: simBlock('Vision Simulator'),
 			ZeroAllocationSim: simBlock('Zero Allocation Simulator'),
+			CodePlayground: block({
+				label: 'Code Playground',
+				schema: {},
+			}),
+			FieldVisualizer: block({
+				label: 'Field Visualizer',
+				schema: {},
+			}),
+			PerformanceDashboard: block({
+				label: 'Performance Dashboard',
+				schema: {},
+			}),
 			RuleSection: wrapper({
 				label: 'Rule Section',
 				schema: {

@@ -1,0 +1,393 @@
+---
+sidebar:
+  order: 1
+  id: beginner-getting-started
+  title: "Getting Started with MARSLib"
+  template: doc
+  description: "New to robotics or MARSLib? Start here! This guide walks you through everything you need to know to get started."
+---
+
+# Getting Started with MARSLib
+
+Welcome to MARSLib! This guide is for students who are new to robotics or programming. We'll walk you through everything step by step.
+
+## What is MARSLib?
+
+MARSLib is a collection of code that helps you control FRC robots. Think of it like a toolbox full of pre-built tools. Instead of building everything from scratch, you can use these tools to make your robot work.
+
+**Why use MARSLib?**
+- ✅ **Saves time**: Common tasks are already written for you
+- ✅ **Tested**: Many teams use and test this code
+- ✅ **Documented**: Clear guides explain how to use everything
+- ✅ **Simulated**: Test your code without a robot
+
+## What You Need to Know
+
+### Before You Start
+
+You don't need to be an expert! But you should know:
+- **Basic Java**: How to write simple programs
+- **Variables**: How to store and use data
+- **Methods**: How to write and call functions
+
+**Don't know Java yet?** That's okay! Check out [Java for Beginners](https://www.w3schools.com/java/) to learn the basics first.
+
+### What You'll Learn
+
+By the end of this guide, you'll understand:
+- How to set up MARSLib
+- How to make your robot move
+- How to organize your code
+- How to test without a robot
+
+## Setting Up MARSLib
+
+### Step 1: Install Java
+
+MARSLib uses Java 17. You need to install it on your computer.
+
+1. Go to [jdk.java.net](https://jdk.java.net/17/)
+2. Download the Java 17 JDK for your computer
+3. Run the installer
+4. Test it: Open a terminal and type `java -version`
+
+**What is a JDK?** 
+JDK stands for "Java Development Kit." It's the software that lets you write and run Java programs.
+
+### Step 2: Install VS Code
+
+VS Code is a program where you'll write your code.
+
+1. Go to [code.visualstudio.com](https://code.visualstudio.com/)
+2. Download VS Code for your computer
+3. Run the installer
+
+**Why VS Code?**
+It's free, works well with Java, and has great features for robot programming.
+
+### Step 3: Get MARSLib
+
+There are two ways to get MARSLib:
+
+**Option A: Use Gradle (Recommended)**
+Add this to your `build.gradle` file:
+```gradle
+repositories {
+    maven { url = 'https://maven.MARSProgramming.org' }
+}
+
+dependencies {
+    implementation 'org.team2614:MARSLib:2024.3.0'
+}
+```
+
+**Option B: Clone from GitHub**
+```bash
+git clone https://github.com/MARSProgramming/MARSLib.git
+cd MARSLib
+./gradlew publishToMavenLocal
+```
+
+**What is Gradle?**
+Gradle is a tool that builds your code. It's like a chef that takes your ingredients (code) and turns them into a meal (robot program).
+
+## Understanding Robot Code Structure
+
+### The Basic Pattern
+
+Robot code follows a simple pattern:
+
+```
+1. **Subsystems** - Parts of your robot (drivetrain, shooter, etc.)
+2. **Commands** - Actions your robot can do
+3. **Triggers** - What starts commands (button presses, etc.)
+4. **Container** - Ties everything together
+```
+
+### Example: Making Your Robot Drive
+
+Let's make a simple robot that drives with a controller.
+
+**Step 1: Create a Drivetrain Subsystem**
+
+A subsystem is a part of your robot. The drivetrain subsystem controls the wheels.
+
+```java
+package frc.robot.subsystems;
+
+import com.marslib.swerve.SwerveDrive;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+
+public class Drivetrain extends Subsystem {
+    private final SwerveDrive drive;
+    
+    public Drivetrain() {
+        // Create the swerve drive
+        drive = new SwerveDrive();
+    }
+    
+    // Method to drive the robot
+    public void drive(double forward, double strafe, double rotate) {
+        drive.drive(forward, strafe, rotate);
+    }
+}
+```
+
+**What this does:**
+- Creates a drivetrain subsystem
+- Sets up the swerve drive
+- Provides a method to make the robot move
+
+**Step 2: Create a Drive Command**
+
+Commands are actions your robot can perform.
+
+```java
+package frc.robot.commands;
+
+import frc.robot.subsystems.Drivetrain;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.XboxController;
+
+public class DriveCommand extends Command {
+    private final Drivetrain drivetrain;
+    private final XboxController controller;
+    
+    public DriveCommand(Drivetrain drivetrain, XboxController controller) {
+        this.drivetrain = drivetrain;
+        this.controller = controller;
+        
+        // This command needs the drivetrain
+        addRequirements(drivetrain);
+    }
+    
+    @Override
+    public void execute() {
+        // Get joystick values
+        double forward = -controller.getLeftY();
+        double strafe = controller.getLeftX();
+        double rotate = controller.getRightX();
+        
+        // Drive the robot
+        drivetrain.drive(forward, strafe, rotate);
+    }
+}
+```
+
+**What this does:**
+- Runs every robot cycle (20ms)
+- Reads joystick positions
+- Tells the drivetrain to move
+
+**Step 3: Set Up Your Robot Container**
+
+The container brings everything together.
+
+```java
+package frc.robot;
+
+import frc.robot.subsystems.Drivetrain;
+import frc.robot.commands.DriveCommand;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
+
+public class RobotContainer {
+    private final Drivetrain drivetrain = new Drivetrain();
+    private final XboxController driver = new XboxController(0);
+    
+    public RobotContainer() {
+        // Set up default command
+        drivetrain.setDefaultCommand(
+            new DriveCommand(drivetrain, driver)
+        );
+    }
+    
+    public Command getAutonomousCommand() {
+        // Return autonomous command here
+        return null;
+    }
+}
+```
+
+## Common Robot Tasks
+
+### Making a Mechanism Move
+
+Mechanisms are things like arms, elevators, or shooters.
+
+```java
+public class ArmSubsystem extends Subsystem {
+    private final LinearMechanism arm;
+    
+    public ArmSubsystem() {
+        arm = new LinearMechanism(
+            new ArmConfig(),  // Configuration
+            new ArmIOReal()   // Hardware connection
+        );
+    }
+    
+    // Move arm to position
+    public void setPosition(double meters) {
+        arm.setPosition(meters);
+    }
+    
+    // Get current arm position
+    public double getPosition() {
+        return arm.getPosition();
+    }
+}
+```
+
+### Adding Autonomous Code
+
+Autonomous means the robot drives itself.
+
+```java
+public class AutoCommand extends Command {
+    private final Drivetrain drivetrain;
+    
+    public AutoCommand(Drivetrain drivetrain) {
+        this.drivetrain = drivetrain;
+        addRequirements(drivetrain);
+    }
+    
+    @Override
+    public void execute() {
+        // Simple auto: drive forward
+        drivetrain.drive(0.5, 0, 0);
+    }
+    
+    @Override
+    public boolean isFinished() {
+        // Stop after 3 seconds
+        return sinceStarted() > 3.0;
+    }
+}
+```
+
+## Testing Without a Robot
+
+One great thing about MARSLib: you can test your code without a robot!
+
+### How Simulation Works
+
+MARSLib creates simulated versions of your hardware. Instead of real motors, it uses math to model what would happen.
+
+**Benefits:**
+- Test at home without the robot
+- Catch bugs early
+- Learn faster
+- Experiment safely
+
+### Running Simulation
+
+```bash
+# Run Java simulation
+./gradlew simulateJava
+
+# Or in VS Code, click the "Simulation" button
+```
+
+The simulation opens a window showing your robot. You can control it with your keyboard!
+
+## Common Mistakes to Avoid
+
+### 1. Forgetting to Add Requirements
+
+❌ **Wrong**:
+```java
+public DriveCommand(Drivetrain drivetrain) {
+    this.drivetrain = drivetrain;
+    // Missing: addRequirements(drivetrain);
+}
+```
+
+✅ **Right**:
+```java
+public DriveCommand(Drivetrain drivetrain) {
+    this.drivetrain = drivetrain;
+    addRequirements(drivetrain);  // Don't forget!
+}
+```
+
+### 2. Creating Objects in Periodic
+
+❌ **Wrong**:
+```java
+public void periodic() {
+    Pose2d pose = new Pose2d(x, y);  // Bad! Creates object every cycle
+}
+```
+
+✅ **Right**:
+```java
+private final Pose2d pose = new Pose2d();  // Create once
+
+public void periodic() {
+    pose.setX(x);  // Reuse the object
+    pose.setY(y);
+}
+```
+
+### 3. Not Handling Edge Cases
+
+❌ **Wrong**:
+```java
+public void setSpeed(double speed) {
+    motor.set(speed);  // What if speed is > 1.0?
+}
+```
+
+✅ **Right**:
+```java
+public void setSpeed(double speed) {
+    // Make sure speed is between -1.0 and 1.0
+    speed = Math.max(-1.0, Math.min(1.0, speed));
+    motor.set(speed);
+}
+```
+
+## Getting Help
+
+### When You're Stuck
+
+1. **Check the docs**: Look up what you're trying to do
+2. **Search GitHub**: Others might have had the same problem
+3. **Ask the community**: Post in GitHub Discussions
+4. **Talk to your team**: Other students might know the answer
+
+### Good Questions Include:
+
+- What you're trying to do
+- What you've already tried
+- What error you're seeing
+- Code snippets if applicable
+
+**Example good question**:
+```
+"I'm trying to make my swerve drive follow a path in autonomous. 
+I've set up PathPlanner and loaded the path, but the robot 
+doesn't move. Here's my code. What am I missing?"
+```
+
+## Next Steps
+
+Now that you know the basics, you can:
+
+1. **Explore more subsystems**: Learn about vision, shooting, climbing
+2. **Build autonomous programs**: Make your robot drive itself
+3. **Test everything**: Use simulation to verify your code
+4. **Deploy to robot**: Try your code on a real robot
+
+## Resources
+
+- **Full Documentation**: [MARSLib Docs](/)
+- **FAQ**: [Frequently Asked Questions](/faq)
+- **Examples**: [GitHub Examples](https://github.com/MARSProgramming/MARSLib/tree/master/examples)
+- **Community**: [GitHub Discussions](https://github.com/MARSProgramming/MARSLib/discussions)
+
+---
+
+**Remember**: Everyone starts somewhere. The best robot programmers weren't experts when they began. Keep practicing, ask questions, and have fun learning!
+
+**Need help?** Don't be afraid to ask. The robotics community is friendly and wants to help you succeed.

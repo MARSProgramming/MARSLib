@@ -62,6 +62,7 @@ public class MARSSuperstructure extends SubsystemBase {
   private double goalIntakeAngle = 0.0;
 
   private final Supplier<Double> tiltRadiansSupplier;
+  private final String[] stateNamesCache;
 
   /**
    * Constructs the superstructure orchestrator.
@@ -94,6 +95,11 @@ public class MARSSuperstructure extends SubsystemBase {
     this.visionTargetSupplier = visionTargetSupplier;
     this.tiltRadiansSupplier = tiltRadiansSupplier;
 
+    stateNamesCache = new String[SuperstructureState.values().length];
+    for (SuperstructureState state : SuperstructureState.values()) {
+      stateNamesCache[state.ordinal()] = state.name();
+    }
+
     stateMachine =
         new MARSStateMachine<>(
             "Superstructure", SuperstructureState.class, SuperstructureState.STOWED);
@@ -121,17 +127,9 @@ public class MARSSuperstructure extends SubsystemBase {
 
     stateMachine.setOnTransition(
         (from, to) -> {
-          StringBuilder sb = new StringBuilder(64);
-          sb.append(from.name())
-              .append(" -> ")
-              .append(to.name())
-              .append(" at cowl=")
-              .append(cowl.getPositionRads())
-              .append("rad intake=")
-              .append(intakePivot.getPositionRads())
-              .append("rad gamePieceCount=")
-              .append(gamePieceCount);
-          Logger.recordOutput("Superstructure/TransitionDetail", sb.toString());
+          Logger.recordOutput(
+              "Superstructure/Transition",
+              stateNamesCache[from.ordinal()] + " -> " + stateNamesCache[to.ordinal()]);
         });
   }
 
@@ -149,9 +147,10 @@ public class MARSSuperstructure extends SubsystemBase {
           if (!accepted) {
             Logger.recordOutput(
                 "Superstructure/TransitionRejectedReason",
-                String.format(
-                    "%s→%s is not a legal transition.",
-                    stateMachine.getState().name(), targetState.name()));
+                stateNamesCache[stateMachine.getState().ordinal()]
+                    + " -> "
+                    + stateNamesCache[targetState.ordinal()]
+                    + " is not a legal transition.");
           }
         },
         this);
@@ -309,7 +308,7 @@ public class MARSSuperstructure extends SubsystemBase {
   private void logOutputs(SuperstructureState currentState) {
     Logger.recordOutput("Superstructure/GoalCowlAngle", goalCowlAngle);
     Logger.recordOutput("Superstructure/GoalIntakeAngle", goalIntakeAngle);
-    Logger.recordOutput("Superstructure/CurrentState", currentState.name());
+    Logger.recordOutput("Superstructure/CurrentState", stateNamesCache[currentState.ordinal()]);
   }
 
   /**

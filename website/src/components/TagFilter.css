@@ -1,0 +1,159 @@
+.tag-filter {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.tag-filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.tag-filter-header h3 {
+  color: #fff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 16px;
+  margin: 0;
+}
+
+.clear-all-btn {
+  background: #B32416;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.clear-all-btn:hover {
+  background: #d42e1e;
+}
+
+/* Category Tabs */
+.category-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.category-tab {
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  font-size: 13px;
+  color: #aaa;
+}
+
+.category-tab:hover {
+  background: #3a3a3a;
+  border-color: #4a4a4a;
+  color: #fff;
+}
+
+.category-tab.active {
+  background: #B32416;
+  border-color: #B32416;
+  color: #fff;
+}
+
+.category-icon {
+  font-size: 14px;
+}
+
+.category-label {
+  font-weight: 500;
+}
+
+/* Tag Cloud */
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 100px;
+}
+
+.tag {
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  font-size: 12px;
+}
+
+.tag:hover {
+  background: #3a3a3a;
+  border-color: #4a4a4a;
+}
+
+.tag.selected {
+  background: rgba(179, 36, 22, 0.2);
+  border-color: #B32416;
+  color: #B32416;
+}
+
+.tag-name {
+  font-weight: 500;
+}
+
+.tag-count {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 11px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.tag.selected .tag-count {
+  background: rgba(179, 36, 22, 0.3);
+}
+
+.no-tags {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+  font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .tag-filter {
+    padding: 15px;
+  }
+
+  .category-tabs {
+    gap: 6px;
+  }
+
+  .category-tab {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .category-label {
+    display: none;
+  }
+
+  .tag {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+}

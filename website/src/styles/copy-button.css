@@ -1,0 +1,67 @@
+/* Copy Button Styles */
+.copy-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  z-index: 10;
+}
+
+.copy-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.copy-button.copied {
+  background: rgba(76, 175, 80, 0.3);
+  border-color: #4CAF50;
+  color: #4CAF50;
+}
+
+.copy-button.error {
+  background: rgba(244, 67, 54, 0.3);
+  border-color: #F44336;
+  color: #F44336;
+}
+
+/* Show copy button on hover */
+pre:hover .copy-button,
+.code-block-wrapper:hover .copy-button {
+  opacity: 1;
+}
+
+/* Ensure copy button is visible on touch devices */
+@media (hover: none) {
+  .copy-button {
+    opacity: 1;
+  }
+}
+
+/* Code block wrapper */
+.code-block-wrapper {
+  position: relative;
+}
+
+/* Starlight integration */
+.starlight pre {
+  position: relative;
+}
+
+.starlight pre .copy-button {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: inherit;
+}
+
+.starlight pre .copy-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}

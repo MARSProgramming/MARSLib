@@ -1,0 +1,278 @@
+---
+sidebar:
+  order: 2
+id: getting-started
+title: "Development Setup"
+template: doc
+description: "Set up your development environment for contributing to MARSLib. Get the tools you need to build, test, and deploy."
+---
+
+# Development Setup
+
+This guide will help you set up your development environment for contributing to MARSLib. The setup process takes about 10-15 minutes.
+
+## Prerequisites
+
+### Required Tools
+
+- **Java 17** - Development JDK
+- **Gradle 8.5+** - Build system (included with project)
+- **Git** - Version control
+- **VS Code** - Recommended IDE (with extensions)
+- **Node.js 18+** - For website development
+
+### Optional Tools
+
+- **AdvantageScope** - Telemetry visualization
+- **WPILib VS Code Extension** - FRC development support
+
+## Step 1: Fork and Clone
+
+### Fork the Repository
+1. Go to [github.com/MARSProgramming/MARSLib](https://github.com/MARSProgramming/MARSLib)
+2. Click the "Fork" button in the top-right
+3. Choose your GitHub account as the destination
+
+### Clone Your Fork
+```bash
+# Clone your fork
+git clone https://github.com/YOUR_USERNAME/MARSLib.git
+cd MARSLib
+
+# Add upstream repository
+git remote add upstream https://github.com/MARSProgramming/MARSLib.git
+```
+
+## Step 2: Install Java Dependencies
+
+### Using Gradle Wrapper (Recommended)
+The project includes Gradle Wrapper, so you don't need to install Gradle separately:
+
+```bash
+# On Windows
+.\gradlew.bat build
+
+# On macOS/Linux
+./gradlew build
+```
+
+### Verify Installation
+```bash
+# Run tests to verify setup
+.\gradlew.bat test
+
+# Run simulation to verify physics
+.\gradlew simulateJava
+```
+
+## Step 3: Set Up VS Code
+
+### Install Extensions
+Install these VS Code extensions for optimal development:
+
+- **Extension Pack for Java** (Microsoft)
+- **Gradle for Java** (Microsoft)
+- **WPILib** (WPILib contributors)
+- **Markdown All in One** (for documentation)
+
+### Configure VS Code
+Create `.vscode/settings.json` (if not present):
+
+```json
+{
+  "java.format.settings.url": "https://raw.githubusercontent.com/MARSProgramming/MARSLib/master/spotless.license",
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.import.gradle.enabled": true,
+  "files.associations": {
+    "*.gradle": "groovy"
+  }
+}
+```
+
+## Step 4: Set Up Website Development
+
+### Install Dependencies
+```bash
+cd website
+npm install
+```
+
+### Run Development Server
+```bash
+npm run dev
+```
+
+The website will be available at `http://localhost:4321`
+
+### Build for Production
+```bash
+npm run build
+```
+
+## Step 5: Install Git Hooks (Optional)
+
+Install git hooks to automatically format code before commits:
+
+```bash
+# On Windows
+.\install-git-hooks.bat
+
+# On macOS/Linux
+chmod +x .githooks/pre-commit
+```
+
+This ensures your code follows MARSLib formatting standards automatically.
+
+## Step 6: Verify Everything Works
+
+### Build the Project
+```bash
+.\gradlew.bat build
+```
+
+### Run Tests
+```bash
+.\gradlew.bat test
+```
+
+### Run Simulation
+```bash
+.\gradlew.bat simulateJava
+```
+
+### Test Website
+```bash
+cd website
+npm run dev
+```
+
+## Development Workflow
+
+### Create a Feature Branch
+```bash
+git checkout -b feature/your-feature-name
+```
+
+### Make Changes
+- Edit code in `src/main/java/`
+- Add tests in `src/test/java/`
+- Update documentation if needed
+
+### Test Your Changes
+```bash
+# Run all tests
+.\gradlew.bat test
+
+# Run specific test
+.\gradlew.bat test --tests SwerveDriveTest
+
+# Run simulation
+.\gradlew.bat simulateJava
+```
+
+### Commit Your Changes
+```bash
+git add .
+git commit -m "Descriptive commit message"
+```
+
+### Push and Create Pull Request
+```bash
+git push origin feature/your-feature-name
+```
+
+Then create a pull request on GitHub.
+
+## Useful Gradle Commands
+
+### Building
+```bash
+# Build entire project
+.\gradlew.bat build
+
+# Build without tests
+.\gradlew.bat build -x test
+
+# Clean build artifacts
+.\gradlew.bat clean
+```
+
+### Testing
+```bash
+# Run all tests
+.\gradlew.bat test
+
+# Run with coverage
+.\gradlew.bat test jacocoTestReport
+
+# Run specific test class
+.\gradlew.bat test --tests MARSTestHarness
+
+# Run simulation tests
+.\gradlew.bat simulateJava
+```
+
+### Documentation
+```bash
+# Generate JavaDoc
+.\gradlew.bat generateDocs
+
+# View generated docs
+# Open docs/javadoc/index.html
+```
+
+### Deployment
+```bash
+# Deploy to robot
+.\gradlew.bat deploy
+
+# Build deployment JAR
+.\gradlew.bat buildDeploymentJar
+```
+
+## Troubleshooting
+
+### Java Version Issues
+Ensure you're using Java 17:
+```bash
+java -version
+# Should show "17.x.x"
+```
+
+### Gradle Build Fails
+Try cleaning and rebuilding:
+```bash
+.\gradlew.bat clean build --refresh-dependencies
+```
+
+### Tests Fail Locally
+Make sure you've initialized HAL:
+```bash
+# Tests should call this automatically
+HAL.initialize(500, 0);
+```
+
+### Website Won't Build
+Clear node_modules and reinstall:
+```bash
+cd website
+rm -rf node_modules package-lock.json
+npm install
+```
+
+## Next Steps
+
+1. **Read our [Coding Standards](./coding-standards)** to understand our patterns
+2. **Learn about our [Testing Philosophy](./testing-guide)** 
+3. **Find a [good first issue](https://github.com/MARSProgramming/MARSLib/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)**
+4. **Join our [GitHub Discussions](https://github.com/MARSProgramming/MARSLib/discussions)**
+
+## Need Help?
+
+- 📖 Check the [main documentation](/)
+- 💬 Ask in [GitHub Discussions](https://github.com/MARSProgramming/MARSLib/discussions)
+- 🐛 Report issues on [GitHub Issues](https://github.com/MARSProgramming/MARSLib/issues)
+
+---
+
+**Ready to code?** Check out our [Coding Standards](./coding-standards) to learn MARSLib patterns!

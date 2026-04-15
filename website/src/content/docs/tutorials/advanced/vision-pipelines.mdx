@@ -1,0 +1,454 @@
+---
+sidebar:
+  order: 3
+id: vision-pipelines
+title: "Vision System Integration"
+template: doc
+description: "Comprehensive guide to integrating vision systems with MARSLib. AprilTag detection, MegaTag 2.0 localization, and camera setup for accurate robot positioning."
+---
+
+# Vision System Integration
+
+MARSLib provides advanced vision system integration for accurate robot localization and targeting using AprilTags and computer vision.
+
+## Vision System Architecture
+
+### 🎯 Core Components
+
+<Mermaid code={`
+flowchart TD
+    A["Vision System"] --> B["AprilTag Detection"]
+    A --> C["MegaTag 2.0 Fusion"]
+    A --> D["SLAM Localization"]
+    
+    B --> E["PhotonVision"]
+    B --> F["Limelight"]
+    B --> G["Custom Detection"]
+    
+    C --> H["Odometry Fusion"]
+    C --> I["IMU Seeding"]
+    
+    D --> J["Pose Estimation"]
+    D --> K["Field Localization"]
+    
+    style A fill:#B32416,stroke:#d42e1e,stroke-width:2px,color:#fff
+    style B fill:#1a1a1a,stroke:#2a2a2a,stroke-width:1px,color:#e8e8e8
+    style C fill:#1a1a1a,stroke:#2a2a2a,stroke-width:1px,color:#e8e8e8
+    style D fill:#1a1a1a,stroke:#2a2a2a,stroke-width:1px,color:#e8e8e8
+    style E fill:#2a2a2a,stroke:#1a1a1a,stroke-width:1px,color:#9c7bcc
+    style F fill:#2a2a2a,stroke:#1a1a1a,stroke-width:1px,color:#ff6b6b
+    style G fill:#2a2a2a,stroke:#1a1a1a,stroke-width:1px,color:#666
+    style H fill:#0a0a0a,stroke:#6ba3d6,stroke-width:1px,color:#6ba3d6
+    style I fill:#0a0a0a,stroke:#6ba3d6,stroke-width:1px,color:#6ba3d6
+    style J fill:#0a0a0a,stroke:#6ba3d6,stroke-width:1px,color:#6ba3d6
+    style K fill:#0a0a0a,stroke:#6ba3d6,stroke-width:1px,color:#6ba3d6
+`} />
+
+## Hardware Setup
+
+### Camera Configuration
+
+**Recommended Cameras:**
+- **Limelight 3A**: Built-in AprilTag detection
+- **PhotonVision**: Open-source, highly customizable
+- **Microsoft LifeCam**: Budget option with PhotonVision
+
+**Camera Positioning:**
+```java
+// Optimal camera placement
+public class CameraConfig {
+    public static final Pose3d BLUE_CAM_POSE = new Pose3d(
+        new Translation3d(0.3, 0.0, 0.5),  // 30cm forward, 50mm up
+        new Rotation3d(0, Math.PI, 0)         // Facing backward
+    );
+    
+    public static final Pose3d RED_CAM_POSE = new Pose3d(
+        new Translation3d(-0.3, 0.0, 0.5),
+        new Rotation3d(0, Math.PI, 0)
+    );
+}
+```
+
+### Lighting Setup
+**Best Practices:**
+- Use **LED ring lights** around camera lens
+- Ensure **even field lighting** (500+ lux)
+- Position lights to **illuminate tags, not camera**
+- Avoid **direct sunlight** on camera sensor
+
+## Software Integration
+
+### Vision IO Abstraction
+MARSLib uses the IO abstraction layer for vision systems.
+
+```java
+// Vision IO interface
+public interface VisionIO {
+    void updateInputs(VisionIOInputs inputs);
+    void setPipelineIndex(int index);
+    void setDriverMode(boolean enabled);
+}
+
+// PhotonVision implementation
+public class PhotonVisionIO implements VisionIO {
+    private final PhotonCamera camera;
+    
+    public PhotonVisionIO(String cameraName) {
+        this.camera = new PhotonCamera(cameraName);
+    }
+    
+    @Override
+    public void updateInputs(VisionIOInputs inputs) {
+        // Get latest results from PhotonVision
+        var result = camera.getLatestResult();
+        
+        inputs.hasTargets = result.hasTargets();
+        inputs.latencyMillis = result.getLatencyMillis();
+        
+        if (result.hasTargets()) {
+            PhotonTrackedTarget target = result.getBestTarget();
+            inputs.yaw = target.getYaw();
+            inputs.pitch = target.getPitch();
+            inputs.area = target.getArea();
+            inputs.pose = new Pose3d(
+                target.getBestCameraToTarget().getPose().getTranslation(),
+                target.getBestCameraToTarget().getPose().getRotation()
+            );
+        }
+    }
+}
+```
+
+### MARSVision Integration
+Main vision system using MARSLib's MARSVision class.
+
+```java
+public class RobotContainer {
+    private MARSVision vision;
+    
+    public void configureVisionSystems() {
+        // Create vision IO instances
+        VisionIO frontCamera = new AprilTagVisionIOReal("front-cam", config);
+        VisionIO backCamera = new AprilTagVisionIOReal("back-cam", config);
+        
+        // Create vision system
+        vision = new MARSVision(
+            new VisionIO[] { frontCamera, backCamera },
+            visionConfig
+        );
+    }
+}
+```
+
+## AprilTag Detection
+
+### Tag Layout Configuration
+Configure tag layout for current game.
+
+```java
+// AprilTag field layout for 2024 Crescendo
+AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(
+    AprilTagField.k2024Crescendo
+);
+
+// Get tag poses
+for (AprilTag tag : layout.getTags()) {
+    Pose3d tagPose = tag.pose;
+    int tagId = tag.ID;
+    
+    // Add to vision system
+    vision.addTag(tagId, tagPose);
+}
+```
+
+### Detection Parameters
+Optimize detection for your use case.
+
+```java
+public class VisionConfig {
+    // Detection parameters
+    private final double maxAmbiguity = 0.2;        // Filter poor detections
+    private final double minPoseDistance = 0.5;     // Min distance to use pose
+    private final double maxTilt = Math.toRadians(25); // Max tag tilt angle
+    private final int minTagBorder = 8;              // Min tag border pixels
+    
+    // Camera parameters
+    private final double cameraFOV = 70.0;           // Field of view (degrees)
+    private final double cameraPitch = 0.0;           // Camera pitch angle (degrees)
+}
+```
+
+## MegaTag 2.0 Localization
+
+### Pose Estimation Fusion
+Combine AprilTag poses with odometry for accurate localization.
+
+```java
+public class MegaTagFusion {
+    private final MARSVision vision;
+    private final SwerveDrive drive;
+    
+    @Override
+    public void periodic() {
+        // Get vision pose estimate
+        Optional<Pose2d> visionPose = vision.getPoseEstimate();
+        
+        if (visionPose.isPresent()) {
+            // Calculate pose uncertainty
+            double stdDev = calculateStandardDeviation(visionPose.get());
+            
+            // Add vision measurement to odometry
+            drive.addVisionMeasurement(
+                visionPose.get(),
+                Timer.getFPGATimestamp(),
+                calculateCovariance(stdDev)
+            );
+        }
+    }
+    
+    private double calculateStandardDeviation(Pose2d pose) {
+        // Based on distance and tag ambiguity
+        double distance = pose.getTranslation().getNorm();
+        double baseStdDev = 0.01; // 1cm baseline
+        
+        // Increase stdDev with distance
+        return baseStdDev + (distance * 0.05);
+    }
+}
+```
+
+### IMU Seeding
+Use IMU to stabilize heading during tag detection.
+
+```java
+public class IMUSeeding {
+    private final GyroIO gyroIO;
+    private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
+    
+    public Rotation2d getGyroHeading() {
+        gyroIO.updateInputs(gyroInputs);
+        
+        // Wrap to -π to π
+        return new Rotation2d(gyroInputs.yawPositionRad);
+    }
+    
+    public void seedVisionWithIMU(Optional<Pose2d> visionPose) {
+        if (visionPose.isPresent()) {
+            Rotation2d gyroHeading = getGyroHeading();
+            Pose2d seededPose = new Pose2d(
+                visionPose.get().getTranslation(),
+                gyroHeading
+            );
+            
+            // Use seeded pose for better localization
+            drive.addVisionMeasurement(seededPose, Timer.getFPGATimestamp());
+        }
+    }
+}
+```
+
+## Vision-Based Commands
+
+### AprilTag Alignment
+Automatically align to AprilTags for scoring.
+
+```java
+public class AlignToTagCommand extends Command {
+    private final MARSVision vision;
+    private final SwerveDrive drive;
+    
+    // PID controllers for alignment
+    private final PIDController xController = new PIDController(3.0, 0.0, 0.1);
+    private final PIDController yController = new PIDController(3.0, 0.0, 0.1);
+    private final PIDController thetaController = new PIDController(2.0, 0.0, 0.05);
+    
+    private final int targetTagId;
+    
+    public AlignToTagCommand(MARSVision vision, SwerveDrive drive, int tagId) {
+        this.vision = vision;
+        this.drive = drive;
+        this.targetTagId = tagId;
+        
+        addRequirements(drive);
+        
+        // Configure continuous rotation for theta controller
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    }
+    
+    @Override
+    public void execute() {
+        // Get vision estimate for specific tag
+        Optional<Pose2d> robotPose = vision.getPoseEstimate(targetTagId);
+        
+        if (robotPose.isPresent()) {
+            // Calculate error to target
+            Pose2d targetPose = getTagPose(targetTagId);
+            
+            double xError = targetPose.getX() - robotPose.get().getX();
+            double yError = targetPose.getY() - robotPose.get().getY();
+            double thetaError = targetPose.getRotation().minus(robotPose.get().getRotation()).getRadians();
+            
+            // Calculate velocities
+            double vx = xController.calculate(xError, 0.0);
+            double vy = yController.calculate(yError, 0.0);
+            double omega = thetaController.calculate(thetaError, 0.0);
+            
+            // Drive to target
+            ChassisSpeeds speeds = new ChassisSpeeds(vx, vy, omega);
+            drive.driveRobotRelative(speeds);
+        }
+    }
+    
+    @Override
+    public boolean isFinished() {
+        // Check if aligned
+        return xController.atSetpoint() && yController.atSetpoint() && thetaController.atSetpoint();
+    }
+}
+```
+
+### Vision-Autonomous Integration
+Use vision for autonomous routine corrections.
+
+```java
+public class VisionAutoCommand extends Command {
+    private final Command pathCommand;
+    private final MARSVision vision;
+    
+    public VisionAutoCommand(String pathName, MARSVision vision, SwerveDrive drive) {
+        // Create path following command
+        this.pathCommand = PathPlannerAutoBuilder.buildAuto(pathName, drive);
+        this.vision = vision;
+        
+        // Add vision correction wrapper
+        this.pathCommand = new VisionCorrectionWrapper(pathCommand, vision, drive);
+    }
+    
+    @Override
+    public void initialize() {
+        pathCommand.schedule();
+    }
+    
+    @Override
+    public void execute() {
+        // Periodic vision corrections happen in wrapper
+    }
+    
+    @Override
+    public boolean isFinished() {
+        return pathCommand.isFinished();
+    }
+}
+```
+
+## Performance Optimization
+
+### Multi-Threading Vision
+Run vision processing in separate thread.
+
+```java
+public class MultiThreadedVision {
+    private final ExecutorService visionThread = 
+        Executors.newSingleThreadExecutor(r -> {
+            Thread t = new Thread(r, "VisionProcessing");
+            t.setPriority(Thread.NORM_PRIORITY - 1); // Lower priority
+            return t;
+        });
+    
+    public void processFrame(Mat frame) {
+        visionThread.submit(() -> {
+            // Process in background thread
+            var result = detector.detect(frame);
+            updateVisionEstimate(result);
+        });
+    }
+}
+```
+
+### Detection Optimization
+Optimize AprilTag detection parameters.
+
+```java
+public class OptimizedDetection {
+    public void configureDetection() {
+        // Use only necessary tags
+        Set<Integer> activeTags = Set.of(1, 2, 3, 7, 8, 9); // Game-specific
+        
+        // Adjust detection threshold
+        double detectionThreshold = 0.6; // Higher = fewer false positives
+        
+        // Limit detection area
+        Rect roi = new Rect(0, 0, 640, 480); // Full frame
+        // Or limit to center: new Rect(160, 120, 480, 360)
+    }
+}
+```
+
+## Troubleshooting
+
+### Issue: No Tags Detected
+
+**Diagnosis:**
+```java
+public void diagnoseDetection() {
+    // Check camera connection
+    boolean connected = camera.isConnected();
+    Logger.recordOutput("Vision/CameraConnected", connected);
+    
+    // Check frame rate
+    double fps = camera.getFPS();
+    Logger.recordOutput("Vision/FPS", fps);
+    
+    // Check exposure
+    int exposure = camera.getExposure();
+    Logger.recordOutput("Vision/Exposure", exposure);
+    
+    // Check for targets
+    boolean hasTargets = camera.hasTargets();
+    Logger.recordOutput("Vision/HasTargets", hasTargets);
+}
+```
+
+**Solutions:**
+1. **Lower camera exposure** (try 5-15 for AprilTags)
+2. **Add LED ring light** around camera
+3. **Check camera focus** (should be sharp at 3-5m)
+4. **Verify tag size** (6.5" standard AprilTags)
+
+### Issue: High Pose Ambiguity
+
+**Symptoms:** High standard deviation in pose estimates
+
+**Diagnosis:**
+```java
+public void checkAmbiguity() {
+    var result = camera.getLatestResult();
+    if (result.hasTargets()) {
+        PhotonTrackedTarget target = result.getBestTarget();
+        double ambiguity = target.getPoseAmbiguity();
+        
+        Logger.recordOutput("Vision/Ambiguity", ambiguity);
+        
+        if (ambiguity > 0.2) {
+            MARSFaultManager.warn("High pose ambiguity: " + ambiguity);
+        }
+    }
+}
+```
+
+**Solutions:**
+1. **Move closer** to target
+2. **Improve lighting** on tags
+3. **Use higher resolution** camera
+4. **Switch to multi-tag** detection (MegaTag 2.0)
+
+---
+
+## 📖 Further Reading
+
+- [Field Visualization](/tutorials/framework/field-visualization) - 3D field reference
+- [Performance Tuning](/tutorials/advanced/performance-tuning) - Optimization techniques
+- [Limelight Documentation](https://limelightvision.io/) - Limelight 3A setup
+- [PhotonVision Documentation](https://docs.photonvision.org/) - PhotonVision configuration
+
+**Ready for vision?** Set up your cameras and start detecting AprilTags!

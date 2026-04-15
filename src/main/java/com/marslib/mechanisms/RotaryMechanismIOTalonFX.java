@@ -16,6 +16,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.marslib.faults.MARSFaultManager;
+import com.marslib.util.CANUtil;
 import com.marslib.util.LoggedTunableNumber;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -91,7 +92,7 @@ public class RotaryMechanismIOTalonFX implements RotaryMechanismIO {
     config.Slot0.kI = kI.get();
     config.Slot0.kD = kD.get();
 
-    motor.getConfigurator().apply(config);
+    CANUtil.applyWithRetry(motor, config, "RotaryMechanism_" + motorId);
 
     position = motor.getPosition();
     velocity = motor.getVelocity();
@@ -142,7 +143,7 @@ public class RotaryMechanismIOTalonFX implements RotaryMechanismIO {
       slot0.kP = kP.get();
       slot0.kI = kI.get();
       slot0.kD = kD.get();
-      motor.getConfigurator().apply(slot0);
+      CANUtil.applyWithRetry(motor, slot0, hardwareFaultName + "_PID");
     }
   }
 
@@ -187,6 +188,6 @@ public class RotaryMechanismIOTalonFX implements RotaryMechanismIO {
     MotorOutputConfigs config = new MotorOutputConfigs();
     motor.getConfigurator().refresh(config);
     config.NeutralMode = enable ? NeutralModeValue.Brake : NeutralModeValue.Coast;
-    motor.getConfigurator().apply(config);
+    CANUtil.applyWithRetry(motor, config, hardwareFaultName + "_BrakeMode");
   }
 }

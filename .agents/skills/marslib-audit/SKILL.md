@@ -108,6 +108,25 @@ If the core classes are updated without documentation, teams cloning MARSLib wil
 MARSLib maintains an interactive web documentation hub. A broken link or outdated code snippet destroys the educational value for other drive teams.
 **Audit Action**: Audit the `website/src/pages/` and Markdown files for broken local hyperlinks. Verify that code snippets present in the tutorials exactly match the current signature of the Java API.
 
+### Rule C: Middle School Reading Level Compliance
+All documentation must be written at a middle school reading level (8th grade equivalent) to ensure accessibility for students of all ages and backgrounds. Complex technical concepts should be explained in simple, clear language.
+**Audit Action**: Run readability analysis on all documentation files. Check for:
+- Long sentences (>25 words) that should be broken into shorter ones
+- Complex technical jargon without plain language explanations
+- Passive voice that should be converted to active voice
+- Multi-syllable technical terms without pronunciation guides or simple analogies
+- Missing "What this means" sections that explain complex concepts simply
+- Absence of visual aids (diagrams, examples) for abstract concepts
+- Flesch-Kincaid grade level scores above 8.0
+
+**Reading Level Guidelines:**
+- Use active voice: "The motor moves the arm" instead of "The arm is moved by the motor"
+- Replace jargon with everyday words: "use" instead of "utilize", "find" instead of "ascertain"
+- Keep sentences under 15-20 words when possible
+- Provide simple analogies: "PID controller is like a thermostat for your robot"
+- Add "In other words" sections that rephrase technical concepts
+- Include concrete examples before abstract explanations
+
 ## 9. Thread Safety & Concurrency
 
 MARSLib runs multiple threads concurrently: the main robot thread (50Hz), `PhoenixOdometryThread` (250Hz), and vision processing threads. Unsynchronized shared mutable state causes invisible data corruption.
@@ -300,6 +319,7 @@ The `"version"` in `marsteam_dashboard.json` must match the installed AdvantageS
 16. **Dashboard config audit** — verify pitside dashboard covers all critical subsystems and has no orphaned keys.
 17. Validate AI Skill parity — `SKILL.md` and `marketplace.json` correctly reference all directories.
 18. Verify the documentation site for dead links and stale code snippets.
-19. Execute `./gradlew test jacocoTestReport` and analyze `.csv` output for untested classes.
-20. Provide a summary checklist of detected defects.
-21. Systematically remediate defects inline.
+19. **Reading level audit** — verify all documentation meets middle school reading level standards.
+20. Execute `./gradlew test jacocoTestReport` and analyze `.csv` output for untested classes.
+21. Provide a summary checklist of detected defects.
+22. Systematically remediate defects inline.

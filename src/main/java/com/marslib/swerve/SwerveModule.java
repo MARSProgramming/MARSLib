@@ -23,6 +23,7 @@ public class SwerveModule {
   private final SwerveModuleIOInputsAutoLogged inputs = new SwerveModuleIOInputsAutoLogged();
   private final int index;
   private final SwerveConfig config;
+  private final String logPath;
 
   private double lastDriveVoltage = 0.0;
   private final SwerveModulePosition[] cachedDeltas = new SwerveModulePosition[20];
@@ -39,6 +40,7 @@ public class SwerveModule {
     this.index = index;
     this.io = io;
     this.config = config;
+    this.logPath = "SwerveDrive/Module" + index;
     for (int i = 0; i < cachedDeltas.length; i++) {
       cachedDeltas[i] = new SwerveModulePosition(0.0, Rotation2d.fromRadians(0.0));
     }
@@ -46,13 +48,16 @@ public class SwerveModule {
 
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.processInputs("SwerveDrive/Module" + index, inputs);
+    Logger.processInputs(logPath, inputs);
 
     // Update statically allocated positional cache
     cachedDeltaCount = Math.min(inputs.drivePositionsRad.length, cachedDeltas.length);
     for (int i = 0; i < cachedDeltaCount; i++) {
       cachedDeltas[i].distanceMeters = inputs.drivePositionsRad[i] * config.wheelRadiusMeters();
-      cachedDeltas[i].angle = Rotation2d.fromRadians(inputs.turnPositionsRad[i]);
+      double newAngle = inputs.turnPositionsRad[i];
+      if (Math.abs(newAngle - cachedDeltas[i].angle.getRadians()) > 1e-6) {
+        cachedDeltas[i].angle = Rotation2d.fromRadians(newAngle);
+      }
     }
   }
 
@@ -97,11 +102,13 @@ public class SwerveModule {
   public SwerveModuleState getLatestState() {
     cachedLatestState.speedMetersPerSecond =
         inputs.driveVelocityRadPerSec * config.wheelRadiusMeters();
-    cachedLatestState.angle =
-        Rotation2d.fromRadians(
-            inputs.turnPositionsRad.length > 0
-                ? inputs.turnPositionsRad[inputs.turnPositionsRad.length - 1]
-                : 0.0);
+    double angle =
+        inputs.turnPositionsRad.length > 0
+            ? inputs.turnPositionsRad[inputs.turnPositionsRad.length - 1]
+            : 0.0;
+    if (Math.abs(angle - cachedLatestState.angle.getRadians()) > 1e-6) {
+      cachedLatestState.angle = Rotation2d.fromRadians(angle);
+    }
     return cachedLatestState;
   }
 

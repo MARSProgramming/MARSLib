@@ -1,0 +1,6 @@
+{
+  "swerve.kinematics.mean": 1000,
+  "swerve.periodic.mean": 500,
+  "swerve.getPose.mean": 100,
+  "notes": "Initial performance baselines established during implementation. Values in nanoseconds."
+}

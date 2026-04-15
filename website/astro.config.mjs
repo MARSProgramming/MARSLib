@@ -49,7 +49,9 @@ export default defineConfig({
 			title: 'MARSLib Documentation',
 			customCss: [
 				'./src/styles/custom.css',
+				'./src/styles/copy-button.css',
 			],
+			scripts: ['./src/scripts/copy-button.js', './src/scripts/search-shortcut.js'],
 			logo: {
 				src: './src/assets/mars-logo.png',
 			},

@@ -111,6 +111,14 @@
       "source": "./advantagescope-layouts"
     },
     {
+      "name": "marslib-tutor",
+      "source": "./marslib-tutor"
+    },
+    {
+      "name": "marslib-vscode-extension",
+      "source": "./marslib-vscode-extension"
+    },
+    {
       "name": "marslib-web-accessibility",
       "source": "./marslib-web-accessibility"
     }

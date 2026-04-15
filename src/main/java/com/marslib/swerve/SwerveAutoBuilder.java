@@ -69,10 +69,11 @@ public final class SwerveAutoBuilder {
           drive);
     } catch (Exception e) {
       new com.marslib.faults.Alert(
-              "SwerveDrive: Failed to configure AutoBuilder",
+              "SwerveDrive: Failed to configure AutoBuilder: " + e.getMessage(),
               com.marslib.faults.Alert.AlertType.CRITICAL)
           .set(true);
-      throw new RuntimeException("Failed to configure AutoBuilder", e);
+      // Do NOT re-throw — the robot must remain operable in teleop even if auto config fails.
+      // The CRITICAL alert will be visible on the dashboard and AdvantageScope.
     }
   }
 

@@ -1,0 +1,216 @@
+.feedback-widget {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+.feedback-widget-success {
+  border-color: #4CAF50;
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.feedback-header {
+  margin-bottom: 15px;
+}
+
+.feedback-header h4 {
+  color: #fff;
+  font-size: 16px;
+  margin: 0 0 4px 0;
+  font-weight: 600;
+}
+
+.feedback-header p {
+  color: #888;
+  font-size: 13px;
+  margin: 0;
+}
+
+.feedback-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.feedback-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid #2a2a2a;
+  border-radius: 6px;
+  background: #252525;
+  color: #ccc;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+}
+
+.feedback-btn:hover {
+  background: #2a2a2a;
+  border-color: #3a3a3a;
+  color: #fff;
+}
+
+.feedback-btn-positive:hover {
+  border-color: #4CAF50;
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.feedback-btn-negative:hover {
+  border-color: #F44336;
+  background: rgba(244, 67, 54, 0.1);
+}
+
+.feedback-icon {
+  font-size: 18px;
+}
+
+.feedback-confirmation {
+  text-align: center;
+  padding: 15px;
+  background: #252525;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+.feedback-confirmation .feedback-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.feedback-confirmation p {
+  color: #ccc;
+  margin: 0;
+  font-size: 14px;
+}
+
+.feedback-comment-box {
+  margin-top: 15px;
+}
+
+.feedback-textarea {
+  width: 100%;
+  background: #252525;
+  border: 1px solid #2a2a2a;
+  border-radius: 6px;
+  padding: 10px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+  margin-bottom: 10px;
+}
+
+.feedback-textarea:focus {
+  outline: none;
+  border-color: #B32416;
+}
+
+.feedback-textarea::placeholder {
+  color: #666;
+}
+
+.feedback-comment-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.feedback-submit-btn {
+  flex: 1;
+  padding: 8px 16px;
+  background: #B32416;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.feedback-submit-btn:hover:not(:disabled) {
+  background: #d42e1e;
+}
+
+.feedback-submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.feedback-cancel-btn {
+  padding: 8px 16px;
+  background: transparent;
+  color: #888;
+  border: 1px solid #2a2a2a;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.feedback-cancel-btn:hover {
+  color: #fff;
+  border-color: #3a3a3a;
+}
+
+.feedback-footer {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #2a2a2a;
+  text-align: center;
+}
+
+.feedback-report-link {
+  color: #888;
+  text-decoration: none;
+  font-size: 12px;
+  transition: color 0.2s;
+}
+
+.feedback-report-link:hover {
+  color: #B32416;
+  text-decoration: underline;
+}
+
+/* Success state */
+.feedback-widget-success .feedback-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.feedback-widget-success .feedback-message {
+  color: #fff;
+}
+
+.feedback-widget-success .feedback-message strong {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.feedback-widget-success .feedback-message p {
+  color: #ccc;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .feedback-widget {
+    padding: 15px;
+  }
+
+  .feedback-buttons {
+    flex-direction: column;
+  }
+
+  .feedback-btn {
+    width: 100%;
+  }
+}

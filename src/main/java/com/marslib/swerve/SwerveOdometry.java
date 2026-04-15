@@ -46,6 +46,7 @@ public class SwerveOdometry {
   private final double[] lastRawDistances = new double[4];
   private boolean isFirstOdometryDrain = true;
   private final Rotation2d[] frameYawCache = new Rotation2d[] {new Rotation2d()};
+  private Pose3d pose3dCache = new Pose3d();
 
   public SwerveOdometry(
       SwerveDriveKinematics kinematics,
@@ -64,8 +65,12 @@ public class SwerveOdometry {
   public void updateOdometry(SwerveModule[] modules, GyroIOInputsAutoLogged gyroInputs) {
     double odometryTrust = 1.0;
     if (gyroInputs.connected) {
-      double tiltRadians =
-          Math.acos(Math.cos(gyroInputs.pitchPositionRad) * Math.cos(gyroInputs.rollPositionRad));
+      double cosTilt =
+          edu.wpi.first.math.MathUtil.clamp(
+              Math.cos(gyroInputs.pitchPositionRad) * Math.cos(gyroInputs.rollPositionRad),
+              -1.0,
+              1.0);
+      double tiltRadians = Math.acos(cosTilt);
       odometryTrust =
           1.0
               - edu.wpi.first.math.MathUtil.inverseInterpolate(
@@ -114,7 +119,9 @@ public class SwerveOdometry {
         double dt = config.loopPeriodSecs();
         frameYawRad = frameYawCache[0].getRadians() + wheelSpeeds.omegaRadiansPerSecond * dt;
       }
-      frameYawCache[0] = Rotation2d.fromRadians(frameYawRad);
+      if (Math.abs(frameYawRad - frameYawCache[0].getRadians()) > 1e-6) {
+        frameYawCache[0] = Rotation2d.fromRadians(frameYawRad);
+      }
 
       double timestamp =
           (timestamps.length > i) ? timestamps[i] : edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
@@ -129,14 +136,22 @@ public class SwerveOdometry {
 
   public Pose3d getPose3d(GyroIOInputsAutoLogged gyroInputs) {
     Pose2d pose2d = getPose();
-    return new Pose3d(
-        pose2d.getX(),
-        pose2d.getY(),
-        0.0,
-        new Rotation3d(
-            gyroInputs.rollPositionRad,
-            gyroInputs.pitchPositionRad,
-            pose2d.getRotation().getRadians()));
+    if (pose2d.getX() != pose3dCache.getX()
+        || pose2d.getY() != pose3dCache.getY()
+        || pose2d.getRotation().getRadians() != pose3dCache.getRotation().getZ()
+        || gyroInputs.rollPositionRad != pose3dCache.getRotation().getX()
+        || gyroInputs.pitchPositionRad != pose3dCache.getRotation().getY()) {
+      pose3dCache =
+          new Pose3d(
+              pose2d.getX(),
+              pose2d.getY(),
+              0.0,
+              new Rotation3d(
+                  gyroInputs.rollPositionRad,
+                  gyroInputs.pitchPositionRad,
+                  pose2d.getRotation().getRadians()));
+    }
+    return pose3dCache;
   }
 
   public void resetPose(Pose2d pose, GyroIOInputsAutoLogged gyroInputs, SwerveModule... modules) {

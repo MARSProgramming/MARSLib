@@ -50,7 +50,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     driveConfig.CurrentLimits.StatorCurrentLimit = config.driveStatorCurrentLimit();
     driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-    driveConfig.CurrentLimits.SupplyCurrentLimit = 60.0;
+    driveConfig.CurrentLimits.SupplyCurrentLimit = 40.0;
     driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     applyWithRetry(driveMotor, driveConfig, "DriveMotor[" + driveMotorId + "]");
 
@@ -71,12 +71,14 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
 
     // Ensure these signals run at standard config frequency
     double updateHz = config.telemetryHz();
-    driveVelocity.setUpdateFrequency(updateHz);
-    turnVelocity.setUpdateFrequency(updateHz);
-    driveAppliedVolts.setUpdateFrequency(updateHz);
-    turnAppliedVolts.setUpdateFrequency(updateHz);
-    driveCurrent.setUpdateFrequency(updateHz);
-    turnCurrent.setUpdateFrequency(updateHz);
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        updateHz,
+        driveVelocity,
+        turnVelocity,
+        driveAppliedVolts,
+        turnAppliedVolts,
+        driveCurrent,
+        turnCurrent);
 
     // Register position signals to Odometry thread
     odometryId =
@@ -151,17 +153,37 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
   @Override
   public void setDriveBrakeMode(boolean enable) {
     MotorOutputConfigs config = new MotorOutputConfigs();
-    driveMotor.getConfigurator().refresh(config);
+    StatusCode refreshStatus = driveMotor.getConfigurator().refresh(config);
     config.NeutralMode = enable ? NeutralModeValue.Brake : NeutralModeValue.Coast;
-    driveMotor.getConfigurator().apply(config);
+    StatusCode applyStatus = driveMotor.getConfigurator().apply(config);
+
+    if (!refreshStatus.isOK() || !applyStatus.isOK()) {
+      new com.marslib.faults.Alert(
+              "SwerveModule DriveBrakeMode failed: "
+                  + refreshStatus.getName()
+                  + "/"
+                  + applyStatus.getName(),
+              com.marslib.faults.Alert.AlertType.WARNING)
+          .set(true);
+    }
   }
 
   @Override
   public void setTurnBrakeMode(boolean enable) {
     MotorOutputConfigs config = new MotorOutputConfigs();
-    turnMotor.getConfigurator().refresh(config);
+    StatusCode refreshStatus = turnMotor.getConfigurator().refresh(config);
     config.NeutralMode = enable ? NeutralModeValue.Brake : NeutralModeValue.Coast;
-    turnMotor.getConfigurator().apply(config);
+    StatusCode applyStatus = turnMotor.getConfigurator().apply(config);
+
+    if (!refreshStatus.isOK() || !applyStatus.isOK()) {
+      new com.marslib.faults.Alert(
+              "SwerveModule TurnBrakeMode failed: "
+                  + refreshStatus.getName()
+                  + "/"
+                  + applyStatus.getName(),
+              com.marslib.faults.Alert.AlertType.WARNING)
+          .set(true);
+    }
   }
 
   /**

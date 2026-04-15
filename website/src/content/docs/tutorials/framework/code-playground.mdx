@@ -1,0 +1,163 @@
+---
+sidebar:
+  order: 15
+id: code-playground
+title: "Interactive Code Playground"
+template: doc
+description: "Learn MARSLib programming patterns through interactive code examples and real-time feedback."
+---
+
+# Interactive Code Playground
+
+The MARSLib Code Playground is an interactive learning environment where you can explore real programming patterns from championship-winning FRC robots. Experiment with swerve drive control, vision alignment, PID mechanisms, and state machines - all in your browser.
+
+<CodePlayground />
+
+## How It Works
+
+The Code Playground demonstrates production-ready MARSLib patterns used by FRC Team 2614. Each example includes:
+
+✅ **Real Code** - Actual patterns from competition robots, not simplified examples
+✅ **Best Practices** - Proper Command-based programming and AdvantageKit logging
+✅ **Safety First** - Fault handling and state management built-in
+✅ **Performance** - Zero-allocation patterns and real-time control
+
+## Featured Examples
+
+### 🏎️ Swerve Drive Basics
+Learn the fundamentals of controlling a swerve drive robot using MARSLib's abstraction layer. This example shows:
+- ChassisSpeeds for robot-relative control
+- Proper Command structure with requirements
+- Real-time velocity control for competitive play
+
+### 👁️ Vision Alignment
+Explore automatic AprilTag alignment using MARSLib's vision system. Demonstrates:
+- Vision pose estimation fusion
+- PID controllers for precise positioning
+- Continuous angle handling for rotation
+
+### ⚙️ PID Elevator Control
+Master position control with linear mechanisms. Features:
+- LinearMechanismIO abstraction layer
+- PID control with feedforward for gravity compensation
+- Proper periodic() update patterns
+
+### 🤖 State Machine Superstructure
+Coordinate complex mechanisms using MARSLib state machines. Shows:
+- MARSStateMachine for multi-system coordination
+- Safe state transitions and behaviors
+- Emergency stop (E-Stop) implementation
+
+## Programming Patterns
+
+### Command-Based Architecture
+All examples follow WPILib's Command-based programming pattern:
+
+```java
+public class ExampleCommand extends Command {
+    private final Subsystem subsystem;
+
+    public ExampleCommand(Subsystem subsystem) {
+        this.subsystem = subsystem;
+        addRequirements(subsystem);  // Declare requirements
+    }
+
+    @Override
+    public void execute() {
+        // Control logic here
+    }
+}
+```
+
+### IO Abstraction Layer
+MARSLib separates logic from hardware through interfaces:
+
+```java
+// Your subsystem logic works with any IO implementation
+public class MechanismSubsystem extends Subsystem {
+    private final MechanismIO io;  // Can be Real or Sim
+
+    @Override
+    public void periodic() {
+        // Works the same on robot and in simulation!
+        double position = io.getPosition();
+    }
+}
+```
+
+### AdvantageKit Integration
+All subsystems automatically log state for AdvantageScope:
+
+```java
+// MARSLib handles logging automatically
+// No manual logging code needed in your subsystems
+```
+
+## Best Practices
+
+✅ **DO** use Command-based programming for autonomous and teleop
+✅ **DO** leverage MARSLib's IO abstractions for hardware independence
+✅ **DO** use state machines for complex mechanism coordination
+✅ **DO** tune PID gains using SysId characterization
+✅ **DO** implement safety mechanisms (E-Stop, limits)
+
+❌ **DON'T** put hardware-specific code in your commands
+❌ **DON'T** ignore feedback from sensors
+❌ **DON'T** skip proper requirement management
+❌ **DON'T** forget about fault tolerance
+❌ **DON'T** block in execute() methods
+
+## Next Steps
+
+### Explore More Examples
+- Check out the [State Machine tutorial](/tutorials/framework/state-machines) for advanced coordination
+- Learn about [Vision Systems](/tutorials/framework/vision) for AprilTag integration
+- Study [Swerve Drive](/tutorials/framework/swerve) for autonomous path following
+
+### Practice on Your Own
+1. **Clone the MARSLib repository** and explore the full codebase
+2. **Run the simulator** to see these patterns in action
+3. **Modify the examples** to learn by experimentation
+4. **Build your own mechanisms** using MARSLib patterns
+
+### Join the Community
+- **GitHub**: [MARSProgramming/MARSLib](https://github.com/MARSProgramming/MARSLib)
+- **Documentation**: [MARSProgramming.github.io/MARSLib](https://MARSProgramming.github.io/MARSLib/)
+- **Team**: FRC 2614 - Mountaineer Area RoboticS
+
+## Technical Details
+
+### Supported Patterns
+- ✅ Command-based programming
+- ✅ State machines with MARSStateMachine
+- ✅ Vision-based alignment using MARSVision
+- ✅ PID control with feedforward
+- ✅ Swerve drive kinematics
+- ✅ Mechanism coordination
+
+### Architecture Alignment
+All examples follow MARSLib's core architecture:
+
+<Mermaid code={`
+flowchart TD
+    A["Command"] --> B["Subsystem"]
+    B --> C["IO Interface"]
+    C --> D["IOReal (Hardware)"]
+    C --> E["IOSim (Physics)"]
+    B --> F["AdvantageKit Log"]
+    style A fill:#1a1a1a,stroke:#B32416,stroke-width:2px,color:#fff
+    style B fill:#1a1a1a,stroke:#B32416,stroke-width:2px,color:#fff
+    style C fill:#B32416,stroke:#d42e1e,stroke-width:2px,color:#fff
+    style D fill:#2a2a2a,stroke:#1a1a1a,stroke-width:1px,color:#29b6f6
+    style E fill:#2a2a2a,stroke:#1a1a1a,stroke-width:1px,color:#9c7bcc
+    style F fill:#0a0a0a,stroke:#6ba3d6,stroke-width:2px,color:#6ba3d6
+`} />
+
+---
+
+## 📖 Further Reading & External Resources
+
+- [WPILib Command-Based Programming](https://docs.wpilib.org/en/stable/docs/software/commandbased/what-is-command-based.html) - Official WPILib guide to Command-based programming
+- [AdvantageKit Documentation](https://docs.advantagekit.org/) - Learn about the logging framework that powers MARSLib
+- [SysId Characterization](https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-characterization/introduction.html) - Tool for PID tuning and system identification
+- [PhotonVision Documentation](https://docs.photonvision.org/) - AprilTag detection and vision processing

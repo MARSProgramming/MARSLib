@@ -1,0 +1,541 @@
+---
+sidebar:
+  order: 2
+id: simulation-best-practices
+title: "Simulation Best Practices"
+template: doc
+description: "Master MARSLib physics simulation for realistic robot development. Learn to create accurate simulations that match real-world robot behavior."
+---
+
+# Simulation Best Practices
+
+MARSLib's physics simulation using Dyn4j enables you to develop and test robot code completely offline. When done correctly, simulation behavior matches real robot performance, allowing you to catch bugs before you ever touch a physical robot.
+
+## Simulation Philosophy
+
+### 🔄 Digital Twin Approach
+MARSLib uses identical code paths for simulation and hardware.
+
+<Mermaid code={`
+flowchart TD
+    A["Robot Code"] --> B{"IO Interface"}
+    B --> C["IOReal: Hardware"]
+    B --> D["IOSim: Physics"]
+    C --> E["Real Robot"]
+    D --> F["Simulation"]
+    E --> G["AdvantageKit Log"]
+    F --> G
+    
+    style A fill:#1a1a1a,stroke:#B32416,stroke-width:2px,color:#fff
+    style B fill:#B32416,stroke:#d42e1e,stroke-width:2px,color:#fff
+    style C fill:#2a2a2a,stroke:#1a1a1a,stroke-width:1px,color:#29b6f6
+    style D fill:#2a2a2a,stroke:#1a1a1a,stroke-width:1px,color:#9c7bcc
+    style E fill:#0a0a0a,stroke:#2a2a2a,stroke-width:1px,color:#666
+    style F fill:#0a0a0a,stroke:#2a2a2a,stroke-width:1px,color:#666
+    style G fill:#0a0a0a,stroke:#6ba3d6,stroke-width:2px,color:#6ba3d6
+`} />
+
+**Key Principle:** Test real subsystems with simulated IO, not mocked hardware.
+
+## Physics World Setup
+
+### MARSPhysicsWorld Configuration
+The physics world manages all simulated objects and interactions.
+
+```java
+// Access the singleton physics world
+MARSPhysicsWorld world = MARSPhysicsWorld.getInstance();
+
+// Configure physics parameters
+world.setGravity(0.0, 0.0); // Top-down FRC view (no gravity in Z)
+world.setPhysicsStepSize(0.02); // 20ms timestep = 50Hz
+```
+
+### Game Piece Simulation
+Spawn and manage game pieces in the physics world.
+
+```java
+// Spawn game pieces at field positions
+public void spawnGamePieces() {
+    MARSPhysicsWorld world = MARSPhysicsWorld.getInstance();
+    
+    // Spawn fuel balls at specific positions
+    world.spawnGamePiece(2.0, 3.0);  // x, y in meters
+    world.spawnGamePiece(2.5, 3.0);
+    world.spawnGamePiece(3.0, 3.0);
+    
+    // Game pieces automatically interact with robot bumper
+}
+```
+
+### Collision Detection
+Configure realistic collision behavior.
+
+```java
+public class SimulationConfig {
+    public void setupCollisions() {
+        MARSPhysicsWorld world = MARSPhysicsWorld.getInstance();
+        
+        // Configure robot bumper dimensions
+        double bumperLength = 0.8; // meters
+        double bumperWidth = 0.8;  // meters
+        
+        // Robot body will collide with:
+        // - Game pieces
+        // - Field walls
+        // - Other robots (in multi-robot simulation)
+    }
+}
+```
+
+## IO Simulation Patterns
+
+### Swerve Module Simulation
+Accurate swerve module simulation is critical for realistic behavior.
+
+```java
+public class SwerveModuleIOSim implements SwerveModuleIO {
+    private double drivePosition = 0.0;
+    private double driveVelocity = 0.0;
+    private double turnPosition = 0.0;
+    private double turnVelocity = 0.0;
+    
+    private final SwerveModuleSimulation moduleSim;
+    
+    public SwerveModuleIOSim(int moduleIndex) {
+        // Get simulation from physics world
+        moduleSim = MARSPhysicsWorld.getInstance()
+            .getSwerveDriveSimulation()
+            .getModules()[moduleIndex];
+    }
+    
+    @Override
+    public void updateInputs(SwerveModuleIOInputs inputs) {
+        // Update from physics simulation
+        inputs.drivePositionRad = drivePosition;
+        inputs.driveVelocityRadPerSec = driveVelocity;
+        inputs.turnPositionRad = turnPosition;
+        inputs.turnVelocityRadPerSec = turnVelocity;
+        
+        // Simulate sensor latency
+        inputs.driveVelocityRadPerSec += (Math.random() - 0.5) * 0.01;
+    }
+    
+    @Override
+    public void setDriveVoltage(double volts) {
+        // Simple physics model
+        double acceleration = volts / 10.0; // Simplified motor response
+        driveVelocity += acceleration * 0.02; // 20ms timestep
+        drivePosition += driveVelocity * 0.02;
+        
+        // Apply to physics simulation
+        moduleSim.setState(driveVelocity, turnPosition);
+    }
+    
+    @Override
+    public void setTurnVoltage(double volts) {
+        double acceleration = volts / 5.0; // Turn motor responds faster
+        turnVelocity += acceleration * 0.02;
+        turnPosition += turnVelocity * 0.02;
+        
+        // Apply to physics simulation
+        moduleSim.setState(driveVelocity, turnPosition);
+    }
+}
+```
+
+### Gyro Simulation
+Accurate gyro simulation for realistic heading feedback.
+
+```java
+public class GyroIOSim implements GyroIO {
+    private double yaw = 0.0;
+    private double pitch = 0.0;
+    private double roll = 0.0;
+    
+    private final SwerveDriveSimulation driveSim;
+
+    public GyroIOSim() {
+        this.driveSim = MARSPhysicsWorld.getInstance().getSwerveDriveSimulation();
+    }
+
+    @Override
+    public void updateInputs(GyroIOInputs inputs) {
+        // Get heading from physics simulation
+        var simPose = driveSim.getPose();
+        yaw = simPose.getRotation().getRadians();
+        
+        // Add small noise to simulate real gyro
+        yaw += (Math.random() - 0.5) * 0.001;
+        
+        inputs.connected = true;
+        inputs.yawPositionRad = yaw;
+        inputs.yawVelocityRadPerSec = driveSim.getChassisSpeeds().omegaRadiansPerSecond;
+    }
+}
+```
+
+### Vision Simulation
+Simulate AprilTag detection with realistic accuracy.
+
+```java
+public class AprilTagVisionIOSim implements VisionIO {
+    private final SwerveDriveSimulation driveSim;
+    private final AprilTagFieldLayout tagLayout;
+    
+    public AprilTagVisionIOSim() {
+        this.driveSim = MARSPhysicsWorld.getInstance().getSwerveDriveSimulation();
+        this.tagLayout = AprilTagFieldLayout.loadField(AprilTagField.k2024Crescendo);
+    }
+
+    @Override
+    public void updateInputs(VisionIOInputs inputs) {
+        Pose2d robotPose = driveSim.getPose();
+        
+        // Find visible tags
+        List<AprilTag> visibleTags = new ArrayList<>();
+        for (AprilTag tag : tagLayout.getTags()) {
+            double distance = robotPose.getTranslation().getDistance(tag.pose.getTranslation());
+            
+            // Tags visible within 5 meters
+            if (distance < 5.0) {
+                // Add detection noise
+                double noise = distance * 0.05; // 5cm noise per meter
+                Pose2d noisyPose = addNoise(tag.pose, noise);
+                visibleTags.add(new AprilTag(tag.ID, noisyPose, distance));
+            }
+        }
+        
+        inputs.timestamps = new double[visibleTags.size()];
+        inputs.frames = new double[visibleTags.size()];
+        inputs.tagIds = new int[visibleTags.size()];
+        poses = new Pose3d[visibleTags.size()];
+        
+        for (int i = 0; i < visibleTags.size(); i++) {
+            AprilTag tag = visibleTags.get(i);
+            inputs.tagIds[i] = tag.id;
+            poses[i] = new Pose3d(tag.pose);
+            inputs.timestamps[i] = Timer.getFPGATimestamp();
+        }
+    }
+    
+    private Pose2d addNoise(Pose3d pose, double amount) {
+        // Add Gaussian noise to position
+        double noisyX = pose.getX() + (Math.random() - 0.5) * amount;
+        double noisyY = pose.getY() + (Math.random() - 0.5) * amount;
+        return new Pose2d(noisyX, noisyY, pose.getRotation().toRotation2d());
+    }
+}
+```
+
+## Test Simulation Patterns
+
+### Realistic Simulation Loop
+Proper simulation timing and order is critical.
+
+```java
+@Test
+public void testAutonomousWithSimulation() {
+    MARSTestHarness.reset();
+    
+    // Create subsystems with simulated IO
+    SwerveDrive drive = new SwerveDrive(modules, gyroIO, powerManager, config);
+    MARSVision vision = new MARSVision(visionIO, visionConfig);
+    
+    // Spawn game pieces
+    MARSPhysicsWorld world = MARSPhysicsWorld.getInstance();
+    world.spawnGamePiece(5.0, 3.0);
+    world.spawnGamePiece(6.0, 4.0);
+    
+    // Schedule autonomous command
+    Command autoCommand = getPathPlannerAuto("TestAuto");
+    autoCommand.schedule();
+    
+    // Run simulation loop
+    for (int i = 0; i < 500; i++) { // 10 seconds @ 50Hz
+        // 1. Update Driver Station (prevents robot disable)
+        DriverStationSim.notifyNewData();
+        
+        // 2. Advance time
+        SimHooks.stepTiming(0.02); // 20ms
+        
+        // 3. Process commands and subsystems
+        CommandScheduler.getInstance().run();
+        
+        // 4. Update physics world
+        world.update(0.02);
+        
+        // 5. Check for completion
+        if (!autoCommand.isScheduled()) {
+            break;
+        }
+    }
+    
+    // Verify autonomous completed successfully
+    assertTrue(autoCommand.isFinished());
+    assertEquals(2, getIntakeGamePieceCount()); // Should have intaked 2 pieces
+}
+```
+
+### Physics-Accurate Testing
+Test realistic physical interactions.
+
+```java
+@Test
+public void testGamePieceIntake() {
+    MARSTestHarness.reset();
+    
+    // Create intake with simulated IO
+    IntakeSubsystem intake = new IntakeSubsystem(new IntakeIOSim(), config);
+    
+    // Spawn game piece in front of robot
+    MARSPhysicsWorld world = MARSPhysicsWorld.getInstance();
+    world.spawnGamePiece(1.0, 0.0); // 1 meter in front
+    
+    // Start intake
+    intake.intake();
+    
+    // Run simulation until intake completes
+    for (int i = 0; i < 100; i++) {
+        DriverStationSim.notifyNewData();
+        SimHooks.stepTiming(0.02);
+        CommandScheduler.getInstance().run();
+        world.update(0.02);
+        
+        if (intake.hasGamePiece()) {
+            break;
+        }
+    }
+    
+    // Verify intake succeeded
+    assertTrue(intake.hasGamePiece(), "Should have intaked game piece");
+    
+    // Verify game piece moved with robot
+    Pose2d robotPose = drive.getPose();
+    // Game piece should be at robot position
+}
+```
+
+### Error Simulation
+Test error handling with simulated failures.
+
+```java
+@Test
+public void testVisionFailureRecovery() {
+    MARSTestHarness.reset();
+    
+    // Create vision with simulated failure
+    FailingVisionIOSim visionIO = new FailingVisionIOSim();
+    MARSVision vision = new MARSVision(visionIO, config);
+    
+    // Simulate vision failure
+    visionIO.setFail(true);
+    
+    // Run for 1 second with failed vision
+    for (int i = 0; i < 50; i++) {
+        DriverStationSim.notifyNewData();
+        SimHooks.stepTiming(0.02);
+        CommandScheduler.getInstance().run();
+    }
+    
+    // Verify fault was reported
+    assertTrue(MARSFaultManager.hasFault("Vision unavailable"));
+    
+    // Simulate vision recovery
+    visionIO.setFail(false);
+    
+    // Run for 1 second with recovered vision
+    for (int i = 0; i < 50; i++) {
+        DriverStationSim.notifyNewData();
+        SimHooks.stepTiming(0.02);
+        CommandScheduler.getInstance().run();
+    }
+    
+    // Verify fault cleared
+    assertFalse(MARSFaultManager.hasFault("Vision unavailable"));
+}
+```
+
+## Simulation Accuracy Validation
+
+### Compare Simulation vs Reality
+Validate that simulation matches real robot behavior.
+
+```java
+public class SimulationValidation {
+    public static void main(String[] args) {
+        // 1. Run same autonomous in simulation
+        Pose2d simFinalPose = runInSimulation();
+        
+        // 2. Run same autonomous on real robot
+        Pose2d realFinalPose = runOnRealRobot();
+        
+        // 3. Compare results
+        double positionError = simFinalPose.getTranslation()
+            .getDistance(realFinalPose.getTranslation());
+        double rotationError = Math.abs(simFinalPose.getRotation()
+            .minus(realFinalPose.getRotation()).getRadians());
+        
+        System.out.println("Position error: " + positionError + " meters");
+        System.out.println("Rotation error: " + Math.toDegrees(rotationError) + " degrees");
+        
+        // 4. If error is large, tune simulation parameters
+        if (positionError > 0.1 || rotationError > Math.toRadians(5)) {
+            System.out.println("WARNING: Simulation accuracy needs tuning!");
+            tuneSimulationParameters();
+        }
+    }
+}
+```
+
+### Parameter Tuning
+Adjust simulation parameters to match real robot.
+
+```java
+public class SimulationTuner {
+    public void tuneSwerveSimulation() {
+        SwerveConfig config = SwerveConfig.fromFile("config.json");
+        
+        // 1. Measure real robot max velocity
+        double realMaxVelocity = measureRealMaxVelocity();
+        
+        // 2. Measure simulated max velocity
+        double simMaxVelocity = measureSimulatedMaxVelocity();
+        
+        // 3. Adjust config to match
+        double ratio = realMaxVelocity / simMaxVelocity;
+        config.setMaxLinearSpeedMps(config.maxLinearSpeedMps() * ratio);
+        
+        // 4. Repeat for angular velocity
+        double realMaxOmega = measureRealMaxOmega();
+        double simMaxOmega = measureSimulatedMaxOmega();
+        double omegaRatio = realMaxOmega / simMaxOmega;
+        config.setMaxAngularSpeedRadPerSec(
+            config.maxAngularSpeedRadPerSec() * omegaRatio
+        );
+    }
+}
+```
+
+## Advanced Simulation Techniques
+
+### Multi-Robot Simulation
+Simulate interaction with other robots.
+
+```java
+public class MultiRobotSimulation {
+    public void simulateDefense() {
+        MARSPhysicsWorld world = MARSPhysicsWorld.getInstance();
+        
+        // Add defender robot
+        SwerveDriveSimulation defender = world.addSwerveDrive(
+            new Pose2d(4.0, 2.0, new Rotation2d()),
+        );
+        
+        // Program defender behavior
+        Command defenderCommand = new DefendCommand(defender, 3.0, 2.0);
+        defenderCommand.schedule();
+        
+        // Run interaction simulation
+        for (int i = 0; i < 500; i++) {
+            DriverStationSim.notifyNewData();
+            SimHooks.stepTiming(0.02);
+            CommandScheduler.getInstance().run();
+            world.update(0.02);
+        }
+    }
+}
+```
+
+### Field Obstacles
+Add realistic field elements to simulation.
+
+```java
+public class FieldObstacles {
+    public void addREBUILTObstacles() {
+        MARSPhysicsWorld world = MARSPhysicsWorld.getInstance();
+        
+        // Add REBUILT obstacles (2024 game)
+        world.addObstacle(2.0, 3.0, 0.5, 0.5); // x, y, width, height
+        world.addObstacle(6.0, 3.0, 0.5, 0.5);
+        world.addObstacle(4.0, 1.0, 1.0, 0.3);
+        
+        // Robot will collide with these obstacles
+    }
+}
+```
+
+### Environment Simulation
+Simulate real-world conditions.
+
+```java
+public class EnvironmentSimulation {
+    public void simulateFieldConditions() {
+        // Simulate friction variations
+        double[][] frictionMap = {
+            {0.8, 0.8, 0.7, 0.8, 0.8}, // Different friction across field
+            {0.8, 0.7, 0.6, 0.7, 0.8},
+            {0.8, 0.7, 0.6, 0.7, 0.8},
+            {0.8, 0.8, 0.7, 0.8, 0.8},
+            {0.8, 0.8, 0.8, 0.8, 0.8}
+        };
+        
+        // Apply friction based on robot position
+        Pose2d robotPose = drive.getPose();
+        int x = (int) robotPose.getX();
+        int y = (int) robotPose.getY();
+        double friction = frictionMap[y][x];
+        
+        // Adjust wheel COF based on field location
+        config.setWheelCOFStatic(friction);
+    }
+}
+```
+
+## Common Simulation Pitfalls
+
+### ❌ Don't Mock Physics
+```java
+// BAD: Doesn't test real physics
+@Test
+public void testWithMock() {
+    when(drive.getPose()).thenReturn(new Pose2d(1.0, 2.0, new Rotation2d()));
+    // Test passes but doesn't validate physics
+}
+```
+
+### ✅ Do Use Real Physics
+```java
+// GOOD: Tests real physics behavior
+@Test
+public void testWithPhysics() {
+    MARSTestHarness.reset();
+    SwerveDrive drive = new SwerveDrive(new SwerveModuleIOSim(), ...);
+    
+    for (int i = 0; i < 100; i++) {
+        drive.runVelocity(new ChassisSpeeds(1.0, 0.0, 0.0));
+        MARSPhysicsWorld.getInstance().update(0.02);
+    }
+    
+    // Validate actual physics result
+    assertTrue(drive.getPose().getX() > 0.5); // Robot moved forward
+}
+```
+
+## Simulation Verification Checklist
+
+Before trusting simulation results:
+
+- [ ] Physics timestep matches real robot timing (20ms)
+- [ ] All subsystems use simulated IO
+- [ ] Simulation loop updates DriverStation
+- [ ] Physics world updated each iteration
+- [ ] Simulation parameters tuned to real robot
+- [ ] Vision simulation includes realistic noise
+- [ ] Game pieces interact with robot bumper
+- [ ] Field boundaries enforced
+- [ ] Multi-robot interactions work correctly
+
+---
+
+**Ready to simulate?** Run `./gradlew simulateJava` to start the simulation GUI and see your robot code in action!

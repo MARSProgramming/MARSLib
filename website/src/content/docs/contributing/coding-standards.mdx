@@ -1,0 +1,409 @@
+---
+sidebar:
+  order: 3
+id: coding-standards
+title: "Coding Standards"
+template: doc
+description: "Follow MARSLib coding standards and patterns. Write consistent, maintainable code that matches our architecture."
+---
+
+# Coding Standards
+
+MARSLib follows strict coding standards to maintain consistency, safety, and performance. These standards ensure our code is readable, maintainable, and reliable for FRC competition use.
+
+## Core Principles
+
+### 🎯 Zero-Allocation
+Avoid memory allocations in time-critical code paths (100Hz+ loops).
+
+❌ **Avoid:**
+```java
+@Override
+public void periodic() {
+    // BAD: Creates new object every 20ms
+    Pose2d pose = new Pose2d(x, y, new Rotation2d(theta));
+}
+```
+
+✅ **Preferred:**
+```java
+// Reuse objects
+private final Pose2d pose = new Pose2d();
+
+@Override
+public void periodic() {
+    pose.setX(x);
+    pose.setY(y);
+    pose.getRotation().setTheta(theta);
+}
+```
+
+### 🔒 Thread Safety
+All shared state must be thread-safe. Use `volatile` for primitives, concurrent collections, or synchronized blocks.
+
+❌ **Avoid:**
+```java
+private double sharedValue;  // BAD: Not thread-safe
+
+public void setValue(double v) {
+    sharedValue = v;  // Race condition!
+}
+```
+
+✅ **Preferred:**
+```java
+private volatile double sharedValue;  // Thread-safe primitive
+
+// Or use atomic types
+private final AtomicDouble sharedValue = new AtomicDouble();
+```
+
+### 🧪 Testability
+Write code that's easily testable with simulated IO.
+
+```java
+// Interface-based design enables testing
+public class MechanismSubsystem extends Subsystem {
+    private final MechanismIO io;  // Can be real or simulated
+    
+    // Same code works on robot and in simulation!
+}
+```
+
+## Code Style
+
+### Formatting
+We use **Spotless** for automatic formatting. Don't manually format code.
+
+```bash
+# Apply Spotless formatting
+.\gradlew.bat spotlessApply
+
+# Check formatting
+.\gradlew.bat spotlessCheck
+```
+
+### Naming Conventions
+
+**Classes:** `PascalCase`
+```java
+public class SwerveDrive {}
+public class MARSVision {}
+```
+
+**Methods:** `camelCase`
+```java
+public void driveRobotRelative() {}
+public void updateOdometry() {}
+```
+
+**Constants:** `UPPER_SNAKE_CASE`
+```java
+private static final double MAX_SPEED_MPS = 5.0;
+private static final double LOOP_PERIOD_SECS = 0.02;
+```
+
+**Private Fields:** `camelCase` with `this` prefix
+```java
+private final SwerveDrive drive;
+private final VisionIO vision;
+```
+
+## Architecture Patterns
+
+### IO Abstraction Layer
+Separate logic from hardware using interfaces.
+
+```java
+// Define the interface
+public interface MechanismIO {
+    double getPosition();
+    void setVoltage(double voltage);
+}
+
+// Hardware implementation
+public class MechanismIOReal implements MechanismIO {
+    private final TalonFX motor;
+    
+    public double getPosition() {
+        return motor.getPosition().getValueAsDouble();
+    }
+}
+
+// Simulated implementation
+public class MechanismIOSim implements MechanismIO {
+    private double position = 0.0;
+    
+    public double getPosition() {
+        return position;
+    }
+}
+```
+
+### Command-Based Programming
+Use WPILib's Command-based pattern for all robot actions.
+
+```java
+public class DriveCommand extends Command {
+    private final SwerveDrive drive;
+    
+    public DriveCommand(SwerveDrive drive) {
+        this.drive = drive;
+        addRequirements(drive);  // Always declare requirements
+    }
+    
+    @Override
+    public void execute() {
+        // Control logic
+    }
+}
+```
+
+### Subsystem Design
+Subsystems should manage IO and state, not implement business logic.
+
+```java
+public class ElevatorSubsystem extends Subsystem {
+    private final LinearMechanismIO io;
+    private final PIDController controller;
+    
+    @Override
+    public void periodic() {
+        // Update control loops
+        double output = controller.calculate(io.getPosition());
+        io.setVoltage(output);
+    }
+    
+    // Public API for commands
+    public void setPosition(double meters) {
+        controller.setSetpoint(meters);
+    }
+}
+```
+
+## Performance Standards
+
+### Loop Timing
+- **Teleop Periodic:** 50Hz (20ms)
+- **Auto Periodic:** 50Hz (20ms)
+- **Odometry:** 250Hz (4ms)
+- **Vision Processing:** As fast as possible (30Hz+)
+
+### Memory Management
+- Pre-allocate all objects in constructor
+- Avoid object creation in periodic() methods
+- Use object pools for temporary objects
+
+### Logging
+- Use AdvantageKit automatic logging
+- Don't manually log in time-critical loops
+- Log at appropriate levels (ERROR, WARN, INFO)
+
+## Safety Standards
+
+### Hardware Safety
+```java
+public class SafeSubsystem extends Subsystem {
+    @Override
+    public void periodic() {
+        // Check limits
+        if (getPosition() > MAX_POSITION) {
+            stop();  // Emergency stop
+            MARSFaultManager.fault("Position limit exceeded!");
+        }
+    }
+}
+```
+
+### Fault Handling
+```java
+public class RobustSubsystem extends Subsystem {
+    private final VisionIO vision;
+    
+    @Override
+    public void periodic() {
+        try {
+            var pose = vision.getPoseEstimate();
+            if (pose.isPresent()) {
+                // Use vision data
+            } else {
+                // Handle missing data gracefully
+                MARSFaultManager.warn("Vision estimate unavailable");
+            }
+        } catch (Exception e) {
+            MARSFaultManager.fault("Vision error: " + e.getMessage());
+        }
+    }
+}
+```
+
+### State Management
+```java
+public class SafeStateMachine extends MARSStateMachine<State> {
+    public SafeStateMachine() {
+        super("Safe", State.IDLE);
+        
+        // Always include emergency stop state
+        addState(State.ESTOP, () -> {
+            // Stop all motion
+            drive.stop();
+            shooter.stop();
+            elevator.holdPosition();
+        });
+    }
+}
+```
+
+## Testing Standards
+
+### Digital Twin Philosophy
+Test with real subsystems using simulated IO.
+
+```java
+@Test
+public void testSwerveOdometry() {
+    MARSTestHarness.reset();
+    
+    // Use real subsystem with simulated IO
+    SwerveDrive drive = new SwerveDrive(new SwerveModuleIOSim());
+    
+    // Run physics simulation
+    for (int i = 0; i < 150; i++) {
+        DriverStationSim.notifyNewData();
+        SimHooks.stepTiming(0.02);
+        CommandScheduler.getInstance().run();
+    }
+    
+    // Verify results
+    assertEquals(finalPose, drive.getPose());
+}
+```
+
+### Test Coverage
+- Maintain 80%+ test coverage
+- Test both success and failure cases
+- Use realistic physics in tests
+
+## Documentation Standards
+
+### JavaDoc
+Document all public APIs:
+
+```java
+/**
+ * Swerve drive subsystem with odometry and path following.
+ * 
+ * <p>This subsystem manages four swerve modules with independent
+ * wheel angle and velocity control. Odometry is updated at 250Hz
+ * using a dedicated thread.
+ *
+ * @param modules Array of four swerve modules
+ * @param config Swerve drive configuration parameters
+ */
+public class SwerveDrive extends Subsystem {
+    // ...
+}
+```
+
+### Code Comments
+- Comment **why**, not **what**
+- Explain non-obvious algorithms
+- Document performance-critical sections
+- Keep comments up-to-date
+
+## Common Patterns
+
+### PID Control
+```java
+public class PIDSubsystem extends Subsystem {
+    private final ProfiledPIDController controller;
+    private final MechanismIO io;
+    
+    public PIDSubsystem() {
+        // Use ProfiledPID for smooth motion
+        controller = new ProfiledPIDController(
+            8.0, 0.0, 0.15,  // Gains from SysId
+            new TrapezoidProfile.Constraints(2.0, 4.0)
+        );
+    }
+    
+    @Override
+    public void periodic() {
+        double output = controller.calculate(io.getPosition());
+        io.setVoltage(output + calculateFeedforward());
+    }
+}
+```
+
+### State Machines
+```java
+public class StateMachineExample extends MARSStateMachine<State> {
+    public StateMachineExample() {
+        super("Example", State.IDLE);
+        
+        addState(State.IDLE, () -> {
+            // Stop all motion
+        });
+        
+        addState(State.RUNNING, () -> {
+            // Run mechanism
+        });
+    }
+}
+```
+
+### Vision Integration
+```java
+public class VisionAlignment extends Command {
+    private final MARSVision vision;
+    
+    @Override
+    public void execute() {
+        var pose = vision.getPoseEstimate();
+        if (pose.isPresent()) {
+            // Use vision data
+            alignToPose(pose.get());
+        } else {
+            // Handle missing data
+            MARSFaultManager.warn("No vision target");
+        }
+    }
+}
+```
+
+## Code Review Checklist
+
+Before submitting code, verify:
+
+- [ ] Code follows naming conventions
+- [ ] No allocations in periodic() methods
+- [ ] Thread-safe shared state
+- [ ] Proper error handling
+- [ ] Tests added and passing
+- [ ] Documentation updated
+- [ ] Spotless formatting applied
+- [ ] Performance tested (if applicable)
+
+## Tools and Automation
+
+### Pre-commit Hooks
+Install git hooks for automatic formatting:
+```bash
+.\install-git-hooks.bat
+```
+
+### CI/CD Checks
+Our CI automatically verifies:
+- Spotless formatting
+- 80% test coverage
+- All tests pass
+- No compilation errors
+
+### VS Code Extensions
+- **Extension Pack for Java** - Language support
+- **Gradle for Java** - Build integration
+- **Spotless** - Format on save
+
+---
+
+**Next:** Learn about our [Testing Guide](./testing-guide) to understand the Digital Twin philosophy!

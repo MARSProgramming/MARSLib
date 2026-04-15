@@ -1,0 +1,496 @@
+---
+sidebar:
+  order: 1
+id: from-wpilib
+title: "Migrating from WPILib"
+template: doc
+description: "Step-by-step guide to migrate your existing WPILib codebase to MARSLib."
+---
+
+# Migrating from WPILib
+
+This guide helps you migrate your existing WPILib robot code to MARSLib. We'll cover the key differences, patterns, and step-by-step migration process.
+
+## Why Migrate to MARSLib?
+
+**Key Benefits over Pure WPILib:**
+- ✅ **IO Abstraction** - Test without hardware
+- ✅ **Zero-Allocation Patterns** - No GC pauses
+- ✅ **Battle-Tested** - Competition-proven code
+- ✅ **Better Simulation** - Physics-based testing
+- ✅ **Comprehensive Tools** - Performance analysis, fault detection
+- ✅ **Active Development** - Regular updates and improvements
+
+## Migration Approaches
+
+### 1. Full Migration (Recommended)
+Replace all subsystems with MARSLib equivalents.
+
+**Pros:**
+- Best performance
+- All MARSLib features
+- Consistent patterns
+
+**Cons:**
+- More upfront work
+- Learning curve
+
+**Timeline:** 1-2 weeks for experienced teams
+
+### 2. Partial Migration
+Use MARSLib for specific features while keeping WPILib for others.
+
+**Pros:**
+- Gradual adoption
+- Lower risk
+- Learn at your pace
+
+**Cons:**
+- Mixed patterns
+- Some complexity
+
+**Timeline:** 2-4 weeks
+
+### 3. Hybrid Approach
+New features use MARSLib, old code remains WPILib.
+
+**Pros:**
+- Low disruption
+- Flexible timeline
+
+**Cons:**
+- Inconsistent codebase
+- Maintenance burden
+
+**Timeline:** Ongoing
+
+## Step-by-Step Migration
+
+### Step 1: Setup (15 minutes)
+
+**1. Add MARSLib Dependency:**
+
+```gradle
+// build.gradle
+repositories {
+    maven { url = 'https://maven.MARSProgramming.org' }
+}
+
+dependencies {
+    implementation 'org.team2614:MARSLib:2024.3.0'
+}
+```
+
+**2. Update Robot.java:**
+
+```java
+// Before (WPILib)
+public class Robot extends TimedRobot {
+    @Override
+    public void robotInit() {
+        // WPILib initialization
+    }
+}
+
+// After (MARSLib)
+public class Robot extends Robot {
+    // MARSLib handles initialization automatically
+    // Just use AdvantageKit logging
+}
+```
+
+### Step 2: Migrate Subsystems (2-4 hours per subsystem)
+
+#### Example: Drive Base
+
+**WPILib Code:**
+```java
+public class Drive extends SubsystemBase {
+    private final PWMTalonFX leftLeader = new PWMTalonFX(1);
+    private final PWMTalonFX rightLeader = new PWMTalonFX(2);
+    private final Encoder leftEncoder = new Encoder(0, 1);
+    private final Encoder rightEncoder = new Encoder(2, 3);
+    private final DifferentialDriveOdometry odometry;
+    
+    public Drive() {
+        leftLeader.setInverted(true);
+        rightLeader.setInverted(false);
+        odometry = new DifferentialDriveOdometry(getGyroHeading());
+    }
+    
+    @Override
+    public void periodic() {
+        odometry.update(getGyroHeading(), 
+            leftEncoder.getDistance(), 
+            rightEncoder.getDistance()
+        );
+    }
+    
+    public void tankDrive(double left, double right) {
+        leftLeader.set(left);
+        rightLeader.set(right);
+    }
+}
+```
+
+**MARSLib Code:**
+```java
+public class Drive extends Subsystem {
+    private final MotorIOTalonFX leftIO;
+    private final MotorIOTalonFX rightIO;
+    private final GyroIO gyroIO;
+    private final DifferentialDriveOdometry odometry = 
+        new DifferentialDriveOdometry(new Rotation2d(), 0, 0);
+    
+    // IO inputs (updated automatically)
+    private final MotorIOInputs leftInputs = new MotorIOInputs();
+    private final MotorIOInputs rightInputs = new MotorIOInputs();
+    private final GyroIOInputs gyroInputs = new GyroIOInputs();
+    
+    public Drive(MotorIO leftIO, MotorIO rightIO, GyroIO gyroIO) {
+        this.leftIO = (MotorIOTalonFX) leftIO;
+        this.rightIO = (MotorIOTalonFX) rightIO;
+        this.gyroIO = gyroIO;
+    }
+    
+    @Override
+    public void periodic() {
+        // Update inputs (works with real hardware OR simulation)
+        leftIO.updateInputs(leftInputs);
+        rightIO.updateInputs(rightInputs);
+        gyroIO.updateInputs(gyroInputs);
+        
+        // Update odometry
+        odometry.update(
+            gyroInputs.position,
+            leftInputs.positionRadians,
+            rightInputs.positionRadians
+        );
+    }
+    
+    public void tankDrive(double left, double right) {
+        leftIO.setVoltage(left * 12);
+        rightIO.setVoltage(right * 12);
+    }
+}
+
+// Real Robot
+Drive drive = new Drive(
+    new MotorIOTalonFX(1),
+    new MotorIOTalonFX(2),
+    new GyroIOPigeon2()
+);
+
+// Simulation
+Drive drive = new Drive(
+    new MotorIOSim(),
+    new MotorIOSim(),
+    new GyroIOSim()
+);
+```
+
+#### Key Differences:
+
+| WPILib | MARSLib |
+|--------|---------|
+| Direct hardware access | IO abstraction layer |
+| Hardware constructor dependency injection | Interface-based DI |
+| No built-in simulation | Simulation included |
+| Manual performance tuning | Zero-allocation patterns |
+
+### Step 3: Migrate Commands (1-2 hours)
+
+**WPILib Command:**
+```java
+public class DriveDistance extends CommandBase {
+    private final Drive drive;
+    private final double distance;
+    private double initialDistance;
+    
+    public DriveDistance(Drive drive, double distance) {
+        this.drive = drive;
+        this.distance = distance;
+        addRequirements(drive);
+    }
+    
+    @Override
+    public void initialize() {
+        initialDistance = drive.getAverageDistance();
+    }
+    
+    @Override
+    public void execute() {
+        drive.tankDrive(0.5, 0.5);
+    }
+    
+    @Override
+    public boolean isFinished() {
+        return drive.getAverageDistance() - initialDistance >= distance;
+    }
+    
+    @Override
+    public void end(boolean interrupted) {
+        drive.tankDrive(0, 0);
+    }
+}
+```
+
+**MARSLib Command (Same Pattern):**
+```java
+// MARSLib uses WPILib command system - no changes needed!
+// Just use IO-based subsystems
+public class DriveDistance extends Command {
+    private final Drive drive;
+    private final double distance;
+    private double initialDistance;
+    
+    public DriveDistance(Drive drive, double distance) {
+        this.drive = drive;
+        this.distance = distance;
+        addRequirements(drive);
+    }
+    
+    // Same implementation as WPILib
+    // Works with real hardware or simulation
+}
+```
+
+### Step 4: Migrate Autonomous (2-3 hours)
+
+**WPILib Auto:**
+```java
+public class Autonomous extends SequentialCommandGroup {
+    public Autonomous(Drive drive, Shooter shooter) {
+        addCommands(
+            new DriveDistance(drive, 2.0),
+            new WaitCommand(1.0),
+            new Shoot(shooter, 3.0)
+        );
+    }
+}
+```
+
+**MARSLib Auto (with PathPlanner):**
+```java
+// Use PathPlanner integration (recommended)
+public class Autonomous extends SequentialCommandGroup {
+    public Autonomous(Drive drive, Shooter shooter) {
+        addCommands(
+            PathPlannerAuto.fromPathFile("2MeterForward"),
+            new WaitCommand(1.0),
+            new Shoot(shooter, 3.0)
+        );
+    }
+}
+
+// OR use WPILib trajectory following (same as before)
+public class Autonomous extends SequentialCommandGroup {
+    public Autonomous(Drive drive, Shooter shooter) {
+        Trajectory trajectory = 
+            TrajectoryGenerator.generateTrajectory(
+                new Pose2d(0, 0, new Rotation2d()),
+                List.of(),
+                new Pose2d(2, 0, new Rotation2d()),
+                new TrajectoryConfig(2.0, 1.0)
+            );
+        
+        addCommands(
+            new RamseteCommand(trajectory, drive::getPose, ...),
+            new WaitCommand(1.0),
+            new Shoot(shooter, 3.0)
+        );
+    }
+}
+```
+
+## Common Migration Patterns
+
+### Pattern 1: Motor Controllers
+
+**WPILib:**
+```java
+PWMTalonFX motor = new PWMTalonFX(1);
+motor.set(ControlMode.PercentOutput, 0.5);
+double current = motor.getStatorCurrent();
+```
+
+**MARSLib:**
+```java
+MotorIO motorIO = new MotorIOTalonFX(1);
+motorIO.setVoltage(0.5 * 12);
+
+MotorIOInputs inputs = new MotorIOInputs();
+motorIO.updateInputs(inputs);
+double current = inputs.statorCurrentAmps;
+```
+
+### Pattern 2: Sensors
+
+**WPILib:**
+```java
+DutyCycleEncoder encoder = new DutyCycleEncoder(0);
+double position = encoder.get();
+encoder.reset();
+```
+
+**MARSLib:**
+```java
+EncoderIO encoderIO = new EncoderIOTimeOfFlight(0);
+EncoderIOInputs inputs = new EncoderIOInputs();
+encoderIO.updateInputs(inputs);
+double position = inputs.position;
+encoderIO.setEncoderPosition(0);
+```
+
+### Pattern 3: Gyroscope
+
+**WPILib:**
+```java
+AHRS gyro = new AHRS(SerialPort.Port.kUSB);
+Rotation2d heading = gyro.getRotation2d();
+```
+
+**MARSLib:**
+```java
+GyroIO gyroIO = new GyroIOPigeon2();
+GyroIOInputs inputs = new GyroIOInputs();
+gyroIO.updateInputs(inputs);
+Rotation2d heading = inputs.position;
+```
+
+## Testing After Migration
+
+### 1. Simulation Testing
+
+```java
+@Test
+public void testDriveBase() {
+    // Create simulated drive
+    MotorIOSim leftMotor = new MotorIOSim();
+    MotorIOSim rightMotor = new MotorIOSim();
+    GyroIOSim gyro = new GyroIOSim();
+    
+    Drive drive = new Drive(leftMotor, rightMotor, gyro);
+    
+    // Test forward movement
+    drive.tankDrive(0.5, 0.5);
+    
+    // Run periodic
+    for (int i = 0; i < 50; i++) {
+        drive.periodic();
+    }
+    
+    // Verify movement
+    assertTrue(drive.getPose().getX() > 0);
+}
+```
+
+### 2. Hardware Testing
+
+```java
+// Test on real hardware
+@Test
+@EnabledIfRobot("real")
+public void testRealDrive() {
+    Drive drive = new Drive(
+        new MotorIOTalonFX(1),
+        new MotorIOTalonFX(2),
+        new GyroIOPigeon2()
+    );
+    
+    // Same test code works!
+    drive.tankDrive(0.5, 0.5);
+    // ...
+}
+```
+
+## Troubleshooting
+
+### Issue: Subsystem not updating
+
+**Symptoms:** Sensors not reading, motors not moving
+
+**Solution:**
+```java
+@Override
+public void periodic() {
+    // Make sure to call updateInputs!
+    motorIO.updateInputs(motorInputs);
+    gyroIO.updateInputs(gyroInputs);
+}
+```
+
+### Issue: Simulation not working
+
+**Symptoms:** Tests fail, simulation errors
+
+**Solution:**
+```java
+// Use IO classes, not hardware classes
+MotorIO motorIO = new MotorIOSim();  // ✓ Correct
+// NOT: PWMTalonFX motor = new PWMTalonFX(1);  // ✗ Wrong
+```
+
+### Issue: Performance degradation
+
+**Symptoms:** Loop time increased, GC pauses
+
+**Solution:**
+- Pre-allocate objects in constructor
+- Avoid `new` in periodic()
+- Use primitive arrays instead of collections
+- Check performance dashboard
+
+## Migration Checklist
+
+### Phase 1: Preparation
+- [ ] Read MARSLib documentation
+- [ ] Set up MARSLib dependency
+- [ ] Review IO abstraction patterns
+- [ ] Plan migration approach
+
+### Phase 2: Subsystems
+- [ ] Migrate drive base
+- [ ] Migrate mechanisms
+- [ ] Migrate vision
+- [ ] Migrate sensors
+
+### Phase 3: Commands & Auto
+- [ ] Update commands for IO-based subsystems
+- [ ] Migrate autonomous routines
+- [ ] Add PathPlanner integration (optional)
+
+### Phase 4: Testing
+- [ ] Write simulation tests
+- [ ] Test on real hardware
+- [ ] Verify performance
+- [ ] Check log analysis
+
+### Phase 5: Deployment
+- [ ] Deploy to robot
+- [ ] Test at competition
+- [ ] Monitor performance
+- [ ] Iterate based on feedback
+
+## Timeline Estimate
+
+| Phase | Time | Notes |
+|-------|------|-------|
+| Preparation | 2-4 hours | Learning & planning |
+| Subsystems | 8-16 hours | Depends on complexity |
+| Commands | 2-4 hours | Straightforward |
+| Testing | 4-8 hours | Simulation + hardware |
+| **Total** | **16-32 hours** | **2-4 days for focused work** |
+
+## Further Reading
+
+- [IO Abstraction Guide](/tutorials/framework/io-abstraction)
+- [Testing Guide](/contributing/testing-guide)
+- [Simulation Best Practices](/tutorials/advanced/simulation-best-practices)
+- [Performance Analysis](/tutorials/elite/performance-analysis)
+
+---
+
+**Need Help?** Join our [Discord](https://discord.gg/marslib) or ask in [GitHub Discussions](https://github.com/MARSProgramming/MARSLib/discussions)!
+
+**Ready to start?** Begin with [Getting Started](/tutorials/setup/getting-started) guide.

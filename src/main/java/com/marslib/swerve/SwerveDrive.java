@@ -59,9 +59,17 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
   private SwerveSetpointGenerator.SwerveSetpoint prevSetpoint;
   private final SwerveSetpointGenerator.KinematicLimits kinematicLimits;
 
-  // Extracted Architecture Components
   private final SwerveOdometry odometry;
   private final SwerveDiagnostics diagnostics;
+
+  // Caches for zero-allocation performance in hot loop
+  private final ChassisSpeeds scaledSpeedsCache = new ChassisSpeeds();
+  private final ChassisSpeeds discretizedSpeedsCache = new ChassisSpeeds();
+  private Pose2d lastPoseCache = new Pose2d();
+  private Pose2d lastSimPoseCache = new Pose2d();
+  private final double[] lastPose3dLogCache = new double[] {0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0};
+  private double lastRollCache = 0.0;
+  private double lastPitchCache = 0.0;
 
   @SuppressWarnings("PMD.NullAssignment")
   public SwerveDrive(
@@ -137,6 +145,8 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
   }
 
   private final SwerveModuleState[] measuredStatesCache = new SwerveModuleState[4];
+  private final double[] measuredStatesLogCache = new double[8];
+  private final double[] desiredStatesLogCache = new double[8];
 
   public void configurePathPlanner() {
     SwerveAutoBuilder.configure(this);
@@ -149,30 +159,73 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
 
     gyroAlert.set(!gyroInputs.connected);
 
-    for (SwerveModule module : modules) {
-      module.periodic();
+    for (int i = 0; i < 4; i++) {
+      modules[i].periodic();
     }
-
-    // High frequency synchronous drain extracted to Odometry class to save lines
-    odometry.updateOdometry(modules, gyroInputs);
 
     if (simDrive != null) {
       Pose2d simBoundedPose = simDrive.getSimulatedDriveTrainPose();
-      Logger.recordOutput("DriveTrain/SimPose", simBoundedPose);
-      if (lidarSim != null) lidarSim.updateInputs(simBoundedPose);
+      if (simBoundedPose.getX() != lastSimPoseCache.getX()
+          || simBoundedPose.getY() != lastSimPoseCache.getY()
+          || simBoundedPose.getRotation().getRadians()
+              != lastSimPoseCache.getRotation().getRadians()) {
+        lastSimPoseCache = simBoundedPose;
+      }
+      Logger.recordOutput("DriveTrain/SimPose", lastSimPoseCache);
+      if (lidarSim != null) lidarSim.updateInputs(lastSimPoseCache);
     }
 
     Pose2d currentPose = odometry.getPose();
-    Logger.recordOutput("SwerveDrive/Pose", currentPose);
-    Logger.recordOutput("Odometry/RobotPose", currentPose);
-    Logger.recordOutput("Robot/Pose", currentPose);
-    Logger.recordOutput("Robot/Pose3d", getPose3d());
+    if (currentPose.getX() != lastPoseCache.getX()
+        || currentPose.getY() != lastPoseCache.getY()
+        || currentPose.getRotation().getRadians() != lastPoseCache.getRotation().getRadians()) {
+      lastPoseCache = currentPose;
+    }
+
+    Logger.recordOutput("SwerveDrive/Pose", lastPoseCache);
+    Logger.recordOutput("Robot/Pose", lastPoseCache);
+
+    if (lastPose3dLogCache[0] != lastPoseCache.getX()
+        || lastPose3dLogCache[1] != lastPoseCache.getY()
+        || lastRollCache != gyroInputs.rollPositionRad
+        || lastPitchCache != gyroInputs.pitchPositionRad) {
+
+      double yaw = lastPoseCache.getRotation().getRadians();
+      double roll = gyroInputs.rollPositionRad;
+      double pitch = gyroInputs.pitchPositionRad;
+
+      double cr = Math.cos(roll * 0.5);
+      double sr = Math.sin(roll * 0.5);
+      double cp = Math.cos(pitch * 0.5);
+      double sp = Math.sin(pitch * 0.5);
+      double cy = Math.cos(yaw * 0.5);
+      double sy = Math.sin(yaw * 0.5);
+
+      lastPose3dLogCache[0] = lastPoseCache.getX();
+      lastPose3dLogCache[1] = lastPoseCache.getY();
+      lastPose3dLogCache[2] = 0.0;
+      lastPose3dLogCache[3] = cr * cp * cy + sr * sp * sy;
+      lastPose3dLogCache[4] = sr * cp * cy - cr * sp * sy;
+      lastPose3dLogCache[5] = cr * sp * cy + sr * cp * sy;
+      lastPose3dLogCache[6] = cr * cp * sy - sr * sp * cy;
+
+      lastRollCache = roll;
+      lastPitchCache = pitch;
+    }
+    Logger.recordOutput("Robot/Pose3d", lastPose3dLogCache);
+
+    odometry.updateOdometry(modules, gyroInputs);
 
     measuredStatesCache[0] = modules[0].getLatestState();
     measuredStatesCache[1] = modules[1].getLatestState();
     measuredStatesCache[2] = modules[2].getLatestState();
     measuredStatesCache[3] = modules[3].getLatestState();
-    Logger.recordOutput("SwerveDrive/MeasuredStates", measuredStatesCache);
+
+    for (int i = 0; i < 4; i++) {
+      measuredStatesLogCache[i * 2] = measuredStatesCache[i].angle.getRadians();
+      measuredStatesLogCache[i * 2 + 1] = measuredStatesCache[i].speedMetersPerSecond;
+    }
+    Logger.recordOutput("SwerveDrive/MeasuredStates", measuredStatesLogCache);
 
     double currentVelocity = measuredStatesCache[0].speedMetersPerSecond;
     double currentAccel = (currentVelocity - lastDriveVelocityForSysId) / config.loopPeriodSecs();
@@ -183,26 +236,49 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
   }
 
   public void runVelocity(ChassisSpeeds speeds) {
-    ChassisSpeeds discretizedSpeeds = ChassisSpeeds.discretize(speeds, config.loopPeriodSecs());
+    // Manual discretization to avoid ChassisSpeeds allocation
+    double dt_S = config.loopPeriodSecs() / 2.0;
+    double theta = speeds.omegaRadiansPerSecond * dt_S;
+    double cos = Math.cos(theta);
+    double sin = Math.sin(theta);
+
+    discretizedSpeedsCache.vxMetersPerSecond =
+        speeds.vxMetersPerSecond * cos - speeds.vyMetersPerSecond * sin;
+    discretizedSpeedsCache.vyMetersPerSecond =
+        speeds.vxMetersPerSecond * sin + speeds.vyMetersPerSecond * cos;
+    discretizedSpeedsCache.omegaRadiansPerSecond = speeds.omegaRadiansPerSecond;
 
     double voltageScale = powerManager.calculateSheddingFactor();
 
-    ChassisSpeeds scaledSpeeds =
-        new ChassisSpeeds(
-            discretizedSpeeds.vxMetersPerSecond * voltageScale,
-            discretizedSpeeds.vyMetersPerSecond * voltageScale,
-            discretizedSpeeds.omegaRadiansPerSecond * voltageScale);
+    scaledSpeedsCache.vxMetersPerSecond = discretizedSpeedsCache.vxMetersPerSecond * voltageScale;
+    scaledSpeedsCache.vyMetersPerSecond = discretizedSpeedsCache.vyMetersPerSecond * voltageScale;
+    scaledSpeedsCache.omegaRadiansPerSecond =
+        discretizedSpeedsCache.omegaRadiansPerSecond * voltageScale;
 
-    this.prevSetpoint =
+    SwerveSetpointGenerator.SwerveSetpoint newestSetpoint =
         setpointGenerator.generateSetpoint(
-            kinematicLimits, prevSetpoint, scaledSpeeds, config.loopPeriodSecs());
+            kinematicLimits, prevSetpoint, scaledSpeedsCache, config.loopPeriodSecs());
+
+    // Manual copy to avoid SwerveSetpoint allocation
+    prevSetpoint.chassisSpeeds.vxMetersPerSecond = newestSetpoint.chassisSpeeds.vxMetersPerSecond;
+    prevSetpoint.chassisSpeeds.vyMetersPerSecond = newestSetpoint.chassisSpeeds.vyMetersPerSecond;
+    prevSetpoint.chassisSpeeds.omegaRadiansPerSecond =
+        newestSetpoint.chassisSpeeds.omegaRadiansPerSecond;
+
+    for (int i = 0; i < 4; i++) {
+      prevSetpoint.moduleStates[i].speedMetersPerSecond =
+          newestSetpoint.moduleStates[i].speedMetersPerSecond;
+      prevSetpoint.moduleStates[i].angle = newestSetpoint.moduleStates[i].angle;
+    }
 
     SwerveModuleState[] states = prevSetpoint.moduleStates;
 
     for (int i = 0; i < 4; i++) {
       modules[i].setDesiredState(states[i]);
+      desiredStatesLogCache[i * 2] = states[i].angle.getRadians();
+      desiredStatesLogCache[i * 2 + 1] = states[i].speedMetersPerSecond;
     }
-    Logger.recordOutput("SwerveDrive/DesiredStates", states);
+    Logger.recordOutput("SwerveDrive/DesiredStates", desiredStatesLogCache);
   }
 
   public void setModuleStates(SwerveModuleState... states) {

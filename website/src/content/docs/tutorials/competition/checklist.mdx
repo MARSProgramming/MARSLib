@@ -1,0 +1,558 @@
+---
+sidebar:
+  order: 1
+id: competition-checklist
+title: "Competition Preparation Checklist"
+template: doc
+description: "Comprehensive checklist to prepare your MARSLib robot for competition success."
+---
+
+# Competition Preparation Checklist
+
+A comprehensive checklist to ensure your MARSLib-powered robot is competition-ready. Follow this timeline to prepare for your event.
+
+## 📅 Timeline
+
+### 6 Weeks Before Competition
+- [ ] **Code Review**
+  - [ ] All code reviewed by senior programmer
+  - [ ] Coding standards followed
+  - [ ] No TODO comments in critical paths
+  - [ ] Error handling implemented
+
+- [ ] **Testing**
+  - [ ] All unit tests passing
+  - [ ] Code coverage ≥ 80%
+  - [ ] Integration tests passing
+  - [ ] Simulation tests validated
+
+- [ ] **Performance**
+  - [ ] Loop time < 10ms (50Hz main)
+  - [ ] Memory usage stable
+  - [ ] CPU usage < 50%
+  - [ ] No memory leaks
+
+### 4 Weeks Before Competition
+- [ ] **Hardware Testing**
+  - [ ] All subsystems tested on real hardware
+  - [ ] Sensors calibrated and verified
+  - [ ] Motor controllers configured
+  - [ ] CAN bus verified (< 80% utilization)
+
+- [ ] **Autonomous**
+  - [ ] All auto modes tested
+  - [ ] Path following accurate (< 5cm error)
+  - [ ] Vision integration tested
+  - [ ] Auto selection working
+
+- [ ] **Driver Practice**
+  - [ ] Driver station configured
+  - [ ] Controller profiles set
+  - [ ] Practice auto routines
+  - [ ] Teleop operation practiced
+
+### 2 Weeks Before Competition
+- [ ] **Code Freeze**
+  - [ ] Feature freeze implemented
+  - [ ] Only bug fixes allowed
+  - [ ] Change management process
+  - [ ] Version control tagged
+
+- [ ] **Documentation**
+  - [ ] Code documented
+  - [ ] Subsystem operation documented
+  - [ ] Troubleshooting guide updated
+  - [ ] Quick reference guide created
+
+- [ ] **Backup Plan**
+  - [ ] Previous season code archived
+  - [ ] Known bugs documented
+  - [ ] Workaround procedures documented
+  - [ ] Emergency rollback plan
+
+### 1 Week Before Competition
+- [ ] **Final Testing**
+  - [ ] Full robot functionality test
+  - [ ] All auto modes validated
+  - [ ] Driver station backup configured
+  - [ ] Practice day test completed
+
+- [ ] **Competition Preparation**
+  - [ ] USB drives prepared (code + tools)
+  - [ ] Laptop configured and tested
+  - [ ] Radio configured (team number, SSID)
+  - [ ] Driver station license updated
+
+- [ ] **Team Preparation**
+  - [ ] Operators trained on all features
+  - [ ] Pit crew trained on basic debugging
+  - [ ] Scouting forms prepared
+  - [ ] Competition rules reviewed
+
+---
+
+## 🏟️ Event Day Preparation
+
+### Before Leaving Shop
+- [ ] **Final Checklist**
+  - [ ] Robot powered and tested
+  - [ ] All subsystems functional
+  - [ ] Auto modes tested
+  - [ ] Batteries charged and tested
+  - [ ] Spare parts packed
+
+- [ ] **Digital Preparation**
+  - [ ] Latest code deployed to robot
+  - [ ] AdvantageKit logging enabled
+  - [ ] RioLog working
+  - [ ] Driver station connecting
+
+- [ ] **Bring These Files**
+  - [ ] Latest code JAR
+  - [ ] Source code zip
+  - [ ] Previous working version (backup)
+  - [ ] WPILog analysis tools
+  - [ ] Driver station updates
+
+### At Competition - Pit Setup
+
+#### Computer Setup
+- [ ] **Programming Laptop**
+  - [ ] Connected to pit network
+  - [ ] VS Code installed
+  - [ ] Gradle working offline
+  - [ ] Git repository cloned
+  - [ ] AdvantageScope installed
+
+- [ ] **Driver Station Laptop**
+  - [ ] Driver station updated
+  - [ ] Team number set
+  - [ ] Java runtime installed
+  - [ ] USB gamepads configured
+  - [ ] Dashboard layout set
+
+- [ ] **Network Configuration**
+  - [ ] Robot radio configured
+  - [ ] Team SSID set
+  - [ ] Static IP configured (10.TE.AM.1)
+  - [ ] DNS configured
+  - [ ] Firewall rules set
+
+#### Robot Setup
+- [ ] **Hardware Check**
+  - [ ] All CAN devices connected
+  - [ ] Power distribution panel checked
+  - [ ] Motor controllers powered
+  - [ ] Sensors reading correctly
+  - [ ] Cameras connected and focused
+
+- [ ] **Software Deployment**
+  - [ ] Deploy latest code
+  - [ ] Verify all subsystems initialize
+  - [ ] Check for error messages in RioLog
+  - [ ] Test all auto modes
+  - [ ] Verify driver station connection
+
+- [ ] **Calibration**
+  - [ ] Gyroscope calibrated
+  - [ ] Encoders zeroed
+  - [ ] Cameras calibrated (if needed)
+  - [ ] Pneumensions system charged
+  - [ ] Mechanism limits set
+
+---
+
+## 📋 Pre-Match Checklist
+
+### Before Every Match
+
+#### 5 Minutes Before Match
+- [ ] **Robot Inspection**
+  - [ ] Batteries fully charged (> 12.5V)
+  - [ ] All connections secure
+  - [ ] No visible damage
+  - [ ] Mechanisms move freely
+  - [ ] Sensors connected
+
+- [ ] **System Check**
+  - [ ] Robot powered on
+  - [ ] Driver station connected
+  - [ ] Comm LEDs green
+  - [ ] Joysticks connected
+  - [ ] No error messages
+
+#### 2 Minutes Before Match
+- [ ] **Software Verification**
+  - [ ] Correct auto mode selected
+  - [ ] Alliance color set correctly
+  - [ ] Starting position confirmed
+  - [ ] Game piece position verified
+  - [ ] Camera feed visible
+
+#### On Field
+- [ ] **Final Checks**
+  - [ ] Robot e-stopped
+  - [ ] Driver station connected
+  - [ ] Auto mode confirmed
+  - [ ] Team ready
+  - [ ] Communications working
+
+---
+
+## 🔍 During Competition
+
+### Match Monitoring
+
+#### Autonomous Period
+- [ ] **Watch For**
+  - [ ] Auto executes correctly
+  - [ ] Robot stays in bounds
+  - [ ] No collisions
+  - [ ] Scored points accurately
+  - [ ] No brownouts
+
+#### Teleop Period
+- [ ] **Monitor**
+  - [ ] Loop times stable
+  - [ ] CPU usage normal
+  - [ ] Battery voltage > 10V
+  - [ ] No comm drops
+  - [ ] No error messages
+
+#### Between Matches
+- [ ] **Analysis**
+  - [ ] Review WPILog from previous match
+  - [ ] Check for errors in RioLog
+  - [ ] Monitor battery usage
+  - [ ] Check motor temperatures
+  - [ ] Review driver feedback
+
+### Troubleshooting Flowchart
+
+```
+┌─────────────────────┐
+│  Problem Reported  │
+└──────────┬──────────┘
+           │
+           ├─→ Is it a hardware issue?
+           │   ├─ YES → Check connections, fuses, sensors
+           │   └─ NO  → Continue
+           │
+           ├─→ Is it a code issue?
+           │   ├─ YES → Check RioLog for errors
+           │   │        Review recent changes
+           │   │        Revert if needed
+           │   └─ NO  → Continue
+           │
+           ├─→ Is it a driver issue?
+           │   ├─ YES → Provide more practice
+           │   └─ NO  → Continue
+           │
+           └─→ Is it critical?
+               ├─ YES → Fix immediately, skip match if needed
+               └─ NO  → Document, fix after matches
+```
+
+---
+
+## 🛠️ Common Issues & Solutions
+
+### Issue: Robot Not Connecting
+
+**Symptoms:**
+- Driver station shows "No Robot Code"
+- Comm LEDs red
+- Can't ping 10.TE.AM.2
+
+**Solutions:**
+1. Check radio power
+2. Verify radio configured (team number)
+3. Check Ethernet cables
+4. Reboot roboRIO
+5. Re-deploy code
+6. Check for firewall issues
+
+### Issue: Auto Not Working
+
+**Symptoms:**
+- Auto doesn't start
+- Robot drives erratically
+- Auto stops mid-execution
+
+**Solutions:**
+1. Verify auto mode selected
+2. Check starting position matches
+3. Verify path files loaded
+4. Check odometry reset
+5. Review WPILog for errors
+6. Test in practice mode
+
+### Issue: Poor Performance
+
+**Symptoms:**
+- Loop time > 10ms
+- CPU usage high
+- Robot jerky movement
+
+**Solutions:**
+1. Check performance dashboard
+2. Review recent code changes
+3. Check for memory allocations
+4. Verify CAN bus not overloaded
+5. Check for too many sensors
+6. Reduce camera resolution
+
+### Issue: Battery Draining Fast
+
+**Symptoms:**
+- Battery voltage drops quickly
+- Brownouts during match
+- Motors weak
+
+**Solutions:**
+1. Check current limiting
+2. Reduce aggressive driving
+3. Check for short circuits
+4. Verify all motors calibrated
+5. Check battery health
+6. Reduce motor voltage
+
+---
+
+## 📊 Post-Match Analysis
+
+### After Each Match
+
+#### Immediate Analysis
+- [ ] **Review WPILog**
+  - [ ] Check for errors
+  - [ ] Review performance metrics
+  - [ ] Analyze auto execution
+  - [ ] Check driver input
+  - [ ] Monitor sensor readings
+
+#### Data Collection
+- [ ] **Record**
+  - [ ] Match score
+  - [ ] Auto points scored
+  - [ ] Teleop points scored
+  - [ ] Fouls committed
+  - [ ] Driver feedback
+
+#### Performance Review
+- [ ] **Analyze**
+  - [ ] Loop time stable?
+  - [ ] Memory usage normal?
+  - [ ] CPU usage acceptable?
+  - [ ] Any brownouts?
+  - [ ] Comm drops?
+
+### End of Day Review
+
+#### Team Meeting
+- [ ] **Discuss**
+  - [ ] What went well
+  - [ ] What needs improvement
+  - [ ] Software changes needed
+  - [ ] Driver practice needed
+  - [ ] Strategy adjustments
+
+#### Planning
+- [ ] **Plan**
+  - [ ] Bug fixes for tomorrow
+  - [ ] Auto mode adjustments
+  - [ ] Driver practice schedule
+  - [ ] Strategy changes
+  - [ ] Code freeze decisions
+
+---
+
+## 🏆 Elimination Rounds
+
+### Playoffs Preparation
+
+#### Strategy
+- [ ] **Plan**
+  - [ ] Alliance partners' capabilities
+  - [ ] Auto coordination
+  - [ ] Defense strategies
+  - [ ] Backup plans
+  - [ ] Scouting data review
+
+#### Code Changes
+- [ ] **Implement**
+  - [ ] Alliance-specific auto modes
+  - [ ] Partner communication
+  - [ ] Coordinated strategies
+  - [ ] Performance optimizations
+  - [ ] Additional telemetry
+
+#### Final Check
+- [ ] **Verify**
+  - [ ] All auto modes tested
+  - [ ] Partners understand cues
+  - [ ] Driver practice complete
+  - [ ] Backup plans ready
+  - [ ] Performance validated
+
+---
+
+## 📁 Emergency Procedures
+
+### Code Rollback
+
+**If latest code fails:**
+
+1. **Stop** - Don't panic
+2. **Assess** - How bad is the problem?
+3. **Decision** - Fix or rollback?
+4. **Action** - Execute rollback plan
+
+**Rollback Steps:**
+```bash
+# 1. Identify last working version
+git log --oneline -10
+
+# 2. Checkout last known good commit
+git checkout <last-working-commit>
+
+# 3. Build and deploy
+./gradlew build
+./gradlew deploy
+
+# 4. Verify quickly
+# Run basic functionality test
+```
+
+### Hardware Failure
+
+**If hardware fails:**
+
+1. **Identify** - What component failed?
+2. **Workaround** - Can software compensate?
+3. **Replace** - Use spare if available
+4. **Adapt** - Adjust robot operation
+
+**Software Workarounds:**
+- Dead sensor: Use odometry/vision
+- Failed motor: Adjust weight distribution
+- Camera issue: Use driver aim
+- Encoder issue: Use voltage control
+
+---
+
+## 📈 Season-End Review
+
+### Post-Season Analysis
+
+#### Performance Review
+- [ ] **Analyze**
+  - [ ] Competition results
+  - [ ] Auto success rate
+  - [ ] Teleop scoring
+  - [ ] Reliability statistics
+  - [ ] Driver performance
+
+#### Code Review
+- [ ] **Document**
+  - [ ] What worked well
+  - [ ] What needs improvement
+  - [ ] Technical debt
+  - [ ] Feature wishlist
+  - [ ] Lessons learned
+
+#### Offseason Planning
+- [ ] **Plan**
+  - [ ] Offseason development
+  - [ ] Testing priorities
+  - [ ] Training needs
+  - [ ] Technology upgrades
+  - [ ] Next season goals
+
+---
+
+## 📋 Quick Reference Card
+
+### Pre-Match Quick Check (1 minute)
+
+```
+☐ Battery charged (green light on charger)
+☐ Robot powers on
+☐ Driver station connects (green comm LEDs)
+☐ Auto mode selected
+☐ Joystunks connected
+☐ No errors in RioLog
+```
+
+### Between Matches Quick Check (30 seconds)
+
+```
+☐ Battery voltage > 12.5V
+☐ No error messages
+☐ WPILog from previous match saved
+☐ Next auto mode selected
+☐ Driver ready
+```
+
+### Emergency Numbers
+
+```
+Lead Programmer: _______________
+Technical Mentor: _______________
+FIRST Technical Advisor: _______
+Regional Director: ______________
+```
+
+---
+
+## 🎯 Success Criteria
+
+### Competition Success Defined
+
+**Technical Success:**
+- [ ] Zero auto failures
+- [ ] 99%+ match reliability
+- [ ] < 5% brownout rate
+- [ ] All subsystems functional
+
+**Team Success:**
+- [ ] Drivers confident
+- [ ] Pit crew trained
+- [ ] Communication clear
+- [ ] Positive team morale
+
+**Strategic Success:**
+- [ ] Auto scoring optimized
+- [ ] Teleop scoring maximized
+- [ ] Defense effective
+- [ ] Alliance cooperation successful
+
+---
+
+## 📞 Resources
+
+### Competition Resources
+
+**FIRST Resources:**
+- [FIRST Robotics Competition](https://www.firstinspires.org/robotics/frc)
+- [FIRST Q&A](https://frc-qa.firstinspires.org/)
+- [Game Manual](https://www.firstinspires.org/robotics/frc/game-and-season)
+
+**MARSLib Resources:**
+- [Documentation](/)
+- [GitHub](https://github.com/MARSProgramming/MARSLib)
+- [Discord](https://discord.gg/marslib)
+- [Issue Tracker](https://github.com/MARSProgramming/MARSLib/issues)
+
+**Community Resources:**
+- [Chief Delphi](https://www.chiefdelphi.com/)
+- [FRC Discord](https://discord.gg/frc)
+- [Reddit - r/FRC](https://www.reddit.com/r/FRC/)
+
+---
+
+**Good luck at competition! 🏆**
+
+Remember: A well-prepared robot is a reliable robot. This checklist helps ensure nothing is forgotten.
+
+**Questions?** Ask in [Discord](https://discord.gg/marslib) or [GitHub Discussions](https://github.com/MARSProgramming/MARSLib/discussions)!

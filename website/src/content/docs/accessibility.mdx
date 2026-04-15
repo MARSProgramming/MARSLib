@@ -1,33 +1,157 @@
 ---
 title: Accessibility Commitment
-description: How MARSLib enforces WCAG 2.1 AA compliance across our software ecosystem.
+description: How MARSLib ensures everyone can use our framework, regardless of ability or background.
 ---
 
 # Design for Every Developer
 
-At MARS 2614, we believe that championship-grade robotics education must be fundamentally accessible to every student, regardless of physical or cognitive ability. We do not view accessibility as a nice-to-have or an afterthought—it is a **core engineering requirement** hardcoded directly into the MARSLib infrastructure.
+At MARS 2614, we believe robotics education should work for every student. We don't see accessibility as optional—it's a **must-have** feature built into everything we create.
 
-Our documentation hub, configuration dashboards, and VS Code extensions are explicitly designed to pass rigorous **WCAG 2.1 AA** standards. We refuse to compromise on inclusivity for the sake of visual flair. 
+Our documentation, dashboards, and tools follow strict **WCAG 2.1 AA** standards. This means they work well for people with different abilities.
 
-## The Automation Engine
+**What is WCAG 2.1 AA?**
+- A set of rules for making software accessible
+- "AA" means we meet important requirements, not just basic ones
+- It's like a checklist for inclusive design
 
-To guarantee our standards are upheld dynamically as our repository scales, we deploy automated accessibility audits via **Pa11y**. Every pull request against our documentation triggers headless browser agents that mechanically verify the DOM structure against WCAG guidelines.
+## Why Accessibility Matters
 
-We actively utilize **Autonomous AI Subagents** and custom skills programmed with explicit structural schemas to surgically patch rendering layers. These agents enforce:
-- **Semantic DOM Parity**: Strip-mining orphaned form labels and duplicate IDs injected by static site components.
-- **Micro-Contrast Checks**: Guaranteeing that all text features—down to the edge-labels within our dynamic Mermaid flowchart modules—maintain a mathematical contrast ratio of at least `4.5:1` against the dark theme.
-- **Screen Reader Context**: Ensuring visual simulation canvases, interactive UI cards, and status graphics are correctly adorned with `aria-hidden` or descriptive `.sr-only` text blocks for navigation cleanly via keyboard and screen readers.
+Robotics brings together students with diverse backgrounds and abilities. Some students might:
+- Use screen readers or other assistive technology
+- Have color vision differences (color blindness)
+- Learn better with simple language
+- Need keyboard navigation instead of mice
+- Have ADHD or learning differences
 
-## Cognitive Accessibility & The Power of AI
+We build MARSLib to work great for all of them. 
 
-Beyond structural HTML and color contrasts, true inclusivity demands that complex robotics concepts are cognitively accessible. FRC involves advanced topics ranging from physics-simulated autonomous routines to rigid vector mathematics. For students with cognitive differences—like ADHD, dyslexia, or processing challenges—navigating dense, unstructured documentation can be an overwhelming barrier to entry.
+## How We Check Accessibility
 
-To combat this, we explicitly structure MARSLib documentation using plain language, clear visual hierarchies, and bite-sized conceptual breakdowns. But we don't stop there. **Artificial Intelligence is a powerful equalizer for cognitive accessibility.** 
+We use automated tools to check our work. When someone updates our documentation, special programs test the changes for accessibility problems.
 
-By co-developing MARSLib with AI agents, we enable students to generate personalized, simplified explanations of complex mechanical abstractions on-demand. AI acts as a patient, interactive mentor that can reformat dense code into manageable chunks, provide custom visual analogies, or instantly scaffold boilerplate code—drastically reducing the cognitive load required to program a championship-caliber robot. We view AI not just as a tool for speed, but as a critical gateway to making world-class STEM education accessible to every mind.
+### What We Check
 
-## Our Design Palette
+**1. Screen Reader Support**
+- Screen readers help blind users navigate websites
+- We add hidden text that describes images and charts
+- All interactive elements work with keyboard navigation
 
-Our signature dark mode and vibrant accent colors are not just for aesthetics. Our primary structural hyperlink highlight is explicitly designed as high-contrast **AI Cyan (`#00f2ff`)**, shifting away from the primary red MARS team color (`#ef4435`) specifically because the red did not meet strict mathematical visibility thresholds against our charcoal background.
+**2. Color Contrast**
+- Text must be easy to read against the background
+- We aim for a contrast ratio of at least 4.5:1
+- This helps users with color vision differences
+- Example: We use bright cyan (`#00f2ff`) instead of dark red (`#ef4435`)
 
-We believe that building world-class software starts with building software for the whole world. If you encounter any barriers on our platform, please open an issue in the MARSLib repository immediately so our AI agents can deploy a surgical patch.
+**3. Structure and Navigation**
+- Clear headings and sections
+- Labels on all form inputs
+- Descriptive links (not "click here")
+
+### Our Testing Tools
+
+- **Pa11y**: Tests websites automatically
+- **AI Agents**: Find and fix accessibility issues
+- **Manual Testing**: Real users test our features
+
+## Cognitive Accessibility
+
+Cognitive accessibility means making content easy to understand for people with different thinking styles. This includes students with ADHD, dyslexia, or processing challenges.
+
+### The Challenge
+
+FRC robotics involves complex topics:
+- Physics and math
+- Programming and logic
+- Engineering concepts
+- Team coordination
+
+For students who learn differently, reading dense technical documentation can feel overwhelming.
+
+### Our Solution
+
+**1. Plain Language**
+- We write at a middle school reading level
+- Short sentences and paragraphs
+- Active voice ("The motor moves the arm" vs "The arm is moved by the motor")
+
+**2. Visual Learning**
+- Diagrams and flowcharts
+- Code examples with explanations
+- Step-by-step guides
+- Color-coded sections
+
+**3. Bite-Sized Content**
+- Break complex topics into small chunks
+- Use lists and bullet points
+- Provide summaries of key points
+
+**4. Multiple Learning Styles**
+- Text explanations
+- Visual diagrams
+- Code examples
+- Interactive simulations
+
+## How AI Helps
+
+Artificial Intelligence makes learning more accessible. Here's how:
+
+### Personalized Learning
+AI can explain the same concept in different ways. If one explanation doesn't make sense, AI can try another approach.
+
+### Interactive Support
+- Ask questions anytime
+- Get instant feedback
+- Practice at your own pace
+- No judgment or embarrassment
+
+### Code Assistance
+- Explain what code does
+- Suggest improvements
+- Find and fix errors
+- Generate starting templates
+
+**In Other Words**: AI is like having a patient tutor who never gets tired of explaining things. You can ask the same question 100 times, and AI will help you understand.
+
+## Our Design Choices
+
+Our visual design isn't just about looking cool—it's about being accessible to everyone.
+
+### Dark Mode
+- Easier on the eyes for long coding sessions
+- Helps users with light sensitivity
+- Reduces eye strain during competitions
+
+### High Contrast Colors
+- We tested our colors for visibility
+- Bright cyan links instead of dark red
+- Text stands out clearly against backgrounds
+- Works for users with color vision differences
+
+### Clear Typography
+- Readable font sizes
+- Good spacing between lines
+- Clear headings and sections
+
+## Commitment to Improvement
+
+We're always working to make MARSLib more accessible. If you find something that doesn't work for you:
+
+1. **Tell us about it**: Open an issue on GitHub
+2. **Be specific**: What didn't work? What would help?
+3. **We'll fix it**: Our AI agents can often deploy fixes quickly
+
+### Our Promise
+
+We believe that building great software means building software for everyone. Accessibility isn't a feature we add at the end—it's how we build from the start.
+
+**If you face barriers using MARSLib, that's a bug we need to fix.**
+
+## Resources
+
+- **WCAG Guidelines**: Learn about web accessibility standards
+- **Testing Tools**: Try our accessibility checker
+- **Community**: Join our accessibility discussions
+
+---
+
+*Have questions or suggestions about accessibility? Please open an issue or join our GitHub Discussions. We want to hear from you!*

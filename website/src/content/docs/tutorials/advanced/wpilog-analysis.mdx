@@ -1,0 +1,399 @@
+---
+sidebar:
+  order: 3
+id: wpilog-analysis
+title: "WPILog Analysis Guide"
+template: doc
+description: "Master AdvantageKit WPILog analysis for robot performance debugging. Learn to parse logs, identify bottlenecks, and optimize robot performance."
+---
+
+# WPILog Analysis Guide
+
+AdvantageKit WPILog files contain comprehensive robot telemetry data. This guide shows you how to analyze these logs to identify performance issues, debug problems, and optimize your robot code.
+
+## Understanding WPILog Files
+
+### What Are WPILogs?
+**WPILogs** are binary files created by AdvantageKit that record:
+- **All sensor data** (gyro, encoders, vision)
+- **Subsystem states** (mechanisms, swerve drive)
+- **Performance metrics** (loop times, CPU usage)
+- **Control signals** (motor outputs, command states)
+
+### Log File Structure
+```
+.wpilog file structure:
+├── Header (metadata)
+├── Data entries
+│   ├── Timestamp
+│   ├── Key (data name)
+│   ├── Value (number, string, boolean, array)
+│   └── Data type
+└── Footer (checksum)
+```
+
+## Getting Started
+
+### Recording WPILogs
+
+**Automatic Recording:**
+```java
+// AdvantageKit automatically logs all @Log annotations
+@Override
+public void periodic() {
+  Logger.recordOutput("SwerveDrive/X", chassisSpeeds.vxMetersPerSecond);
+  Logger.recordOutput("SwerveDrive/Y", chassisSpeeds.vyMetersPerSecond);
+  // All logged automatically!
+}
+```
+
+**Accessing Logs:**
+1. **From Robot**: Connect via USB, copy `/home/lvuser/logs/*.wpilog`
+2. **From AdvantageScope**: File → Export Log → Save as .wpilog
+3. **From Simulation**: Logs saved in `logs/` directory
+
+### Quick Analysis Workflow
+```typescript
+import { parseWPILog, calculatePerformanceMetrics, analyzeBottlenecks } from '@components/performance/LogParser';
+
+// 1. Parse log file
+const log = await parseWPILog(file);
+
+// 2. Calculate performance metrics
+const metrics = calculatePerformanceMetrics(log);
+console.log(`Average loop time: ${metrics.loopTime.averageMs.toFixed(3)}ms`);
+
+// 3. Analyze bottlenecks
+const bottlenecks = analyzeBottlenecks(log);
+bottlenecks.forEach(b => {
+  console.log(`${b.category}: ${b.avgTimeMs.toFixed(3)}ms (${b.severity} severity)`);
+});
+```
+
+## Performance Analysis
+
+### Loop Time Analysis
+
+**Extract Loop Times:**
+```typescript
+import { filterByKey, extractTimeSeries } from '@components/performance/LogParser';
+
+// Get all loop time entries
+const loopEntries = filterByKey(log, /LoopTime|Perf/);
+
+// Extract time series
+const timeSeries = extractTimeSeries(log, 'Perf/LoopTimeMs');
+
+// Calculate statistics
+const times = timeSeries.map(d => d.value);
+const avg = times.reduce((a, b) => a + b, 0) / times.length;
+const max = Math.max(...times);
+const min = Math.min(...times);
+
+console.log(`Loop Time Statistics:`);
+console.log(`  Average: ${avg.toFixed(3)}ms`);
+console.log(`  Max: ${max.toFixed(3)}ms`);
+console.log(`  Min: ${min.toFixed(3)}ms`);
+```
+
+**Target Loop Times:**
+| Frequency | Max Loop Time | Use Case |
+|-----------|---------------|----------|
+| 50Hz | 20ms | Main robot loop |
+| 250Hz | 4ms | Odometry updates |
+| 100Hz | 10ms | Vision processing |
+| 30Hz | 33ms | Camera frames |
+
+### CPU Usage Analysis
+
+**Monitor CPU Performance:**
+```typescript
+const cpuData = extractTimeSeries(log, 'Perf/CpuPercent');
+
+// Calculate average CPU usage
+const avgCpu = cpuData.reduce((sum, d) => sum + d.value, 0) / cpuData.length;
+
+if (avgCpu > 80) {
+  console.warn('High CPU usage detected!');
+  console.log('Consider optimizing expensive operations');
+}
+
+// Find CPU spikes
+const spikes = cpuData.filter(d => d.value > 90);
+console.log(`CPU spikes detected: ${spikes.length} times`);
+```
+
+**CPU Optimization Targets:**
+- **Normal Operation**: < 50% CPU usage
+- **Heavy Load**: < 80% CPU usage
+- **Critical Spikes**: < 95% CPU usage
+
+### Memory Analysis
+
+**Track Memory Usage:**
+```typescript
+const memoryData = extractTimeSeries(log, 'Perf/MemoryMB');
+
+// Check for memory leaks
+const firstMemory = memoryData[0].value;
+const lastMemory = memoryData[memoryData.length - 1].value;
+const memoryGrowth = lastMemory - firstMemory;
+
+console.log(`Memory growth: ${memoryGrowth.toFixed(1)}MB`);
+
+if (memoryGrowth > 10) {
+  console.warn('Potential memory leak detected!');
+  console.log('Check for allocations in periodic() methods');
+}
+```
+
+**Memory Targets:**
+- **Total Memory**: < 200MB for robot code
+- **Growth Rate**: < 1MB per minute
+- **Per-Iteration**: < 100 bytes per periodic() call
+
+## Bottleneck Identification
+
+### Finding Performance Issues
+
+**Analyzing Subsystem Performance:**
+```typescript
+import { analyzeBottlenecks } from '@components/performance/LogParser';
+
+const bottlenecks = analyzeBottlenecks(log);
+
+bottlenecks.forEach(b => {
+  if (b.severity === 'high') {
+    console.error(`🔴 ${b.category}: ${b.avgTimeMs.toFixed(3)}ms average`);
+    console.log(`   Metric: ${b.metric}`);
+    console.log(`   Max: ${b.maxTimeMs.toFixed(3)}ms`);
+    console.log(`   Percent of total: ${b.percentOfTotal.toFixed(1)}%`);
+  }
+});
+```
+
+**Common Bottlenecks:**
+
+1. **Excessive Logging**
+   - **Symptom**: High loop time, many "Logger" entries
+   - **Solution**: Reduce logging frequency, log only changed values
+
+2. **Expensive Calculations**
+   - **Symptom**: Spikes in loop time for specific subsystem
+   - **Solution**: Move calculations to background thread
+
+3. **Memory Allocations**
+   - **Symptom**: Memory growth, high GC overhead
+   - **Solution**: Pre-allocate objects, reuse instances
+
+### Real-World Example
+
+**Analyzing Swerve Performance:**
+```typescript
+// Extract swerve-specific data
+const swerveLoopTimes = extractTimeSeries(log, 'Swerve/LoopTimeMs');
+const swerveKinematics = extractTimeSeries(log, 'Swerve/KinematicsMs');
+
+// Analyze kinematics performance
+const kinematicsStats = calculateStats(swerveKinematics.map(d => d.value));
+console.log('Swerve Kinematics Performance:');
+console.log(`  Average: ${kinematicsStats.average.toFixed(3)}ms`);
+console.log(`  Max: ${kinematicsStats.max.toFixed(3)}ms`);
+
+// Check for degradation over time
+const firstHalf = swerveLoopTimes.slice(0, Math.floor(swerveLoopTimes.length / 2));
+const secondHalf = swerveLoopTimes.slice(Math.floor(swerveLoopTimes.length / 2));
+
+const avgFirst = firstHalf.reduce((sum, d) => sum + d.value, 0) / firstHalf.length;
+const avgSecond = secondHalf.reduce((sum, d) => sum + d.value, 0) / secondHalf.length;
+
+if (avgSecond > avgFirst * 1.1) {
+  console.warn('Performance degradation detected in second half!');
+}
+```
+
+## Advanced Analysis
+
+### Time Range Analysis
+
+**Analyze Specific Time Period:**
+```typescript
+import { getEntriesInTimeRange } from '@components/performance/LogParser';
+
+// Analyze autonomous period (first 15 seconds)
+const autoStart = log.startTime;
+const autoEnd = autoStart + 15_000_000; // 15 seconds in microseconds
+
+const autoEntries = getEntriesInTimeRange(log, autoStart, autoEnd);
+console.log(`Autonomous period entries: ${autoEntries.length}`);
+
+// Calculate autonomous-specific metrics
+const autoLoopTimes = autoEntries.filter(e => e.key.includes('LoopTime'));
+const avgAutoLoop = autoLoopTimes.reduce((sum, e) => sum + (e.value as number), 0) / autoLoopTimes.length;
+console.log(`Average autonomous loop time: ${avgAutoLoop.toFixed(3)}ms`);
+```
+
+### Pattern Detection
+
+**Find Periodic Issues:**
+```typescript
+import { detectAnomalies } from '@components/performance/LogParser';
+
+const loopTimeSeries = extractTimeSeries(log, 'Perf/LoopTimeMs');
+
+// Detect anomalies (>3 standard deviations)
+const anomalies = detectAnomalies(loopTimeSeries, 3);
+
+console.log(`Detected ${anomalities.length} anomalies:`);
+anomalies.forEach(a => {
+  console.log(`  ${a.severity.toUpperCase()}: ${a.value.toFixed(3)}ms at ${a.time}`);
+});
+```
+
+### Comparative Analysis
+
+**Compare Multiple Logs:**
+```typescript
+async function compareLogs(log1: File, log2: File) {
+  const parsed1 = await parseWPILog(log1);
+  const parsed2 = await parseWPILog(log2);
+
+  const metrics1 = calculatePerformanceMetrics(parsed1);
+  const metrics2 = calculatePerformanceMetrics(parsed2);
+
+  console.log('Log Comparison:');
+  console.log(`  Log 1 Loop Time: ${metrics1.loopTime.averageMs.toFixed(3)}ms`);
+  console.log(`  Log 2 Loop Time: ${metrics2.loopTime.averageMs.toFixed(3)}ms`);
+
+  const improvement = ((metrics1.loopTime.averageMs - metrics2.loopTime.averageMs) / metrics1.loopTime.averageMs) * 100;
+  console.log(`  Improvement: ${improvement > 0 ? '+' : ''}${improvement.toFixed(1)}%`);
+}
+```
+
+## Troubleshooting Common Issues
+
+### Issue: High Loop Time Spikes
+
+**Symptoms:** Intermittent high loop times in specific subsystems
+
+**Diagnosis:**
+```typescript
+// Find spike patterns
+const spikes = loopTimeSeries.filter(d => d.value > 10_000); // >10ms
+console.log(`Found ${spikes.length} loop time spikes`);
+
+// Check timing correlation
+spikes.forEach(spike => {
+  const relatedEntries = log.entries.filter(e => 
+    Math.abs(e.timestamp - spike.time) < 1000 // Within 1ms
+  );
+  console.log('Spike correlated with:', relatedEntries.map(e => e.key));
+});
+```
+
+**Solutions:**
+- Move expensive operations out of periodic()
+- Use object pooling to reduce allocations
+- Implement caching for repeated calculations
+
+### Issue: Memory Growth Over Time
+
+**Symptoms:** Memory usage increases steadily during match
+
+**Diagnosis:**
+```typescript
+// Analyze memory trend
+const memoryData = extractTimeSeries(log, 'Perf/MemoryMB');
+
+// Calculate growth rate
+const firstDataPoint = memoryData[0];
+const lastDataPoint = memoryData[memoryData.length - 1];
+const duration = (lastDataPoint.time - firstDataPoint.time) / 1000 / 60; // minutes
+
+const growthRate = (lastDataPoint.value - firstDataPoint.value) / duration;
+console.log(`Memory growth rate: ${growthRate.toFixed(2)} MB/min`);
+
+if (growthRate > 5) {
+  console.warn('Excessive memory growth detected!');
+}
+```
+
+**Solutions:**
+- Eliminate object allocations in periodic()
+- Clear unused collections
+- Use primitive types instead of boxed types
+
+### Issue: CPU Usage Too High
+
+**Symptoms:** CPU usage consistently > 80%
+
+**Diagnosis:**
+```typescript
+// Analyze CPU usage by subsystem
+const subsystems = ['Swerve', 'Vision', 'Mechanisms', 'State'];
+
+subsystems.forEach(subsystem => {
+  const cpuEntries = log.entries.filter(e => 
+    e.key.startsWith(subsystem) && e.key.includes('Cpu')
+  );
+  
+  if (cpuEntries.length > 0) {
+    const avgCpu = cpuEntries.reduce((sum, e) => sum + (e.value as number), 0) / cpuEntries.length;
+    console.log(`${subsystem} CPU: ${avgCpu.toFixed(1)}%`);
+  }
+});
+```
+
+**Solutions:**
+- Reduce computation frequency
+- Optimize algorithms
+- Use background threads for heavy processing
+
+## Integration with Development Workflow
+
+### Automated Analysis
+```typescript
+// scripts/analyze-log.js
+import { parseWPILog, generateSummaryReport } from '@components/performance/LogParser';
+
+async function analyzeLogFile(filePath: string) {
+  const file = await fetch(filePath).then(r => r.blob()).then(blob => new File([blob], filePath));
+  const log = await parseWPILog(file);
+  const report = generateSummaryReport(log);
+  console.log(report);
+  
+  // Fail CI if performance issues detected
+  const metrics = calculatePerformanceMetrics(log);
+  if (metrics.loopTime.averageMs > 10) {
+    process.exit(1); // Fail build
+  }
+}
+
+analyzeLogFile(process.argv[2]);
+```
+
+### CI/CD Integration
+```yaml
+# .github/workflows/performance.yml
+- name: Analyze Performance Logs
+  run: |
+    node scripts/analyze-log.js logs/latest.wpilog
+    
+- name: Upload Performance Report
+  if: always()
+  uses: actions/upload-artifact@v4
+  with:
+    name: Performance-Report
+    path: performance-report.md
+```
+
+---
+
+## 📖 Further Reading
+
+- [Performance Tuning Guide](/tutorials/advanced/performance-tuning) - Optimization techniques
+- [AdvantageScope Documentation](https://scopes.rocketjourney.com/) - Visualization tool
+- [AdvantageKit Documentation](https://docs.advantagekit.org/) - Logging framework
+- [Testing Guide](/contributing/testing-guide) - Digital Twin testing approach
+
+**Ready to analyze?** Record a WPILog and start optimizing your robot's performance!

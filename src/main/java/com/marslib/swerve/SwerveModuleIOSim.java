@@ -28,6 +28,10 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
   private double driveAppliedVolts = 0.0;
   private double turnAppliedVolts = 0.0;
 
+  private final double[] drivePositionsRadBuffer = new double[1];
+  private final double[] turnPositionsRadBuffer = new double[1];
+  private final double[] odometryTimestampsBuffer = new double[1];
+
   @SuppressWarnings("PMD.UnusedFormalParameter")
   public SwerveModuleIOSim(int moduleIndex) {}
 
@@ -45,8 +49,11 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
       inputs.driveVelocityRadPerSec = simModule.getDriveWheelFinalSpeed().in(RadiansPerSecond);
       inputs.turnVelocityRadPerSec = simModule.getSteerAbsoluteEncoderSpeed().in(RadiansPerSecond);
 
-      inputs.drivePositionsRad = new double[] {simModule.getDriveWheelFinalPosition().in(Radians)};
-      inputs.turnPositionsRad = new double[] {simModule.getSteerAbsoluteFacing().getRadians()};
+      drivePositionsRadBuffer[0] = simModule.getDriveWheelFinalPosition().in(Radians);
+      inputs.drivePositionsRad = drivePositionsRadBuffer;
+
+      turnPositionsRadBuffer[0] = simModule.getSteerAbsoluteFacing().getRadians();
+      inputs.turnPositionsRad = turnPositionsRadBuffer;
 
       inputs.driveCurrentAmps =
           simModule.getDriveMotorSupplyCurrent().in(edu.wpi.first.units.Units.Amps);
@@ -55,15 +62,22 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
     } else {
       inputs.driveVelocityRadPerSec = 0.0;
       inputs.turnVelocityRadPerSec = 0.0;
-      inputs.drivePositionsRad = new double[] {0.0};
-      inputs.turnPositionsRad = new double[] {0.0};
+
+      drivePositionsRadBuffer[0] = 0.0;
+      inputs.drivePositionsRad = drivePositionsRadBuffer;
+
+      turnPositionsRadBuffer[0] = 0.0;
+      inputs.turnPositionsRad = turnPositionsRadBuffer;
+
       inputs.driveCurrentAmps = 0.0;
       inputs.turnCurrentAmps = 0.0;
     }
 
     inputs.driveAppliedVolts = driveAppliedVolts;
     inputs.turnAppliedVolts = turnAppliedVolts;
-    inputs.odometryTimestamps = new double[] {Timer.getFPGATimestamp()};
+
+    odometryTimestampsBuffer[0] = Timer.getFPGATimestamp();
+    inputs.odometryTimestamps = odometryTimestampsBuffer;
   }
 
   @Override

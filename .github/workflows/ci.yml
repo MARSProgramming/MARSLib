@@ -57,6 +57,21 @@ jobs:
         name: MARSLib-Build
         path: build/libs/*.jar
 
+    - name: Run Performance Benchmarks
+      run: ./gradlew test --tests "*performance*" -Pskip-inspector-wrapper -Dorg.gradle.java.home=$JAVA_HOME
+
+    - name: Upload Performance Results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: MARSLib-Performance-Results
+        path: build/test-results/test/
+
+    - name: Compare Performance Baselines
+      if: github.event_name == 'pull_request'
+      run: |
+        python3 scripts/compare_performance.py --baseline config/performance/baselines.json --results build/reports/performance/results.json --verbose || true
+
     - name: Post PR Coverage Annotations
       uses: madrapps/jacoco-report@v1.7.2
       if: github.event_name == 'pull_request'

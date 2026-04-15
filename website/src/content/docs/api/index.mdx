@@ -1,0 +1,397 @@
+---
+sidebar:
+  order: 20
+id: api-reference
+title: "API Reference"
+template: doc
+description: "Complete API reference for MARSLib packages and classes. Navigate the framework's architecture with detailed documentation."
+---
+
+# API Reference
+
+Welcome to the MARSLib API Reference. This comprehensive guide covers all packages, classes, and methods in the MARSLib framework.
+
+## Package Overview
+
+MARSLib is organized into logical packages that separate concerns and maintain clean architecture.
+
+<Mermaid code={`
+%%{init: {'themeVariables': { 'edgeLabelBackground':'#111111', 'tertiaryTextColor':'#ffffff' } } }%%
+flowchart TD
+    A["MARSLib Framework"] --> B["Core Packages"]
+    A --> C["Hardware Abstraction"]
+    A --> D["Simulation"]
+    A --> E["Utilities"]
+    
+    B --> B1["swerve<br/>Swerve drive & odometry"]
+    B --> B2["vision<br/>AprilTag & SLAM"]
+    B --> B3["mechanisms<br/>Generic mechanisms"]
+    B --> B4["auto<br/>Path planning"]
+    
+    C --> C1["IO Layer<br/>Hardware interfaces"]
+    C --> C2["Power<br/>Load management"]
+    C --> C3["Faults<br/>Error handling"]
+    
+    D --> D1["simulation<br/>Physics engine"]
+    D --> D2["Network<br/>Communication"]
+    
+    E --> E1["util<br/>State machines & math"]
+    E --> E2["diagnostics<br/>System checks"]
+    
+    style A fill:#B32416,stroke:#d42e1e,stroke-width:3px,color:#fff
+    style B fill:#1a1a1a,stroke:#2a2a2a,stroke-width:2px,color:#e8e8e8
+    style C fill:#1a1a1a,stroke:#2a2a2a,stroke-width:2px,color:#e8e8e8
+    style D fill:#1a1a1a,stroke:#2a2a2a,stroke-width:2px,color:#e8e8e8
+    style E fill:#1a1a1a,stroke:#2a2a2a,stroke-width:2px,color:#e8e8e8
+    style B1 fill:#0a0a0a,stroke:#B32416,stroke-width:1px,color:#29b6f6
+    style B2 fill:#0a0a0a,stroke:#B32416,stroke-width:1px,color:#29b6f6
+    style B3 fill:#0a0a0a,stroke:#B32416,stroke-width:1px,color:#29b6f6
+    style B4 fill:#0a0a0a,stroke:#B32416,stroke-width:1px,color:#29b6f6
+    style C1 fill:#0a0a0a,stroke:#2a2a2a,stroke-width:1px,color:#9c7bcc
+    style C2 fill:#0a0a0a,stroke:#2a2a2a,stroke-width:1px,color:#9c7bcc
+    style C3 fill:#0a0a0a,stroke:#2a2a2a,stroke-width:1px,color:#9c7bcc
+    style D1 fill:#0a0a0a,stroke:#2a2a2a,stroke-width:1px,color:#d4a574
+    style D2 fill:#0a0a0a,stroke:#2a2a2a,stroke-width:1px,color:#d4a574
+    style E1 fill:#0a0a0a,stroke:#2a2a2a,stroke-width:1px,color:#6ba3d6
+    style E2 fill:#0a0a0a,stroke:#2a2a2a,stroke-width:1px,color:#6ba3d6
+`} />
+
+## Core Packages
+
+### [`com.marslib.swerve`](pathname:///javadoc/com/marslib/swerve/package-summary.html)
+**Swerve Drive & Odometry**
+
+High-performance swerve drive implementation with 250Hz odometry updates, traction control, and path following integration.
+
+**Key Classes:**
+- [`SwerveDrive`](pathname:///javadoc/com/marslib/swerve/SwerveDrive.html) - Main swerve drive subsystem
+- [`SwerveModule`](pathname:///javadoc/com/marslib/swerve/SwerveModule.html) - Individual swerve module
+- [`PhoenixOdometryThread`](pathname:///javadoc/com/marslib/swerve/PhoenixOdometryThread.html) - High-frequency odometry thread
+- [`SwerveConfig`](pathname:///javadoc/com/marslib/swerve/SwerveConfig.html) - Configuration parameters
+
+**Common Usage:**
+```java
+// Create swerve drive
+SwerveDrive drive = new SwerveDrive(new SwerveModuleIOSim(), config);
+
+// Drive with velocities
+var speeds = new ChassisSpeeds(vx, vy, omega);
+drive.driveRobotRelative(speeds);
+
+// Get odometry pose
+Pose2d pose = drive.getPose();
+```
+
+### [`com.marslib.vision`](pathname:///javadoc/com/marslib/vision/package-summary.html)
+**Vision & Localization**
+
+AprilTag detection and MegaTag 2.0 SLAM fusion for accurate robot localization.
+
+**Key Classes:**
+- [`MARSVision`](pathname:///javadoc/com/marslib/vision/MARSVision.html) - Main vision system
+- [`VisionIO`](pathname:///javadoc/com/marslib/vision/VisionIO.html) - Vision hardware interface
+- [`VisionConfig`](pathname:///javadoc/com/marslib/vision/VisionConfig.html) - Vision configuration
+- [`AprilTagVisionIO`](pathname:///javadoc/com/marslib/vision/AprilTagVisionIO.html) - AprilTag camera interface
+
+**Common Usage:**
+```java
+// Create vision system
+MARSVision vision = new MARSVision(new AprilTagVisionIOReal(camera), config);
+
+// Get fused pose estimate
+Optional<Pose2d> pose = vision.getPoseEstimate();
+
+// Add vision measurement to odometry
+drive.addVisionMeasurement(pose.get(), timestamp);
+```
+
+### [`com.marslib.mechanisms`](pathname:///javadoc/com/marslib/mechanisms/package-summary.html)
+**Generic Mechanisms**
+
+Reusable abstractions for common robot mechanisms.
+
+**Key Classes:**
+- [`RotaryMechanismIO`](pathname:///javadoc/com/marslib/mechanisms/RotaryMechanismIO.html) - Rotary mechanism interface
+- [`LinearMechanismIO`](pathname:///javadoc/com/marslib/mechanisms/LinearMechanismIO.html) - Linear mechanism interface
+- [`FlywheelIO`](pathname:///javadoc/com/marslib/mechanisms/FlywheelIO.html) - Flywheel interface
+
+**Common Usage:**
+```java
+// Create rotary mechanism (shooter, arm)
+RotaryMechanismIO shooter = new RotaryMechanismIOReal(motor);
+
+// Create linear mechanism (elevator)
+LinearMechanismIO elevator = new LinearMechanismIOReal(motor);
+```
+
+## Hardware Abstraction
+
+### [`com.marslib.power`](pathname:///javadoc/com/marslib/power/package-summary.html)
+**Power Management**
+
+Voltage load-shedding and stator current monitoring to prevent brownouts.
+
+**Key Classes:**
+- [`MARSPowerManager`](pathname:///javadoc/com/marslib/power/MARSPowerManager.html) - Power monitoring and load shedding
+- [`PowerConfig`](pathname:///javadoc/com/marslib/power/PowerConfig.html) - Voltage thresholds
+
+**Common Usage:**
+```java
+// Create power manager
+MARSPowerManager power = new MARSPowerManager(pdh, config);
+
+// Check voltage status
+boolean lowVoltage = power.isLowVoltage();
+boolean critical = power.isCriticalVoltage();
+```
+
+### [`com.marslib.faults`](pathname:///javadoc/com/marslib/faults/package-summary.html)
+**Fault Management**
+
+Thread-safe fault reporting and alert system for robot health monitoring.
+
+**Key Classes:**
+- [`MARSFaultManager`](pathname:///javadoc/com/marslib/faults/MARSFaultManager.html) - Central fault manager
+- [`Alert`](pathname:///javadoc/com/marslib/faults/Alert.html) - Fault alerts
+
+**Common Usage:**
+```java
+// Report fault
+MARSFaultManager.fault("Shooter wheel timeout!");
+MARSFaultManager.warn("Vision high ambiguity");
+
+// Check for faults
+boolean hasFaults = MARSFaultManager.hasAnyFault();
+```
+
+## Simulation
+
+### [`com.marslib.simulation`](pathname:///javadoc/com/marslib/simulation/package-summary.html)
+**Physics Simulation**
+
+High-fidelity physics simulation using Dyn4j for realistic robot behavior.
+
+**Key Classes:**
+- [`MARSPhysicsWorld`](pathname:///javadoc/com/marslib/simulation/MARSPhysicsWorld.html) - Physics world manager
+- [`GamePieceBody`](pathname:///javadoc/com/marslib/simulation/GamePieceBody.html) - Game piece physics
+
+**Common Usage:**
+```java
+// Get physics world instance
+MARSPhysicsWorld world = MARSPhysicsWorld.getInstance();
+
+// Update physics (called in test loop)
+world.update(0.02); // 20ms timestep
+
+// Spawn game pieces
+world.spawnGamePiece(x, y);
+```
+
+## Utilities
+
+### [`com.marslib.util`](pathname:///javadoc/com/marslib/util/package-summary.html)
+**Utilities & Math**
+
+State machines, math utilities, and helper functions.
+
+**Key Classes:**
+- [`MARSStateMachine`](pathname:///javadoc/com/marslib/util/MARSStateMachine.html) - State machine implementation
+- [`EliteShooterMath`](pathname:///javadoc/com/marslib/util/EliteShooterMath.html) - Shooting trajectory calculations
+- [`LoggedTunableNumber`](pathname:///javadoc/com/marslib/util/LoggedTunableNumber.html) - Tunable parameters
+
+**Common Usage:**
+```java
+// Create state machine
+MARSStateMachine<State> sm = new MARSStateMachine<>("Example", State.IDLE);
+sm.addState(State.RUNNING, () -> { /* behavior */ });
+
+// Calculate shot trajectory
+double rpm = EliteShooterMath.calculateRPM(distance, height);
+
+// Create tunable parameter
+LoggedTunableNumber gain = new LoggedTunableNumber("Shooter/kP", 8.0);
+```
+
+### [`com.marslib.auto`](pathname:///javadoc/com/marslib/auto/package-summary.html)
+**Autonomous**
+
+PathPlanner integration and autonomous command building.
+
+**Key Classes:**
+- [`MARSAutoBuilder`](pathname:///javadoc/com/marslib/auto/MARSAutoBuilder.html) - Auto command builder
+- [`MARSAutoAlignment`](pathname:///javadoc/com/marslib/auto/MARSAutoAlignment.html) - Auto alignment commands
+
+**Common Usage:**
+```java
+// Build auto routine
+Command auto = MARSAutoBuilder.buildAuto("TestPath");
+
+// Create alignment command
+Command align = MARSAutoAlignment.alignToTag(vision, drive);
+```
+
+## Complete Package List
+
+| Package | Description | JavaDoc |
+|---------|-------------|---------|
+| `com.marslib.swerve` | Swerve drive kinematics and control | [View](pathname:///javadoc/com/marslib/swerve/package-summary.html) |
+| `com.marslib.vision` | Vision processing and localization | [View](pathname:///javadoc/com/marslib/vision/package-summary.html) |
+| `com.marslib.mechanisms` | Generic mechanism abstractions | [View](pathname:///javadoc/com/marslib/mechanisms/package-summary.html) |
+| `com.marslib.power` | Power monitoring and load shedding | [View](pathname:///javadoc/com/marslib/power/package-summary.html) |
+| `com.marslib.faults` | Fault reporting and management | [View](pathname:///javadoc/com/marslib/faults/package-summary.html) |
+| `com.marslib.simulation` | Physics simulation engine | [View](pathname:///javadoc/com/marslib/simulation/package-summary.html) |
+| `com.marslib.util` | Utilities and math functions | [View](pathname:///javadoc/com/marslib/util/package-summary.html) |
+| `com.marslib.auto` | Autonomous path planning | [View](pathname:///javadoc/com/marslib/auto/package-summary.html) |
+| `com.marslib.diagnostics` | System diagnostics and checks | [View](pathname:///javadoc/com/marslib/diagnostics/package-summary.html) |
+| `com.marslib.network` | Network communication | [View](pathname:///javadoc/com/marslib/network/package-summary.html) |
+| `com.marslib.testing` | Testing utilities and harnesses | [View](pathname:///javadoc/com/marslib/testing/package-summary.html) |
+
+## Architecture Patterns
+
+### IO Abstraction Layer
+All hardware access goes through interfaces:
+
+<Mermaid code={`
+flowchart TD
+    A["Subsystem"] --> B["IO Interface"]
+    B --> C["IOReal (Hardware)"]
+    B --> D["IOSim (Simulation)"]
+    C --> E["TalonFX, Pigeon2, etc."]
+    D --> F["Dyn4j Physics"]
+    
+    style A fill:#1a1a1a,stroke:#B32416,stroke-width:2px,color:#fff
+    style B fill:#B32416,stroke:#d42e1e,stroke-width:2px,color:#fff
+    style C fill:#2a2a2a,stroke:#1a1a1a,stroke-width:1px,color:#29b6f6
+    style D fill:#2a2a2a,stroke:#1a1a1a,stroke-width:1px,color:#9c7bcc
+    style E fill:#0a0a0a,stroke:#2a2a2a,stroke-width:1px,color:#666
+    style F fill:#0a0a0a,stroke:#2a2a2a,stroke-width:1px,color:#666
+`} />
+
+### Usage Pattern
+```java
+// Define interface
+public interface MechanismIO {
+    double getPosition();
+    void setVoltage(double volts);
+}
+
+// Hardware implementation
+public class MechanismIOReal implements MechanismIO {
+    private final TalonFX motor;
+    
+    public double getPosition() {
+        return motor.getPosition().getValueAsDouble();
+    }
+    
+    public void setVoltage(double volts) {
+        motor.setVoltage(volts);
+    }
+}
+
+// Simulated implementation
+public class MechanismIOSim implements MechanismIO {
+    private double position = 0.0;
+    
+    public double getPosition() {
+        return position;
+    }
+    
+    public void setVoltage(double volts) {
+        // Physics simulation
+        position += volts * 0.02; // Simplified
+    }
+}
+
+// Subsystem works with any implementation
+public class MechanismSubsystem extends Subsystem {
+    private final MechanismIO io;
+    
+    public MechanismSubsystem(MechanismIO io) {
+        this.io = io;
+    }
+    
+    @Override
+    public void periodic() {
+        // Works the same on robot and in simulation!
+        double pos = io.getPosition();
+    }
+}
+```
+
+## Package Documentation
+
+### Detailed Package Guides
+
+- **[Swerve Package Guide](./packages/swerve)** - Complete swerve drive documentation
+- **[Vision Package Guide](./packages/vision)** - Vision systems and localization
+- **[Mechanisms Package Guide](./packages/mechanisms)** - Creating custom mechanisms
+
+## Quick Reference
+
+### Common Tasks
+
+**Create a swerve drive command:**
+```java
+public class DriveCommand extends Command {
+    private final SwerveDrive drive;
+    private final Supplier<Double> vx, vy, omega;
+    
+    public DriveCommand(SwerveDrive drive, 
+                       Supplier<Double> vx, 
+                       Supplier<Double> vy, 
+                       Supplier<Double> omega) {
+        this.drive = drive;
+        this.vx = vx;
+        this.vy = vy;
+        this.omega = omega;
+        addRequirements(drive);
+    }
+    
+    @Override
+    public void execute() {
+        var speeds = new ChassisSpeeds(vx.get(), vy.get(), omega.get());
+        drive.driveRobotRelative(speeds);
+    }
+}
+```
+
+**Use vision for alignment:**
+```java
+public class AlignCommand extends Command {
+    private final MARSVision vision;
+    private final SwerveDrive drive;
+    
+    @Override
+    public void execute() {
+        var pose = vision.getPoseEstimate();
+        if (pose.isPresent()) {
+            // Calculate alignment
+            // Drive to target
+        }
+    }
+}
+```
+
+**Create a state machine:**
+```java
+public enum State { IDLE, INTAKING, SHOOTING }
+
+MARSStateMachine<State> sm = new MARSStateMachine<>("Robot", State.IDLE);
+sm.addState(State.IDLE, () -> { /* idle behavior */ });
+sm.addState(State.INTAKING, () -> { /* intaking behavior */ });
+```
+
+---
+
+## 📖 Further Reading
+
+- [Core Architecture](/tutorials/framework/architecture) - Framework design patterns
+- [IO Layer Documentation](/tutorials/framework/io-layer) - Hardware abstraction details
+- [State Machine Guide](/tutorials/framework/state-machines) - State machine usage
+- [Vision Systems](/tutorials/framework/vision) - Vision implementation details
+
+## Need Help?
+
+- 📖 [Full JavaDoc](pathname:///javadoc/index.html) - Complete API documentation
+- 💬 [GitHub Discussions](https://github.com/MARSProgramming/MARSLib/discussions)
+- 🐛 [Report Issues](https://github.com/MARSProgramming/MARSLib/issues)

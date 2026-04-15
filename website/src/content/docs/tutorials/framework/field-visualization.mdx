@@ -1,0 +1,273 @@
+---
+sidebar:
+  order: 16
+id: field-visualization
+title: "3D Field Visualization"
+template: doc
+description: "Interactive 3D field visualization for FRC games. Explore field layouts, AprilTag positions, and robot placement with MARSLib's Three.js-based visualizer."
+---
+
+# 3D Field Visualization
+
+MARSLib's interactive 3D field visualizer helps you understand field layouts, AprilTag positions, and robot placement before you ever touch a real robot.
+
+<FieldVisualizer />
+
+## Features
+
+### 🏟️ Official Field Dimensions
+- **2024 Crescendo**: 54' × 27' field with source and amp zones
+- **2023 Charged Up**: Previous year's field layout
+- **2022 Rapid React**: Historical field layouts
+
+### 🤖 Robot Visualization
+- Accurate swerve drive robot model
+- Real-time position updates
+- Heading and orientation display
+- Module position indicators
+
+### 📍 AprilTag Locations
+- Official tag positions for current game
+- Interactive 3D tag visualization
+- Pose reference for vision testing
+
+### 🎮 Interactive Controls
+- **Mouse**: Rotate field view
+- **Scroll**: Zoom in/out
+- **Right-click**: Pan view
+- **Responsive**: Works on all screen sizes
+
+## Usage Examples
+
+### Basic Field Visualization
+```jsx
+import FieldVisualizer from '@components/FieldVisualizer';
+
+<FieldVisualizer 
+  field="CRESCENDO_2024"
+  showRobot={true}
+  showAprilTags={true}
+/>
+```
+
+### With Custom Robot Position
+```jsx
+<FieldVisualizer 
+  field="CRESCENDO_2024"
+  robotPosition={{
+    x: 8.0,    // 8 meters from red wall
+    y: 4.0,    // 4 meters from side wall
+    heading: Math.PI / 4  // 45 degrees
+  }}
+/>
+```
+
+### Game Pieces Display
+```jsx
+<FieldVisualizer 
+  field="CRESCENDO_2024"
+  gamePieces={20}  // Show 20 game pieces
+  showRobot={false}
+/>
+```
+
+## Field Layout Data
+
+### 2024 Crescendo Field
+
+<Mermaid code={`
+flowchart TD
+    A["Field Length: 16.5m 54'"]
+    B["Field Width: 8.2m 27'"]
+    C["Red Alliance Zone: 3m deep"]
+    D["Blue Alliance Zone: 3m deep"]
+    E["Source Zones: 2m deep"]
+    F["Amp Zones: 2.5m deep"]
+    
+    A --> G["Field Layout"]
+    B --> G
+    C --> G
+    D --> G
+    E --> G
+    F --> G
+    
+    style A fill:#1a1a1a,stroke:#B32416,stroke-width:2px,color:#fff
+    style B fill:#1a1a1a,stroke:#B32416,stroke-width:2px,color:#fff
+    style C fill:#1a1a1a,stroke:#B32416,stroke-width:1px,color:#ff6b6b
+    style D fill:#1a1a1a,stroke:#29b6f6,stroke-width:1px,color:#6bb6ff
+    style E fill:#1a1a1a,stroke:#2a2a2a,stroke-width:1px,color:#e8e8e8
+    style F fill:#1a1a1a,stroke:#2a2a2a,stroke-width:1px,color:#e8e8e8
+    style G fill:#0a0a0a,stroke:#2a2a2a,stroke-width:2px,color:#e8e8e8
+`} />
+
+### AprilTag Positions
+
+**Red Alliance (Tags 1-6):**
+- Tags 1-4: Along red alliance wall
+- Tags 5-6: On source and amp zones
+
+**Blue Alliance (Tags 7-12):**
+- Tags 7-10: Along blue alliance wall
+- Tags 11-12: On source and amp zones
+
+## Integration with Robot Code
+
+### Vision System Testing
+Use field visualizer to verify vision targeting.
+
+```java
+// Test vision alignment to specific tag
+Pose2d targetPose = new Pose2d(15.013, 2.743, new Rotation2d()); // Tag 2
+Command alignCommand = new AlignToTagCommand(vision, drive, targetPose);
+alignCommand.schedule();
+```
+
+### Autonomous Planning
+Plan autonomous paths using field coordinates.
+
+```java
+// Create path to pick up game piece
+List<Pose2d> waypoints = List.of(
+    new Pose2d(1.5, 2.0, Rotation2d.fromDegrees(0)),   // Start
+    new Pose2d(5.0, 2.0, Rotation2d.fromDegrees(45)),  // Pick up piece
+    new Pose2d(8.0, 4.0, Rotation2d.fromDegrees(90)),  // Move to center
+    new Pose2d(12.0, 6.0, Rotation2d.fromDegrees(180)) // Score
+);
+```
+
+## Field Data API
+
+### Access Field Data Programmatically
+```typescript
+import { FIELDS, createFieldLayout, spawnGamePieces } from '@components/field/FieldData';
+
+// Get field dimensions
+const field2024 = FIELDS.CRESCENDO_2024;
+console.log(field2024.dimensions); // { length: 16.541, width: 8.211, ... }
+
+// Create layout with AprilTags
+const layout = createFieldLayout('CRESCENDO_2024');
+console.log(layout.aprilTags); // Array of tag positions
+
+// Spawn game pieces
+const pieces = spawnGamePieces('CRESCENDO_2024', 10);
+console.log(pieces); // Array of game piece positions
+```
+
+### Coordinate System
+- **X-axis**: Length of field (0 to 16.5m)
+- **Y-axis**: Width of field (0 to 8.2m)
+- **Z-axis**: Height (0 = field surface)
+- **Heading**: Radians, 0 = facing +X direction
+
+### Position Validation
+```typescript
+import { isInField } from '@components/field/FieldData';
+
+const isValid = isInField(8.0, 4.0, field2024.dimensions);
+console.log(isValid); // true - center of field is valid
+```
+
+## Performance Considerations
+
+### Optimization Tips
+- **Limit game pieces**: Show 10-20 pieces for best performance
+- **Disable robot**: Set `showRobot={false}` when not needed
+- **Field-only**: Use minimal props for field-only visualization
+
+### Performance Targets
+- **Rendering**: <50ms per frame
+- **Memory usage**: <50MB for full visualization
+- **Load time**: <1 second for initial render
+
+## Common Use Cases
+
+### 🎯 Autonomous Path Planning
+Visualize autonomous routines before deploying.
+
+```java
+// Plan path in simulation
+Command auto = getPathPlannerAuto("ThreePiecePickup");
+auto.schedule();
+
+// Use field visualizer to verify path
+// Check robot position at each waypoint
+```
+
+### 👁️ Vision System Calibration
+Verify AprilTag positions for vision targeting.
+
+```java
+// Test vision to each tag
+for (int tagId = 1; tagId <= 12; tagId++) {
+    Pose2d tagPose = getTagPose(tagId);
+    Command align = new AlignToTagCommand(vision, drive, tagPose);
+    align.schedule();
+    // Verify alignment using field visualizer
+}
+```
+
+### 🤖 Robot Positioning
+Plan starting positions and strategy.
+
+```java
+// Blue alliance starting positions
+Pose2d blue1 = new Pose2d(13.5, 2.0, Rotation2d.fromDegrees(180));
+Pose2d blue2 = new Pose2d(13.5, 4.0, Rotation2d.fromDegrees(180));
+Pose2d blue3 = new Pose2d(13.5, 6.0, Rotation2d.fromDegrees(180));
+```
+
+## Advanced Features
+
+### Custom Field Data
+Create custom field layouts for practice.
+
+```typescript
+const customField = {
+  name: 'Practice Field',
+  dimensions: {
+    length: 16.541,
+    width: 8.211,
+    allianceDepth: 3.0,
+    sourceDepth: 2.0,
+    ampDepth: 2.5,
+  },
+  gamePieces: [],
+};
+```
+
+### Path Visualization
+Overlay autonomous paths on field.
+
+```java
+// Record robot trajectory during auto
+List<Pose2d> trajectory = new ArrayList<>();
+@Override
+public void periodic() {
+    trajectory.add(drive.getPose());
+}
+
+// Visualize trajectory in AdvantageScope
+Logger.recordOutput("Auto/TrajectoryX", trajectory.stream().mapToDouble(p -> p.getX()).toArray());
+Logger.recordOutput("Auto/TrajectoryY", trajectory.stream().mapToDouble(p -> p.getY()).toArray());
+```
+
+### Multiple Robots
+Simulate interaction with other robots.
+
+```java
+// Add defender robot to visualization
+Pose2d defenderPos = new Pose2d(8.0, 3.0, Rotation2d.fromDegrees(90));
+// Plan path around defender
+```
+
+---
+
+## 📖 Further Reading
+
+- [Vision Systems](/tutorials/framework/vision) - AprilTag detection and localization
+- [Autonomous Pathing](/tutorials/framework/pathfinding) - Path planning and execution
+- [Simulation Best Practices](/tutorials/advanced/simulation-best-practices) - Physics simulation techniques
+- [AdvantageScope](https://scopes.rocketjourney.com/) - Telemetry visualization tool
+
+**Ready to visualize?** Use the field visualizer to plan your autonomous routines!

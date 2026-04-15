@@ -1,0 +1,74 @@
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+/* Sizes */
+.tag-cloud-small .tag {
+  padding: 3px 8px;
+  font-size: 11px;
+}
+
+.tag-cloud-medium .tag {
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+.tag-cloud-large .tag {
+  padding: 6px 12px;
+  font-size: 14px;
+}
+
+/* Color variants */
+.tag-green {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4CAF50;
+  border: 1px solid #4CAF50;
+}
+
+.tag-yellow {
+  background: rgba(255, 193, 7, 0.2);
+  color: #FFC107;
+  border: 1px solid #FFC107;
+}
+
+.tag-red {
+  background: rgba(244, 67, 54, 0.2);
+  color: #F44336;
+  border: 1px solid #F44336;
+}
+
+.tag-blue {
+  background: rgba(33, 150, 243, 0.2);
+  color: #2196F3;
+  border: 1px solid #2196F3;
+}
+
+.tag-purple {
+  background: rgba(156, 39, 176, 0.2);
+  color: #9C27B0;
+  border: 1px solid #9C27B0;
+}
+
+.tag-orange {
+  background: rgba(255, 152, 0, 0.2);
+  color: #FF9800;
+  border: 1px solid #FF9800;
+}
+
+/* Hover effect */
+.tag:hover {
+  opacity: 0.8;
+  transform: translateY(-1px);
+}

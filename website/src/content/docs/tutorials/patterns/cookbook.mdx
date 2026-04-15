@@ -1,0 +1,852 @@
+---
+sidebar:
+  order: 1
+id: cookbook
+title: "MARSLib Patterns Cookbook"
+template: doc
+description: "Common FRC programming problems and MARSLib solutions with production-ready code examples."
+---
+
+# MARSLib Patterns Cookbook
+
+A collection of battle-tested solutions to common FRC programming problems. Each pattern includes real code examples, best practices, and implementation notes.
+
+## Table of Contents
+
+- [Drive Patterns](#drive-patterns)
+- [Mechanism Patterns](#mechanism-patterns)
+- [Vision Patterns](#vision-patterns)
+- [Auto Patterns](#auto-patterns)
+- [Testing Patterns](#testing-patterns)
+- [Performance Patterns](#performance-patterns)
+
+---
+
+## Drive Patterns
+
+### Pattern 1: Teleoperated Drive with Deadband
+
+**Problem:** Driver input needs deadband and response curve tuning.
+
+```java
+public class Drive extends Subsystem {
+    private final SwerveDrive swerveDrive;
+    
+    // Pre-allocated objects (zero-allocation)
+    private final SlewRateLimiter xLimiter = new SlewRateLimiter(3);
+    private final SlewRateLimiter yLimiter = new SlewRateLimiter(3);
+    private final SlewRateLimiter rotLimiter = new SlewRateLimiter(3);
+    
+    // Deadband curve
+    private double applyDeadband(double value, double deadband) {
+        if (Math.abs(value) < deadband) {
+            return 0;
+        }
+        // Scale remaining range to 0-1
+        double sign = Math.signum(value);
+        double magnitude = (Math.abs(value) - deadband) / (1 - deadband);
+        return sign * magnitude;
+    }
+    
+    // Response curve for better control
+    private double applyResponseCurve(double value, double exponent) {
+        return Math.signum(value) * Math.pow(Math.abs(value), exponent);
+    }
+    
+    public void driveTeleop(double xInput, double yInput, double rotInput) {
+        // Apply deadband (10%)
+        double x = applyDeadband(xInput, 0.1);
+        double y = applyDeadband(yInput, 0.1);
+        double rot = applyDeadband(rotInput, 0.1);
+        
+        // Apply response curve (square for precision)
+        x = applyResponseCurve(x, 2);
+        y = applyResponseCurve(y, 2);
+        rot = applyResponseCurve(rot, 2);
+        
+        // Apply rate limiting (prevent instant changes)
+        x = xLimiter.calculate(x);
+        y = yLimiter.calculate(y);
+        rot = rotLimiter.calculate(rot);
+        
+        // Convert to field-relative
+        ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+            x * DriveConstants.MAX_SPEED,
+            y * DriveConstants.MAX_SPEED,
+            rot * DriveConstants.MAX_ANGULAR_SPEED,
+            swerveDrive.getGyroHeading()
+        );
+        
+        swerveDrive.runVelocity(speeds);
+    }
+}
+```
+
+### Pattern 2: Velocity Control with Feedforward
+
+**Problem:** Maintain consistent wheel speeds despite load changes.
+
+```java
+public class SwerveDrive extends Subsystem {
+    private final SwerveModule[] modules;
+    private final SimpleMotorFeedforward feedforward;
+    
+    public SwerveDrive() {
+        // Calculate feedforward constants from SysId
+        double ks = 0.1;  // Static gain (volts)
+        double kv = 0.12; // Velocity gain (volts per rad/s)
+        double ka = 0.01; // Acceleration gain (volts per rad/s²)
+        
+        feedforward = new SimpleMotorFeedforward(ks, kv, ka);
+    }
+    
+    public void runModuleVelocity(int moduleIndex, double velocityRadPerSec) {
+        SwerveModule module = modules[moduleIndex];
+        
+        // Calculate feedforward voltage
+        double ffVolts = feedforward.calculate(velocityRadPerSec);
+        
+        // Run with feedforward + feedback
+        module.setVelocity(velocityRadPerSec, ffVolts);
+    }
+}
+
+// Module implementation
+public class SwerveModule {
+    private final MotorIO driveMotor;
+    private final PIDController velocityPID;
+    
+    public void setVelocity(double velocityRadPerSec, double feedforwardVolts) {
+        // PID correction
+        double currentVelocity = inputs.driveVelocityRadPerSec;
+        double pidOutput = velocityPID.calculate(currentVelocity, velocityRadPerSec);
+        
+        // Combine feedforward + feedback
+        double totalVoltage = feedforwardVolts + pidOutput;
+        
+        // Apply voltage
+        driveMotor.setVoltage(totalVoltage);
+    }
+}
+```
+
+### Pattern 3: Path Following with Odometry Reset
+
+**Problem:** Auto paths drift without accurate odometry reset.
+
+```java
+public class Drive extends Subsystem {
+    private final SwerveDrive swerveDrive;
+    private final Vision vision;
+    
+    // Reset odometry to known starting pose
+    public void resetOdometry(Pose2d initialPose) {
+        swerveDrive.setPose(initialPose);
+        Logger.recordOutput("Drive/OdometryReset", true);
+    }
+    
+    // Auto initialization routine
+    public void initAuto() {
+        // 1. Reset gyro to zero
+        swerveDrive.zeroGyro();
+        
+        // 2. Reset odometry to starting position
+        Pose2d startPos = PathPlannerAuto.getStartingPoseFromAutoFile("autoName");
+        resetOdometry(startPos);
+        
+        // 3. Zero all encoders
+        swerveDrive.zeroEncoders();
+        
+        Logger.recordOutput("Drive/AutoInit", true);
+    }
+    
+    // Vision-assisted odometry reset
+    public void visionReset() {
+        // Get vision pose estimate
+        Optional<Pose2d> visionPose = vision.getRobotPose();
+        
+        if (visionPose.isPresent()) {
+            // Calculate measurement uncertainty
+            double visionDistance = vision.getDistanceToTag();
+            double odometryDistance = swerveDrive.getDistanceDriven();
+            
+            // Trust vision if close to tag
+            if (visionDistance < 2.0 && odometryDistance > 1.0) {
+                swerveDrive.addVisionMeasurement(
+                    visionPose.get(),
+                    Timer.getFPGATimestamp()
+                );
+            }
+        }
+    }
+}
+```
+
+---
+
+## Mechanism Patterns
+
+### Pattern 4: Zeroed Mechanism with Homing
+
+**Problem:** Mechanism needs to find zero position automatically.
+
+```java
+public class Elevator extends Subsystem {
+    private final MotorIO motor;
+    private final EncoderIO encoder;
+    
+    private enum HomingState {
+        UNKNOWN,
+        HOMING,
+        HOMED
+    }
+    
+    private HomingState homingState = HomingState.UNKNOWN;
+    private final double HOMING_VELOCITY = 0.5;  // rad/s
+    private final double HOMING_CURRENT_THRESHOLD = 5.0;  // Amps
+    
+    public Elevator(MotorIO motor, EncoderIO encoder) {
+        this.motor = motor;
+        this.encoder = encoder;
+    }
+    
+    @Override
+    public void periodic() {
+        motor.updateInputs(motorInputs);
+        encoder.updateInputs(encoderInputs);
+        
+        switch (homingState) {
+            case UNKNOWN:
+                // Check if we need to home
+                if (!isAtLimit()) {
+                    startHoming();
+                } else {
+                    homingState = HomingState.HOMED;
+                    resetEncoder();
+                }
+                break;
+                
+            case HOMING:
+                // Check if homing complete (current spike or limit switch)
+                if (isHomingComplete()) {
+                    finishHoming();
+                } else {
+                    continueHoming();
+                }
+                break;
+                
+            case HOMED:
+                // Normal operation
+                runMechanism();
+                break;
+        }
+    }
+    
+    private boolean isAtLimit() {
+        return motorInputs.forwardLimitSwitchActive || 
+               motorInputs.reverseLimitSwitchActive;
+    }
+    
+    private void startHoming() {
+        homingState = HomingState.HOMING;
+        motor.setVoltage(-3);  // Move towards limit switch
+        Logger.recordOutput("Elevator/Homing", true);
+    }
+    
+    private void continueHoming() {
+        // Keep moving until we hit the limit
+        motor.setVoltage(-3);
+    }
+    
+    private boolean isHomingComplete() {
+        // Homing complete if current spikes (hitting limit)
+        return motorInputs.statorCurrentAmps > HOMING_CURRENT_THRESHOLD ||
+               isAtLimit();
+    }
+    
+    private void finishHoming() {
+        homingState = HomingState.HOMED;
+        motor.setVoltage(0);
+        resetEncoder();
+        Logger.recordOutput("Elevator/Homed", true);
+    }
+    
+    private void resetEncoder() {
+        encoder.setEncoderPosition(0);
+    }
+    
+    private void runMechanism() {
+        // Normal mechanism control
+        // PID to setpoint, etc.
+    }
+}
+```
+
+### Pattern 5: State Machine Mechanism
+
+**Problem:** Complex mechanism with multiple operating states.
+
+```java
+public class Shooter extends Subsystem {
+    private final MotorIO flywheelMotor;
+    private final MotorIO feederMotor;
+    private final SensorIO beamBreak;
+    
+    public enum ShooterState {
+        IDLE,
+        SPINNING_UP,
+        READY,
+        SHOOTING,
+        UNJAMMING
+    }
+    
+    private ShooterState state = ShooterState.IDLE;
+    private double targetRPM = 0;
+    private final double READY_TOLERANCE = 50;  // RPM
+    private final double UNJAM_CURRENT = 30.0;   // Amps
+    
+    public Shooter(MotorIO flywheelMotor, MotorIO feederMotor, SensorIO beamBreak) {
+        this.flywheelMotor = flywheelMotor;
+        this.feederMotor = feederMotor;
+        this.beamBreak = beamBreak;
+    }
+    
+    @Override
+    public void periodic() {
+        flywheelMotor.updateInputs(flywheelInputs);
+        feederMotor.updateInputs(feederInputs);
+        beamBreak.updateInputs(beamBreakInputs);
+        
+        // State machine
+        switch (state) {
+            case IDLE:
+                // Everything off
+                flywheelMotor.setVoltage(0);
+                feederMotor.setVoltage(0);
+                break;
+                
+            case SPINNING_UP:
+                // Spin flywheel to target
+                flywheelMotor.setVelocity(targetRPM);
+                feederMotor.setVoltage(0);
+                
+                // Check if ready
+                if (isAtTargetSpeed()) {
+                    state = ShooterState.READY;
+                }
+                break;
+                
+            case READY:
+                // Maintain speed, wait for note
+                flywheelMotor.setVelocity(targetRPM);
+                
+                // Start shooting if note detected
+                if (hasNote()) {
+                    state = ShooterState.SHOOTING;
+                }
+                break;
+                
+            case SHOOTING:
+                // Run feeder
+                flywheelMotor.setVelocity(targetRPM);
+                feederMotor.setVoltage(6);
+                
+                // Check if jammed
+                if (isJammed()) {
+                    state = ShooterState.UNJAMMING;
+                }
+                
+                // Check if shot complete
+                if (!hasNote()) {
+                    state = ShooterState.IDLE;
+                }
+                break;
+                
+            case UNJAMMING:
+                // Reverse feeder to clear jam
+                flywheelMotor.setVoltage(0);
+                feederMotor.setVoltage(-6);
+                
+                // Wait 0.5 seconds
+                Timer.delay(0.5);
+                
+                // Return to idle
+                state = ShooterState.IDLE;
+                break;
+        }
+        
+        // Log state
+        Logger.recordOutput("Shooter/State", state.toString());
+    }
+    
+    public void shoot(double rpm) {
+        targetRPM = rpm;
+        state = ShooterState.SPINNING_UP;
+    }
+    
+    public void idle() {
+        state = ShooterState.IDLE;
+    }
+    
+    private boolean isAtTargetSpeed() {
+        return Math.abs(flywheelInputs.velocityRPM - targetRPM) < READY_TOLERANCE;
+    }
+    
+    private boolean hasNote() {
+        return !beamBreakInputs.sensorTriggered;  // Beam break normally closed
+    }
+    
+    private boolean isJammed() {
+        return feederInputs.statorCurrentAmps > UNJAM_CURRENT;
+    }
+}
+```
+
+---
+
+## Vision Patterns
+
+### Pattern 6: Multi-Camera Vision System
+
+**Problem:** Robot has multiple cameras for different purposes.
+
+```java
+public class Vision extends Subsystem {
+    private final VisionIO leftCamera;
+    private final VisionIO rightCamera;
+    private final VisionIO backCamera;
+    
+    private enum ActiveCamera {
+        LEFT,
+        RIGHT,
+        BACK
+    }
+    
+    private ActiveCamera activeCamera = ActiveCamera.LEFT;
+    
+    public Vision(VisionIO leftCamera, VisionIO rightCamera, VisionIO backCamera) {
+        this.leftCamera = leftCamera;
+        this.rightCamera = rightCamera;
+        this.backCamera = backCamera;
+    }
+    
+    @Override
+    public void periodic() {
+        leftCamera.updateInputs(leftInputs);
+        rightCamera.updateInputs(rightInputs);
+        backCamera.updateInputs(backInputs);
+        
+        // Choose best camera based on robot position
+        selectBestCamera();
+        
+        // Log active camera
+        Logger.recordOutput("Vision/ActiveCamera", activeCamera.toString());
+    }
+    
+    private void selectBestCamera() {
+        Pose2d robotPose = Drive.getInstance().getPose();
+        
+        // Choose camera based on field position
+        if (robotPose.getX() < 4.0) {
+            // Left side of field
+            activeCamera = ActiveCamera.LEFT;
+        } else if (robotPose.getX() > 11.0) {
+            // Right side of field
+            activeCamera = ActiveCamera.RIGHT;
+        } else {
+            // Middle of field
+            activeCamera = ActiveCamera.BACK;
+        }
+    }
+    
+    public Optional<Pose2d> getRobotPose() {
+        // Get pose from active camera
+        switch (activeCamera) {
+            case LEFT:
+                return leftInputs.robotPose;
+            case RIGHT:
+                return rightInputs.robotPose;
+            case BACK:
+                return backInputs.robotPose;
+            default:
+                return Optional.empty();
+        }
+    }
+    
+    public Optional<AprilTag> getBestTag() {
+        // Get tag from active camera
+        return switch (activeCamera) {
+            case LEFT -> leftInputs.bestTag;
+            case RIGHT -> rightInputs.bestTag;
+            case BACK -> backInputs.bestTag;
+        };
+    }
+}
+```
+
+### Pattern 7: Vision-Assisted Odometry
+
+**Problem:** Odometry drifts over time, vision provides corrections.
+
+```java
+public class Drive extends Subsystem {
+    private final SwerveDrive swerveDrive;
+    private final Vision vision;
+    private final PoseEstimator poseEstimator;
+    
+    // Vision measurement trust
+    private final double VISION_STD_DEV = 0.5;  // meters
+    private final double ODOMETRY_STD_DEV = 0.01;  // meters
+    
+    public Drive() {
+        // Create pose estimator
+        poseEstimator = new PoseEstimator(
+            swerveDrive.getGyroHeading(),
+            swerveDrive.getModulePositions(),
+            new Pose2d(),
+            StateStdDevs(VISION_STD_DEV, VISION_STD_DEV, Units.degreesToRadians(30)),
+            StateStdDevs(ODOMETRY_STD_DEV, ODOMETRY_STD_DEV, ODOMETRY_STD_DEV)
+        );
+    }
+    
+    @Override
+    public void periodic() {
+        // Update odometry
+        swerveDrive.periodic();
+        
+        // Update pose estimator with odometry
+        poseEstimator.update(
+            swerveDrive.getGyroHeading(),
+            swerveDrive.getModulePositions()
+        );
+        
+        // Add vision measurements
+        addVisionMeasurement();
+        
+        // Update drive pose
+        swerveDrive.setPose(poseEstimator.getEstimatedPosition());
+    }
+    
+    private void addVisionMeasurement() {
+        // Get vision pose estimate
+        Optional<Pose2d> visionPose = vision.getRobotPose();
+        
+        if (visionPose.isPresent()) {
+            // Calculate timestamp
+            double timestamp = Timer.getFPGATimestamp();
+            
+            // Add to estimator
+            poseEstimator.addVisionMeasurement(
+                visionPose.get(),
+                timestamp
+            );
+            
+            Logger.recordOutput("Drive/VisionUpdate", true);
+        }
+    }
+}
+```
+
+---
+
+## Auto Patterns
+
+### Pattern 8: Robust Auto with Event Markers
+
+**Problem:** Auto needs to trigger events at specific times/positions.
+
+```java
+public class RobustAuto extends SequentialCommandGroup {
+    public RobustAuto(Drive drive, Shooter shooter) {
+        // Load path with event markers
+        PathPlannerPath path = PathPlannerPath.fromPathFile("ScoreAndPickup");
+        
+        // Create auto builder
+        SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
+            drive::getPose,  // Pose supplier
+            drive::resetOdometry,  // Pose consumer (reset)
+            drive.getKinematics(),  // Kinematics
+            new PIDConstants(5.0, 0.0, 0.0),  // Translation PID
+            new PIDConstants(0.5, 0.0, 0.0),  // Rotation PID
+            drive::runVelocity,  // Output
+            eventMap,  // Event map
+            true,  // Alliance color
+            drive  // Subsystem requirements
+        );
+        
+        // Create event map
+        Map<String, Command> eventMap = new HashMap<>();
+        eventMap.put("shoot", new Shoot(shooter, 3000));
+        eventMap.put("intake", new Intake(shooter));
+        eventMap.put("stopIntake", new StopIntake(shooter));
+        
+        // Build auto
+        addCommands(autoBuilder.fullAuto(path));
+    }
+}
+```
+
+### Pattern 9: Adaptive Auto Based on Game Piece
+
+**Problem:** Auto strategy changes based on starting game piece position.
+
+```java
+public class AdaptiveAuto extends SelectCommand {
+    public AdaptiveAuto(Drive drive, Shooter shooter) {
+        super(
+            // Selector: Choose auto based on game piece position
+            () -> {
+                // Read game piece position from vision
+                Optional<GamePiece> piece = vision.getNearestPiece();
+                
+                if (piece.isPresent()) {
+                    double x = piece.get().getX();
+                    if (x < 4.0) {
+                        return "LEFT";
+                    } else if (x > 11.0) {
+                        return "RIGHT";
+                    } else {
+                        return "CENTER";
+                    }
+                }
+                
+                // Default to center if no piece detected
+                return "CENTER";
+            },
+            
+            // Map of commands
+            Map.ofEntries(
+                Map.entry("LEFT", new LeftAuto(drive, shooter)),
+                Map.entry("CENTER", new CenterAuto(drive, shooter)),
+                Map.entry("RIGHT", new RightAuto(drive, shooter))
+            )
+        );
+    }
+}
+```
+
+---
+
+## Testing Patterns
+
+### Pattern 10: Digital Twin Test
+
+**Problem:** Test subsystem logic without real hardware.
+
+```java
+@Test
+public void testElevatorPID() {
+    // Create simulated hardware
+    MotorIOSim elevatorMotor = new MotorIOSim();
+    EncoderIOSim elevatorEncoder = new EncoderIOSim();
+    
+    // Create elevator with simulated hardware
+    Elevator elevator = new Elevator(elevatorMotor, elevatorEncoder);
+    
+    // Set target position
+    elevator.setTargetPosition(1.0);  // 1 meter
+    
+    // Run elevator for 2 seconds
+    for (int i = 0; i < 100; i++) {
+        elevator.periodic();
+        
+        // Simulate physics
+        elevatorMotor.updateSimulation(0.02);  // 20ms timestep
+    }
+    
+    // Verify position
+    assertEquals(1.0, elevator.getPosition(), 0.01);
+}
+```
+
+### Pattern 11: Load Test
+
+**Problem:** Ensure subsystem handles extreme conditions.
+
+```java
+@Test
+public void testDriveUnderLoad() {
+    // Create simulated drive with load
+    SwerveDriveSim drive = new SwerveDriveSim();
+    drive.applyLoad(2.0);  // 2x normal load
+    
+    // Run at maximum speed
+    ChassisSpeeds maxSpeed = new ChassisSpeeds(
+        DriveConstants.MAX_SPEED,
+        0,
+        0
+    );
+    
+    // Run for 5 seconds
+    for (int i = 0; i < 250; i++) {
+        drive.runVelocity(maxSpeed);
+        drive.periodic();
+        
+        // Verify no faults
+        assertFalse(drive.hasFaults());
+        
+        // Verify performance (should slow down but not fail)
+        assertTrue(drive.getAverageVelocity() > DriveConstants.MAX_SPEED * 0.5);
+    }
+}
+```
+
+---
+
+## Performance Patterns
+
+### Pattern 12: Zero-Allocation PID
+
+**Problem:** PID controller shouldn't allocate memory in periodic.
+
+```java
+// BAD: Allocates in periodic
+public void periodic() {
+    double error = setpoint - measurement;
+    double output = new PIDController(1.0, 0.0, 0.0).calculate(error);  // ✗ Allocates
+    motor.setVoltage(output);
+}
+
+// GOOD: Pre-allocated PID controller
+private final PIDController pid = new PIDController(1.0, 0.0, 0.0);
+
+public void periodic() {
+    double output = pid.calculate(measurement, setpoint);  // ✓ No allocation
+    motor.setVoltage(output);
+}
+```
+
+### Pattern 13: Object Pooling
+
+**Problem:** Need temporary objects without allocation.
+
+```java
+public class Rotation2dPool {
+    private static final int POOL_SIZE = 10;
+    private final Rotation2d[] pool = new Rotation2d[POOL_SIZE];
+    private int index = 0;
+    
+    public Rotation2dPool() {
+        // Pre-allocate objects
+        for (int i = 0; i < POOL_SIZE; i++) {
+            pool[i] = new Rotation2d();
+        }
+    }
+    
+    public Rotation2d obtain(double radians) {
+        Rotation2d obj = pool[index];
+        obj = new Rotation2d(radians);  // Update in place
+        index = (index + 1) % POOL_SIZE;
+        return obj;
+    }
+}
+
+// Usage
+private final Rotation2dPool rotationPool = new Rotation2dPool();
+
+public void periodic() {
+    Rotation2d rotation = rotationPool.obtain(Math.PI / 4);
+    // Use rotation
+    // Returns to pool automatically next call
+}
+```
+
+---
+
+## Usage Examples
+
+### Example 1: Complete Subsystem
+
+```java
+public class Intake extends Subsystem {
+    private final MotorIO intakeMotor;
+    private final SensorIO beamBreak;
+    
+    private final MotorIOInputs motorInputs = new MotorIOInputs();
+    private final SensorIOInputs sensorInputs = new SensorIOInputs();
+    
+    private final double INTAKE_VOLTAGE = 6.0;
+    private final double OUTTAKE_VOLTAGE = -6.0;
+    
+    public Intake(MotorIO intakeMotor, SensorIO beamBreak) {
+        this.intakeMotor = intakeMotor;
+        this.beamBreak = beamBreak;
+    }
+    
+    @Override
+    public void periodic() {
+        intakeMotor.updateInputs(motorInputs);
+        beamBreak.updateInputs(sensorInputs);
+        
+        Logger.recordOutput("Intake/HasNote", hasNote());
+        Logger.recordOutput("Intake/Current", motorInputs.statorCurrentAmps);
+    }
+    
+    public void intake() {
+        intakeMotor.setVoltage(INTAKE_VOLTAGE);
+    }
+    
+    public void outtake() {
+        intakeMotor.setVoltage(OUTTAKE_VOLTAGE);
+    }
+    
+    public void stop() {
+        intakeMotor.setVoltage(0);
+    }
+    
+    public boolean hasNote() {
+        return !sensorInputs.sensorTriggered;
+    }
+    
+    public static Intake createReal() {
+        return new Intake(
+            new MotorIOTalonFX(10),
+            new SensorIODigital(0)
+        );
+    }
+    
+    public static Intake createSim() {
+        return new Intake(
+            new MotorIOSim(),
+            new SensorIOSim()
+        );
+    }
+}
+```
+
+---
+
+## Best Practices
+
+### ✅ DO:
+- Pre-allocate all objects in constructor
+- Use zero-allocation patterns in periodic()
+- Log everything for debugging
+- Test with simulation before hardware
+- Use IO abstraction for hardware
+- Implement proper state machines
+- Handle all error cases
+
+### ❌ DON'T:
+- Use `new` in periodic()
+- Ignore sensor readings
+- Skip error handling
+- Assume hardware works perfectly
+- Use blocking operations
+- Allocate in hot loops
+- Ignore performance
+
+---
+
+## Further Reading
+
+- [Zero-Allocation Programming](/tutorials/advanced/zero-allocation)
+- [State Machine Guide](/tutorials/framework/state-machines)
+- [Testing Philosophy](/contributing/testing-guide)
+- [Performance Analysis](/tutorials/elite/performance-analysis)
+
+---
+
+**More patterns?** Contribute to our [GitHub repo](https://github.com/MARSProgramming/MARSLib)!
+
+**Questions?** Ask in [Discord](https://discord.gg/marslib)!

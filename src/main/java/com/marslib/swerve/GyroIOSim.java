@@ -26,6 +26,10 @@ public class GyroIOSim implements GyroIO {
   }
 
   public boolean enableCanStarvation = false;
+  private double lastYawCached = 0.0;
+  private final double[] yawPositionsBuffer = new double[1];
+  private final double[] lastTiltCache = new double[2];
+
   public double canStarvationProbability = 0.02;
 
   @Override
@@ -41,22 +45,31 @@ public class GyroIOSim implements GyroIO {
     if (gyroSim != null) {
       inputs.yawPositionRad = gyroSim.getGyroReading().getRadians();
       inputs.yawVelocityRadPerSec = gyroSim.getMeasuredAngularVelocity().in(RadiansPerSecond);
-
-      // Use cached high-frequency values if you want, or just final
-      inputs.odometryYawPositions = new double[] {inputs.yawPositionRad};
     } else {
       inputs.yawPositionRad = 0.0;
       inputs.yawVelocityRadPerSec = 0.0;
-      inputs.odometryYawPositions = new double[] {0.0};
     }
+
+    // Reuse buffer to avoid double[] allocation
+    yawPositionsBuffer[0] = inputs.yawPositionRad;
+    inputs.odometryYawPositions = yawPositionsBuffer;
 
     if (simDrive != null) {
       edu.wpi.first.math.geometry.Pose2d simPose = simDrive.getSimulatedDriveTrainPose();
-      double[] tilt =
-          org.ironmaple.simulation.seasonspecific.rebuilt2026.Arena2026Rebuilt
-              .getSimulatedBumpTilt_rads(simPose);
-      inputs.pitchPositionRad = tilt[0];
-      inputs.rollPositionRad = tilt[1];
+
+      // Only recompute tilt if pose has moved significantly to avoid Arena allocation
+      if (Math.abs(simPose.getX() - lastYawCached) > 0.001
+          || Math.abs(simPose.getY() - lastYawCached) > 0.001) {
+        double[] tilt =
+            org.ironmaple.simulation.seasonspecific.rebuilt2026.Arena2026Rebuilt
+                .getSimulatedBumpTilt_rads(simPose);
+        lastTiltCache[0] = tilt[0];
+        lastTiltCache[1] = tilt[1];
+        lastYawCached = simPose.getX(); // Using X as a rough dirty bit
+      }
+
+      inputs.pitchPositionRad = lastTiltCache[0];
+      inputs.rollPositionRad = lastTiltCache[1];
     } else {
       inputs.pitchPositionRad = 0.0;
       inputs.rollPositionRad = 0.0;

@@ -1,0 +1,408 @@
+---
+sidebar:
+  order: 1
+id: architecture-diagrams
+title: "Architecture Diagrams"
+template: doc
+description: "Visual architecture diagrams of MARSLib's core systems, data flow, and package structure."
+---
+
+# Architecture Diagrams
+
+This page provides visual diagrams of MARSLib's core architecture, system interactions, and data flow patterns.
+
+## System Architecture Overview
+
+```mermaid
+graph TB
+    subgraph "Robot Code"
+        Robot[Robot.java]
+        Main[Main Loop 50Hz]
+        
+        subgraph "Subsystems"
+            Swerve[Swerve Drive]
+            Vision[Vision System]
+            Mechanisms[Mechanisms]
+            StateMachines[State Machines]
+        end
+        
+        subgraph "IO Layer"
+            GyroIO[Gyroscope IO]
+            EncoderIO[Encoder IO]
+            CameraIO[Camera IO]
+            MotorIO[Motor IO]
+        end
+    end
+    
+    subgraph "AdvantageKit"
+        Logger[Data Logger]
+        LogStorage[(Log Storage)]
+    end
+    
+    Robot --> Main
+    Main --> Swerve
+    Main --> Vision
+    Main --> Mechanisms
+    Main --> StateMachines
+    
+    Swerve --> GyroIO
+    Swerve --> EncoderIO
+    Swerve --> MotorIO
+    Vision --> CameraIO
+    
+    Swerve --> Logger
+    Vision --> Logger
+    Mechanisms --> Logger
+    
+    Logger --> LogStorage
+    
+    style Robot fill:#B32416,color:#fff
+    style Logger fill:#4CAF50,color:#fff
+    style LogStorage fill:#2196F3,color:#fff
+```
+
+## Package Structure
+
+```mermaid
+graph LR
+    subgraph "com.marslib"
+        core[core]
+        swerve[swerve]
+        vision[vision]
+        mechanisms[mechanisms]
+        state[state]
+        io[io]
+        util[util]
+        testing[testing]
+    end
+    
+    subgraph "Core Subsystems"
+        core --> CoreBase[Base Classes]
+        swerve --> SwerveDrive[Swerve Drive]
+        vision --> VisionPipeline[Vision Processing]
+        mechanisms --> Mechanisms[Mechanism Controls]
+    end
+    
+    subgraph "Supporting Systems"
+        state --> StateMachine[State Machines]
+        io --> IOAbstraction[IO Abstraction]
+        util --> Helper[Helper Functions]
+        testing --> TestFramework[Test Framework]
+    end
+    
+    SwerveDrive -.-> IOAbstraction
+    VisionPipeline -.-> IOAbstraction
+    MechanismControls -.-> IOAbstraction
+    
+    style core fill:#B32416,color:#fff
+    style swerve fill:#2196F3,color:#fff
+    style vision fill:#4CAF50,color:#fff
+    style state fill:#FF9800,color:#fff
+```
+
+## Data Flow: Swerve Drive
+
+```mermaid
+sequenceDiagram
+    participant Main as Main Loop
+    participant Swerve as SwerveDrive
+    participant IO as IO Layer
+    participant Logger as AdvantageLogger
+    participant Hardware as Hardware
+    
+    Main->>Swerve: periodic() called
+    Swerve->>IO: readInputs()
+    IO->>Hardware: Get sensor data
+    Hardware-->>IO: Encoders, Gyro
+    IO-->>Swerve: Raw IO values
+    
+    Swerve->>Swerve: updateOdometry()
+    Swerve->>Swerve: calculateKinematics()
+    
+    Swerve->>Logger: logTelemetry()
+    Logger-->>Swerve: Logged
+    
+    Swerve->>IO: setOutputs()
+    IO->>Hardware: Motor commands
+    Hardware-->>Main: Cycle complete
+    
+    Note over Swerve,Logger: All data logged for analysis
+```
+
+## State Machine Flow
+
+```mermaid
+stateDiagram-v2
+    [*] --> Idle
+    
+    Idle --> Autonomous: Auto Mode
+    Idle --> Teleop: Teleop Mode
+    Idle --> Disabled: Disabled
+    
+    Autonomous --> AutoCommands: Execute Commands
+    AutoCommands --> Autonomous: Command Complete
+    Autonomous --> Idle: Mode End
+    
+    Teleop --> DriverControl: Operator Input
+    DriverControl --> Teleop: Continuous
+    Teleop --> Idle: Mode End
+    
+    Disabled --> SystemCheck: Health Check
+    SystemCheck --> Disabled: Check Complete
+    Disabled --> Idle: Enable
+    
+    note right of AutoCommands
+        Command-based architecture
+        Zero-allocation patterns
+        Deterministic timing
+    end note
+```
+
+## Vision System Pipeline
+
+```mermaid
+graph TB
+    subgraph "Hardware"
+        Camera1[Camera 1]
+        Camera2[Camera 2]
+    end
+    
+    subgraph "Vision Processing"
+        AprilTag[AprilTag Detection]
+        Photon[PhotonVision]
+        NoteDetection[Note Detection]
+    end
+    
+    subgraph "MARSLib Vision"
+        VisionIO[Vision IO]
+        VisionSystem[Vision System]
+        PoseEstimator[Pose Estimator]
+    end
+    
+    subgraph "Integration"
+        Swerve[Swerve Drive]
+        Logger[Data Logger]
+    end
+    
+    Camera1 --> AprilTag
+    Camera2 --> Photon
+    Camera1 --> NoteDetection
+    
+    AprilTag --> VisionIO
+    Photon --> VisionIO
+    NoteDetection --> VisionIO
+    
+    VisionIO --> VisionSystem
+    VisionSystem --> PoseEstimator
+    PoseEstimator --> Swerve
+    Swerve --> Logger
+    
+    VisionSystem --> Logger
+    
+    style PoseEstimator fill:#B32416,color:#fff
+    style Logger fill:#4CAF50,color:#fff
+```
+
+## Testing Architecture
+
+```mermaid
+graph TB
+    subgraph "Test Framework"
+        TestHarness[MARS Test Harness]
+        PhysicsSim[Physics Simulator]
+        DigitalIO[Digital IO Layer]
+    end
+    
+    subgraph "Test Types"
+        Unit[Unit Tests]
+        Integration[Integration Tests]
+        Performance[Performance Tests]
+        Load[Load Tests]
+    end
+    
+    subgraph "Coverage"
+        Jacoco[Jacoco Coverage]
+        Threshold[80% Minimum]
+    end
+    
+    TestHarness --> PhysicsSim
+    TestHarness --> DigitalIO
+    TestHarness --> Unit
+    TestHarness --> Integration
+    TestHarness --> Performance
+    TestHarness --> Load
+    
+    Unit --> Jacoco
+    Integration --> Jacoco
+    Performance --> Jacoco
+    
+    Jacoco --> Threshold
+    
+    style TestHarness fill:#B32416,color:#fff
+    style Threshold fill:#4CAF50,color:#fff
+```
+
+## IO Abstraction Layer
+
+```mermaid
+classDiagram
+    class GyroIO {
+        <<interface>>
+        +updateInputs()
+        +getAngle() double
+        +getRate() double
+        +calibrate()
+    }
+    
+    class GyroIOReal {
+        +updateInputs()
+        +getAngle() double
+        -Pigeon2 gyro
+    }
+    
+    class GyroIOSim {
+        +updateInputs()
+        +getAngle() double
+        -double angle
+    }
+    
+    class SwerveDrive {
+        -GyroIO gyroIO
+        +periodic()
+    }
+    
+    GyroIO <|.. GyroIOReal
+    GyroIO <|.. GyroIOSim
+    SwerveDrive --> GyroIO
+    
+    note for GyroIO "IO Abstraction Interface"
+    note for GyroIOReal "Real Hardware Implementation"
+    note for GyroIOSim "Simulation Implementation"
+```
+
+## Performance Monitoring Flow
+
+```mermaid
+graph LR
+    subgraph "Robot Code"
+        Periodic[periodic 50Hz]
+        Measure[Measure Performance]
+    end
+    
+    subgraph "Logging"
+        LogMetrics[Log Metrics]
+        WPILog[WPILog File]
+    end
+    
+    subgraph "Analysis"
+        Dashboard[Performance Dashboard]
+        Metrics[Metrics Analysis]
+        Bottlenecks[Bottleneck Detection]
+    end
+    
+    Periodic --> Measure
+    Measure --> LogMetrics
+    LogMetrics --> WPILog
+    
+    WPILog --> Dashboard
+    Dashboard --> Metrics
+    Dashboard --> Bottlenecks
+    
+    Bottlenecks --> Optimize[Optimize Code]
+    Optimize --> Periodic
+    
+    style Dashboard fill:#B32416,color:#fff
+    style Bottlenecks fill:#FF9800,color:#fff
+```
+
+## Memory Management
+
+```mermaid
+graph TB
+    subgraph "Zero-Allocation Pattern"
+        Periodic[Periodic Method]
+        PreAlloc[Pre-Allocated Objects]
+        ObjectPool[Object Pool]
+        Reuse[Reuse Objects]
+    end
+    
+    subgraph "Anti-Patterns"
+        New1[new Double()]
+        New2[new ArrayList()]
+        String1[String concatenation]
+    end
+    
+    subgraph "Monitoring"
+        VisualVM[VisualVM]
+        JFR[Java Flight Recorder]
+    end
+    
+    Periodic --> PreAlloc
+    Periodic --> ObjectPool
+    ObjectPool --> Reuse
+    Reuse --> Periodic
+    
+    Periodic -.x.-> New1
+    Periodic -.x.-> New2
+    Periodic -.x.-> String1
+    
+    Periodic --> VisualVM
+    Periodic --> JFR
+    
+    style PreAlloc fill:#4CAF50,color:#fff
+    style New1 fill:#F44336,color:#fff
+    style New2 fill:#F44336,color:#fff
+    style String1 fill:#F44336,color:#fff
+```
+
+## Integration with External Systems
+
+```mermaid
+graph TB
+    subgraph "MARSLib"
+        Core[MARSLib Core]
+        IO[IO Layer]
+    end
+    
+    subgraph "WPILib"
+        WPIlib[WPILib Core]
+        Timer[Timer]
+        Scheduler[Command Scheduler]
+    end
+    
+    subgraph "Third Party"
+        Photon[PhotonVision]
+        CTRE[CTRE Phoenix]
+        Rev[REVLib]
+        AdvantageKit[AdvantageKit]
+    end
+    
+    subgraph "Tools"
+        PathPlanner[PathPlanner]
+        AdvantageScope[AdvantageScope]
+    end
+    
+    Core --> WPIlib
+    Core --> Timer
+    Core --> Scheduler
+    
+    IO --> CTRE
+    IO --> Rev
+    IO --> Photon
+    
+    Core --> AdvantageKit
+    AdvantageKit --> PathPlanner
+    AdvantageKit --> AdvantageScope
+    
+    style Core fill:#B32416,color:#fff
+    style AdvantageKit fill:#4CAF50,color:#fff
+```
+
+---
+
+## 📖 Further Reading
+
+- [Framework Architecture](/tutorials/framework/architecture) - Detailed architecture discussion
+- [IO Abstraction](/tutorials/framework/io-abstraction) - IO layer implementation
+- [Testing Philosophy](/contributing/testing-guide) - Digital Twin testing approach
+- [Performance Analysis](/tutorials/elite/performance-analysis) - Performance monitoring tools

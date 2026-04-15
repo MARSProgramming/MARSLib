@@ -1,0 +1,456 @@
+---
+sidebar:
+  order: 4
+id: testing-guide
+title: "Testing Guide"
+template: doc
+description: "Master MARSLib's Digital Twin testing philosophy. Write effective tests using simulated hardware and physics engines."
+---
+
+# Testing Guide
+
+MARSLib uses a unique **Digital Twin** testing philosophy that sets us apart from traditional robotics testing approaches. Instead of mocking hardware, we test real robot code with simulated physics.
+
+## Digital Twin Philosophy
+
+### Traditional Testing vs Digital Twin
+
+**Traditional Approach (Mocking):**
+```java
+@Test
+public void testSwerveWithMocks() {
+    // Mock the hardware
+    SwerveModuleIO mockModule = mock(SwerveModuleIO.class);
+    when(mockModule.getPosition()).thenReturn(1.0);
+    
+    // Test logic with mocks
+    // Problem: Doesn't catch physics bugs!
+}
+```
+
+**MARSLib Digital Twin Approach:**
+```java
+@Test
+public void testSwervePhysics() {
+    MARSTestHarness.reset();
+    
+    // Use REAL subsystem with SIMULATED hardware
+    SwerveDrive drive = new SwerveDrive(new SwerveModuleIOSim());
+    
+    // Run physics simulation
+    for (int i = 0; i < 150; i++) {
+        DriverStationSim.notifyNewData();
+        SimHooks.stepTiming(0.02);
+        CommandScheduler.getInstance().run();
+        MARSPhysicsWorld.getInstance().update(0.02);
+    }
+    
+    // Verify physics behavior
+    assertEquals(expectedPose, drive.getPose().getSeconds());
+}
+```
+
+### Why Digital Twin?
+
+✅ **Catches Physics Bugs** - Tests reveal real-world physics problems
+✅ **Tests Real Code** - No mocked interfaces, actual subsystem logic
+✅ **Simulation Validation** - Sim matches robot behavior
+✅ **Better Coverage** - Tests integration, not just units
+
+## Test Structure
+
+### Basic Test Template
+
+```java
+@Test
+public void testBasicBehavior() {
+    // 1. Reset all test state
+    MARSTestHarness.reset();
+    
+    // 2. Create subsystems with simulated IO
+    SwerveDrive drive = new SwerveDrive(new SwerveModuleIOSim());
+    
+    // 3. Run simulation loop
+    for (int i = 0; i < 150; i++) {  // 3 seconds
+        DriverStationSim.notifyNewData();  // Keep Driver Station alive
+        SimHooks.stepTiming(0.02);         // Advance 20ms
+        CommandScheduler.getInstance().run(); // Process commands
+        MARSPhysicsWorld.getInstance().update(0.02); // Step physics
+    }
+    
+    // 4. Verify results
+    assertEquals(expectedValue, actualValue);
+}
+```
+
+### Simulation Loop Breakdown
+
+```java
+for (int i = 0; i < 150; i++) {
+    // 1. Keep Driver Station alive (prevents robot disable)
+    DriverStationSim.notifyNewData();
+    
+    // 2. Advance time (20ms = 50Hz)
+    SimHooks.stepTiming(0.02);
+    
+    // 3. Process commands and subsystems
+    CommandScheduler.getInstance().run();
+    
+    // 4. Update physics world
+    MARSPhysicsWorld.getInstance().update(0.02);
+    
+    // 5. Optional: Check intermediate states
+    if (i % 10 == 0) {
+        // Verify progress every 200ms
+    }
+}
+```
+
+## Writing Effective Tests
+
+### Test Categories
+
+#### 1. Unit Tests
+Test individual methods and classes:
+
+```java
+@Test
+public void testEliteShooterMath() {
+    // Test mathematical calculations
+    double rpm = EliteShooterMath.calculateRPM(5.0, 1.0);
+    assertEquals(3000.0, rpm, 1.0);
+}
+```
+
+#### 2. Integration Tests
+Test multiple subsystems working together:
+
+```java
+@Test
+public void testVisionAlignmentIntegration() {
+    MARSTestHarness.reset();
+    
+    MARSVision vision = new MARSVision(new VisionIO() {...});
+    SwerveDrive drive = new SwerveDrive(new SwerveModuleIOSim());
+    
+    AlignToTagCommand align = new AlignToTagCommand(vision, drive);
+    align.schedule();
+    
+    // Run until alignment completes
+    for (int i = 0; i < 150; i++) {
+        DriverStationSim.notifyNewData();
+        SimHooks.stepTiming(0.02);
+        CommandScheduler.getInstance().run();
+        
+        if (!align.isScheduled()) break; // Command finished
+    }
+    
+    // Verify alignment
+    assertTrue(drive.getPose().getTranslation().getDistance(target) < 0.1);
+}
+```
+
+#### 3. Physics Tests
+Test realistic physics behavior:
+
+```java
+@Test
+public void testSwervePhysicsAccuracy() {
+    MARSTestHarness.reset();
+    
+    SwerveDrive drive = new SwerveDrive(new SwerveModuleIOSim());
+    
+    // Drive in a circle
+    for (int i = 0; i < 250; i++) {  // 5 seconds
+        var speeds = new ChassisSpeeds(0.0, 0.0, Math.PI); // Rotate in place
+        drive.driveRobotRelative(speeds);
+        
+        DriverStationSim.notifyNewData();
+        SimHooks.stepTiming(0.02);
+        CommandScheduler.getInstance().run();
+        MARSPhysicsWorld.getInstance().update(0.02);
+    }
+    
+    // Verify we rotated 360 degrees
+    assertEquals(2 * Math.PI, drive.getPose().getRotation().getRadians(), 0.1);
+}
+```
+
+#### 4. Fault Tests
+Test error handling and recovery:
+
+```java
+@Test
+public void testVisionFailureRecovery() {
+    MARSTestHarness.reset();
+    
+    FaultyVisionIO visionIO = new FaultyVisionIO();
+    MARSVision vision = new MARSVision(visionIO);
+    
+    // Simulate vision failure
+    visionIO.setFail(true);
+    
+    for (int i = 0; i < 50; i++) {
+        DriverStationSim.notifyNewData();
+        SimHooks.stepTiming(0.02);
+        CommandScheduler.getInstance().run();
+    }
+    
+    // Verify fault was handled
+    assertTrue(MARSFaultManager.hasFault("Vision unavailable"));
+    
+    // Recover from failure
+    visionIO.setFail(false);
+    
+    for (int i = 0; i < 50; i++) {
+        DriverStationSim.notifyNewData();
+        SimHooks.stepTiming(0.02);
+        CommandScheduler.getInstance().run();
+    }
+    
+    // Verify recovery
+    assertFalse(MARSFaultManager.hasFault("Vision unavailable"));
+}
+```
+
+## Test Utilities
+
+### MARSTestHarness
+Centralized test setup and cleanup:
+
+```java
+@BeforeEach
+public void setUp() {
+    // Reset ALL singletons and state
+    MARSTestHarness.reset();
+}
+
+@AfterEach
+public void tearDown() {
+    // Clean up
+    MARSTestHarness.cleanup();
+}
+```
+
+### Test Configuration
+Create reusable test configurations:
+
+```java
+public class TestConfig {
+    public static SwerveConfig createTestSwerveConfig() {
+        return new SwerveConfig(
+            new Translation2d[] {
+                new Translation2d(0.3, 0.3),  // Module positions
+                new Translation2d(0.3, -0.3),
+                new Translation2d(-0.3, 0.3),
+                new Translation2d(-0.3, -0.3)
+            },
+            4.5,   // Max speed
+            10.0,  // Max angular speed
+            // ... other parameters
+        );
+    }
+}
+```
+
+### Assertions
+Use custom assertions for robot-specific checks:
+
+```java
+public static void assertPoseEquals(
+    Pose2d expected, 
+    Pose2d actual, 
+    double tolerance
+) {
+    assertEquals(expected.getX(), actual.getX(), tolerance, "X mismatch");
+    assertEquals(expected.getY(), actual.getY(), tolerance, "Y mismatch");
+    assertEquals(
+        expected.getRotation().getRadians(),
+        actual.getRotation().getRadians(),
+        tolerance,
+        "Rotation mismatch"
+    );
+}
+```
+
+## Testing Best Practices
+
+### DO ✅
+
+1. **Test Real Scenarios**
+```java
+@Test
+public void testAutonomousRoutine() {
+    // Test actual autonomous paths, not individual methods
+    Command auto = getPathPlannerAuto("TestPath");
+    auto.schedule();
+    
+    for (int i = 0; i < 500; i++) {  // 10 seconds
+        DriverStationSim.notifyNewData();
+        SimHooks.stepTiming(0.02);
+        CommandScheduler.getInstance().run();
+        MARSPhysicsWorld.getInstance().update(0.02);
+    }
+    
+    assertTrue(auto.isFinished());
+}
+```
+
+2. **Use Physics Simulation**
+```java
+@Test
+public void testGamePieceInteraction() {
+    // Spawn game pieces in physics world
+    MARSPhysicsWorld.getInstance().spawnGamePiece(5.0, 3.0);
+    
+    // Run intake simulation
+    IntakeSubsystem intake = new IntakeSubsystem(new IntakeIOSim());
+    intake.intake();
+    
+    // Verify physics interaction
+    for (int i = 0; i < 100; i++) {
+        DriverStationSim.notifyNewData();
+        SimHooks.stepTiming(0.02);
+        CommandScheduler.getInstance().run();
+        MARSPhysicsWorld.getInstance().update(0.02);
+    }
+    
+    assertTrue(intake.hasGamePiece());
+}
+```
+
+3. **Test Edge Cases**
+```java
+@Test
+public void testBoundaryConditions() {
+    // Test at field boundaries
+    SwerveDrive drive = new SwerveDrive(new SwerveModuleIOSim());
+    
+    // Drive to edge of field
+    var command = new DriveToPositionCommand(drive, 8.0, 4.0);
+    command.schedule();
+    
+    for (int i = 0; i < 200; i++) {
+        DriverStationSim.notifyNewData();
+        SimHooks.stepTiming(0.02);
+        CommandScheduler.getInstance().run();
+        MARSPhysicsWorld.getInstance().update(0.02);
+    }
+    
+    // Verify we don't exceed field bounds
+    assertTrue(drive.getPose().getX() <= 8.211); // Field width
+}
+```
+
+### DON'T ❌
+
+1. **Don't Mock Hardware**
+```java
+// BAD: Mocking defeats physics testing
+SwerveModuleIO mockModule = mock(SwerveModuleIO.class);
+```
+
+2. **Don't Skip Physics**
+```java
+// BAD: Doesn't test real physics behavior
+drive.setPose(new Pose2d(1.0, 2.0, new Rotation2d()));
+assertEquals(1.0, drive.getPose().getX());  // Static check
+```
+
+3. **Don't Test Trivial Code**
+```java
+// BAD: Testing getters/setters
+assertEquals(drive.getX(), drive.getX());
+```
+
+## Coverage Requirements
+
+We maintain **80% test coverage** across the codebase.
+
+### Check Coverage
+```bash
+# Run tests with coverage
+.\gradlew.bat test jacocoTestReport
+
+# View coverage report
+# Open build/reports/jacoco/test/html/index.html
+```
+
+### Coverage by Package
+- `com.marslib.swerve` - 90%+ (critical path)
+- `com.marslib.vision` - 85%+ (safety-critical)
+- `com.marslib.mechanisms` - 80%+
+- `com.marslib.util` - 75%+
+
+## CI/CD Integration
+
+Tests run automatically on every pull request:
+
+```yaml
+# .github/workflows/ci.yml
+- name: Run Tests
+  run: ./gradlew test
+
+- name: Check Coverage
+  run: ./gradlew jacocoTestReport
+  
+- name: Upload Coverage
+  uses: codecov/codecov-action@v3
+```
+
+### Troubleshooting Tests
+
+### Tests Fail Locally
+```bash
+# Clean and retry
+.\gradlew.bat clean test --refresh-dependencies
+```
+
+### Simulation Issues
+```bash
+# Test simulation directly
+.\gradlew.bat simulateJava
+```
+
+### Physics World Problems
+```bash
+# Check physics initialization
+MARSPhysicsWorld.getInstance().reset();
+```
+
+## Advanced Testing
+
+### Custom Test Scenarios
+```java
+@Test
+public void testCustomScenario() {
+    MARSTestHarness.reset();
+    
+    // Set up custom scenario
+    MARSPhysicsWorld world = MARSPhysicsWorld.getInstance();
+    world.spawnGamePiece(5.0, 3.0);
+    world.spawnGamePiece(6.0, 4.0);
+    
+    // Test scenario
+    // ...
+}
+```
+
+### Performance Testing
+```java
+@Test
+public void testLoopPerformance() {
+    long startTime = System.nanoTime();
+    
+    for (int i = 0; i < 1000; i++) {
+        // Run time-critical code
+    }
+    
+    long duration = System.nanoTime() - startTime;
+    assertTrue(duration < 1_000_000); // Must complete in 1ms
+}
+```
+
+---
+
+**Ready to contribute?** Learn about our [Code Review Process](./code-review)!
