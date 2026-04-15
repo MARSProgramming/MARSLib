@@ -226,7 +226,7 @@ public class PhoenixOdometryThread extends Thread {
 
   @Override
   public void run() {
-    while (true) {
+    while (!Thread.currentThread().isInterrupted()) {
       BaseStatusSignal[] currentSignals;
       signalsLock.lock();
       try {
@@ -237,7 +237,7 @@ public class PhoenixOdometryThread extends Thread {
 
       if (currentSignals.length == 0) {
         try {
-          Thread.sleep(100);
+          java.util.concurrent.TimeUnit.MILLISECONDS.sleep(100);
         } catch (InterruptedException e) {
           org.littletonrobotics.junction.Logger.recordOutput(
               "PhoenixOdometryThread/Error", e.toString());
@@ -253,7 +253,7 @@ public class PhoenixOdometryThread extends Thread {
       // Prevent 100% CPU lock in simulation (Sim CTRE waitForAll returns instantly natively)
       if (edu.wpi.first.wpilibj.RobotBase.isSimulation()) {
         try {
-          Thread.sleep((long) (1000.0 / threadOdometryHz));
+          java.util.concurrent.TimeUnit.MILLISECONDS.sleep((long) (1000.0 / threadOdometryHz));
         } catch (InterruptedException e) {
           org.littletonrobotics.junction.Logger.recordOutput(
               "PhoenixOdometryThread/Error", e.toString());
