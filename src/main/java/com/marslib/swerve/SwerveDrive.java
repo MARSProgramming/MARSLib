@@ -237,8 +237,8 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
 
   public void runVelocity(ChassisSpeeds speeds) {
     // Manual discretization to avoid ChassisSpeeds allocation
-    double dt_S = config.loopPeriodSecs() / 2.0;
-    double theta = speeds.omegaRadiansPerSecond * dt_S;
+    double dtSeconds = config.loopPeriodSecs() / 2.0;
+    double theta = speeds.omegaRadiansPerSecond * dtSeconds;
     double cos = Math.cos(theta);
     double sin = Math.sin(theta);
 

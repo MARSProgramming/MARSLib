@@ -14,6 +14,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.marslib.util.CANUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -70,9 +71,8 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     turnCurrent = turnMotor.getStatorCurrent();
 
     // Ensure these signals run at standard config frequency
-    double updateHz = config.telemetryHz();
-    BaseStatusSignal.setUpdateFrequencyForAll(
-        updateHz,
+    CANUtil.setUpdateFrequencyWithRetry(
+        config.telemetryHz(),
         driveVelocity,
         turnVelocity,
         driveAppliedVolts,

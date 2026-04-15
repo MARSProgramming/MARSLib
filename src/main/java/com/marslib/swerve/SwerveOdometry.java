@@ -123,8 +123,7 @@ public class SwerveOdometry {
         frameYawCache[0] = Rotation2d.fromRadians(frameYawRad);
       }
 
-      double timestamp =
-          (timestamps.length > i) ? timestamps[i] : edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+      double timestamp = (timestamps.length > i) ? timestamps[i] : (Logger.getTimestamp() / 1e6);
 
       poseEstimator.updateWithTime(timestamp, frameYawCache[0], positionsForFrame);
     }

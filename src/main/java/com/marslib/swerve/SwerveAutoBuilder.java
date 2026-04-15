@@ -90,13 +90,14 @@ public final class SwerveAutoBuilder {
         () -> {
           SwerveConfig swerveConfig = drive.getConfig();
           return AutoBuilder.pathfindToPose(
-              target.get(),
-              new PathConstraints(
-                  swerveConfig.maxLinearSpeedMps(),
-                  swerveConfig.maxLinearSpeedMps() * 0.7,
-                  swerveConfig.maxAngularSpeedRadPerSec(),
-                  swerveConfig.maxAngularSpeedRadPerSec() * 0.7),
-              0.0);
+                  target.get(),
+                  new PathConstraints(
+                      swerveConfig.maxLinearSpeedMps(),
+                      swerveConfig.maxLinearSpeedMps() * 0.7,
+                      swerveConfig.maxAngularSpeedRadPerSec(),
+                      swerveConfig.maxAngularSpeedRadPerSec() * 0.7),
+                  0.0)
+              .withTimeout(3.0);
         },
         Set.of(drive));
   }

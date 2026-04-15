@@ -49,7 +49,6 @@ public class MARSSuperstructure extends SubsystemBase {
   }
 
   private final MARSStateMachine<SuperstructureState> stateMachine;
-  private int gamePieceCount = 0;
 
   // Caches for zero-allocation performance in hot loop
   private final EliteShooterMath.EliteShooterSetpoint shotCache =

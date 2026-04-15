@@ -7,11 +7,11 @@
 package com.marslib.diagnostics;
 
 import com.marslib.faults.Alert;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import java.util.Arrays;
+import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -31,13 +31,15 @@ public class SystemCheckCommand extends SequentialCommandGroup {
   /**
    * Safely iterates through all passed testable subsystems.
    *
+   * @param voltageSupplier Supplier for the current system voltage (should come from PowerManager
+   *     or IO).
    * @param subsystems Array or varargs of components implementing SystemTestable.
    */
-  public SystemCheckCommand(SystemTestable... subsystems) {
+  public SystemCheckCommand(DoubleSupplier voltageSupplier, SystemTestable... subsystems) {
     addCommands(
         Commands.runOnce(
             () -> {
-              double voltage = RobotController.getBatteryVoltage();
+              double voltage = voltageSupplier.getAsDouble();
               Logger.recordOutput("SystemCheck/BatteryVoltage", voltage);
               if (voltage < MINIMUM_BATTERY_VOLTAGE) {
                 batteryAlert.set(true);

@@ -81,8 +81,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     voltageSignal = motor.getMotorVoltage();
     statorCurrentSignal = motor.getStatorCurrent();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0, velocitySignal, voltageSignal, statorCurrentSignal);
+    CANUtil.setUpdateFrequencyWithRetry(50.0, velocitySignal, voltageSignal, statorCurrentSignal);
     motor.optimizeBusUtilization();
 
     followers = new TalonFX[followerIds.length];

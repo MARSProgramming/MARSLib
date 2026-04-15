@@ -8,7 +8,6 @@ package com.marslib.swerve;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -77,12 +76,6 @@ public class SwerveSetpointGenerator {
     return Math.abs(a - b) < kEpsilon;
   }
 
-  private boolean twistEpsilonEquals(Twist2d a, Twist2d b, double epsilon) {
-    return Math.abs(a.dx - b.dx) < epsilon
-        && Math.abs(a.dy - b.dy) < epsilon
-        && Math.abs(a.dtheta - b.dtheta) < epsilon;
-  }
-
   /**
    * Checks if all three chassis speed components are effectively zero.
    *
@@ -106,57 +99,6 @@ public class SwerveSetpointGenerator {
       return angle + 2.0 * Math.PI;
     } else {
       return angle;
-    }
-  }
-
-  @FunctionalInterface
-  private interface Function2d {
-    double f(double x, double y);
-  }
-
-  /**
-   * Evaluates a mathematical root bound using the Bisection interpolation method.
-   *
-   * <p>Solves for an unknown scalar {@code s} where {@code f(x, y) = 0} between the setpoint
-   * bounds. This is dynamically constrained across:
-   *
-   * <ul>
-   *   <li>\( x = (x_1 - x_0) \cdot s + x_0 \)
-   *   <li>\( y = (y_1 - y_0) \cdot s + y_0 \)
-   * </ul>
-   *
-   * @param func The 2D boundary equation
-   * @param x0 Initial X coordinate (e.g., initial velocity)
-   * @param y0 Initial Y coordinate
-   * @param f0 Initial functional evaluation mapping
-   * @param x1 Target X coordinate
-   * @param y1 Target Y coordinate
-   * @param f1 Target functional evaluation mapping
-   * @param iterationsLeft Deep dive bounds to prevent infinite recursion timeouts.
-   * @return A clamping scalar interval [0.0, 1.0] representing maximum safe application before
-   *     kinematic slip.
-   */
-  private double findRoot(
-      Function2d func,
-      double x0,
-      double y0,
-      double f0,
-      double x1,
-      double y1,
-      double f1,
-      int iterationsLeft) {
-    if (iterationsLeft < 0 || epsilonEquals(f0, f1)) {
-      return 1.0;
-    }
-    double sGuess = Math.max(0.0, Math.min(1.0, -f0 / (f1 - f0)));
-    double xGuess = (x1 - x0) * sGuess + x0;
-    double yGuess = (y1 - y0) * sGuess + y0;
-    double fGuess = func.f(xGuess, yGuess);
-    if (Math.signum(f0) == Math.signum(fGuess)) {
-      return sGuess
-          + (1.0 - sGuess) * findRoot(func, xGuess, yGuess, fGuess, x1, y1, f1, iterationsLeft - 1);
-    } else {
-      return sGuess * findRoot(func, x0, y0, f0, xGuess, yGuess, fGuess, iterationsLeft - 1);
     }
   }
 

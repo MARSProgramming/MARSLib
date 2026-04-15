@@ -9,6 +9,7 @@ package com.marslib.swerve;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.marslib.util.CANUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -45,9 +46,8 @@ public class GyroIOPigeon2 implements GyroIO {
     pitchVelocity = pigeon.getAngularVelocityXWorld();
     rollVelocity = pigeon.getAngularVelocityYWorld();
 
-    yawVelocity.setUpdateFrequency(config.telemetryHz());
-    pitchVelocity.setUpdateFrequency(config.telemetryHz());
-    rollVelocity.setUpdateFrequency(config.telemetryHz());
+    CANUtil.setUpdateFrequencyWithRetry(
+        config.telemetryHz(), yawVelocity, pitchVelocity, rollVelocity);
     // yaw frequency is managed by the OdometryThread
 
     PhoenixOdometryThread.getInstance().registerGyro(yaw, config.odometryHz());

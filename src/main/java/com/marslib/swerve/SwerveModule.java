@@ -21,7 +21,6 @@ import org.littletonrobotics.junction.Logger;
 public class SwerveModule {
   private final SwerveModuleIO io;
   private final SwerveModuleIOInputsAutoLogged inputs = new SwerveModuleIOInputsAutoLogged();
-  private final int index;
   private final SwerveConfig config;
   private final String logPath;
 
@@ -37,7 +36,6 @@ public class SwerveModule {
    * @param config The global swerve configuration.
    */
   public SwerveModule(int index, SwerveModuleIO io, SwerveConfig config) {
-    this.index = index;
     this.io = io;
     this.config = config;
     this.logPath = "SwerveDrive/Module" + index;

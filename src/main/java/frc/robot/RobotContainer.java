@@ -571,7 +571,7 @@ public class RobotContainer {
         .add(
             "Full System Check",
             new com.marslib.diagnostics.SystemCheckCommand(
-                climber, cowl, shooter, intakePivot, swerveDrive))
+                powerManager::getVoltage, climber, cowl, shooter, intakePivot, swerveDrive))
         .withPosition(3, 0)
         .withSize(2, 1);
 

@@ -1,0 +1,596 @@
+---
+title: "CAN Bus - Troubleshooting Guide"
+description: "Fix CAN bus communication problems, motor errors, and connection issues."
+sidebar:
+  order: 4
+---
+
+# CAN Bus - Troubleshooting Guide
+
+CAN bus problems can make your robot behave strangely or not work at all. This guide helps you find and fix CAN issues fast.
+
+## What is CAN Bus?
+
+**CAN Bus** = Controller Area Network bus
+
+It's like a conversation where robot parts take turns talking on a shared wire. Instead of each device having its own wires, they all share one communication line.
+
+**Think of it like**: A classroom where students raise their hands to speak. Only one person talks at a time, so everyone can understand.
+
+---
+
+## Quick Check (2 minutes)
+
+### 1. Check CAN Status
+
+**In Phoenix Tuner** (for CTRE devices):
+1. Open Phoenix Tuner
+2. Look at the top bar
+3. Check "CAN Bus Utilization" 
+4. Check "CAN Bus Status"
+
+**What you want to see**:
+- ✅ **Utilization**: Under 80% (ideally under 60%)
+- ✅ **Status**: "OK" or "Connected"
+- ✅ **Devices**: All your devices listed
+
+**What indicates problems**:
+- ❌ **Utilization**: Over 80% (bus is congested)
+- ❌ **Status**: "BUS OFF" or "Disconnected"
+- ❌ **Devices**: Missing devices or red X's
+
+**In OutlineViewer/SmartDashboard**:
+- Look for "/CAN" folder
+- Check device health
+- Look for error messages
+
+### 2. Check Device Connection
+
+**Look at your devices**:
+1. Count how many motor controllers/sensors you have
+2. Compare to Phoenix Tuner list
+3. Are any missing?
+4. Are any showing errors?
+
+**Quick device count**:
+- Swerve drive: 8-12 devices (4 Talon FX + 4 CANcoder + maybe more)
+- Basic drivetrain: 4-6 devices
+- Shooter/intake: 2-4 devices
+
+### 3. Check for Error Messages
+
+**Look in RioLog** for these errors:
+```
+- "CAN Receive Timeout"
+- "CAN Transmit Error"  
+- "Device not responding"
+- "Invalid Device ID"
+- "CAN Bus Off"
+```
+
+**If you see these**: You have CAN bus problems. Continue with this guide.
+
+---
+
+## Common Problems and Solutions
+
+### Problem 1: Device Not Detected
+
+**Symptoms**:
+- Device doesn't appear in Phoenix Tuner
+- Device shows red X or error
+- Code can't communicate with device
+
+**Causes**:
+
+**1. Wrong Device ID**
+```
+Fix: Check device IDs match code
+```
+
+**In Phoenix Tuner**:
+1. Select device
+2. Look at "Device ID" 
+3. Compare to your code
+
+**In your code**:
+```java
+// Make sure IDs match!
+private final TalonFX frontLeft = new TalonFX(1);  // Device ID 1
+private final TalonFX frontRight = new TalonFX(2); // Device ID 2
+```
+
+**2. Device Not Powered**
+```
+Fix: Check power connections
+```
+
+- Verify main power connection (12V)
+- Check breaker hasn't tripped
+- Measure voltage at device with multimeter
+- Look for LED indicators on device
+
+**3. CAN Cable Loose/Disconnected**
+```
+Fix: Check and reconnect cables
+```
+
+- Follow CAN chain from robot to each device
+- Push cables in firmly
+- Check for damaged cables
+- Replace any suspect cables
+
+**4. Wrong CAN Bus**
+```
+Fix: Verify CAN bus connection
+```
+
+**RoboRIO CAN ports**:
+- `CAN 0`: Primary CAN bus
+- `CAN 1`: Secondary CAN bus (if using CANivore)
+
+**Make sure devices are on correct bus!**
+
+---
+
+### Problem 2: CAN Bus Utilization Too High
+
+**Symptoms**:
+- Phoenix Tuner shows >80% utilization
+- Robot behaves randomly
+- Some devices work, others don't
+- Performance issues
+
+**Causes**:
+
+**1. Update Rates Too High**
+```
+Fix: Reduce update rates for non-critical signals
+```
+
+**What to update fast (100Hz)**:
+- Drivetrain motor positions/velocities
+- Gyro data
+- Critical sensor feedback
+
+**What to update slowly (10Hz or less)**:
+- Motor temperatures
+- Supply current/voltage
+- Fault/status signals
+- Non-critical telemetry
+
+**How to fix**:
+```java
+// Fast updates for drivetrain (100Hz)
+driveMotor.getPosition().setUpdateFrequency(100);
+driveMotor.getVelocity().setUpdateFrequency(100);
+
+// Slow updates for temperature (4Hz)
+driveMotor.getDeviceTemp().setUpdateFrequency(4);
+driveMotor.getSupplyCurrent().setUpdateFrequency(4);
+```
+
+**2. Too Many Devices on One Bus**
+```
+Fix: Use CANivore or reduce devices
+```
+
+**Signs you have too many devices**:
+- More than 12 devices on one bus
+- Utilization consistently >70%
+- Random communication failures
+
+**Solutions**:
+- Add CANivore device (splits into multiple CAN buses)
+- Reduce update rates (see above)
+- Remove unnecessary devices
+
+**3. CANivore Not Working**
+```
+Fix: Verify CANivore setup
+```
+
+**In code**:
+```java
+// When using CANivore, specify bus name
+private final TalonFX motor = new TalonFX(1, "CANivore");  // Specify bus!
+```
+
+**Check**:
+- CANivore powered (yellow LED)
+- CANivore connected to RoboRIO
+- Devices daisy-chained to CANivore
+
+---
+
+### Problem 3: Intermittent CAN Errors
+
+**Symptoms**:
+- Robot works sometimes, not others
+- Random "CAN Timeout" errors
+- Devices drop in and out
+- Performance varies
+
+**Causes**:
+
+**1. Poor Cable Quality**
+```
+Fix: Replace bad cables
+```
+
+**Signs of bad cables**:
+- Crimps not secure
+- Wires pulling out of connectors
+- Visible damage to insulation
+- Cables too long (>6 feet)
+
+**Use quality cables**:
+- Crimped properly (not soldered)
+- Right length for each connection
+- Strain relief where needed
+- Shielded cables for long runs
+
+**2. Chain Topology Wrong**
+```
+Fix: Arrange CAN bus in proper daisy chain
+```
+
+**Correct topology**:
+```
+RoboRIO → Device 1 → Device 2 → Device 3 → ... → 120Ω terminator
+```
+
+**Wrong topologies**:
+```
+❌ Star topology (all devices to one point)
+❌ Multiple terminators  
+❌ Loops (don't connect ends together)
+❌ Missing terminator
+```
+
+**3. Loose Connections**
+```
+Fix: Secure all connections
+```
+
+- Check all CAN connectors
+- Add zip ties to prevent vibration loosening
+- Use strain relief on moving parts
+- Check for corrosion on contacts
+
+**4. Electrical Interference**
+```
+Fix: Route CAN away from power wires
+```
+
+- Don't run CAN next to motor power wires
+- Cross power wires at 90° if you must cross
+- Use shielded CAN cables
+- Keep CAN away from radio power leads
+
+---
+
+### Problem 4: CAN Bus Off Error
+
+**Symptoms**:
+- Phoenix Tuner says "BUS OFF"
+- All CAN devices stop working
+- Robot becomes unresponsive
+
+**Causes**:
+
+**1. Short Circuit on CAN Bus**
+```
+Fix: Find and fix short
+```
+
+**How to find**:
+1. Disconnect all devices
+2. Add devices back one at a time
+3. When problem returns, you found the bad device
+4. Check that device's CAN wiring
+
+**2. Missing Termination Resistor**
+```
+Fix: Add 120Ω terminator at end of chain
+```
+
+**Every CAN bus needs exactly one 120Ω terminator at the end**
+
+**Check**:
+- RoboRIO has built-in terminator (usually)
+- CANivore has built-in terminator
+- Some devices have built-in terminators
+
+**Verify**:
+```
+RoboRIO --- Device1 --- Device2 --- 120Ω Terminator
+```
+
+**3. Too Many Devices**
+```
+Fix: Reduce device count or add CANivore
+```
+
+- More than ~15 devices on one bus
+- Add CANivore for more devices
+
+---
+
+### Problem 5: Motor Controller Not Responding
+
+**Symptoms**:
+- Specific motor controller shows errors
+- Other devices work fine
+- Motor won't move
+
+**Diagnosis**:
+
+**Step 1: Check Device ID**
+```java
+// Make sure ID matches what you set in Phoenix Tuner
+private final TalonFX motor = new TalonFX(deviceId);
+```
+
+**Step 2: Check for Firmware Updates**
+- Open Phoenix Tuner
+- Check if firmware update available
+- Update firmware (takes ~30 seconds per device)
+
+**Step 3: Check Configuration**
+```java
+// Verify configuration actually applied
+StatusCode status = motor.getConfigurator().apply(config);
+if (!status.isOK()) {
+    System.out.println("Config failed: " + status);
+}
+```
+
+**Step 4: Check Device Health**
+```java
+// Check if device is healthy
+StatusCode status = motor.getFaults();
+if (status != StatusCode.OK) {
+    System.out.println("Device fault: " + status);
+}
+```
+
+---
+
+## Testing CAN Bus
+
+### Step 1: Visual Inspection
+1. Follow CAN chain from start to finish
+2. Check all connections
+3. Look for damaged cables
+4. Verify terminator present
+5. Note any issues
+
+### Step 2: Phoenix Tuner Test
+1. Open Phoenix Tuner
+2. Check device list
+3. Verify all devices present
+4. Check for error indicators
+5. Test each device individually
+
+### Step 3. Utilization Test
+1. Enable all devices
+2. Watch CAN utilization
+3. Run robot at full speed
+4. Check utilization stays under 80%
+5. Note any spikes
+
+### Step 4. Stress Test
+1. Run all systems at once
+2. Check for errors
+3. Monitor utilization
+4. Verify all devices respond
+5. Test for 5+ minutes
+
+---
+
+## Quick Fixes to Try
+
+### Fix 1: Reset CAN Bus
+1. Disable robot
+2. Power cycle RoboRIO
+3. Check all cables
+4. Re-enable robot
+
+### Fix 2: Reduce Update Rates
+```java
+// Set all non-critical signals to 4Hz
+motor.getSupplyCurrent().setUpdateFrequency(4);
+motor.getDeviceTemp().setUpdateFrequency(4);
+motor.getFault().setUpdateFrequency(4);
+```
+
+### Fix 3. Reconfigure Devices
+1. Open Phoenix Tuner
+2. Clear all configs
+3. Reapply configurations
+4. Verify settings saved
+
+### Fix 4. Check CANivore
+```java
+// Make sure you specify CANivore if using it
+private final TalonFX motor = new TalonFX(1, "CANivore");
+```
+
+---
+
+## Prevention Tips
+
+### During Build:
+- ✅ **Use quality CAN cables**
+- ✅ **Label each cable with device ID**
+- ✅ **Test each device as you install it**
+- ✅ **Secure cables with zip ties**
+- ✅ **Keep CAN away from power wires**
+
+### Before Competition:
+- ✅ **Test CAN utilization with all systems**
+- ✅ **Verify all devices connected**
+- ✅ **Check firmware up to date**
+- ✅ **Test stress conditions**
+- ✅ **Document CAN bus layout**
+
+### At Competition:
+- ✅ **Have spare CAN cables**
+- ✅ **Bring Phoenix Tuner on laptop**
+- ✅ **Know CAN bus topology**
+- ✅ **Monitor utilization during matches**
+- ✅ **Quick fix plan ready**
+
+---
+
+## CAN Bus Best Practices
+
+### Update Rate Guidelines
+
+**100Hz (fast)**:
+- Drivetrain motor positions
+- Drivetrain motor velocities
+- Gyro IMU data
+- Critical sensor feedback
+
+**50Hz (normal)**:
+- Mechanism motor positions
+- Mechanism motor velocities
+- Important sensor data
+
+**10Hz (slow)**:
+- Motor temperatures
+- Battery voltage/current
+- Non-critical telemetry
+
+**4Hz (very slow)**:
+- Status signals
+- Fault indicators
+- Diagnostic data
+
+### Physical Setup Tips
+
+**Good Practices**:
+- Keep CAN cables as short as possible
+- Use right-angle connectors in tight spaces
+- Add strain relief to prevent pull-out
+- Label both ends of each cable
+- Test continuity before installing
+
+**Bad Practices to Avoid**:
+- Don't splice CAN cables
+- Don't make cables longer than 6 feet
+- Don't run CAN next to motor power
+- Don't leave slack cables loose
+- Don't use different colored cables (confusing)
+
+---
+
+## Monitoring CAN Health
+
+### During Competition
+```java
+// Add to your robot periodic()
+public void robotPeriodic() {
+    // Check CAN bus health
+    double utilization = PDP.getCANBusUtilization();
+    SmartDashboard.putNumber("CAN Utilization", utilization);
+    
+    if (utilization > 0.8) {
+        DriverStation.reportWarning("CAN utilization high: " + utilization, false);
+    }
+}
+```
+
+### Logging CAN Errors
+```java
+// Log CAN errors for analysis
+@Override
+public void periodic() {
+    StatusCode status = motor.getFault_DeviceID();
+    if (status != StatusCode.OK) {
+        System.out.println("Motor fault: " + status);
+        // Log to file or send telemetry
+    }
+}
+```
+
+---
+
+## Common CAN Device Counts
+
+**Typical robot configurations**:
+
+**Basic Kitbot**:
+- 4x Spark MAX/Talon SRX (drivetrain)
+- **Total**: 4 devices (easy, one bus fine)
+
+**Competitive Drivetrain**:
+- 4x Talon FX (drive motors)
+- 4x CANcoder (wheel encoders)  
+- 1x Pigeon2 (gyro)
+- **Total**: 9 devices (still okay, one bus)
+
+**Full Competition Robot**:
+- 4x Talon FX (drivetrain)
+- 4x CANcoder (drivetrain)
+- 1x Pigeon2 (gyro)
+- 2x Talon FX (shooter)
+- 2x Talon FX (intake)
+- 1x CANcoder (intake sensor)
+- **Total**: 14 devices (use CANivore)
+
+---
+
+## When to Get Help
+
+If you've tried everything and CAN still doesn't work:
+
+### Good Help Request:
+```
+"Having CAN bus communication issues.
+
+Robot setup:
+- 4x Talon FX for drivetrain (IDs 1-4)
+- 4x CANcoder for wheel sensors (IDs 5-8)
+- 1x Pigeon2 gyro (ID 9)
+- Connected to RoboRIO CAN 0
+- 120Ω terminator at end
+
+Symptoms:
+- CAN utilization spikes to 95% when driving
+- Random "CAN Receive Timeout" errors
+- Devices 5-8 sometimes don't appear in Phoenix Tuner
+- Drivetrain motors work, encoders don't always
+
+What I've tried:
+- Reduced all non-critical update rates to 4Hz
+- Checked all CAN connections (all secure)
+- Verified device IDs match code
+- Updated firmware on all devices
+- Tested with only drivetrain (works fine)
+- Tested with encoders only (fails with drivetrain)
+
+Phoenix Tuner shows:
+- Utilization: 95% when driving, 20% when idle
+- All devices show green when they appear
+- Random device dropouts during motion
+
+What should I check next?"
+```
+
+---
+
+## Related Guides
+
+- [Motor Configuration](/tutorials/hardware/motor-setup)
+- [CAN Bus Best Practices](/tutorials/network/can-bus)
+- [Performance Optimization](/tutorials/advanced/performance)
+- [Electrical Wiring](/tutorials/electrical/wiring)
+
+---
+
+**Remember**: CAN bus is the nervous system of your robot. Keep it healthy and your robot will work reliably!
+
+**Still having CAN issues?** [Ask the community](https://github.com/MARSProgramming/MARSLib/discussions) - describe your setup and symptoms!

@@ -100,11 +100,8 @@ public class RotaryMechanismIOTalonFX implements RotaryMechanismIO {
     statorCurrent = motor.getStatorCurrent();
     closedLoopReferenceSlope = motor.getClosedLoopReferenceSlope();
 
-    position.setUpdateFrequency(50.0);
-    velocity.setUpdateFrequency(50.0);
-    appliedVolts.setUpdateFrequency(50.0);
-    statorCurrent.setUpdateFrequency(50.0);
-    closedLoopReferenceSlope.setUpdateFrequency(50.0);
+    CANUtil.setUpdateFrequencyWithRetry(
+        50.0, position, velocity, appliedVolts, statorCurrent, closedLoopReferenceSlope);
 
     motor.optimizeBusUtilization();
   }

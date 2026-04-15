@@ -90,4 +90,24 @@ public final class CANUtil {
           "CANUtil: Unsupported config type: " + config.getClass().getSimpleName());
     }
   }
+
+  /**
+   * Applies the desired update frequency to a collection of status signals with retry logic.
+   *
+   * @param frequencyHz The frequency to apply in Hz.
+   * @param signals The vararg of signals to update.
+   * @return The final {@link StatusCode} from the last attempt.
+   */
+  public static StatusCode setUpdateFrequencyWithRetry(
+      double frequencyHz, com.ctre.phoenix6.BaseStatusSignal... signals) {
+    StatusCode status = StatusCode.StatusCodeNotInitialized;
+    for (int i = 0; i < DEFAULT_RETRIES; i++) {
+      status = com.ctre.phoenix6.BaseStatusSignal.setUpdateFrequencyForAll(frequencyHz, signals);
+      if (status.isOK()) {
+        return status;
+      }
+    }
+    MARSFaultManager.reportHardwareDisconnect("CAN_SetUpdateFrequency");
+    return status;
+  }
 }

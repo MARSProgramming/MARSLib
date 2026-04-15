@@ -7,6 +7,7 @@
 package com.marslib.swerve;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.marslib.util.CANUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -135,8 +136,7 @@ public class PhoenixOdometryThread extends Thread {
       signals.add(turnPosition);
 
       // Configure frequencies
-      drivePosition.setUpdateFrequency(threadOdometryHz);
-      turnPosition.setUpdateFrequency(threadOdometryHz);
+      CANUtil.setUpdateFrequencyWithRetry(threadOdometryHz, drivePosition, turnPosition);
 
       return id;
     } finally {
@@ -191,7 +191,7 @@ public class PhoenixOdometryThread extends Thread {
     signalsLock.lock();
     try {
       this.threadOdometryHz = odometryHz;
-      yawPos.setUpdateFrequency(threadOdometryHz);
+      CANUtil.setUpdateFrequencyWithRetry(threadOdometryHz, yawPos);
       signals.add(yawPos);
       gyroSignalIndex = signals.size() - 1;
     } finally {

@@ -25,7 +25,8 @@ public class SystemCheckTest {
     SystemTestable mockTestable = () -> Commands.print("Mock subsystem test running...");
 
     // 3. Create command
-    SystemCheckCommand check = new SystemCheckCommand(mockTestable);
+    SystemCheckCommand check =
+        new SystemCheckCommand(() -> RoboRioSim.getVInVoltage(), mockTestable);
 
     // 4. Run it
     CommandScheduler.getInstance().schedule(check);
@@ -46,7 +47,8 @@ public class SystemCheckTest {
     SystemTestable mockTestable = () -> Commands.print("Should not run");
 
     // 3. Create command
-    SystemCheckCommand check = new SystemCheckCommand(mockTestable);
+    SystemCheckCommand check =
+        new SystemCheckCommand(() -> RoboRioSim.getVInVoltage(), mockTestable);
 
     // 4. Run it (we expect an exception from the battery gate)
     assertThrows(
