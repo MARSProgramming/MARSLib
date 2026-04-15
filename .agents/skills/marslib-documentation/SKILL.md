@@ -39,7 +39,15 @@ Tutorials should break complex topics down elegantly:
 
 ## 4. The Agentic Skill Architecture
 When documenting the framework itself, ensure users understand that MARSLib is co-developed alongside Agentic AI. Refer to `.agents/skills` as the "Agentic Skill Architecture" which enforces FRC best practices programmatically.
-## 5. Astro "Islands" Migrations & Simulators
+## 5. Semantic File Architecture
+Do NOT dump files into a generic "core-concepts" or "tutorials" folder. You must strictly file documentation according to its semantic domain:
+- **`framework-architecture/`**: For abstract, underlying structural concepts (e.g., `io-layer`, `state-machines`, `zero-allocation`, `fault-resilience`).
+- **`subsystems/`**: For concrete, tangible robot features (e.g., `swerve`, `vision`, `elevators`, `control-theory`, `pathfinding`).
+- **`getting-started/`**: For installation, vs-code setups, and WPILib migrations.
+- **`contributing/`**: For standards, PR tests, and accessibility commitments.
+- **`reference/`**: For controller mappings and glossaries.
+
+## 6. Astro "Islands" Migrations & Simulators
 When porting or authoring interactive simulators in the Astro Starlight architecture:
 - **Canvas Operations**: Always encapsulate DOM manipulations (<canvas>) inside React .tsx components within the `src/components/` directory.
 - **Client Hydration**: When injecting React component tags like `<SotmSim client:visible />` into `.mdx` files, you MUST use an Astro client directive (`client:load`, `client:visible`, or `client:idle`) to ensure the interactive logic executes, as Astro ships zero JavaScript by default.

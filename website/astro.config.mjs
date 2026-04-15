@@ -83,8 +83,12 @@ export default defineConfig({
 					]
 				},
 				{
-					label: 'Core Concepts',
-					autogenerate: { directory: 'core-concepts' }
+					label: 'Framework Architecture',
+					autogenerate: { directory: 'framework-architecture' }
+				},
+				{
+					label: 'Robot Subsystems',
+					autogenerate: { directory: 'subsystems' }
 				},
 				{
 					label: 'Advanced Workflows',
@@ -106,25 +110,11 @@ export default defineConfig({
 				},
 				{
 					label: 'Reference',
-					items: [
-						{ label: 'Quick Reference Checklists', autogenerate: { directory: 'quick-reference' } },
-						{ label: 'Glossary', autogenerate: { directory: 'reference' } }
-					]
+					autogenerate: { directory: 'reference' }
 				},
 				{
-					label: 'Community',
-					items: [
-						{ label: 'Contribution Guides', autogenerate: { directory: 'contributing' } },
-						{ label: 'Community', autogenerate: { directory: 'community' } }
-					]
-				},
-				{
-					label: 'Core Standards',
-					link: '/standards/',
-				},
-				{
-					label: 'Accessibility Commitment',
-					link: '/accessibility/',
+					label: 'Community & Standards',
+					autogenerate: { directory: 'contributing' }
 				},
 				{
 					label: 'API Reference',
