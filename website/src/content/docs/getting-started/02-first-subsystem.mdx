@@ -5,17 +5,19 @@ sidebar:
   order: 2
 ---
 
+
+
 The **MARSLib VS Code Extension** is the primary interface for the MARS development ecosystem. While standard FRC projects rely on the generic WPILib extension, MARSLib uses this bespoke tool to enforce architectural standards, automate redundant boilerplate, and provide a unified command center for robot operations.
 
-## 🚀 Key Features
+## <span class="mars-num">1</span> Key Features
 
-- **Project Lifecycle Management:** Integrated sidebar buttons for Building, Deploying, and Simulating your code without using the command line.
-- **AdvantageKit Scaffolding:** Instantly generate the 4-file IO layer (Interface, Real, Sim, and Subsystem) for new mechanisms, ensuring strict compliance with our abstraction patterns.
-- **Architectural Audits:** Runs real-time checks to ensure your code follows "Zero-Allocation" rules and thread-safe practices.
-- **Telemetry Integration:** Quick links to AdvantageScope layouts and simulation configurations.
-- **AI Agent Integration:** Native support for `.agent` skill files to assist in complex logic authoring.
+- **Project Lifecycle Management:** Integrated sidebar buttons for Building, Deploying, and Simulating your code securely.
+- **AdvantageKit Scaffolding:** Instantly generate the 4-file IO layer (Interface, Real, Sim, and Subsystem) for new mechanisms using the built-in wizard.
+- **Architectural Audits (ProjectDoctor):** Runs real-time checks to ensure your code follows "Zero-Allocation" rules and thread-safe practices.
+- **Hardware Topology & CAN Map:** Dedicated views for visualizing your CAN bus architecture to proactively catch ID conflicts.
+- **Dynamic Diagnostics:** Spin up the Virtual Dashboard, parse Deploy History, or rapidly open your latest log in AdvantageScope.
 
-## 📥 Installation
+## <span class="mars-num">2</span> Installation
 
 The extension is currently distributed as a `.vsix` package for internal team use.
 
@@ -28,15 +30,30 @@ The extension is currently distributed as a `.vsix` package for internal team us
    - Choose the downloaded `.vsix` file.
 5. **Verify:** Once installed, a MARS icon will appear in your Activity Bar (the vertical sidebar on the left).
 
-## 🛠️ The Control Center
+## <span class="mars-num">3</span> The Control Center
 
-Click the MARS icon in the Activity Bar to open the **MARSLib Control Center**. 
+Click the MARS icon in the Activity Bar to open the **MARSLib Control Center**. The sidebar is categorized into multiple dynamic views designed to streamline your development process.
 
-### Commands
+### Commands View
 - **Build Robot:** Compiles the project using our optimized Gradle toolchains.
-- **Deploy to Robot:** Securely pushes the compiled BFS and JAR to the RoboRIO.
-- **Simulate Robot:** Launches the 2D physics simulation for rapid testing without hardware.
-- **New Subsystem:** Opens a wizard to scaffold a new AdvantageKit-ready mechanism.
+- **Deploy Robot:** Securely pushes the compiled code to the RoboRIO.
+- **Simulate Robot:** Launches the 2D physics simulation.
+- **Sim + AdvantageScope:** Boots simulation and immediately links telemetry visually.
+- **Setup Environment:** Downloads core FRC libraries and configures Git hooks automatically.
+- **Generate Subsystem:** Opens a wizard to scaffold a new AdvantageKit-ready mechanism.
+- **Generate Physics Test:** Sets up a JUnit template for deterministic subsystem simulation validation.
+- **Run Audit:** Validates the entire codebase against Elite Coding Standards.
+- **Open Virtual Dashboard:** Boots the diagnostic dashboard locally.
+- **Open Command Binder:** Visualize your active controller bindings and triggers.
+
+### CAN IDs View
+Visualizes your robot's CAN topology. Provides a dedicated interface to inspect assigned network IDs, helping you prevent CAN-ID overlapping which could result in bricked motors on the field. You can refresh this view at any time with the `Refresh CAN IDs` button. 
+
+### PathPlanner View
+Tightly integrated with PathPlanner JSONs, allowing you to instantly visualize paths or track trajectory errors directly within your VS Code development pane. 
+
+### Deploy History
+Keeps a persistent record of the hashes and build artifacts deployed to your robots. Ideal for answering, *"Wait, which commit is currently running on the robot?"*
 
 :::tip
 For the best experience, we recommend using this extension alongside the **WPILib VS Code** installation.

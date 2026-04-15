@@ -250,6 +250,18 @@ public class PhoenixOdometryThread extends Thread {
       // Wait for all signals to update, timeout after 2x the expected period
       BaseStatusSignal.waitForAll(2.0 / threadOdometryHz, currentSignals);
 
+      // Prevent 100% CPU lock in simulation (Sim CTRE waitForAll returns instantly natively)
+      if (edu.wpi.first.wpilibj.RobotBase.isSimulation()) {
+        try {
+          Thread.sleep((long) (1000.0 / threadOdometryHz));
+        } catch (InterruptedException e) {
+          org.littletonrobotics.junction.Logger.recordOutput(
+              "PhoenixOdometryThread/Error", e.toString());
+          Thread.currentThread().interrupt();
+          break;
+        }
+      }
+
       signalsLock.lock();
       try {
         double time = currentSignals[0].getTimestamp().getTime();
