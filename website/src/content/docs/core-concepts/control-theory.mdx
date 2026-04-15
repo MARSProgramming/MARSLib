@@ -5,7 +5,7 @@ sidebar:
   order: 11
 ---
 
-# Control Theory Basics
+
 
 Learn how to make your robot mechanisms move accurately and smoothly, just like a thermostat keeps your room at the right temperature.
 
@@ -32,7 +32,7 @@ Learn how to make your robot mechanisms move accurately and smoothly, just like 
 
 ## Two Main Approaches
 
-### 1. PID Control: Reacting to Errors
+### <span class="mars-num">1</span> PID Control: Reacting to Errors
 
 **PID** stands for **Proportional-Integral-Derivative**. It's a fancy name for a simple idea: **react to errors and fix them**.
 
@@ -41,7 +41,7 @@ Learn how to make your robot mechanisms move accurately and smoothly, just like 
 - **I (Integral)**: If you've been off-target for a while, steer more to catch up.
 - **D (Derivative)**: If you're approaching the target quickly, slow down to avoid overshooting.
 
-### 2. Feedforward: Planning Ahead
+### <span class="mars-num">2</span> Feedforward: Planning Ahead
 
 **Feedforward** means predicting what your mechanism needs and providing it immediately.
 
@@ -254,6 +254,34 @@ motor.setVoltage(totalVoltage);
 - Only use if mechanism gets stuck close to target
 - Use small Ki values
 - Too much Ki causes instability
+
+### "No Math" Quick Tuning (10 Minutes)
+1. **Set P to 1.0, wait on I and D**
+2. **Test**: Does it move?
+   - ❌ No: Increase P (try 2.0, 5.0, 10.0)
+   - ✅ Yes: Go to step 3
+
+3. **Check oscillation**:
+   - ✅ No oscillation: Increase P more
+   - ❌ Too much oscillation: Reduce P by 50%
+
+4. **Add D if needed**:
+   - Start with D = 0.1
+   - Increase until oscillation stops
+
+5. **Add I only if**:
+   - System never reaches exact target
+   - Start with I = 0.001
+   - Increase slowly
+
+### Quick Reference Tuning Table
+| Symptom | Likely Cause | Try This |
+|---------|-------------|----------|
+| Won't move | P too low | Increase P |
+| Slow response | P too low, D too high | Increase P, decrease D |
+| Oscillates | P too high, D too low | Decrease P, add D |
+| Never reaches target | P too low, need I | Increase P or add small I |
+| Works one way only | Need feedforward | Add gravity compensation |
 
 ---
 
@@ -481,14 +509,6 @@ kD = 0.01
 
 ---
 
-## Next Steps
-
-- [SysId Tutorial](/tutorials/framework/sysid) - Automatic tuning tool
-- [Mechanism Control](/tutorials/mechanisms) - Specific mechanism examples
-- [Quick Reference: PID Tuning](/quick-reference/pid-tuning) - Fast tuning guide
-
----
-
 **Remember**: Good control theory makes your robot mechanisms work like magic! Start simple, tune carefully, and test thoroughly.
 
-**Need tuning help?** [Share your challenges](https://github.com/MARSProgramming/MARSLib/discussions) - we've all struggled with tuning!
+**Need tuning help?** [Share your specific challenges](https://github.com/MARSProgramming/MARSLib/issues) directly on our GitHub if framework limits are causing friction.

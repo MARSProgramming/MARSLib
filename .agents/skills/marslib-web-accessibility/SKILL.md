@@ -28,3 +28,8 @@ When resolving an accessibility alert or writing new frontend components:
 1. **Identify the Barrier:** Pinpoint why the current implementation violates WCAG (e.g., adjacent identical links causing screen reader stutter, lack of `role="img"`).
 2. **Refactor Code:** Surgically patch the component or, if it is a third-party module, inject client-side hydration scripts (like `DOMContentLoaded`) to repair the accessibility tree at runtime.
 3. **Verify Compliance:** Ensure the change does not degrade the visual fidelity of the championship-grade dark theme, and retains perfect contrast.
+
+## Starlight / Astro Dark Mode & Theming Fixes
+Starlight controls its dark-mode rendering via a top-level `data-theme` attribute on the HTML element. When injecting custom UI elements like `<span class="mars-num">`, you MUST ensure:
+1. CSS Custom Properties (`var(...)`) are globally defined in `:root[data-theme='dark']` if needed to preserve contrast.
+2. Injected inline elements or custom React interactive dashboards map properly to `--sl-color-text` or transparent custom fallbacks rather than hardcoded blacks/whites. This prevents dark mode "flashes" or illegible text strings when navigating between static and hydrated routes.

@@ -5,7 +5,7 @@ sidebar:
   order: 6
 ---
 
-# Swerve Drive Guide
+
 
 Swerve drive is the most advanced and versatile way to make a robot move. Learn how it works and how to program it effectively.
 
@@ -434,6 +434,62 @@ public void checkModuleHealth() {
 
 ---
 
+  ## <span class="mars-num">6</span> Setup & Operations Reference
+
+### Infrastructure Scaffold
+
+**1. Create Your Drivetrain**:
+```java
+public class Drivetrain extends Subsystem {
+    private final SwerveDrive drive;
+    
+    public Drivetrain() {
+        drive = new SwerveDrive();
+    }
+    
+    public void drive(double vx, double vy, double omega) {
+        drive.drive(vx, vy, omega);
+    }
+}
+```
+
+**2. Create a Drive Command**:
+```java
+public class DriveCommand extends Command {
+    private final Drivetrain drivetrain;
+    private final XboxController controller;
+    
+    public DriveCommand(Drivetrain drivetrain, XboxController controller) {
+        this.drivetrain = drivetrain;
+        this.controller = controller;
+        addRequirements(drivetrain);
+    }
+    
+    @Override
+    public void execute() {
+        double vx = -controller.getLeftY();
+        double vy = controller.getLeftX();
+        double omega = controller.getRightX();
+        drivetrain.drive(vx, vy, omega);
+    }
+}
+```
+
+### Essential Drivetrain Methods
+
+```java
+// Drive to specific point on field
+drivetrain.driveToPose(new Pose2d(3.0, 2.0, new Rotation2d()));
+
+// Reset robot position to (0,0) facing forward
+drivetrain.seedFieldRelative();
+
+// Turn to face backwards
+drivetrain.driveToPose(new Pose2d(drivetrain.getPose().getTranslation(), new Rotation2d(Math.PI))); 
+```
+
+---
+
 ## Quick Reference
 
 ### Swerve Drive Benefits
@@ -470,22 +526,6 @@ public void checkModuleHealth() {
 4. **Field-oriented drive** = easier for drivers
 5. **Vision integration** = corrects odometry drift
 
-**Your robot will**:
-- Move more precisely
-- Auto more accurately
-- Drive more intuitively
-- Perform more consistently
-
 ---
 
-## Next Steps
-
-- [Swerve Setup Guide](/quick-reference/swerve-drive) - Get swerve working in 5 minutes
-- [Odometry Tutorial](/tutorials/odometry) - Position tracking deep dive
-- [Vision Integration](/tutorials/vision) - Add vision to swerve
-
----
-
-**Remember**: Swerve drive is complex but MARSLib handles the hard parts for you! Focus on driving and strategy, let the framework handle the math.
-
-**Need swerve help?** [Ask our community](https://github.com/MARSProgramming/MARSLib/discussions) - many teams use swerve successfully!
+**Need swerve help?** [Ask our community](https://github.com/MARSProgramming/MARSLib/issues) directly on our GitHub tracker if you find a bug!

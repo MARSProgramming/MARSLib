@@ -65,6 +65,73 @@ To ensure tuning works globally, the `AprilTagVisionIOSim` in MARSLib purposeful
 
 
   
+  ## <span class="mars-num">4</span> Limelight Setup (10 min)
+
+**1. Physical Installation & Network**:
+- Mount camera slightly upward (10-15 degrees), 12-24 inches off ground.
+- Connect computer to `limelight-<team>`, go to `http://10.0.0.1`
+- Set your FRC team number in Settings.
+
+**2. Configure AprilTag Pipeline**:
+- Pipeline: `0`
+- Exposure: `25`
+- Brightness: `50`
+- Gain: `50`
+
+**3. Robot Code**:
+```java
+// MARSLib wrapper
+private final LimeLight limelight = new LimeLight();
+
+public void periodic() {
+    if (limelight.getIsTargetFound()) {
+        SmartDashboard.putNumber("TargetX", limelight.getTx());
+    }
+}
+```
+
+  ## <span class="mars-num">5</span> PhotonVision Setup (15 min)
+
+**1. Installation**:
+- Flash PhotonVision image to Raspberry Pi or OrangePi using BalenaEtcher.
+- Connect computer to `PhotonVision` network, go to `http://10.0.0.1`
+
+**2. Configure AprilTag Pipeline**:
+- Tag family: `k16h5` (or `36h11` for newer seasons)
+- Exposure: `15`
+- Brightness: `50`
+- Gain: `30`
+
+**3. Robot Code**:
+```java
+// MARSLib IO Abstraction
+private final PhotonPoseEstimator poseEstimator;
+
+public void addVisionMeasurements() {
+    vision.getBestTarget().ifPresent(target -> {
+        var pose = poseEstimator.update();
+        pose.ifPresent(p -> odometry.addVisionMeasurement(p.estimatedPose.toPose2d(), p.timestampSeconds));
+    });
+}
+```
+
+  ## <span class="mars-num">6</span> Performance Fast-Paths
+
+**Keep vision updates fast**:
+```java
+// Update vision at 50Hz (not faster!)
+@Override
+public void periodic() {
+    double now = Timer.getFPGATimestamp();
+    
+    // Only process measurements every 20ms
+    if (now - lastUpdate > 0.02) {
+        addVisionMeasurements();
+        lastUpdate = now;
+    }
+}
+```
+
 ---
 
 

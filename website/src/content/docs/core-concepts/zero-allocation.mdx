@@ -5,7 +5,7 @@ sidebar:
   order: 8
 ---
 
-# Zero-Allocation Programming
+
 
 Learn how to make your robot code run faster and smoother by reusing objects instead of creating new ones.
 
@@ -243,14 +243,14 @@ values.add(speed2);
 
 **Check for allocations**:
 
-### 1. Look for `new` Keywords
+### <span class="mars-num">1</span> Look for `new` Keywords
 
 ```bash
 # Search for new keywords in periodic methods
 grep -n "new " src/main/java/frc/robot/subsystems/
 ```
 
-### 2. Monitor Loop Time
+### <span class="mars-num">2</span> Monitor Loop Time
 
 ```java
 @Override
@@ -273,7 +273,7 @@ public void periodic() {
 **Warning**: Loop time 10-15ms
 **Problem**: Loop time > 15ms
 
-### 3. Use Java Flight Recorder
+### <span class="mars-num">3</span> Use Java Flight Recorder
 
 ```bash
 # Run with profiling

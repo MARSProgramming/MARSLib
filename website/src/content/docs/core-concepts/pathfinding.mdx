@@ -55,7 +55,87 @@ Path execution relies 100% on where the robot *thinks* it is on the field. Witho
 
 
   
+  
 To guarantee mm-perfect precision, we feed the [Limelight 4's](https://limelightvision.io/) MegaTag 2.0 poses directly into the `SwerveDrivePoseEstimator`. This organically corrects the internal map as the robot drives, ensuring PathPlanner always knows the true distance remaining to the next Spline knot!
+
+  ## <span class="mars-num">4</span> Autonomous Execution Reference
+
+### AutoBuilder Initialization
+
+```java
+public class RobotContainer {
+    public RobotContainer() {
+        // Configure PathPlanner AutoBuilder
+        AutoBuilder.configure(
+            this::getPose,                    // Pose supplier
+            this::setPose,                    // Pose consumer
+            this::getRobotRelativeSpeeds,     // ChassisSpeeds supplier
+            this::driveRobotRelative,         // ChassisSpeeds consumer
+            new PathConstraints(3.0, 4.0, 5.0), // Max vel, accel, angular vel
+            this::shouldFlipPath,             // Mirror for alliance
+            this                              // Reference to subsystem
+        );
+    }
+    
+    // ... Subsystem getter/setters
+}
+```
+
+### Event Markers
+
+In PathPlanner GUI, add event markers along your path named: `"shoot"`, `"intake"`, `"aim"`, etc. Register them in RobotContainer BEFORE building autos:
+
+```java
+// Register commands that PathPlanner can trigger mid-path
+NamedCommands.registerCommand("shoot", new ShootCommand(shooter));
+NamedCommands.registerCommand("intake", new IntakeCommand(intake));
+NamedCommands.registerCommand("aim", new AimCommand(drivetrain, vision));
+```
+
+### Path Following Tuning
+
+If the holonomic drive controller starts drifting from your spline path, manually tune the P/I/D logic:
+
+```java
+// Create custom path follower config
+PathFollowerConfig config = new PathFollowerConfig(
+    5.0,    // Translational PID P (increase if robot drifts from path)
+    0.0,    // Translational PID I
+    0.0,    // Translational PID D
+    5.0,    // Rotational PID P (increase if robot doesn't face right direction)
+    0.0,    // Rotational PID I
+    0.0,    // Rotational PID D
+    0.5     // Max velocity error (tolerance)
+);
+
+AutoBuilder.configure(..., config, ...);
+```
+
+### Simulation Testing
+
+Test autonomous piece-by-piece via the MARSLib Dyn4j engine:
+
+```java
+@Test
+public void testAutonomous() {
+    MARSTestHarness.reset();
+    
+    // Run auto
+    Command auto = new PathPlannerAuto("TestAuto");
+    auto.schedule();
+    
+    // Spin simulator 150 loops = 3 seconds
+    for (int i = 0; i < 150; i++) { 
+        DriverStationSim.notifyNewData();
+        SimHooks.stepTiming(0.02);
+        CommandScheduler.getInstance().run();
+    }
+    
+    // Assert collision-free translation logic
+    Pose2d finalPose = drivetrain.getPose();
+    assertTrue(finalPose.getTranslation().getDistance(new Translation2d(2.0, 1.0)) < 0.1);
+}
+```
 
 
 

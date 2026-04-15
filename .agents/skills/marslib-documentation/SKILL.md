@@ -21,12 +21,15 @@ MARSLib documentation isn't just text; it's a "Recruit Training" platform that s
 - **Accents:** `--mars-red: #B32416`, `--mars-red-light: #d42e1e`
 - **Typography:** Orbitron for Headers (H1, H2, H3) and UI elements. Ubuntu for body text.
 
-## 3. Tutorial Header Numbering
-To achieve the "Cool Number Box" look for tutorial sections, wrap the header number in a `<span class="mars-num">` tag:
+## 3. Tutorial Header Numbering & Formatting Restrictions
+To achieve the "Cool Number Box" look for tutorial sections, wrap the header number in a `<span class="mars-num">` tag. All numbered headers (`##` or `###`) MUST use this class:
 ```html
 <h2><span class="mars-num">1</span> How to use it</h2>
 ```
 This is a standard across our documentation hub to provide a "Team MARS" premium feel.
+
+**Double Header Avoidance:**
+Do NOT append an `<h1>` or `# Title` directly beneath the frontmatter block. Starlight natively pulls the `title` frontmatter configuration and renders it as the page's singular `<h1>` document tag. Manually typing it out creates a duplicated headline block.
 
 ## 4. Educational Paradigm
 Tutorials should break complex topics down elegantly:
@@ -41,6 +44,7 @@ When porting or authoring interactive simulators in the Astro Starlight architec
 - **Canvas Operations**: Always encapsulate DOM manipulations (<canvas>) inside React .tsx components within the `src/components/` directory.
 - **Client Hydration**: When injecting React component tags like `<SotmSim client:visible />` into `.mdx` files, you MUST use an Astro client directive (`client:load`, `client:visible`, or `client:idle`) to ensure the interactive logic executes, as Astro ships zero JavaScript by default.
 - **Hybrid Deployment**: Rely on Astro's `hybrid` output strictly tied to the `@astrojs/cloudflare` serverless edge adapter. Any Keystatic components like `[...params].ts` will organically handle oauth routes without static bypass hacks.
+- **MDX-JSX Compiler Crashes**: ALL Markdown files (`.mdx`) MUST escape `<` characters (e.g. `&lt;`) when used outside of explicit HTML/React tags (e.g., when typing "Less than 60% CPU usage", write `&lt; 60%`). Unescaped less-than operators cause Astro to throw fatal JSX parsing errors.
 
 ## 6. Keystatic Navigation Synchronization
 Whenever you author new tutorial `.mdx` files inside `src/content/docs/tutorials/*`, do not generate raw files. Use Astro Starlight's sidebar autogeneration by ensuring `sidebar: { order: X }` is populated in the frontmatter, and Keystatic will automatically map it to the Cloudflare UI.

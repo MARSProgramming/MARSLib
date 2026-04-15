@@ -1,0 +1,189 @@
+---
+title: "Performance & Optimization"
+description: "Optimization techniques for MARSLib. Learn to tune swerve drive, vision processing, and use the WPILog Performance Analytics dashboard."
+sidebar:
+  order: 1
+---
+
+
+
+MARSLib is designed for championship-tier performance. This guide covers advanced tuning for critical systems and how to analyze them using the built-in AdvantageKit WPILog analyzers.
+
+## Core Performance Principles
+
+### <span class="mars-num">1</span> Zero-Allocation Philosophy
+Memory allocations in time-critical loops cause garbage collection pauses and inconsistent timing.
+
+**DO ✅:**
+```java
+// Pre-allocate objects
+private final ChassisSpeeds speeds = new ChassisSpeeds();
+private final SwerveModuleState[] states = new SwerveModuleState[4];
+
+@Override
+public void periodic() {
+    speeds.vx = vxSupplier.get();
+    speeds.vy = vySupplier.get();
+    speeds.omega = omegaSupplier.get();
+    // No allocation!
+}
+```
+
+**DON'T ❌:**
+```java
+@Override
+public void periodic() {
+    // BAD: Allocates new object every 20ms
+    ChassisSpeeds speeds = new ChassisSpeeds(vx, vy, omega);
+}
+```
+
+### <span class="mars-num">2</span> Thread Safety Considerations
+Shared state must be thread-safe without sacrificing performance. Use volatile primitives for primitive types.
+
+```java
+private volatile double sharedValue;
+
+public void setValue(double v) {
+    sharedValue = v;  // Thread-safe, fast
+}
+```
+
+For Complex Data use Synchronized Blocks:
+```java
+private final Object lock = new Object();
+private Pose2d sharedPose;
+
+public void setPose(Pose2d pose) {
+    synchronized(lock) {
+        this.sharedPose = pose;
+    }
+}
+```
+
+## Performance Targets
+
+The following are the hard requirements for MARSLib processes:
+
+| System | Target Frequency | Max Loop Time | Max CPU Usage |
+|--------|-----------------|---------------|---------------|
+| **Main Loop** | 50Hz | 20ms | 50% |
+| **Odometry** | 250Hz | 4ms | 30% |
+| **Vision** | 30Hz+ | 33ms | 20% |
+| **State Machine** | 50Hz | 500µs | 10% |
+
+- ✅ **Excellent**: Loop time < 5ms, CPU < 50%, Memory < 100MB
+- ⚠️ **Warning**: Loop time 5-10ms, CPU 50-80%, Memory 100-150MB
+- ❌ **Critical**: Loop time > 10ms, CPU > 80%, Memory > 150MB
+
+---
+
+## Operations Tuning
+
+### Swerve Odometry
+The 250Hz odometry loop is mathematically demanding. Prevent calculation repetition using kinematic caching.
+
+```java
+public class OptimizedSwerveDrive {
+    // Cache kinematics results
+    private final SwerveModuleState[] cachedStates = new SwerveModuleState[4];
+    private ChassisSpeeds lastSpeeds = new ChassisSpeeds();
+
+    public SwerveModuleState[] calculateStates(ChassisSpeeds speeds) {
+        // Check if speeds changed significantly to skip math overhead
+        if (!speedsChanged(speeds, lastSpeeds)) return cachedStates;
+
+        SwerveModuleState[] newStates = kinematics.toSwerveModuleStates(speeds);
+        System.arraycopy(newStates, 0, cachedStates, 0, 4);
+        lastSpeeds = speeds;
+        return cachedStates;
+    }
+}
+```
+
+### Vision Multi-Threading
+Vision processing can be highly CPU-intensive and causes loop overruns if on the main thread!
+
+```java
+public class OptimizedVisionProcessor {
+    private final ExecutorService visionThread = Executors.newSingleThreadExecutor(r -> {
+        Thread t = new Thread(r, "VisionProcessing");
+        t.setPriority(Thread.NORM_PRIORITY - 1); // Lower priority than Roborio loops
+        return t;
+    });
+
+    public void processFrame(Mat frame) {
+        visionThread.submit(() -> {
+            var result = detector.detect(frame);
+            updateVisionEstimate(result);
+        });
+    }
+}
+```
+
+### Object Pooling (Mats)
+Coprocessor operations like AprilTag detection can create sweeping memory allocations for image arrays!
+
+```java
+public class MatPool {
+    private final Queue<Mat> pool = new LinkedList<>();
+
+    public Mat acquire() {
+        Mat mat = pool.poll();
+        return mat != null ? mat : new Mat();
+    }
+
+    public void release(Mat mat) {
+        mat.release();  // Free native memory
+        pool.offer(mat);
+    }
+}
+```
+
+---
+
+## Telemetry Profiling
+
+### JVM Memory Analysis
+You can track string concatenations, primitive boxing overhead, and collection resizing using the internal Memory monitor utility:
+
+```java
+public class MemoryMonitor {
+    private static final long MB = 1024 * 1024;
+
+    public static void logMemoryStats() {
+        Runtime runtime = Runtime.getRuntime();
+        long total = runtime.totalMemory() / MB;
+        long used = total - (runtime.freeMemory() / MB);
+        
+        Logger.recordOutput("Memory/TotalMB", total);
+        Logger.recordOutput("Memory/UsedMB", used);
+
+        if (used > (runtime.maxMemory() / MB) * 0.9) {
+            MARSFaultManager.fault("Memory Heap Limit Approaching: " + used + "MB");
+        }
+    }
+}
+```
+
+### Visualizing Performance with 
+
+The MARSLib Web documentation allows you to directly interface with `.wpilog` files to build a visual memory and CPU footprint map using the Component below. 
+
+Upload your `logs/*.wpilog` file directly to analyze performance blocks!
+
+<PerformanceDashboard />
+
+### Comparative Analysis
+You should frequently baseline your memory and CPU performance under the `MARSBenchmark` suite. 
+
+1. **Baseline**: Run code.
+2. **Optimize**: Push updates.
+3. **Compare**: Run benchmark again. Focus primarily on standard-deviation spikes in time which indicate inconsistent heap availability!
+
+---
+
+## 📖 Further Reading
+
+- [Testing Guide](/contributing/testing-guide) - Performance testing philosophy
+- [Code Review Process](/contributing/code-review) - Review standards
