@@ -23,7 +23,6 @@ public void periodic() {
 }
 ```
 
-✅ **Preferred:**
 ```java
 // Reuse objects
 private final Pose2d pose = new Pose2d();
@@ -35,6 +34,9 @@ public void periodic() {
     pose.getRotation().setTheta(theta);
 }
 ```
+
+> **Warning: Mathematical Mutation**  
+> Do not pass structural pointers to objects that must preserve historic state (e.g. PID integrators). Always use `.clone()` if a downstream pipeline requires an immutable snapshot of an Ephemeral Struct.
 
 ### 🔒 Thread Safety
 All shared state must be thread-safe. Use `volatile` for primitives, concurrent collections, or synchronized blocks.
@@ -105,6 +107,74 @@ private static final double LOOP_PERIOD_SECS = 0.02;
 ```java
 private final SwerveDrive drive;
 private final VisionIO vision;
+```
+
+### 🚫 Banned: Hungarian Notation
+Using `m_` prefixes to dictate member variables is an archaic C++ practice that poisons Java IDE autocompletion and drastically reduces readability. MARSLib strictly bans Hungarian notation. We rely on modern syntax highlighting and the `this.` keyword for variable scope.
+
+❌ **Avoid:**
+```java
+private final SwerveDrive m_swerve;
+private double m_speed;
+
+public void setSpeed(double speed) {
+    m_speed = speed;
+}
+```
+
+✅ **Preferred:**
+```java
+private final SwerveDrive swerve;
+private double targetVelocity;
+
+public void setVelocity(double targetVelocity) {
+    this.targetVelocity = targetVelocity;
+}
+```
+
+### 📏 Explicit Unit Nomenclature
+A double named `speed` has destroyed billions of dollars in real-world aerospace missions through misunderstanding units. Passing raw sensor ticks or ambiguous integers into high-level functions is banned. Variables must describe precisely what they represent.
+
+❌ **Avoid:**
+```java
+// What is 'tolerance'? Degrees? Radians?
+// What is 'speed'? RPM? M/s? Volts?
+public void setAngle(double angle, double tolerance) { ... }
+public void runIntake(double speed) { ... }
+```
+
+✅ **Preferred:**
+```java
+// Mathematically explicit parameters
+public void setAngle(double radians, double toleranceRads) { ... }
+public void runIntake(double voltageOut) { ... }
+```
+
+### 🚫 The "Never Nester" Protocol
+Code that is deeply nested across multiple `if/else` and `for` blocks is fragile and requires immense cognitive load to debug under competition pressure. All FRC control loops must remain completely "flat". Utilize guard clauses and early `return` expressions immediately.
+
+❌ **Avoid:**
+```java
+public void shoot() {
+    if (systemReady) {
+        if (targetLocked) {
+            if (flywheelAtSpeed) {
+                feeder.run();
+            }
+        }
+    }
+}
+```
+
+✅ **Preferred:**
+```java
+public void shoot() {
+    if (!systemReady) return;
+    if (!targetLocked) return;
+    if (!flywheelAtSpeed) return;
+    
+    feeder.run();
+}
 ```
 
 ## Architecture Patterns

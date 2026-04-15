@@ -8,115 +8,25 @@ head: []
 <StandardHeader />
 
 <SplashContainer>
-  <RuleSection num="01" title="Nullify Hungarian Notation">
-    Using `m_` prefixes to dictate member variables is an archaic C++ practice that poisons Java IDE autocompletion and drastically reduces readability. MARSLib strictly bans Hungarian notation. We rely on modern syntax highlighting and the `this.` keyword for variable scope.
-
-    <CodeComparison>
-      <CodeViolation>
-        ```java
-        private final SwerveDrive m_swerve;
-        private double m_speed;
-
-        public void setSpeed(double speed) {
-            m_speed = speed;
-        }
-        ```
-      </CodeViolation>
-
-      <CodeStandard>
-        ```java
-        private final SwerveDrive swerve;
-        private double targetVelocity;
-
-        public void setVelocity(double targetVelocity) {
-            this.targetVelocity = targetVelocity;
-        }
-        ```
-      </CodeStandard>
-    </CodeComparison>
+  <RuleSection num="01" title="Championship-Grade Execution">
+    MARSLib is not built to participate; it is built to compete on the Einstein field. Every line of code, architectural decision, and kinematic algorithm in this framework is engineered to eliminate overhead, reduce latency, and maximize the hardware performance ceilings of FRC robots. We do not compromise on execution speed.
   </RuleSection>
 
-  <RuleSection num="02" title="The &#x22;Never Nester&#x22; Protocol">
-    Code that is deeply nested across multiple `if/else` and `for` blocks is fragile and requires immense cognitive load to debug under competition pressure. All FRC control loops must remain completely "flat". Utilize guard clauses and early `return` expressions immediately.
-
-    <CodeComparison>
-      <CodeViolation>
-        ```java
-        public void shoot() {
-            if (systemReady) {
-                if (targetLocked) {
-                    if (flywheelAtSpeed) {
-                        feeder.run();
-                    }
-                }
-            }
-        }
-        ```
-      </CodeViolation>
-
-      <CodeStandard>
-        ```java
-        public void shoot() {
-            if (!systemReady) return;
-            if (!targetLocked) return;
-            if (!flywheelAtSpeed) return;
-            
-            feeder.run();
-        }
-        ```
-      </CodeStandard>
-    </CodeComparison>
+  <RuleSection num="02" title="Zero-Allocation Performance">
+    To compete at the highest level, the JVM Garbage Collector cannot be allowed to interrupt a control loop. We enforce a strict **Zero-Allocation Architecture** in all active teleop and autonomous hot-paths. By utilizing statically-allocated Ephemeral Structs and avoiding the `new` keyword during matches, MARSLib ensures deterministic, sub-250µs execution loops.
   </RuleSection>
 
-  <RuleSection num="03" title="Explicit Unit Nomenclature">
-    A double named `speed` has destroyed billions of dollars in real-world aerospace missions through misunderstanding units. Passing raw sensor ticks or ambiguous integers into high-level functions is banned. Variables must describe precisely what they represent.
-
-    <CodeComparison>
-      <CodeViolation>
-        ```java
-        // What is 'tolerance'? Degrees? Radians?
-        // What is 'speed'? RPM? M/s? Volts?
-        public void setAngle(double angle, double tolerance) { ... }
-        public void runIntake(double speed) { ... }
-        ```
-      </CodeViolation>
-
-      <CodeStandard>
-        ```java
-        // Mathematically explicit parameters
-        public void setAngle(double radians, double toleranceRads) { ... }
-        public void runIntake(double voltageOut) { ... }
-        ```
-      </CodeStandard>
-    </CodeComparison>
+  <RuleSection num="03" title="AI Co-Development & Autonomy">
+    MARSLib is the first FRC framework expressly co-developed with Artificial Intelligence. To instruct Claude Code or Z.ai agents efficiently, we utilize explicit structuration and agentic block comments. Code that is actively governed by an AI skill carries the `@AGENT_ENFORCED` JavaDoc tag, establishing a symbiotic relationship between human engineers and autonomous agents, allowing for rapid iteration and elite code mining.
   </RuleSection>
 
-  <RuleSection num="04" title="Zero-Allocation Architecture">
-    Hot-paths (the 20ms and 4ms loops) must never use the `new` keyword to avoid JVM GC stalls. You must use globally instantiated Ephemeral Structs to proxy hardware parameters mathematically.
-
-    :::caution
-
-    #### Mathematical Mutation
-
-    Do not pass structural pointers to objects that must preserve historic state (e.g. PID integrators). Always use `.clone()` if a downstream pipeline requires an immutable snapshot of an Ephemeral Struct.
-
-    :::
-  </RuleSection>
-  <RuleSection num="05" title="Agentic Comments and Autonomy">
-    MARSLib is the first FRC framework expressly co-developed with Artificial Intelligence. To instruct Claude Code or Z.ai agents efficiently, developers must leave explicitly structured block comments prefixing the exact file or mathematical function requiring augmentation.
-
-    Code that is actively governed by an AI skill (such as Swerve Kinematics or Log Replay) must carry the `@AGENT_ENFORCED` JavaDoc tag to prevent human developers from breaking structured logic patterns.
+  <RuleSection num="04" title="AI-Integrated Mentorship">
+    Beyond raw code generation, MARSLib employs AI as an active educational mentor. The framework features a built-in AI Tutor skill designed specifically to override standard efficiency directives. Instead of just producing code, the AI acts as a Socratic mentor—patiently explaining the architecture, asking leading questions, and breaking down complex physics concepts. This guarantees that students truly learn engineering principles rather than just copying implementations.
   </RuleSection>
 
-  <RuleSection num="06" title="AI-Integrated Mentorship">
-    Beyond code generation, MARSLib employs AI as an active educational mentor. The framework features a built-in AI Tutor skill designed specifically to override standard efficiency directives. Instead of just producing code, the AI acts as a Socratic mentor—patiently explaining the architecture, asking leading questions, and breaking down complex physics or kinematics concepts. This guarantees that students truly learn engineering principles rather than just copying implementations.
-  </RuleSection>
-
-  <RuleSection num="07" title="Inclusive by Design (WCAG 2.1 AA)">
-    Engineering excellence is meaningless if it cannot be accessed by every student and developer. MARSLib fundamentally requires **WCAG 2.1 AA** compliance for all documentation, dashboards, and associated frontend repositories. 
+  <RuleSection num="05" title="Inclusive by Design (WCAG 2.1 AA)">
+    Engineering excellence is meaningless if it cannot be accessed by every student and developer. MARSLib fundamentally requires **WCAG 2.1 AA** compliance for all documentation, dashboards, and associated frontend repositories. We deploy autonomous Pa11y pipelines to enforce strict mechanical standards for screen readers, keyboard navigability, and high-contrast accessibility.
     
-    We employ **Pa11y** and headless browsers in our CI/CD pipelines, guided by autonomous AI agents, to enforce strict mechanical standards for screen readers, keyboard navigability, and high-contrast color palettes (such as our signature `AI Cyan`). 
-    
-    Read our full [Accessibility Commitment](/accessibility) to see how we guarantee open access to championship-grade robotics resources.
+    Read our full [Accessibility Commitment](/accessibility) to see how we guarantee open access to robotics resources.
   </RuleSection>
 </SplashContainer>
