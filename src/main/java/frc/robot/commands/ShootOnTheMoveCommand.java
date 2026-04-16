@@ -66,6 +66,18 @@ public class ShootOnTheMoveCommand extends Command {
   }
 
   @Override
+  public void initialize() {
+    this.thetaAlignController.reset();
+
+    // Sync limiter timestamp to avoid jumpy time-deltas
+    edu.wpi.first.math.kinematics.ChassisSpeeds robotSpeeds = swerveDrive.getChassisSpeeds();
+    edu.wpi.first.math.kinematics.ChassisSpeeds fieldSpeeds =
+        edu.wpi.first.math.kinematics.ChassisSpeeds.fromRobotRelativeSpeeds(
+            robotSpeeds, swerveDrive.getPose().getRotation());
+    tractionLimiter.reset(fieldSpeeds.vxMetersPerSecond, fieldSpeeds.vyMetersPerSecond);
+  }
+
+  @Override
   public void execute() {
     Pose2d currentPose = swerveDrive.getPose();
 
@@ -105,7 +117,11 @@ public class ShootOnTheMoveCommand extends Command {
     double feedforwardOmega = setpoint.isValid ? setpoint.chassisAngularFeedforward : 0.0;
 
     // Combine PID stabilization with dynamic target kinematic tracking
-    double finalOmega = pidOmega + feedforwardOmega;
+    // Clamp to 80% maximum rotation to ensure the swerve drive retains at least 20%
+    // output authority for lateral translation to maintain driver mobility
+    double unclampedOmega = pidOmega + feedforwardOmega;
+    double limit = swerveDrive.getConfig().maxAngularSpeedRadPerSec() * 0.8;
+    double finalOmega = edu.wpi.first.math.MathUtil.clamp(unclampedOmega, -limit, limit);
 
     // 6. Package field-centric commands into kinematics
     tractionLimiter.calculate(fieldVx, fieldVy, targetSpeeds);

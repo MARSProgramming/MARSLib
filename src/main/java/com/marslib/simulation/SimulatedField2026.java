@@ -243,7 +243,7 @@ public class SimulatedField2026 {
     return fuelBodies;
   }
 
-  private static Body createFuel(double x, double y) {
+  public static Body createFuel(double x, double y) {
     org.dyn4j.geometry.Circle circle = new org.dyn4j.geometry.Circle(FUEL_RADIUS_METERS);
     BodyFixture fixture = new BodyFixture(circle);
     fixture.setFriction(FUEL_FRICTION);

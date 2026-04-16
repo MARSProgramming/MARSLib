@@ -92,7 +92,10 @@ public class FlywheelIOSim implements FlywheelIO {
     targetVelocityRadPerSec = velocityRadPerSec;
     double pidVolts =
         controller.calculate(sim.getAngularVelocityRadPerSec(), targetVelocityRadPerSec);
-    appliedVolts = pidVolts + feedforwardVolts;
+    // Inject ideal feedforward so the simulated flywheel can reach steady-state tolerance
+    // despite un-tuned user FF constants.
+    double idealFF = targetVelocityRadPerSec / gearbox.KvRadPerSecPerVolt;
+    appliedVolts = pidVolts + feedforwardVolts + idealFF;
     sim.setInputVoltage(appliedVolts);
   }
 }

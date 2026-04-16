@@ -59,6 +59,8 @@ public class MARSSuperstructure extends SubsystemBase {
 
   private double goalCowlAngle = 0.0;
   private double goalIntakeAngle = 0.0;
+  private int internalPieceCount = 0;
+  private int simShooterCooldown = 0;
 
   private final Supplier<Double> tiltRadiansSupplier;
 
@@ -194,6 +196,82 @@ public class MARSSuperstructure extends SubsystemBase {
     logOutputs(currentState);
   }
 
+  @Override
+  public void simulationPeriodic() {
+    SuperstructureState currentState = stateMachine.getState();
+
+    // 1. Simulate Intaking
+    if (currentState == SuperstructureState.INTAKE_RUNNING) {
+      if (internalPieceCount < 40) { // Limit to 40 pieces as requested!
+        // Calculate intake position relative to robot pose
+        Pose2d robotPose = poseSupplier.get();
+        edu.wpi.first.math.geometry.Translation2d intakeCenter =
+            robotPose
+                .getTranslation()
+                .plus(
+                    new edu.wpi.first.math.geometry.Translation2d(-0.4, 0)
+                        .rotateBy(robotPose.getRotation()));
+
+        org.dyn4j.dynamics.Body overlappingFuel =
+            com.marslib.simulation.MARSPhysicsWorld.getInstance()
+                .getOverlappingFuel(intakeCenter, 0.4);
+        if (overlappingFuel != null) {
+          com.marslib.simulation.MARSPhysicsWorld.getInstance().removeFuel(overlappingFuel);
+          internalPieceCount++;
+          Logger.recordOutput(
+              "Superstructure/SimEvent", "Gathered Game Piece. Total: " + internalPieceCount);
+        }
+      }
+    }
+
+    // 2. Simulate Shooting
+    if (simShooterCooldown > 0) {
+      simShooterCooldown--;
+    } else if (currentState == SuperstructureState.SCORE
+        && shooter.isAtTolerance()
+        && cowl.isAtTolerance()
+        && internalPieceCount > 0) {
+      // Triggers exactly when we start feeding the piece into the shooter
+      internalPieceCount--;
+      simShooterCooldown = 15; // 300ms delay between shots
+      Logger.recordOutput(
+          "Superstructure/SimEvent", "Fired Shot! Remaining: " + internalPieceCount);
+
+      Pose2d robotPose = poseSupplier.get();
+      edu.wpi.first.math.geometry.Pose3d nozzlePose =
+          new edu.wpi.first.math.geometry.Pose3d(robotPose)
+              .plus(
+                  new edu.wpi.first.math.geometry.Transform3d(
+                      0.2,
+                      0,
+                      0.6,
+                      new edu.wpi.first.math.geometry.Rotation3d(0, -goalCowlAngle, 0)));
+
+      double launchSpeedMetersPerSec =
+          shooter.getVelocityRadPerSec()
+              * frc.robot.constants.ShooterConstants.SHOOTER_WHEEL_RADIUS_METERS;
+
+      // goalCowlAngle comes from EliteShooterMath which calculates pitch relative to the flat
+      // horizontal plane
+      double pitch = goalCowlAngle;
+
+      double launchSpeedX =
+          Math.cos(robotPose.getRotation().getRadians())
+              * launchSpeedMetersPerSec
+              * Math.cos(pitch);
+      double launchSpeedY =
+          Math.sin(robotPose.getRotation().getRadians())
+              * launchSpeedMetersPerSec
+              * Math.cos(pitch);
+      double launchSpeedZ = launchSpeedMetersPerSec * Math.sin(pitch);
+
+      com.marslib.simulation.SimulationProjectile shot =
+          new com.marslib.simulation.SimulationProjectile(
+              nozzlePose, launchSpeedX, launchSpeedY, launchSpeedZ);
+      com.marslib.simulation.MARSPhysicsWorld.getInstance().addProjectile(shot);
+    }
+  }
+
   /** Sets goalCowlAngle and goalIntakeAngle based on the current state. */
   private void updateMechanismTargets(
       SuperstructureState currentState, EliteShooterMath.EliteShooterSetpoint cachedShot) {
@@ -300,6 +378,7 @@ public class MARSSuperstructure extends SubsystemBase {
     Logger.recordOutput("Superstructure/GoalCowlAngle", goalCowlAngle);
     Logger.recordOutput("Superstructure/GoalIntakeAngle", goalIntakeAngle);
     Logger.recordOutput("Superstructure/CurrentState", currentState.name());
+    Logger.recordOutput("Superstructure/InternalPieceCount", internalPieceCount);
   }
 
   /**

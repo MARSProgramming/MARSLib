@@ -33,6 +33,19 @@ public class TractionControlLimiter {
   }
 
   /**
+   * Resets the limiter to the specified velocity and current timestamp. This prevents elapsed time
+   * drift from creating large calculation deltas across command scheduling boundaries.
+   *
+   * @param currentVx Field relative X velocity in meters per second.
+   * @param currentVy Field relative Y velocity in meters per second.
+   */
+  public void reset(double currentVx, double currentVy) {
+    this.lastVx = currentVx;
+    this.lastVy = currentVy;
+    this.lastTime = (double) Logger.getTimestamp();
+  }
+
+  /**
    * Calculates the max achievable velocity vector without slipping tires.
    *
    * @param targetVx Target requested X velocity.

@@ -72,6 +72,7 @@ public class MARSPhysicsWorld {
 
   private final World<Body> physicsWorld;
   private final Map<String, Body> mechanismBodies;
+  private final java.util.List<SimulationProjectile> projectiles = new java.util.ArrayList<>();
 
   private double frameCurrentDrawAmps = 0.0;
   private double simulatedVoltage = 12.0;
@@ -102,6 +103,35 @@ public class MARSPhysicsWorld {
     physicsWorld.addBody(body);
   }
 
+  public void addProjectile(SimulationProjectile p) {
+    projectiles.add(p);
+  }
+
+  public Body getOverlappingFuel(edu.wpi.first.math.geometry.Translation2d center, double radius) {
+    org.dyn4j.geometry.Vector2 vCenter =
+        new org.dyn4j.geometry.Vector2(center.getX(), center.getY());
+    for (int i = 0; i < physicsWorld.getBodyCount(); i++) {
+      Body body = physicsWorld.getBody(i);
+      if ("Fuel".equals(body.getUserData())) {
+        double distSq =
+            Math.pow(body.getTransform().getTranslationX() - vCenter.x, 2)
+                + Math.pow(body.getTransform().getTranslationY() - vCenter.y, 2);
+        if (distSq <= radius * radius) {
+          return body;
+        }
+      }
+    }
+    return null;
+  }
+
+  public void removeFuel(Body fuel) {
+    physicsWorld.removeBody(fuel);
+  }
+
+  public void addFuel(Body fuel) {
+    physicsWorld.addBody(fuel);
+  }
+
   public void addFrameCurrentDrawAmps(double amps) {
     frameCurrentDrawAmps += amps;
   }
@@ -109,6 +139,41 @@ public class MARSPhysicsWorld {
   public void update(double dtSeconds) {
     // Step the dyn4j environment
     physicsWorld.step(1, dtSeconds);
+
+    // Update 3D Projectiles (2.5D logic)
+    java.util.List<SimulationProjectile> spawnedProjectiles = new java.util.ArrayList<>();
+    java.util.Iterator<SimulationProjectile> iter = projectiles.iterator();
+    while (iter.hasNext()) {
+      SimulationProjectile p = iter.next();
+      p.update(dtSeconds);
+
+      // Check for scoring first
+      if (SimulatedHub2026.checkScoredBlue(p)) {
+        Logger.recordOutput("PhysicsWorld/ScoringEvents", "Blue Scored!");
+        iter.remove();
+        // Spray a replacement downwards
+        spawnedProjectiles.add(
+            SimulatedHub2026.generatePostScoreProjectile(SimulatedHub2026.BLUE_HUB_POSE));
+        continue; // handled, skip grounding check
+      } else if (SimulatedHub2026.checkScoredRed(p)) {
+        Logger.recordOutput("PhysicsWorld/ScoringEvents", "Red Scored!");
+        iter.remove();
+        spawnedProjectiles.add(
+            SimulatedHub2026.generatePostScoreProjectile(SimulatedHub2026.RED_HUB_POSE));
+        continue;
+      }
+
+      // Check for grounding
+      if (p.isGrounded()) {
+        iter.remove();
+        // Spawns a physical dyn4j body where it landed
+        Body newFuel = SimulatedField2026.createFuel(p.getPose3d().getX(), p.getPose3d().getY());
+        // Transfer xy velocity for sliding
+        newFuel.setLinearVelocity(p.getVelocityX(), p.getVelocityY());
+        physicsWorld.addBody(newFuel);
+      }
+    }
+    projectiles.addAll(spawnedProjectiles);
 
     // Compute battery voltage sag
     Logger.recordOutput("PhysicsWorld/FrameCurrentDraw_A", frameCurrentDrawAmps);
@@ -178,6 +243,12 @@ public class MARSPhysicsWorld {
         fuelPoses.add(new Pose3d(px, py, 0.075, new Rotation3d())); // Fuel lies 7.5cm above ground
       }
     }
+
+    // Concat active projectiles into the visual stream
+    for (SimulationProjectile p : projectiles) {
+      fuelPoses.add(p.getPose3d());
+    }
+
     Logger.recordOutput("PhysicsWorld/GamePieces", fuelPoses.toArray(new Pose3d[0]));
   }
 }

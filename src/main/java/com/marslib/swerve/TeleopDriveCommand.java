@@ -67,6 +67,14 @@ public class TeleopDriveCommand extends Command {
   @Override
   public void initialize() {
     targetHeading = swerveDrive.getPose().getRotation();
+
+    // Reset trajectory limiters using actual physical speeds to prevent time-delta acceleration
+    // spikes
+    ChassisSpeeds robotSpeeds = swerveDrive.getChassisSpeeds();
+    ChassisSpeeds fieldSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(robotSpeeds, targetHeading);
+
+    tractionLimiter.reset(fieldSpeeds.vxMetersPerSecond, fieldSpeeds.vyMetersPerSecond);
+    omegaLimiter.reset(fieldSpeeds.omegaRadiansPerSecond);
   }
 
   @Override
