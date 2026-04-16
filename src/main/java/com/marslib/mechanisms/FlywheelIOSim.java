@@ -92,10 +92,12 @@ public class FlywheelIOSim implements FlywheelIO {
     targetVelocityRadPerSec = velocityRadPerSec;
     double pidVolts =
         controller.calculate(sim.getAngularVelocityRadPerSec(), targetVelocityRadPerSec);
-    // Inject ideal feedforward so the simulated flywheel can reach steady-state tolerance
-    // despite un-tuned user FF constants.
+    // Use mathematical ideal feedforward instead of tuning-based feedforward inside simulation
+    // to guarantee settling at tolerance regardless of tuning status, avoiding double-application.
     double idealFF = targetVelocityRadPerSec / gearbox.KvRadPerSecPerVolt;
-    appliedVolts = pidVolts + feedforwardVolts + idealFF;
+
+    double maxVoltage = Math.max(MARSPhysicsWorld.getInstance().getSimulatedVoltage(), 0.01);
+    appliedVolts = Math.max(-maxVoltage, Math.min(maxVoltage, pidVolts + idealFF));
     sim.setInputVoltage(appliedVolts);
   }
 }

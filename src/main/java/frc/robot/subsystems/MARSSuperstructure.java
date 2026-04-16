@@ -367,10 +367,17 @@ public class MARSSuperstructure extends SubsystemBase {
    */
   private EliteShooterMath.EliteShooterSetpoint calculateDynamicShot() {
     Translation3d targetHub = AllianceUtil.isRed() ? redHub3dCache : blueHub3dCache;
+    edu.wpi.first.math.geometry.Pose2d currentPose = poseSupplier.get();
+
+    // The supplier inherently provides robot-relative speeds based on SwerveDrive convention.
+    // Convert to field-relative speeds expected by the mathematical solver.
+    edu.wpi.first.math.kinematics.ChassisSpeeds fieldSpeeds =
+        edu.wpi.first.math.kinematics.ChassisSpeeds.fromRobotRelativeSpeeds(
+            fieldSpeedsSupplier.get(), currentPose.getRotation());
 
     return EliteShooterMath.calculateShotOnTheMove(
-        poseSupplier.get(),
-        fieldSpeedsSupplier.get(),
+        currentPose,
+        fieldSpeeds,
         targetHub,
         FieldConstants.GAME_PIECE_REST_HEIGHT_METERS,
         ShooterConstants.PROJECTILE_SPEED_MPS,
