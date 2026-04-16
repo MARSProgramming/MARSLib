@@ -14,7 +14,11 @@ FRC robot control loops run at 20ms (50Hz) or 4ms (250Hz for Odometry). The JVM 
 Never allow `new Pose2d()`, `new ChassisSpeeds()`, or new Array instantiations to exist inside any `periodic()` block.
 **Audit Action**: Identify recurring object creations in the main teleop loops or odometry threads. If found, refactor them into pre-allocated `static final` caches.
 
-### Rule B: No `System.gc()` Calls
+### Rule B: No Dynamic Array Allocations on Hot Paths
+Dynamically allocating arrays in periodic hot paths (e.g., `collection.toArray(new Type[0])`) will trigger rolling GC stalls.
+**Audit Action**: Sweep the 50Hz and 250Hz loops and IO layers for `.toArray(new `. These must be replaced with statically pre-allocated arrays protected by locks/atomic references, or avoided completely via deterministic index sweeps.
+
+### Rule C: No `System.gc()` Calls
 It is a dangerous anti-pattern to manually call `System.gc()` inside `Robot.disabledInit()`. Doing so triggers "Stop-The-World" pauses that can desync NetworkTables and CAN bus reporting.
 **Audit Action**: If `System.gc()` exists, delete it immediately. Let the generational GC handle paused memory implicitly.
 
@@ -35,6 +39,14 @@ A purely mathematical audit isn't enough; the math must respect the physical con
 ### Rule D: Unit Safety & Explicit Conversions
 Hardcoded magic numbers for conversion factors (like `* 0.0174533`) create unreadable logic and rounding errors.
 **Audit Action**: Replace all literal conversion factors natively with WPILib `edu.wpi.first.math.util.Units.degreesToRadians(x)` or the explicit Java Units API (`Meters.of(x)`).
+
+### Rule E: NaN Bounds Checking in Interpolations
+Algorithms running regression bisection, pose bisection, or interpolating through degenerate coordinates inherently run the risk of calculating an un-handled `NaN` or `Infinity`.
+**Audit Action**: All mathematical interpolations guessing at offsets or angles must be wrapped in `Double.isFinite(guess)` bounds-checks before attempting to propagate into output models.
+
+### Rule F: Kinematic Steering Reversals
+Swerve module kinematics occasionally synthesize negative absolute speeds. If ignored, the module steering angle will mistakenly synthesize the wrong vector limits.
+**Audit Action**: Swerve inverse kinematics calculating desired headings must conditionally identify `speedMetersPerSecond < 0.0` and flip the vector `rotateBy(Rotation2d.fromDegrees(180))`.
 
 ## 3. API Safety & Reliability Design
 
@@ -81,7 +93,11 @@ Subsystems that exceed 400 lines of code (like Monolithic Swerve Drives) are imp
 Deeply nested logic (e.g., IF statements nested 3+ levels deep) hides bugs and makes mathematical tracking impossible.
 **Audit Action**: Audit control loops for deep nesting. Enforce the use of Guard Clauses (early returns) to flatten the method structure and make the primary execution path obvious.
 
-### Rule C: Static Analysis & CI Enforcement
+### Rule C: No Raw Stack Traces
+Unhandled exceptions triggering `e.printStackTrace()` will flood standard out blindly, bypassing the Driver Station error console logic entirely.
+**Audit Action**: Ban all usages of `e.printStackTrace()`. Any caught exceptions must utilize `edu.wpi.first.wpilibj.DriverStation.reportError()` to correctly surface fatal conditions in the driver's layout.
+
+### Rule D: Static Analysis & CI Enforcement
 Bad code is automatically detected by Gradle.
 **Audit Action**: Run `./gradlew pmdMain checkstyleMain spotlessCheck` as the first line of defense to algorithmically identify magic numbers, unused imports, empty catch blocks, and missing Javadocs before manual inspection begins.
 
@@ -277,6 +293,10 @@ AdvantageScope requires a `"version"` key at the top level of the layout JSON. W
 ### Rule C: Layout Must Reference Correct Field Year
 The `"field"` and `"game"` keys in 2D/3D tabs must match the current competition year (e.g., `"FRC:2026 Field"`). An old field reference will render the robot at the wrong coordinates.
 **Audit Action**: `grep -i "field\|game" advantagescope_layout.json` — verify all results reference the current season's field.
+
+### Rule D: AdvantageScope 3D Null-Zone Safeties
+3D visualization tabs (`"type": 3`) completely require the active bounding box `"game": "FRC:2026 Field"` parameter inside or alongside the `controllerUUID` object. Missing this parameter renders ghosts and models inside a featureless void.
+**Audit Action**: Evaluate all AdvantageScope and Dashboard `.json` files. For any object tab featuring `"type": 3`, ensure a sibling `"game"` configuration exists securely to map the rendering context.
 
 ## 17. Dashboard Configuration Integrity
 
