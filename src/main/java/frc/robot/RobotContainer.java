@@ -422,14 +422,15 @@ public class RobotContainer {
               return Math.acos(Math.cos(gyro.pitchPositionRad) * Math.cos(gyro.rollPositionRad));
             });
 
-    // Configure PathPlanner AutoBuilder AFTER construction — composition root owns this
+    // Configure PathPlanner AutoBuilder AFTER construction — composition root owns
+    // this
     swerveDrive.configurePathPlanner();
 
     if (ModeConstants.CURRENT_MODE == ModeConstants.Mode.SIM) {
       // Default starting position away from walls to prevent physics collision
       swerveDrive.resetPose(
           new edu.wpi.first.math.geometry.Pose2d(
-              4.0, 4.0, new edu.wpi.first.math.geometry.Rotation2d()));
+              3.0, 3.0, new edu.wpi.first.math.geometry.Rotation2d()));
     }
 
     // Initialize the Auto Chooser
@@ -437,7 +438,8 @@ public class RobotContainer {
         new LoggedDashboardChooser<>(
             "Auto Chooser", com.pathplanner.lib.auto.AutoBuilder.buildAutoChooser());
 
-    // Task 1: Asynchronously pre-load all PathPlanner trajectories to prevent match-start CPU
+    // Task 1: Asynchronously pre-load all PathPlanner trajectories to prevent
+    // match-start CPU
     // stutter
     Thread trajectoryPreloader =
         new Thread(

@@ -42,6 +42,9 @@ public class SwerveChassisPhysics {
 
     // a = mu * g
     maxAccelerationMps2 = staticFrictionCoef * 9.81;
+
+    // Register with world
+    MARSPhysicsWorld.getInstance().registerMechanismBody("SwerveDrive", body);
   }
 
   public void setPose(Pose2d pose) {
