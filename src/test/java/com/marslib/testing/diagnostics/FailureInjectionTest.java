@@ -104,9 +104,6 @@ public class FailureInjectionTest {
     // Inject a stale timestamp into the SwerveOdometry thread to simulate a CAN bus failure
     // where the IMU stops pushing data to the StatusSignals.
 
-    com.marslib.swerve.PhoenixOdometryThread thread =
-        com.marslib.swerve.PhoenixOdometryThread.getInstance();
-
     // The test validates that the pose estimator drops measurements older than 1.0 second
     // rather than dragging odometry backwards or causing NaNs.
     edu.wpi.first.math.estimator.SwerveDrivePoseEstimator estimator =

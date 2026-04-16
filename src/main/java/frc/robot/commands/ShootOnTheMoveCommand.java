@@ -30,10 +30,6 @@ public class ShootOnTheMoveCommand extends Command {
       new com.marslib.swerve.TractionControlLimiter(
           frc.robot.constants.DriveConstants.TELEOP_LINEAR_ACCEL_LIMIT);
 
-  // Proper physics conversion: ω = v / r (angular velocity = linear velocity / wheel radius)
-  private static final double VELOCITY_TO_RAD_PER_SEC =
-      1.0 / frc.robot.constants.ShooterConstants.SHOOTER_WHEEL_RADIUS_METERS;
-
   private final EliteShooterSetpoint shotCache = new EliteShooterSetpoint();
   private final ChassisSpeeds targetSpeeds = new ChassisSpeeds();
 

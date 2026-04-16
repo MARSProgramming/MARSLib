@@ -19,8 +19,6 @@ import frc.robot.commands.*;
 import frc.robot.constants.FieldConstants;
 import frc.robot.constants.ModeConstants;
 import frc.robot.constants.ShooterConstants;
-import frc.robot.subsystems.MARSCowl;
-import frc.robot.subsystems.MARSShooter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,8 +33,6 @@ import org.junit.jupiter.api.Test;
 public class ShootOnTheMoveCommandTest {
 
   private SwerveDrive swerveDrive;
-  private MARSCowl cowl;
-  private MARSShooter shooter;
 
   @BeforeEach
   public void setUp() {
@@ -56,16 +52,6 @@ public class ShootOnTheMoveCommandTest {
 
     swerveDrive = new SwerveDrive(modules, gyroSim, powerManager, config);
     swerveDrive.resetPose(new Pose2d(0, 0, new Rotation2d()));
-
-    cowl =
-        new MARSCowl(
-            new com.marslib.mechanisms.RotaryMechanismIOSim("Cowl", 50.0, 0.5, 0.5), powerManager);
-    shooter =
-        new MARSShooter(
-            "TestShooter",
-            new com.marslib.mechanisms.FlywheelIOSim(
-                edu.wpi.first.math.system.plant.DCMotor.getKrakenX60Foc(1), 1.0, 0.05),
-            powerManager);
   }
 
   @AfterEach
@@ -186,11 +172,11 @@ public class ShootOnTheMoveCommandTest {
     Translation2d target = FieldConstants.BLUE_HUB_POS; // (4.62, 4.03)
     double vx = 0.0;
     double vy = 0.0;
-    double s = ShooterConstants.PROJECTILE_SPEED_MPS; // 15.0
+    double speedMps = ShooterConstants.PROJECTILE_SPEED_MPS; // 15.0
 
-    TofResult result = solveTof(robotPos, target, vx, vy, s);
+    TofResult result = solveTof(robotPos, target, vx, vy, speedMps);
 
-    double expectedTof = robotPos.getDistance(target) / s;
+    double expectedTof = robotPos.getDistance(target) / speedMps;
     assertEquals(
         expectedTof, result.timeOfFlight, 0.001, "Stationary TOF should be distance/speed");
 
@@ -210,9 +196,9 @@ public class ShootOnTheMoveCommandTest {
     Translation2d target = FieldConstants.BLUE_HUB_POS;
     double vx = 3.0; // Moving 3 m/s along X
     double vy = 0.0;
-    double s = ShooterConstants.PROJECTILE_SPEED_MPS;
+    double speedMps = ShooterConstants.PROJECTILE_SPEED_MPS;
 
-    TofResult result = solveTof(robotPos, target, vx, vy, s);
+    TofResult result = solveTof(robotPos, target, vx, vy, speedMps);
 
     // Virtual target should be shifted BACKWARDS from robot velocity
     // i.e., virtualX = target.x - vx * tof → shifted negatively
@@ -232,17 +218,17 @@ public class ShootOnTheMoveCommandTest {
   public void testAimAngleDivergesFromStaticWhenMoving() {
     Translation2d robotPos = new Translation2d(2, 0);
     Translation2d target = FieldConstants.BLUE_HUB_POS;
-    double s = ShooterConstants.PROJECTILE_SPEED_MPS;
+    double speedMps = ShooterConstants.PROJECTILE_SPEED_MPS;
 
     // Static aim angle
-    TofResult stationary = solveTof(robotPos, target, 0, 0, s);
+    TofResult stationary = solveTof(robotPos, target, 0, 0, speedMps);
     double staticAngle =
         Math.atan2(
             stationary.virtualTarget.getY() - robotPos.getY(),
             stationary.virtualTarget.getX() - robotPos.getX());
 
     // Moving aim angle
-    TofResult moving = solveTof(robotPos, target, 3.0, 0, s);
+    TofResult moving = solveTof(robotPos, target, 3.0, 0, speedMps);
     double movingAngle =
         Math.atan2(
             moving.virtualTarget.getY() - robotPos.getY(),
@@ -264,9 +250,9 @@ public class ShootOnTheMoveCommandTest {
     // Robot moving AWAY from target faster than projectile — impossible to intercept
     double vx = -20.0;
     double vy = -20.0;
-    double s = 1.0; // Slow projectile — can't catch the virtual target
+    double speedMps = 1.0; // Slow projectile — can't catch the virtual target
 
-    TofResult result = solveTof(robotPos, target, vx, vy, s);
+    TofResult result = solveTof(robotPos, target, vx, vy, speedMps);
 
     // Should fallback without crashing
     assertTrue(result.timeOfFlight > 0, "Fallback TOF should be positive");
@@ -292,19 +278,22 @@ public class ShootOnTheMoveCommandTest {
    * isolation without needing a full SwerveDrive + PIDController.
    */
   private static TofResult solveTof(
-      Translation2d robotPos, Translation2d target, double vx, double vy, double s) {
+      Translation2d robotPos, Translation2d target, double vx, double vy, double speedMps) {
     double dx = target.getX() - robotPos.getX();
     double dy = target.getY() - robotPos.getY();
 
-    double a = (s * s) - ((vx * vx) + (vy * vy));
+    @SuppressWarnings("PMD.ShortVariable")
+    double a = (speedMps * speedMps) - ((vx * vx) + (vy * vy));
+    @SuppressWarnings("PMD.ShortVariable")
     double b = -2.0 * ((dx * vx) + (dy * vy));
+    @SuppressWarnings("PMD.ShortVariable")
     double c = -((dx * dx) + (dy * dy));
 
     double discriminant = (b * b) - (4.0 * a * c);
     double timeOfFlight;
 
     if (discriminant < 0.0 || a == 0.0) {
-      timeOfFlight = robotPos.getDistance(target) / Math.max(s, 0.01);
+      timeOfFlight = robotPos.getDistance(target) / Math.max(speedMps, 0.01);
     } else {
       double t1 = (-b + Math.sqrt(discriminant)) / (2.0 * a);
       double t2 = (-b - Math.sqrt(discriminant)) / (2.0 * a);
@@ -312,7 +301,7 @@ public class ShootOnTheMoveCommandTest {
       if (t1 > 0.0 && t2 > 0.0) timeOfFlight = Math.min(t1, t2);
       else if (t1 > 0.0) timeOfFlight = t1;
       else if (t2 > 0.0) timeOfFlight = t2;
-      else timeOfFlight = robotPos.getDistance(target) / Math.max(s, 0.01);
+      else timeOfFlight = robotPos.getDistance(target) / Math.max(speedMps, 0.01);
     }
 
     double virtualTargetX = target.getX() - (vx * timeOfFlight);

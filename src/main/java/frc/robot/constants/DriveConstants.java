@@ -20,8 +20,8 @@ public final class DriveConstants {
 
   public static final double TELEOP_LINEAR_ACCEL_LIMIT = 15.0;
   public static final double TELEOP_OMEGA_ACCEL_LIMIT = Math.PI * 6.0;
-  public static final double HEADING_KP = 4.0;
-  public static final double HEADING_KD = 0.4;
+  public static final double HEADING_KP = 2.5;
+  public static final double HEADING_KD = 0.2;
 
   public static final double TELEMETRY_HZ = 50.0;
   public static final double ODOMETRY_HZ = 250.0;

@@ -447,9 +447,10 @@ public class RobotContainer {
       // practice, mirroring full-field payloads.
       java.util.Random rnd = new java.util.Random();
       for (int i = 0; i < 60; i++) {
-        double x = 4.0 + rnd.nextDouble() * 8.0; // Between X 4.0 and 12.0
-        double y = 2.0 + rnd.nextDouble() * 4.0; // Between Y 2.0 and 6.0
-        org.dyn4j.dynamics.Body fuel = com.marslib.simulation.SimulatedField2026.createFuel(x, y);
+        double fuelXCoord = 4.0 + rnd.nextDouble() * 8.0; // Between X 4.0 and 12.0
+        double fuelYCoord = 2.0 + rnd.nextDouble() * 4.0; // Between Y 2.0 and 6.0
+        org.dyn4j.dynamics.Body fuel =
+            com.marslib.simulation.SimulatedField2026.createFuel(fuelXCoord, fuelYCoord);
         com.marslib.simulation.MARSPhysicsWorld.getInstance().addFuel(fuel);
       }
     }

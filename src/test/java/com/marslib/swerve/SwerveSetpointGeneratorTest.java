@@ -185,12 +185,6 @@ public class SwerveSetpointGeneratorTest {
     limits.maxDriveAcceleration = 1000.0;
     limits.maxSteeringVelocity = Math.PI * 4;
 
-    // Initially rotating at +1 rad/s
-    ChassisSpeeds rotPlus = new ChassisSpeeds(0.0, 0.0, 1.0);
-    SwerveModuleState[] statesPlus = kinematics.toSwerveModuleStates(rotPlus);
-    SwerveSetpointGenerator.SwerveSetpoint prevState =
-        new SwerveSetpointGenerator.SwerveSetpoint(rotPlus, statesPlus);
-
     // Goal is to rotate at -1 rad/s.
     // However, to prevent `allModulesShouldFlip` from returning TRUE, we append a small translation
     // to ONE module's axis? No, actually since the modules are centered around robot origin, pure
@@ -203,7 +197,6 @@ public class SwerveSetpointGeneratorTest {
 
     // Rotating around Module 0 means chassis moves with vx = omega * y, vy = -omega * x
     ChassisSpeeds rotAroundMod0Plus = new ChassisSpeeds(y, -x, 1.0);
-    SwerveModuleState[] rotAround0States = kinematics.toSwerveModuleStates(rotAroundMod0Plus);
 
     // Ensure Mod 0 doesn't just bypass the epsilon check entirely by giving it a miniscule heading
     // difference. Actually we just generate a valid setpoint first so the internal cache is primed.

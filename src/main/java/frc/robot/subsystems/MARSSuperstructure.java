@@ -55,13 +55,13 @@ public class MARSSuperstructure extends SubsystemBase {
   // Caches for zero-allocation performance in hot loop
   private final EliteShooterMath.EliteShooterSetpoint shotCache =
       new EliteShooterMath.EliteShooterSetpoint();
-  private final ChassisSpeeds zeroSpeedsCache = new ChassisSpeeds();
   private final Translation3d redHub3dCache = FieldConstants.RED_HUB_3D;
   private final Translation3d blueHub3dCache = FieldConstants.BLUE_HUB_3D;
 
+  // Math State
   private double goalCowlAngle = 0.0;
   private double goalIntakeAngle = 0.0;
-  private int internalPieceCount = 0;
+  private int internalPieceCount = edu.wpi.first.wpilibj.RobotBase.isSimulation() ? 40 : 0;
   private int simShooterCooldown = 0;
 
   private final Supplier<Double> tiltRadiansSupplier;
@@ -203,6 +203,7 @@ public class MARSSuperstructure extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
+    System.out.println("SIMULATION PERIODIC CALLED");
     SuperstructureState currentState = stateMachine.getState();
 
     // 1. Simulate Intaking

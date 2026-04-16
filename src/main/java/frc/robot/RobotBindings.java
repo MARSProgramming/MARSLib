@@ -57,26 +57,30 @@ public final class RobotBindings {
             new ShootOnTheMoveCommand(
                 swerveDrive,
                 () -> {
-                  double raw =
-                      -Math.pow(
-                              edu.wpi.first.math.MathUtil.applyDeadband(controller.getLeftY(), 0.1),
-                              3.0)
-                          * swerveConfig.maxLinearSpeedMps();
-                  if (AllianceUtil.isRed()) {
-                    raw = -raw;
-                  }
-                  return raw;
+                  edu.wpi.first.math.kinematics.ChassisSpeeds s =
+                      new edu.wpi.first.math.kinematics.ChassisSpeeds();
+                  com.marslib.swerve.TeleopDriveMath.computeFieldRelativeSpeeds(
+                      controller.getLeftY(),
+                      controller.getLeftX(),
+                      0.0,
+                      swerveConfig.maxLinearSpeedMps(),
+                      0.0,
+                      AllianceUtil.isRed(),
+                      s);
+                  return s.vxMetersPerSecond;
                 },
                 () -> {
-                  double raw =
-                      -Math.pow(
-                              edu.wpi.first.math.MathUtil.applyDeadband(controller.getLeftX(), 0.1),
-                              3.0)
-                          * swerveConfig.maxLinearSpeedMps();
-                  if (AllianceUtil.isRed()) {
-                    raw = -raw;
-                  }
-                  return raw;
+                  edu.wpi.first.math.kinematics.ChassisSpeeds s =
+                      new edu.wpi.first.math.kinematics.ChassisSpeeds();
+                  com.marslib.swerve.TeleopDriveMath.computeFieldRelativeSpeeds(
+                      controller.getLeftY(),
+                      controller.getLeftX(),
+                      0.0,
+                      swerveConfig.maxLinearSpeedMps(),
+                      0.0,
+                      AllianceUtil.isRed(),
+                      s);
+                  return s.vyMetersPerSecond;
                 }))
         .onTrue(superstructure.setAbsoluteState(MARSSuperstructure.SuperstructureState.SCORE))
         .onFalse(superstructure.setAbsoluteState(MARSSuperstructure.SuperstructureState.STOWED));

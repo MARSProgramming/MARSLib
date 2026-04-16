@@ -54,7 +54,7 @@ class SwerveDiagnosticsTest {
     Command cmd = diagnostics.finalClimbLineupCommand();
     assertNotNull(cmd);
 
-    cmd.schedule();
+    edu.wpi.first.wpilibj2.command.CommandScheduler.getInstance().schedule(cmd);
 
     // The sequence has two 0.5s timeout run commands + finallyDo. 1.5 seconds total max.
     for (int i = 0; i < 75; i++) {
@@ -71,7 +71,7 @@ class SwerveDiagnosticsTest {
     Command cmd = diagnostics.getSystemCheckCommand();
     assertNotNull(cmd);
 
-    cmd.schedule();
+    edu.wpi.first.wpilibj2.command.CommandScheduler.getInstance().schedule(cmd);
 
     // Run the scheduler to advance the 1.5 second waits and hit all lambdas
     for (int i = 0; i < 150; i++) { // 3 seconds of simulated time
@@ -84,7 +84,7 @@ class SwerveDiagnosticsTest {
         .set(true);
 
     Command cmdFail = diagnostics.getSystemCheckCommand();
-    cmdFail.schedule();
+    edu.wpi.first.wpilibj2.command.CommandScheduler.getInstance().schedule(cmdFail);
     for (int i = 0; i < 150; i++) { // 3 seconds of simulated time
       edu.wpi.first.wpilibj.simulation.SimHooks.stepTiming(0.02);
       edu.wpi.first.wpilibj2.command.CommandScheduler.getInstance().run();
