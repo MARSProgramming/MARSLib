@@ -93,7 +93,7 @@ public class AprilTagVisionIOSim implements AprilTagVisionIO {
 
     // Setup camera sim properties
     SimCameraProperties cameraProp = new SimCameraProperties();
-    cameraProp.setCalibration(960, 720, edu.wpi.first.math.geometry.Rotation2d.fromDegrees(90));
+    cameraProp.setCalibration(480, 360, edu.wpi.first.math.geometry.Rotation2d.fromDegrees(90));
     cameraProp.setCalibError(0.25, 0.08); // Simulate realistic calibration errors
     cameraProp.setFPS(20); // 20 FPS simulated
     cameraProp.setAvgLatencyMs(35);
