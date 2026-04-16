@@ -125,6 +125,31 @@ public class MARSPhysicsWorld {
     exportToAdvantageScope();
   }
 
+  public double getTerrainZHeight(
+      edu.wpi.first.math.geometry.Translation2d point, String terrainId) {
+    org.dyn4j.geometry.Vector2 vPoint = new org.dyn4j.geometry.Vector2(point.getX(), point.getY());
+    for (int i = 0; i < physicsWorld.getBodyCount(); i++) {
+      Body body = physicsWorld.getBody(i);
+      if (terrainId.equals(body.getUserData())) {
+        if (body.contains(vPoint)) {
+          org.dyn4j.geometry.AABB aabb = body.createAABB();
+          // Distance to nearest edge
+          double distLeft = vPoint.x - aabb.getMinX();
+          double distRight = aabb.getMaxX() - vPoint.x;
+          double distBottom = vPoint.y - aabb.getMinY();
+          double distTop = aabb.getMaxY() - vPoint.y;
+
+          double distEdge = Math.min(Math.min(distLeft, distRight), Math.min(distBottom, distTop));
+
+          // 15 degree slope rising from the edges, capping at 6.5 inches MAX
+          double slopeHeightMeters = distEdge * Math.tan(Math.toRadians(15.0));
+          return Math.min(slopeHeightMeters, edu.wpi.first.math.util.Units.inchesToMeters(6.5));
+        }
+      }
+    }
+    return 0.0;
+  }
+
   public double getSimulatedVoltage() {
     return simulatedVoltage;
   }

@@ -16,12 +16,18 @@ import org.dyn4j.geometry.Rectangle;
 public class SwerveChassisPhysics {
   private final Body body;
   private final double maxAccelerationMps2;
+  private final edu.wpi.first.math.geometry.Translation2d[] moduleLocations;
+
+  private double currentSimPitch = 0.0;
+  private double currentSimRoll = 0.0;
 
   public SwerveChassisPhysics(
       double massKg,
       double bumperWidthMeters,
       double bumperLengthMeters,
-      double staticFrictionCoef) {
+      double staticFrictionCoef,
+      edu.wpi.first.math.geometry.Translation2d[] moduleLocations) {
+    this.moduleLocations = moduleLocations;
     body = new Body();
     // In dyn4j, Geometry.createRectangle centers on (0,0)
     Rectangle rectangle = Geometry.createRectangle(bumperLengthMeters, bumperWidthMeters);
@@ -63,6 +69,14 @@ public class SwerveChassisPhysics {
         new Rotation2d(body.getTransform().getRotationAngle()));
   }
 
+  public double getSimPitch() {
+    return currentSimPitch;
+  }
+
+  public double getSimRoll() {
+    return currentSimRoll;
+  }
+
   public Body getBody() {
     return body;
   }
@@ -72,15 +86,54 @@ public class SwerveChassisPhysics {
    * exceeds the tires' grip limit (max acceleration), the robot mathematically slips.
    */
   public void applyKinematicSpeeds(ChassisSpeeds requestedSpeeds, double dtSeconds) {
+    // 4-Wheel Raycast for Terrain
+    double[] zHeights = new double[4];
+    int wheelsOnBump = 0;
+
+    // Front-Left, Front-Right, Back-Left, Back-Right are standard layout
+    Pose2d currentPose = getPose();
+
+    for (int i = 0; i < 4; i++) {
+      edu.wpi.first.math.geometry.Translation2d fieldPos =
+          currentPose
+              .transformBy(
+                  new edu.wpi.first.math.geometry.Transform2d(moduleLocations[i], new Rotation2d()))
+              .getTranslation();
+      zHeights[i] = MARSPhysicsWorld.getInstance().getTerrainZHeight(fieldPos, "TrenchBump");
+      if (zHeights[i] > 0.001) {
+        wheelsOnBump++;
+      }
+    }
+
+    // Simple 3D plane approximation
+    double wheelbase = Math.abs(moduleLocations[0].getX() - moduleLocations[2].getX());
+    double trackwidth = Math.abs(moduleLocations[0].getY() - moduleLocations[1].getY());
+
+    // Pitch is difference between front and back
+    double frontZ = (zHeights[0] + zHeights[1]) / 2.0;
+    double backZ = (zHeights[2] + zHeights[3]) / 2.0;
+    currentSimPitch =
+        -Math.atan2(frontZ - backZ, wheelbase); // negative because nose up is negative pitch
+
+    // Roll is difference between left and right
+    double leftZ = (zHeights[0] + zHeights[2]) / 2.0;
+    double rightZ = (zHeights[1] + zHeights[3]) / 2.0;
+    currentSimRoll = Math.atan2(leftZ - rightZ, trackwidth);
+
+    // Resistance modifier
+    double speedPenalty = Math.pow(0.85, wheelsOnBump);
+
     double currentVx = body.getLinearVelocity().x;
     double currentVy = body.getLinearVelocity().y;
 
     double cos = Math.cos(body.getTransform().getRotationAngle());
     double sin = Math.sin(body.getTransform().getRotationAngle());
     double fieldTargetVx =
-        requestedSpeeds.vxMetersPerSecond * cos - requestedSpeeds.vyMetersPerSecond * sin;
+        (requestedSpeeds.vxMetersPerSecond * cos - requestedSpeeds.vyMetersPerSecond * sin)
+            * speedPenalty;
     double fieldTargetVy =
-        requestedSpeeds.vxMetersPerSecond * sin + requestedSpeeds.vyMetersPerSecond * cos;
+        (requestedSpeeds.vxMetersPerSecond * sin + requestedSpeeds.vyMetersPerSecond * cos)
+            * speedPenalty;
 
     double dVx = fieldTargetVx - currentVx;
     double dVy = fieldTargetVy - currentVy;

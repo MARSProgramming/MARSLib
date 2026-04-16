@@ -113,31 +113,35 @@ public class SimulatedField2026 {
 
     // Blue Trench Wall
     bodies.add(
-        createWall(
+        createBumpSensor(
             TRENCH_WALL_OFFSET_FROM_END_WALL,
             TRENCH_WALL_OFFSET_FROM_SIDE_WALL,
             TRENCH_WALL_X_LEN,
-            TRENCH_WALL_Y_LEN));
+            TRENCH_WALL_Y_LEN,
+            "TrenchBump"));
     bodies.add(
-        createWall(
+        createBumpSensor(
             TRENCH_WALL_OFFSET_FROM_END_WALL,
             FIELD_Y_MAX - TRENCH_WALL_OFFSET_FROM_SIDE_WALL,
             TRENCH_WALL_X_LEN,
-            TRENCH_WALL_Y_LEN));
+            TRENCH_WALL_Y_LEN,
+            "TrenchBump"));
 
     // Red Trench Wall
     bodies.add(
-        createWall(
+        createBumpSensor(
             FIELD_X_MAX - TRENCH_WALL_OFFSET_FROM_END_WALL,
             TRENCH_WALL_OFFSET_FROM_SIDE_WALL,
             TRENCH_WALL_X_LEN,
-            TRENCH_WALL_Y_LEN));
+            TRENCH_WALL_Y_LEN,
+            "TrenchBump"));
     bodies.add(
-        createWall(
+        createBumpSensor(
             FIELD_X_MAX - TRENCH_WALL_OFFSET_FROM_END_WALL,
             FIELD_Y_MAX - TRENCH_WALL_OFFSET_FROM_SIDE_WALL,
             TRENCH_WALL_X_LEN,
-            TRENCH_WALL_Y_LEN));
+            TRENCH_WALL_Y_LEN,
+            "TrenchBump"));
 
     // Hubs
     if (addRampCollider) {
@@ -162,6 +166,19 @@ public class SimulatedField2026 {
     wall.setMass(MassType.INFINITE);
     wall.translate(centerX, centerY);
     return wall;
+  }
+
+  private static Body createBumpSensor(
+      double centerX, double centerY, double width, double height, String userDataId) {
+    Body bump = new Body();
+    Rectangle rect = new Rectangle(width, height);
+    BodyFixture fixture = new BodyFixture(rect);
+    fixture.setSensor(true);
+    bump.addFixture(fixture);
+    bump.setMass(MassType.INFINITE);
+    bump.translate(centerX, centerY);
+    bump.setUserData(userDataId);
+    return bump;
   }
 
   /**

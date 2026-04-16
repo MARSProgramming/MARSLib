@@ -92,7 +92,8 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
               config.robotMassKg(),
               config.bumperWidthMeters(),
               config.bumperLengthMeters(),
-              config.wheelCOFStatic());
+              config.wheelCOFStatic(),
+              config.moduleLocations());
       simChassis.setPose(odometry.getPose());
 
       com.marslib.simulation.MARSPhysicsWorld.getInstance()

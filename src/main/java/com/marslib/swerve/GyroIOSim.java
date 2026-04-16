@@ -46,9 +46,21 @@ public class GyroIOSim implements GyroIO {
     yawPositionsBuffer[0] = inputs.yawPositionRad;
     inputs.odometryYawPositions = yawPositionsBuffer;
 
-    inputs.pitchPositionRad = 0.0;
-    inputs.rollPositionRad = 0.0;
-    inputs.pitchVelocityRadPerSec = 0.0;
-    inputs.rollVelocityRadPerSec = 0.0;
+    if (simChassis != null) {
+      double newPitch = simChassis.getSimPitch();
+      double newRoll = simChassis.getSimRoll();
+
+      // Calculate velocities via numeric derivative (assuming 20ms loop)
+      inputs.pitchVelocityRadPerSec = (newPitch - inputs.pitchPositionRad) / 0.02;
+      inputs.rollVelocityRadPerSec = (newRoll - inputs.rollPositionRad) / 0.02;
+
+      inputs.pitchPositionRad = newPitch;
+      inputs.rollPositionRad = newRoll;
+    } else {
+      inputs.pitchPositionRad = 0.0;
+      inputs.rollPositionRad = 0.0;
+      inputs.pitchVelocityRadPerSec = 0.0;
+      inputs.rollVelocityRadPerSec = 0.0;
+    }
   }
 }

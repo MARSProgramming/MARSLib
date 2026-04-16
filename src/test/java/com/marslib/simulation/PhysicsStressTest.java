@@ -19,7 +19,18 @@ public class PhysicsStressTest {
   @BeforeEach
   public void setup() {
     MARSTestHarness.reset();
-    physics = new SwerveChassisPhysics(MASS_KG, 0.7, 0.7, MU);
+    physics =
+        new SwerveChassisPhysics(
+            MASS_KG,
+            0.7,
+            0.7,
+            MU,
+            new edu.wpi.first.math.geometry.Translation2d[] {
+              new edu.wpi.first.math.geometry.Translation2d(0.35, 0.35),
+              new edu.wpi.first.math.geometry.Translation2d(0.35, -0.35),
+              new edu.wpi.first.math.geometry.Translation2d(-0.35, 0.35),
+              new edu.wpi.first.math.geometry.Translation2d(-0.35, -0.35)
+            });
     physics.setPose(new Pose2d(2.0, 2.0, new Rotation2d()));
   }
 
