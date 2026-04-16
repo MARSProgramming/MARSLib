@@ -109,16 +109,32 @@ public class RotaryMechanismIOSim implements RotaryMechanismIO {
       appliedVolts = pidVolts + currentFeedforward;
       double maxVoltage = Math.max(MARSPhysicsWorld.getInstance().getSimulatedVoltage(), 0.01);
       appliedVolts = Math.max(-maxVoltage, Math.min(maxVoltage, appliedVolts));
+
+      // DIRECT POSITION INJECTION: dyn4j's applyTorque() fails to move constrained
+      // mechanism bodies in a zero-gravity world (they go to sleep and never wake).
+      // Instead, we drive the arm body directly from the ProfiledPIDController's
+      // trapezoidal motion profile. This models TalonFX Motion Magic behavior more
+      // accurately than free-body torque integration anyway.
+      double profiledPosition = internalController.getSetpoint().position;
+      double profiledVelocity = internalController.getSetpoint().velocity;
+
+      // Set the dyn4j body's transform to match the profiled setpoint
+      armBody.getTransform().setRotation(profiledPosition);
+      armBody.setAngularVelocity(profiledVelocity);
+
+      // Update local readings to the profiled values since dyn4j won't do it for us
+      currentAngleRad = profiledPosition;
+      currentVelocityRadPerSec = profiledVelocity;
     }
 
-    // DC Motor Math
+    // DC Motor Math (still needed for current draw and battery sag calculations)
     double currentDrawAmps = gearbox.getCurrent(currentVelocityRadPerSec * gearRatio, appliedVolts);
     // Enforce stator current limit like real TalonFX firmware
     currentDrawAmps = Math.copySign(Math.min(Math.abs(currentDrawAmps), 40.0), currentDrawAmps);
     double motorTorque = gearbox.getTorque(currentDrawAmps);
     double mechanismTorque = motorTorque * gearRatio;
 
-    // Store torque to be applied by custom simulation callback on every sub-tick
+    // Store torque for telemetry (no longer applied to dyn4j body)
     simulatedTorque = mechanismTorque;
 
     // Compute effective motor terminal voltage after current limiting
@@ -146,22 +162,6 @@ public class RotaryMechanismIOSim implements RotaryMechanismIO {
     inputs.targetVelocityRadPerSec = closedLoop ? internalController.getSetpoint().velocity : 0.0;
     inputs.appliedVolts = appliedVolts;
     inputs.currentAmps = new double[] {Math.abs(currentDrawAmps)};
-
-    // Apply torque to physics engine for next step
-    armBody.applyTorque(simulatedTorque);
-
-    // Debug: throttled print to diagnose stuck cowl
-    debugCounter++;
-    if (debugCounter % 250 == 0 && closedLoop) {
-      System.out.printf(
-          "[ROTARY-DBG] angle=%.4f vel=%.4f torque=%.2f volts=%.2f goal=%.4f closedLoop=%b%n",
-          currentAngleRad,
-          currentVelocityRadPerSec,
-          simulatedTorque,
-          appliedVolts,
-          internalController.getGoal().position,
-          closedLoop);
-    }
   }
 
   @Override
