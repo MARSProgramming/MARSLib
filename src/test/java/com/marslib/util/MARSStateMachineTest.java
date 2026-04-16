@@ -46,6 +46,7 @@ public class MARSStateMachineTest {
     boolean accepted = machine.requestTransition(TestState.ACTIVE);
     assertTrue(accepted, "IDLE→ACTIVE should be legal");
     assertEquals(TestState.ACTIVE, machine.getState());
+    assertEquals(TestState.IDLE, machine.getPreviousState());
     assertEquals(1, machine.getTotalTransitionCount());
   }
 

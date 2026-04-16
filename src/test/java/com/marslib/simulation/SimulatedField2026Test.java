@@ -39,4 +39,14 @@ public class SimulatedField2026Test {
         culledFuelBodies.size(),
         "Should cull center floor balls slightly to optimize performance");
   }
+
+  @Test
+  public void testInstantiation() throws Exception {
+    // Cover the private constructor for 100% block coverage
+    java.lang.reflect.Constructor<SimulatedField2026> constructor =
+        SimulatedField2026.class.getDeclaredConstructor();
+    constructor.setAccessible(true);
+    SimulatedField2026 instance = constructor.newInstance();
+    org.junit.jupiter.api.Assertions.assertNotNull(instance);
+  }
 }

@@ -54,9 +54,16 @@ class SwerveDiagnosticsTest {
     Command cmd = diagnostics.finalClimbLineupCommand();
     assertNotNull(cmd);
 
-    cmd.initialize();
-    cmd.execute();
-    assertFalse(cmd.isFinished());
+    cmd.schedule();
+
+    // The sequence has two 0.5s timeout run commands + finallyDo. 1.5 seconds total max.
+    for (int i = 0; i < 75; i++) {
+      edu.wpi.first.wpilibj.simulation.SimHooks.stepTiming(0.02);
+      edu.wpi.first.wpilibj2.command.CommandScheduler.getInstance().run();
+    }
+
+    // By the end, it should be finished and velocity should be zero.
+    assertFalse(edu.wpi.first.wpilibj2.command.CommandScheduler.getInstance().isScheduled(cmd));
   }
 
   @Test
@@ -64,8 +71,23 @@ class SwerveDiagnosticsTest {
     Command cmd = diagnostics.getSystemCheckCommand();
     assertNotNull(cmd);
 
-    cmd.initialize();
-    cmd.execute();
-    assertFalse(cmd.isFinished());
+    cmd.schedule();
+
+    // Run the scheduler to advance the 1.5 second waits and hit all lambdas
+    for (int i = 0; i < 150; i++) { // 3 seconds of simulated time
+      edu.wpi.first.wpilibj.simulation.SimHooks.stepTiming(0.02);
+      edu.wpi.first.wpilibj2.command.CommandScheduler.getInstance().run();
+    }
+
+    // Test the failure branches by manually injecting a critical fault beforehand
+    new com.marslib.faults.Alert("Mock Critical Fault", com.marslib.faults.Alert.AlertType.CRITICAL)
+        .set(true);
+
+    Command cmdFail = diagnostics.getSystemCheckCommand();
+    cmdFail.schedule();
+    for (int i = 0; i < 150; i++) { // 3 seconds of simulated time
+      edu.wpi.first.wpilibj.simulation.SimHooks.stepTiming(0.02);
+      edu.wpi.first.wpilibj2.command.CommandScheduler.getInstance().run();
+    }
   }
 }

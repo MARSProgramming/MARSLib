@@ -58,4 +58,25 @@ public class MARSPowerManagerTest {
     assertTrue(powerMock.isWarning());
     assertTrue(powerMock.isCritical());
   }
+
+  @Test
+  public void testZeroVoltageElseBranch() {
+    PowerConfig config = new PowerConfig(11.0, 10.0, 8.0);
+    MARSPowerManager powerMock =
+        new MARSPowerManager(
+            new PowerIO() {
+              @Override
+              public void updateInputs(PowerIOInputs inputs) {
+                inputs.voltage = 0.0;
+              }
+            },
+            config);
+
+    powerMock.periodic();
+    assertTrue(powerMock.isWarning());
+    assertTrue(powerMock.isCritical());
+
+    // Test the shedding scaling factor logic at extreme bounds
+    assertEquals(0.0, powerMock.calculateSheddingFactor(), 0.001);
+  }
 }

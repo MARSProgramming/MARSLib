@@ -146,5 +146,122 @@ public class SwerveSetpointGeneratorTest {
     assertTrue(
         newState.moduleStates[0].speedMetersPerSecond < 1.0,
         "Did not decelerate before heading flip! " + newState.moduleStates[0].speedMetersPerSecond);
+
+    // Feed it back recursively a few times to hit the flip-heading logic and negative incoming
+  }
+
+  @Test
+  public void testNegativePrevSpeedHeadingFlip() {
+    SwerveDriveKinematics kinematics = new SwerveDriveKinematics(SwerveConstants.MODULE_LOCATIONS);
+    SwerveSetpointGenerator generator = new SwerveSetpointGenerator(kinematics);
+    SwerveSetpointGenerator.KinematicLimits limits = new SwerveSetpointGenerator.KinematicLimits();
+    limits.maxDriveVelocity = 4.0;
+    limits.maxDriveAcceleration = 20.0;
+    limits.maxSteeringVelocity = Math.PI * 4;
+
+    SwerveModuleState[] negativeStates =
+        new SwerveModuleState[] {
+          new SwerveModuleState(-1.0, new Rotation2d()),
+          new SwerveModuleState(-1.0, new Rotation2d()),
+          new SwerveModuleState(-1.0, new Rotation2d()),
+          new SwerveModuleState(-1.0, new Rotation2d())
+        };
+
+    SwerveSetpointGenerator.SwerveSetpoint prevState =
+        new SwerveSetpointGenerator.SwerveSetpoint(new ChassisSpeeds(-1, 0, 0), negativeStates);
+
+    SwerveSetpointGenerator.SwerveSetpoint newState =
+        generator.generateSetpoint(limits, prevState, new ChassisSpeeds(1.0, 0.0, 0), 0.02);
+
+    assertNotNull(newState);
+  }
+
+  @Test
+  public void testSingularityCrossing() {
+    SwerveDriveKinematics kinematics = new SwerveDriveKinematics(SwerveConstants.MODULE_LOCATIONS);
+    SwerveSetpointGenerator generator = new SwerveSetpointGenerator(kinematics);
+    SwerveSetpointGenerator.KinematicLimits limits = new SwerveSetpointGenerator.KinematicLimits();
+    limits.maxDriveVelocity = 4.0;
+    limits.maxDriveAcceleration = 1000.0;
+    limits.maxSteeringVelocity = Math.PI * 4;
+
+    // Initially rotating at +1 rad/s
+    ChassisSpeeds rotPlus = new ChassisSpeeds(0.0, 0.0, 1.0);
+    SwerveModuleState[] statesPlus = kinematics.toSwerveModuleStates(rotPlus);
+    SwerveSetpointGenerator.SwerveSetpoint prevState =
+        new SwerveSetpointGenerator.SwerveSetpoint(rotPlus, statesPlus);
+
+    // Goal is to rotate at -1 rad/s.
+    // However, to prevent `allModulesShouldFlip` from returning TRUE, we append a small translation
+    // to ONE module's axis? No, actually since the modules are centered around robot origin, pure
+    // rotation reversal means all modules perfectly reverse their individual vectors.
+    // So allModulesShouldFlip WOULD be true!
+    // We must command a rotation around an OFF-CENTER point (e.g. at Module 0).
+    // Around Module 0: Module 0 velocity is (0,0). Mod 1, 2, 3 have large velocities.
+    double x = SwerveConstants.MODULE_LOCATIONS[0].getX();
+    double y = SwerveConstants.MODULE_LOCATIONS[0].getY();
+
+    // Rotating around Module 0 means chassis moves with vx = omega * y, vy = -omega * x
+    ChassisSpeeds rotAroundMod0Plus = new ChassisSpeeds(y, -x, 1.0);
+    SwerveModuleState[] rotAround0States = kinematics.toSwerveModuleStates(rotAroundMod0Plus);
+
+    // Ensure Mod 0 doesn't just bypass the epsilon check entirely by giving it a miniscule heading
+    // difference. Actually we just generate a valid setpoint first so the internal cache is primed.
+    SwerveSetpointGenerator.SwerveSetpoint primedState =
+        generator.generateSetpoint(
+            limits,
+            new SwerveSetpointGenerator.SwerveSetpoint(
+                new ChassisSpeeds(),
+                new SwerveModuleState[] {
+                  new SwerveModuleState(),
+                  new SwerveModuleState(),
+                  new SwerveModuleState(),
+                  new SwerveModuleState()
+                }),
+            rotAroundMod0Plus,
+            0.02);
+
+    ChassisSpeeds rotAroundMod0Minus = new ChassisSpeeds(-y, x, -1.0);
+
+    // By reversing the rotation entirely:
+    // Module 0 stays at zero velocity (doesn't rotate necessarily, preventing
+    // allModulesShouldFlip).
+    // Modules 1, 2, 3 must exactly invert their velocities, passing through (0,0) in the bisection.
+    SwerveSetpointGenerator.SwerveSetpoint newState =
+        generator.generateSetpoint(limits, primedState, rotAroundMod0Minus, 0.02);
+
+    assertNotNull(newState);
+  }
+
+  @Test
+  public void testSteerAroundModule() {
+    SwerveDriveKinematics kinematics = new SwerveDriveKinematics(SwerveConstants.MODULE_LOCATIONS);
+    SwerveSetpointGenerator generator = new SwerveSetpointGenerator(kinematics);
+
+    SwerveSetpointGenerator.KinematicLimits limits = new SwerveSetpointGenerator.KinematicLimits();
+    limits.maxDriveVelocity = 4.0;
+    limits.maxDriveAcceleration = 20.0;
+    limits.maxSteeringVelocity = Math.PI * 4;
+
+    SwerveModuleState[] initialStates =
+        new SwerveModuleState[] {
+          new SwerveModuleState(0.0, new Rotation2d()),
+          new SwerveModuleState(0.0, new Rotation2d()),
+          new SwerveModuleState(0.0, new Rotation2d()),
+          new SwerveModuleState(0.0, new Rotation2d())
+        };
+
+    SwerveSetpointGenerator.SwerveSetpoint prevState =
+        new SwerveSetpointGenerator.SwerveSetpoint(new ChassisSpeeds(0, 0, 0), initialStates);
+
+    double x = SwerveConstants.MODULE_LOCATIONS[0].getX();
+    double y = SwerveConstants.MODULE_LOCATIONS[0].getY();
+    double omega = 1.0;
+    ChassisSpeeds rotateAround0 = new ChassisSpeeds(omega * y, -omega * x, omega);
+
+    SwerveSetpointGenerator.SwerveSetpoint newState =
+        generator.generateSetpoint(limits, prevState, rotateAround0, 0.02);
+
+    assertEquals(0.0, newState.moduleStates[0].speedMetersPerSecond, 0.001);
   }
 }

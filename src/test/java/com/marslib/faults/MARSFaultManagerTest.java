@@ -39,4 +39,21 @@ public class MARSFaultManagerTest {
     assertFalse(
         MARSFaultManager.hasNewCriticalFault(), "Warnings should not escalate to critical faults");
   }
+
+  @Test
+  public void testInstantiation() throws Exception {
+    java.lang.reflect.Constructor<MARSFaultManager> constructor =
+        MARSFaultManager.class.getDeclaredConstructor();
+    constructor.setAccessible(true);
+    MARSFaultManager instance = constructor.newInstance();
+    assertNotNull(instance);
+  }
+
+  @Test
+  public void testFaultUnregister() {
+    MARSFaultManager.registerCriticalFault();
+    assertTrue(MARSFaultManager.hasActiveCriticalFaults());
+    MARSFaultManager.unregisterCriticalFault();
+    assertFalse(MARSFaultManager.hasActiveCriticalFaults());
+  }
 }

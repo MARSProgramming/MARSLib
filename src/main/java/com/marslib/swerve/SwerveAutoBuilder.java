@@ -63,9 +63,7 @@ public final class SwerveAutoBuilder {
                   swerveConfig.autoTranslationKp(), 0.0, swerveConfig.autoTranslationKd()),
               new PIDConstants(swerveConfig.autoRotationKp(), 0.0, swerveConfig.autoRotationKd())),
           config,
-          () ->
-              DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue)
-                  == DriverStation.Alliance.Red, // Mirror paths for Red
+          SwerveAutoBuilder::shouldFlipPath, // Mirror paths for Red
           drive);
     } catch (Exception e) {
       new com.marslib.faults.Alert(
@@ -100,5 +98,11 @@ public final class SwerveAutoBuilder {
               .withTimeout(3.0);
         },
         Set.of(drive));
+  }
+
+  /** Returns whether the path should be flipped for the Red alliance. Exposed for testing. */
+  public static boolean shouldFlipPath() {
+    return DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue)
+        == DriverStation.Alliance.Red;
   }
 }

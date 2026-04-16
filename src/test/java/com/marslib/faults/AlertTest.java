@@ -45,4 +45,23 @@ class AlertTest {
     alert.setText("After");
     assertTrue(alert.get());
   }
+
+  @Test
+  void testAlertGroupRecreatedAfterReset() {
+    Alert alert1 = new Alert("TestGroup1", "Alert1", Alert.AlertType.INFO);
+    Alert alert2 = new Alert("TestGroup2", "Alert2", Alert.AlertType.INFO);
+
+    // Clear the static groups map
+    Alert.resetAll();
+
+    // Trigger set() with a missing group key
+    alert1.set(true);
+    assertTrue(alert1.get());
+
+    // Make alert2 active, then reset, then call setText to trigger line 78
+    alert2.set(true);
+    Alert.resetAll();
+    alert2.setText("Updated");
+    assertTrue(alert2.get());
+  }
 }

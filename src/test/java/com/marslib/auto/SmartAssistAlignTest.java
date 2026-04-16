@@ -85,4 +85,22 @@ public class SmartAssistAlignTest {
     SmartAssistAlign command = new SmartAssistAlign(swerveDrive, () -> 0.0, targetNode);
     assertTrue(command.isFinished(), "Should immediately finish if perfectly aligned");
   }
+
+  @Test
+  public void testIsFinishedBranchCoverage() {
+    Pose2d targetNode2 = new Pose2d(0, 0, new Rotation2d(0));
+    SmartAssistAlign cmd = new SmartAssistAlign(swerveDrive, () -> 0.0, targetNode2);
+
+    // Case 1: yError >= 0.02 (not converged)
+    swerveDrive.resetPose(new Pose2d(0, 0.5, new Rotation2d(0)));
+    assertFalse(cmd.isFinished());
+
+    // Case 2: yError < 0.02, but thetaError >= 2.0 degrees (not converged)
+    swerveDrive.resetPose(new Pose2d(0, 0.01, Rotation2d.fromDegrees(5.0)));
+    assertFalse(cmd.isFinished());
+
+    // Case 3: Complete convergence
+    swerveDrive.resetPose(new Pose2d(0, 0.01, Rotation2d.fromDegrees(1.0)));
+    assertTrue(cmd.isFinished());
+  }
 }

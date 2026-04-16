@@ -25,8 +25,23 @@ import org.junit.jupiter.api.Test;
  */
 public class SwerveDriveExtendedTest {
 
+  private static class MutableMockGyro implements GyroIO {
+    public boolean connected = true;
+    public double yaw = 0;
+    public double pitch = Math.toRadians(10.0);
+    public double roll = Math.toRadians(5.0);
+
+    @Override
+    public void updateInputs(GyroIOInputs inputs) {
+      inputs.connected = connected;
+      inputs.yawPositionRad = yaw;
+      inputs.pitchPositionRad = pitch;
+      inputs.rollPositionRad = roll;
+    }
+  }
+
   private SwerveDrive swerveDrive;
-  private GyroIO mockGyro;
+  private MutableMockGyro mockGyro;
   private SwerveConfig swerveConfig;
   private PowerConfig powerConfig;
 
@@ -34,16 +49,7 @@ public class SwerveDriveExtendedTest {
   public void setUp() {
     MARSTestHarness.reset();
 
-    mockGyro =
-        new GyroIO() {
-          @Override
-          public void updateInputs(GyroIOInputs inputs) {
-            inputs.connected = true;
-            inputs.yawPositionRad = 0;
-            inputs.pitchPositionRad = Math.toRadians(10.0); // 10 degree incline
-            inputs.rollPositionRad = Math.toRadians(5.0); // 5 degree tilt
-          }
-        };
+    mockGyro = new MutableMockGyro();
 
     swerveConfig = MARSTestHarness.createSwerveConfig();
     powerConfig = MARSTestHarness.createPowerConfig();
@@ -80,11 +86,29 @@ public class SwerveDriveExtendedTest {
     assertNotNull(pose3d);
 
     // Check that pitch and roll are correctly captured from the gyro
-    // Note: getPose3d usually applies the 2D position (0,0) with 3D orientation
     assertEquals(
         10.0, pose3d.getRotation().getY() * (180.0 / Math.PI), 0.1, "Pitch should match gyro");
     assertEquals(
         5.0, pose3d.getRotation().getX() * (180.0 / Math.PI), 0.1, "Roll should match gyro");
+
+    // Invalidate the cache by changing roll/pitch and forcing an update
+    mockGyro.pitch = Math.toRadians(20.0);
+    mockGyro.roll = Math.toRadians(15.0);
+    swerveDrive.periodic();
+
+    pose3d = swerveDrive.getPose3d();
+    assertEquals(20.0, pose3d.getRotation().getY() * (180.0 / Math.PI), 0.1);
+    assertEquals(15.0, pose3d.getRotation().getX() * (180.0 / Math.PI), 0.1);
+  }
+
+  @Test
+  public void testResetPoseDisconnectedGyro() {
+    mockGyro.connected = false;
+    swerveDrive.periodic();
+    swerveDrive.resetPose(new Pose2d(5, 5, Rotation2d.fromDegrees(45)));
+
+    // Should adopt exactly 45 degrees since it fell back to parameter pose
+    assertEquals(45.0, swerveDrive.getPose().getRotation().getDegrees(), 0.1);
   }
 
   @Test

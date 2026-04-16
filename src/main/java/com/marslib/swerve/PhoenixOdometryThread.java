@@ -167,12 +167,9 @@ public class PhoenixOdometryThread extends Thread {
       data.validCount = size;
 
       for (int i = 0; i < size; i++) {
-        Double driveVal = dQueue.poll();
-        Double turnVal = tQueue.poll();
-        Double tsVal = tsQueue.poll();
-        data.drivePositions[i] = driveVal != null ? driveVal : 0.0;
-        data.turnPositions[i] = turnVal != null ? turnVal : 0.0;
-        data.timestamps[i] = tsVal != null ? tsVal : 0.0;
+        data.drivePositions[i] = dQueue.poll();
+        data.turnPositions[i] = tQueue.poll();
+        data.timestamps[i] = tsQueue.poll();
       }
 
       return data;
@@ -215,8 +212,7 @@ public class PhoenixOdometryThread extends Thread {
       int size = Math.min(gyroYawQueue.size(), MAX_SAMPLES);
       gyroYawDataCache.validCount = size;
       for (int i = 0; i < size; i++) {
-        Double val = gyroYawQueue.poll();
-        gyroYawDataCache.yawPositions[i] = val != null ? val : 0.0;
+        gyroYawDataCache.yawPositions[i] = gyroYawQueue.poll();
       }
       return gyroYawDataCache;
     } finally {

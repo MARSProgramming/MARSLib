@@ -62,4 +62,23 @@ public class SwerveAutoBuilderTest {
         },
         "alignToPoint command should be built successfully without crashing");
   }
+
+  @Test
+  public void testConfigureThrowsAndAlerts() {
+    SwerveAutoBuilder.configure(null);
+    assertTrue(com.marslib.faults.MARSFaultManager.hasActiveCriticalFaults());
+  }
+
+  @Test
+  public void testShouldFlipPath() {
+    edu.wpi.first.wpilibj.simulation.DriverStationSim.setAllianceStationId(
+        edu.wpi.first.hal.AllianceStationID.Red1);
+    edu.wpi.first.wpilibj.simulation.DriverStationSim.notifyNewData();
+    assertTrue(SwerveAutoBuilder.shouldFlipPath());
+
+    edu.wpi.first.wpilibj.simulation.DriverStationSim.setAllianceStationId(
+        edu.wpi.first.hal.AllianceStationID.Blue1);
+    edu.wpi.first.wpilibj.simulation.DriverStationSim.notifyNewData();
+    org.junit.jupiter.api.Assertions.assertFalse(SwerveAutoBuilder.shouldFlipPath());
+  }
 }

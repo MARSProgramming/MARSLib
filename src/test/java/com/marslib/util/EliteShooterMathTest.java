@@ -74,4 +74,30 @@ public class EliteShooterMathTest {
 
     assertFalse(setpoint.isValid);
   }
+
+  @Test
+  public void testNegativeDiscriminant() {
+    EliteShooterMath.EliteShooterSetpoint setpoint = new EliteShooterMath.EliteShooterSetpoint();
+    Pose2d robotPose = new Pose2d();
+    Translation3d target = new Translation3d(0.0, 0.0, 1.0);
+    // Robot moving faster than the shot speed
+    ChassisSpeeds speeds = new ChassisSpeeds(10.0, 0.0, 0.0);
+
+    // vx = 10, vShot = 1 -> a = +99. tx=0, ty=0 -> b=0. c = 1.
+    // discriminant = 0 - 4*99*1 = -396 -> Trigger discriminant < 0 branch
+    EliteShooterMath.calculateShotOnTheMove(
+        robotPose, speeds, target, 0.0, 1.0, -9.81, 0.0, setpoint);
+
+    assertFalse(setpoint.isValid);
+  }
+
+  @Test
+  public void testInstantiation() throws Exception {
+    // Cover the private constructor for 100% block coverage
+    java.lang.reflect.Constructor<EliteShooterMath> constructor =
+        EliteShooterMath.class.getDeclaredConstructor();
+    constructor.setAccessible(true);
+    EliteShooterMath instance = constructor.newInstance();
+    assertNotNull(instance);
+  }
 }

@@ -93,6 +93,22 @@ public class PhoenixOdometryThreadTest {
   }
 
   @Test
+  public void testThreadInterruptionSafetyWhileActive() throws InterruptedException {
+    PhoenixOdometryThread thread = PhoenixOdometryThread.getInstance();
+
+    // Register to move past the empty check
+    com.ctre.phoenix6.hardware.TalonFX m1 = new com.ctre.phoenix6.hardware.TalonFX(30);
+    thread.registerModule(m1.getPosition(), m1.getPosition(), 250);
+
+    Thread.sleep(50);
+    thread.interrupt();
+    thread.join(1000);
+
+    assertFalse(thread.isAlive());
+    PhoenixOdometryThread.resetInstance();
+  }
+
+  @Test
   public void testThreadLoopUpdatesRegisters() throws InterruptedException {
     PhoenixOdometryThread thread = PhoenixOdometryThread.getInstance();
 
@@ -113,5 +129,58 @@ public class PhoenixOdometryThreadTest {
     assertTrue(data.validCount >= 0);
 
     PhoenixOdometryThread.resetInstance();
+  }
+
+  @Test
+  public void testEmptyQueuesReturnZeroCount() {
+    PhoenixOdometryThread thread = PhoenixOdometryThread.getInstance();
+
+    // Register but do not wait for the thread to sample
+    com.ctre.phoenix6.hardware.TalonFX driveMotor = new com.ctre.phoenix6.hardware.TalonFX(12);
+    com.ctre.phoenix6.hardware.TalonFX turnMotor = new com.ctre.phoenix6.hardware.TalonFX(13);
+    int id = thread.registerModule(driveMotor.getPosition(), turnMotor.getPosition(), 250);
+
+    // Immediately drain before thread has a chance to add
+    PhoenixOdometryThread.SyncData data = thread.getSyncData(id);
+    assertEquals(0, data.validCount);
+  }
+
+  @Test
+  public void testThreadFillsQueuesToCapacity() throws InterruptedException {
+    PhoenixOdometryThread thread = PhoenixOdometryThread.getInstance();
+    com.ctre.phoenix6.hardware.TalonFX driveMotor = new com.ctre.phoenix6.hardware.TalonFX(14);
+    com.ctre.phoenix6.hardware.TalonFX turnMotor = new com.ctre.phoenix6.hardware.TalonFX(15);
+    int id = thread.registerModule(driveMotor.getPosition(), turnMotor.getPosition(), 250);
+
+    com.ctre.phoenix6.hardware.Pigeon2 pigeon = new com.ctre.phoenix6.hardware.Pigeon2(2);
+    thread.registerGyro(pigeon.getYaw(), 250.0);
+
+    // Give it enough time to max out the 50 capacity buffer (250Hz -> 50 loops = 200ms)
+    // We sleep longer here since thread scheduling on CI can be noisy.
+    for (int i = 0; i < 40; i++) {
+      edu.wpi.first.wpilibj.simulation.SimHooks.stepTiming(0.02);
+      Thread.sleep(20);
+    }
+
+    // Now the remainingCapacity check in run() should have been false at least once
+    // And getGyroYawData / getSyncData should hit MAX_SAMPLES
+    PhoenixOdometryThread.SyncData data = thread.getSyncData(id);
+    assertEquals(PhoenixOdometryThread.MAX_SAMPLES, data.validCount);
+
+    PhoenixOdometryThread.GyroYawData gyroData = thread.getGyroYawData();
+    assertEquals(PhoenixOdometryThread.MAX_SAMPLES, gyroData.validCount);
+  }
+
+  @Test
+  public void testGetGyroYawDataReturnsPreallocatedObject() {
+    PhoenixOdometryThread thread = PhoenixOdometryThread.getInstance();
+    com.ctre.phoenix6.hardware.Pigeon2 pigeon = new com.ctre.phoenix6.hardware.Pigeon2(3);
+    thread.registerGyro(pigeon.getYaw(), 250.0);
+
+    PhoenixOdometryThread.GyroYawData data1 = thread.getGyroYawData();
+    assertNotNull(data1);
+
+    PhoenixOdometryThread.GyroYawData data2 = thread.getGyroYawData();
+    assertSame(data1, data2);
   }
 }

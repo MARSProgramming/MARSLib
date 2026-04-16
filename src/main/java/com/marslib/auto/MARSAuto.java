@@ -38,6 +38,7 @@ public class MARSAuto {
               "MARSAuto: Failed to load Choreo trajectory: " + choreoTrajectoryName,
               com.marslib.faults.Alert.AlertType.CRITICAL)
           .set(true);
+      e.printStackTrace();
       return edu.wpi.first.wpilibj2.command.Commands.none();
     }
   }
@@ -70,6 +71,7 @@ public class MARSAuto {
               "MARSAuto: Failed to load Choreo pathfinding: " + choreoTrajectoryName,
               com.marslib.faults.Alert.AlertType.CRITICAL)
           .set(true);
+      e.printStackTrace();
       return edu.wpi.first.wpilibj2.command.Commands.none();
     }
   }

@@ -51,29 +51,52 @@ class CANUtilTest {
   }
 
   @Test
-  void testWaitAndRetryFaultLoop() {
-    try (TalonFX motor = new TalonFX(0)) {
-      // By configuring with 0 timeout inside simulation, we might get an OK natively depending on
-      // CTRE's sim handling.
-      // But we can test the explicit fault path by providing a device that is known to throw
-      // RxTimeout when requested
-      // synchronously without sim support, or we can just test that the method runs its loop 5
-      // times if patched.
-      // Actually, since Phoenix 6 simulation operates synchronously, we can achieve timeout by
-      // simulating a hardware fault
-      // or relying on a real failure. For now, testing the retry wrapper interface directly without
-      // mocked hardware is sufficient
-      // if we ensure it doesn't crash on failure.
+  public void testSetUpdateFrequencyWithRetryTimeout() {
+    try (org.mockito.MockedStatic<com.ctre.phoenix6.BaseStatusSignal> mockedSignal =
+        org.mockito.Mockito.mockStatic(com.ctre.phoenix6.BaseStatusSignal.class)) {
+      mockedSignal
+          .when(
+              () ->
+                  com.ctre.phoenix6.BaseStatusSignal.setUpdateFrequencyForAll(
+                      org.mockito.ArgumentMatchers.anyDouble(),
+                      org.mockito.ArgumentMatchers.any(com.ctre.phoenix6.BaseStatusSignal[].class)))
+          .thenReturn(StatusCode.GeneralError);
 
+      try (TalonFX motor = new TalonFX(0)) {
+        StatusCode status = CANUtil.setUpdateFrequencyWithRetry(50.0, motor.getPosition());
+        assertEquals(StatusCode.GeneralError, status);
+      }
+    }
+  }
+
+  @Test
+  public void testApplyWithRetryTimeoutUsingMock() {
+    TalonFX mockMotor = org.mockito.Mockito.mock(TalonFX.class);
+    com.ctre.phoenix6.configs.TalonFXConfigurator mockConfigurator =
+        org.mockito.Mockito.mock(com.ctre.phoenix6.configs.TalonFXConfigurator.class);
+    org.mockito.Mockito.when(mockMotor.getConfigurator()).thenReturn(mockConfigurator);
+    org.mockito.Mockito.when(
+            mockConfigurator.apply(org.mockito.ArgumentMatchers.any(TalonFXConfiguration.class)))
+        .thenReturn(StatusCode.GeneralError);
+
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    StatusCode status = CANUtil.applyWithRetry(mockMotor, config, "TestFailMock");
+    assertEquals(StatusCode.GeneralError, status);
+  }
+
+  @Test
+  void testApplyPartialConfigs() {
+    try (TalonFX motor = new TalonFX(0)) {
       com.ctre.phoenix6.configs.Slot0Configs slot0 = new com.ctre.phoenix6.configs.Slot0Configs();
-      com.ctre.phoenix6.configs.MotorOutputConfigs motorOpt =
+      com.ctre.phoenix6.configs.MotorOutputConfigs motorOutput =
           new com.ctre.phoenix6.configs.MotorOutputConfigs();
-      com.ctre.phoenix6.configs.CurrentLimitsConfigs curLmt =
+      com.ctre.phoenix6.configs.CurrentLimitsConfigs currentLimits =
           new com.ctre.phoenix6.configs.CurrentLimitsConfigs();
 
-      CANUtil.applyWithRetry(motor, slot0, "TestSlot0");
-      CANUtil.applyWithRetry(motor, motorOpt, "TestMotorOpt");
-      CANUtil.applyWithRetry(motor, curLmt, "TestCurLmt");
+      assertEquals(StatusCode.OK, CANUtil.applyWithRetry(motor, slot0, "TestSlot0"));
+      assertEquals(StatusCode.OK, CANUtil.applyWithRetry(motor, motorOutput, "TestMotorOutput"));
+      assertEquals(
+          StatusCode.OK, CANUtil.applyWithRetry(motor, currentLimits, "TestCurrentLimits"));
     }
   }
 }
