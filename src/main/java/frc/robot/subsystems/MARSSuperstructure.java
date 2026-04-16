@@ -203,7 +203,6 @@ public class MARSSuperstructure extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    System.out.println("SIMULATION PERIODIC CALLED");
     SuperstructureState currentState = stateMachine.getState();
 
     // 1. Simulate Intaking

@@ -44,7 +44,10 @@ public class ShootOnTheMovePhysicsTest {
   @BeforeEach
   public void setUp() {
     MARSTestHarness.reset();
+    edu.wpi.first.wpilibj2.command.CommandScheduler.getInstance().cancelAll();
+    DriverStationSim.setAllianceStationId(edu.wpi.first.hal.AllianceStationID.Blue1);
     DriverStationSim.setAutonomous(true);
+    DriverStationSim.setEnabled(true);
 
     PowerConfig powerConfig = MARSTestHarness.createPowerConfig();
     powerManager = new MARSPowerManager(new PowerIOSim(powerConfig), powerConfig);
@@ -131,29 +134,9 @@ public class ShootOnTheMovePhysicsTest {
     for (int tick = 0; tick < maxTicks; tick++) {
       DriverStationSim.notifyNewData();
       SimHooks.stepTiming(0.02);
+      edu.wpi.first.wpilibj.DriverStation
+          .refreshData(); // Synchronous HAL flush avoids Thread starvation
       CommandScheduler.getInstance().run();
-      if (tick % 20 == 0) {
-        try {
-          java.lang.reflect.Field f =
-              MARSSuperstructure.class.getDeclaredField("internalPieceCount");
-          f.setAccessible(true);
-          java.lang.reflect.Field c =
-              MARSSuperstructure.class.getDeclaredField("simShooterCooldown");
-          c.setAccessible(true);
-          System.out.println(
-              "Tick: "
-                  + tick
-                  + " | Pieces: "
-                  + f.get(superstructure)
-                  + " | SimCooldown: "
-                  + c.get(superstructure)
-                  + " | Cowl Tol: "
-                  + cowl.isAtTolerance()
-                  + " | Shooter Tol: "
-                  + shooter.isAtTolerance());
-        } catch (Exception e) {
-        }
-      }
       MARSPhysicsWorld.getInstance().update(0.02);
     }
 

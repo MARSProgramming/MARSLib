@@ -283,20 +283,20 @@ public class ShootOnTheMoveCommandTest {
     double dy = target.getY() - robotPos.getY();
 
     @SuppressWarnings("PMD.ShortVariable")
-    double a = (speedMps * speedMps) - ((vx * vx) + (vy * vy));
+    double quadraticA = (speedMps * speedMps) - ((vx * vx) + (vy * vy));
     @SuppressWarnings("PMD.ShortVariable")
-    double b = -2.0 * ((dx * vx) + (dy * vy));
+    double quadraticB = -2.0 * ((dx * vx) + (dy * vy));
     @SuppressWarnings("PMD.ShortVariable")
-    double c = -((dx * dx) + (dy * dy));
+    double quadraticC = -((dx * dx) + (dy * dy));
 
-    double discriminant = (b * b) - (4.0 * a * c);
+    double discriminant = (quadraticB * quadraticB) - (4.0 * quadraticA * quadraticC);
     double timeOfFlight;
 
-    if (discriminant < 0.0 || a == 0.0) {
+    if (discriminant < 0.0 || quadraticA == 0.0) {
       timeOfFlight = robotPos.getDistance(target) / Math.max(speedMps, 0.01);
     } else {
-      double t1 = (-b + Math.sqrt(discriminant)) / (2.0 * a);
-      double t2 = (-b - Math.sqrt(discriminant)) / (2.0 * a);
+      double t1 = (-quadraticB + Math.sqrt(discriminant)) / (2.0 * quadraticA);
+      double t2 = (-quadraticB - Math.sqrt(discriminant)) / (2.0 * quadraticA);
 
       if (t1 > 0.0 && t2 > 0.0) timeOfFlight = Math.min(t1, t2);
       else if (t1 > 0.0) timeOfFlight = t1;

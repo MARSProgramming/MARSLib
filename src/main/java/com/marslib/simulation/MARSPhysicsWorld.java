@@ -80,6 +80,7 @@ public class MARSPhysicsWorld {
   @SuppressWarnings("PMD.AssignmentToNonFinalStatic")
   private MARSPhysicsWorld() {
     instance = this;
+    edu.wpi.first.wpilibj.simulation.RoboRioSim.setVInVoltage(12.0);
 
     physicsWorld = new World<>();
     // Top-down 2D simulation has zero gravity

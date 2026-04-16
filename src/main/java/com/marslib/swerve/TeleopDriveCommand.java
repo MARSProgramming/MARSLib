@@ -42,6 +42,8 @@ public class TeleopDriveCommand extends Command {
   private final double[] fieldRelLog = new double[3];
   private final double[] robotRelLog = new double[3];
 
+  private double lastMeasuredHeadingRad = 0.0;
+
   public TeleopDriveCommand(
       SwerveDrive swerveDrive,
       SwerveConfig config,
@@ -67,6 +69,7 @@ public class TeleopDriveCommand extends Command {
   @Override
   public void initialize() {
     targetHeading = swerveDrive.getPose().getRotation();
+    lastMeasuredHeadingRad = targetHeading.getRadians();
 
     // Reset trajectory limiters using actual physical speeds to prevent time-delta acceleration
     // spikes
@@ -104,7 +107,15 @@ public class TeleopDriveCommand extends Command {
 
     if (Math.abs(omgVal) <= 0.01) {
       if (Math.abs(xVal) > 0.01 || Math.abs(yVal) > 0.01) {
-        if (Math.abs(swerveDrive.getChassisSpeeds().omegaRadiansPerSecond) > 0.4) {
+
+        double currentHeadingRad = swerveDrive.getPose().getRotation().getRadians();
+        double measuredOmega =
+            swerveDrive.getGyroInputs().connected
+                ? swerveDrive.getGyroInputs().yawVelocityRadPerSec
+                : MathUtil.angleModulus(currentHeadingRad - lastMeasuredHeadingRad) / 0.02;
+        lastMeasuredHeadingRad = currentHeadingRad;
+
+        if (Math.abs(measuredOmega) > 0.4) {
           // If robot is still spinning physically, keep sliding the target heading to avoid
           // snapback
           targetHeading = swerveDrive.getPose().getRotation();
