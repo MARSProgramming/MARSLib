@@ -17,6 +17,7 @@ public class SwerveChassisPhysics {
   private final Body body;
   private final double maxAccelerationMps2;
   private final edu.wpi.first.math.geometry.Translation2d[] moduleLocations;
+  private final edu.wpi.first.math.geometry.Transform2d[] moduleTransforms;
 
   private double currentSimPitch = 0.0;
   private double currentSimRoll = 0.0;
@@ -28,6 +29,11 @@ public class SwerveChassisPhysics {
       double staticFrictionCoef,
       edu.wpi.first.math.geometry.Translation2d... moduleLocations) {
     this.moduleLocations = moduleLocations.clone();
+    this.moduleTransforms = new edu.wpi.first.math.geometry.Transform2d[moduleLocations.length];
+    for (int i = 0; i < moduleLocations.length; i++) {
+      this.moduleTransforms[i] =
+          new edu.wpi.first.math.geometry.Transform2d(moduleLocations[i], new Rotation2d());
+    }
     body = new Body();
     // In dyn4j, Geometry.createRectangle centers on (0,0)
     Rectangle rectangle = Geometry.createRectangle(bumperLengthMeters, bumperWidthMeters);
@@ -95,10 +101,7 @@ public class SwerveChassisPhysics {
 
     for (int i = 0; i < 4; i++) {
       edu.wpi.first.math.geometry.Translation2d fieldPos =
-          currentPose
-              .transformBy(
-                  new edu.wpi.first.math.geometry.Transform2d(moduleLocations[i], new Rotation2d()))
-              .getTranslation();
+          currentPose.transformBy(moduleTransforms[i]).getTranslation();
       zHeights[i] = MARSPhysicsWorld.getInstance().getTerrainZHeight(fieldPos, "TerrainBump");
       if (zHeights[i] > 0.001) {
         wheelsOnBump++;

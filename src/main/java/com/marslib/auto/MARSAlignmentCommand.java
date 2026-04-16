@@ -30,6 +30,9 @@ public class MARSAlignmentCommand extends Command {
   private final double translationTolerance;
   private final double rotationTolerance;
 
+  // Pre-allocated cache to avoid ChassisSpeeds.fromFieldRelativeSpeeds() heap allocation
+  private final ChassisSpeeds fieldRelativeCache = new ChassisSpeeds();
+
   /** Constructs an alignment command with parameterized constants. */
   public MARSAlignmentCommand(
       SwerveDrive swerveDrive,
@@ -81,11 +84,14 @@ public class MARSAlignmentCommand extends Command {
         thetaController.calculate(
             currentPos.getRotation().getRadians(), target.getRotation().getRadians());
 
-    ChassisSpeeds dynamicSpeeds =
-        ChassisSpeeds.fromFieldRelativeSpeeds(
-            xFeedback, yFeedback, thetaFeedback, currentPos.getRotation());
+    // Inline fromFieldRelativeSpeeds to avoid new ChassisSpeeds() allocation
+    double cosHeading = currentPos.getRotation().getCos();
+    double sinHeading = currentPos.getRotation().getSin();
+    fieldRelativeCache.vxMetersPerSecond = xFeedback * cosHeading + yFeedback * sinHeading;
+    fieldRelativeCache.vyMetersPerSecond = -xFeedback * sinHeading + yFeedback * cosHeading;
+    fieldRelativeCache.omegaRadiansPerSecond = thetaFeedback;
 
-    swerveDrive.runVelocity(dynamicSpeeds);
+    swerveDrive.runVelocity(fieldRelativeCache);
   }
 
   @Override

@@ -91,6 +91,7 @@ public class PhoenixOdometryThread extends Thread {
   }
 
   private final List<BaseStatusSignal> signals = new ArrayList<>();
+  private BaseStatusSignal[] cachedSignalsArray = new BaseStatusSignal[0];
   private final Lock signalsLock = new ReentrantLock();
   private volatile double threadOdometryHz = 250.0;
 
@@ -138,6 +139,7 @@ public class PhoenixOdometryThread extends Thread {
       // Configure frequencies
       CANUtil.setUpdateFrequencyWithRetry(threadOdometryHz, drivePosition, turnPosition);
 
+      cachedSignalsArray = signals.toArray(new BaseStatusSignal[0]);
       return id;
     } finally {
       signalsLock.unlock();
@@ -191,6 +193,7 @@ public class PhoenixOdometryThread extends Thread {
       CANUtil.setUpdateFrequencyWithRetry(threadOdometryHz, yawPos);
       signals.add(yawPos);
       gyroSignalIndex = signals.size() - 1;
+      cachedSignalsArray = signals.toArray(new BaseStatusSignal[0]);
     } finally {
       signalsLock.unlock();
     }
@@ -226,7 +229,7 @@ public class PhoenixOdometryThread extends Thread {
       BaseStatusSignal[] currentSignals;
       signalsLock.lock();
       try {
-        currentSignals = signals.toArray(new BaseStatusSignal[0]);
+        currentSignals = cachedSignalsArray;
       } finally {
         signalsLock.unlock();
       }

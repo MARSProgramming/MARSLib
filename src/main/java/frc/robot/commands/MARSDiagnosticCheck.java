@@ -28,6 +28,8 @@ public class MARSDiagnosticCheck extends SequentialCommandGroup {
    * @param cowl The shooter hood / adjustable angle mechanism.
    */
   public MARSDiagnosticCheck(SwerveDrive swerveDrive, MARSClimber climber, MARSCowl cowl) {
+    ChassisSpeeds testFwdSpeed = new ChassisSpeeds(0.5, 0.0, 0.0);
+    ChassisSpeeds stopSpeed = new ChassisSpeeds(0.0, 0.0, 0.0);
 
     addCommands(
         // Ensure standard telemetry begins
@@ -35,12 +37,10 @@ public class MARSDiagnosticCheck extends SequentialCommandGroup {
             () -> DriverStation.reportWarning("Starting Full Diagnostic Sweep...", false)),
 
         // Swerve Drive Translation Check (0.5m/s for 0.5 sec)
-        Commands.run(() -> swerveDrive.runVelocity(new ChassisSpeeds(0.5, 0.0, 0.0)), swerveDrive)
-            .withTimeout(0.5),
+        Commands.run(() -> swerveDrive.runVelocity(testFwdSpeed), swerveDrive).withTimeout(0.5),
 
         // Stop Drivetrain
-        Commands.runOnce(
-            () -> swerveDrive.runVelocity(new ChassisSpeeds(0.0, 0.0, 0.0)), swerveDrive),
+        Commands.runOnce(() -> swerveDrive.runVelocity(stopSpeed), swerveDrive),
 
         // Check Cowl Pos
         cowl.run(() -> cowl.setTargetPosition(0.2)).withTimeout(0.5),

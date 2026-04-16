@@ -149,6 +149,13 @@ public class MARSVision extends SubsystemBase {
           continue;
         }
 
+        // Check 0: NaN Firewall — corrupted vision data must never enter the Kalman filter
+        if (!Double.isFinite(pose3d.getX())
+            || !Double.isFinite(pose3d.getY())
+            || !Double.isFinite(pose3d.getZ())) {
+          continue;
+        }
+
         // Check 2: Field Bounds
         double margin = config.fieldMarginMeters().get();
         if (pose2d.getX() < -margin
@@ -221,6 +228,13 @@ public class MARSVision extends SubsystemBase {
       for (int f = 0; f < slamInputs[i].estimatedPoses.length; f++) {
         Pose3d pose3d = slamInputs[i].estimatedPoses[f];
         double timestamp = slamInputs[i].timestamps[f];
+
+        // NaN Firewall — corrupted SLAM data must never enter the Kalman filter
+        if (!Double.isFinite(pose3d.getX())
+            || !Double.isFinite(pose3d.getY())
+            || !Double.isFinite(pose3d.getZ())) {
+          continue;
+        }
 
         // Tight static covariance for reliable VIO odometry
         Matrix<N3, N1> stdDevs =

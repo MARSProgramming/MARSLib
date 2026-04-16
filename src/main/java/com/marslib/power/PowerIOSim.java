@@ -12,6 +12,9 @@ import com.marslib.simulation.MARSPhysicsWorld;
 public class PowerIOSim implements PowerIO {
   private final PowerConfig config;
 
+  // Pre-allocated to avoid per-tick heap allocation
+  private final double[] channelCurrentsCache = new double[24];
+
   public boolean enableCanStarvation = false;
   public double canStarvationProbability = 0.02;
   public int canStarvationDelayMs = 2;
@@ -24,7 +27,8 @@ public class PowerIOSim implements PowerIO {
   public void updateInputs(PowerIOInputs inputs) {
     inputs.voltage = MARSPhysicsWorld.getInstance().getSimulatedVoltage();
     inputs.totalCurrentAmps = 0.0;
-    inputs.channelCurrentsAmps = new double[24];
+    java.util.Arrays.fill(channelCurrentsCache, 0.0);
+    inputs.channelCurrentsAmps = channelCurrentsCache;
 
     // Simulate generic CAN utilization between 65% and 80%
     inputs.canBusUtilization = 0.65 + (Math.random() * 0.15);

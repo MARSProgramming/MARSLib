@@ -27,6 +27,9 @@ public class SmartAssistAlign extends Command {
   private final PIDController yAlignController;
   private final PIDController thetaAlignController;
 
+  // Pre-allocated cache to avoid ChassisSpeeds.fromFieldRelativeSpeeds() heap allocation
+  private final ChassisSpeeds robotSpeedsCache = new ChassisSpeeds();
+
   /**
    * Overrides the driver's lateral (Y) and rotational (Theta) control to perfectly track a specific
    * field coordinate, while allowing them to maintain forward/backward (X) speed.
@@ -70,12 +73,15 @@ public class SmartAssistAlign extends Command {
         thetaAlignController.calculate(
             currentPose.getRotation().getRadians(), targetNode.getRotation().getRadians());
 
-    // 4. Critically translate these Field-Relative targets into Robot-Centric kinematics
-    ChassisSpeeds robotSpeeds =
-        ChassisSpeeds.fromFieldRelativeSpeeds(fieldVx, fieldVy, omega, currentPose.getRotation());
+    // Inline fromFieldRelativeSpeeds to avoid new ChassisSpeeds() allocation
+    double cosHeading = currentPose.getRotation().getCos();
+    double sinHeading = currentPose.getRotation().getSin();
+    robotSpeedsCache.vxMetersPerSecond = fieldVx * cosHeading + fieldVy * sinHeading;
+    robotSpeedsCache.vyMetersPerSecond = -fieldVx * sinHeading + fieldVy * cosHeading;
+    robotSpeedsCache.omegaRadiansPerSecond = omega;
 
     // Feed to kinematics
-    swerveDrive.runVelocity(robotSpeeds);
+    swerveDrive.runVelocity(robotSpeedsCache);
   }
 
   @Override

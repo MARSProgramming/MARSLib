@@ -59,12 +59,14 @@ public final class SwerveDiagnostics {
    * using predefined translational bump limits.
    */
   public Command finalClimbLineupCommand() {
+    ChassisSpeeds leftSpeed = new ChassisSpeeds(0.0, -0.5, 0.0);
+    ChassisSpeeds fwdSpeed = new ChassisSpeeds(0.5, 0.0, 0.0);
+    ChassisSpeeds stopSpeed = new ChassisSpeeds();
+
     return Commands.sequence(
-            Commands.run(() -> drive.runVelocity(new ChassisSpeeds(0.0, -0.5, 0.0)), drive)
-                .withTimeout(0.5),
-            Commands.run(() -> drive.runVelocity(new ChassisSpeeds(0.5, 0.0, 0.0)), drive)
-                .withTimeout(0.5))
-        .finallyDo(() -> drive.runVelocity(new ChassisSpeeds()));
+            Commands.run(() -> drive.runVelocity(leftSpeed), drive).withTimeout(0.5),
+            Commands.run(() -> drive.runVelocity(fwdSpeed), drive).withTimeout(0.5))
+        .finallyDo(() -> drive.runVelocity(stopSpeed));
   }
 
   /** Verification sequence to ensure Modules are mechanically linked and not browning out. */

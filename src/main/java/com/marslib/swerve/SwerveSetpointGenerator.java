@@ -158,6 +158,11 @@ public class SwerveSetpointGenerator {
 
       double fGuess = unwrapAngle(f0, angleGuess) - offset;
 
+      if (!Double.isFinite(fGuess)) {
+        sHigh = sGuess;
+        continue;
+      }
+
       if (Math.signum(fLow) == Math.signum(fGuess)) {
         sLow = sGuess;
         fLow = fGuess;
@@ -209,6 +214,11 @@ public class SwerveSetpointGenerator {
       double xGuess = (x1 - x0) * sGuess + x0;
       double yGuess = (y1 - y0) * sGuess + y0;
       double fGuess = Math.hypot(xGuess, yGuess) - offset;
+
+      if (!Double.isFinite(fGuess)) {
+        sHigh = sGuess;
+        continue;
+      }
 
       if (Math.signum(fLow) == Math.signum(fGuess)) {
         sLow = sGuess;
@@ -262,6 +272,9 @@ public class SwerveSetpointGenerator {
       desiredVy[i] =
           desiredModuleState[i].angle.getSin() * desiredModuleState[i].speedMetersPerSecond;
       desiredHeading[i] = desiredModuleState[i].angle;
+      if (desiredModuleState[i].speedMetersPerSecond < 0.0) {
+        desiredHeading[i] = desiredHeading[i].rotateBy(Rotation2d.fromDegrees(180));
+      }
       if (allModulesShouldFlip) {
         double requiredRotationRad =
             Math.abs(prevHeading[i].unaryMinus().rotateBy(desiredHeading[i]).getRadians());

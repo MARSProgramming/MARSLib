@@ -100,10 +100,6 @@ configurations.all {
         force 'com.fasterxml.jackson.core:jackson-core:2.15.2'
         force 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
     }
-    // Suppress Gradle 10 archives deprecation warnings from WPILib/vendor plugins
-    if (it.name == 'archives') {
-        it.outgoing.artifact(jar)
-    }
 }
 
 dependencies {

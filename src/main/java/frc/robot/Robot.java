@@ -113,11 +113,11 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically during all modes. */
   @Override
   public void robotPeriodic() {
-    double loopStartSeconds = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+    double loopStartSeconds = System.nanoTime() / 1e9;
 
     CommandScheduler.getInstance().run();
 
-    double loopEndSeconds = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+    double loopEndSeconds = System.nanoTime() / 1e9;
     Logger.recordOutput("System/LoopRunTime_ms", (loopEndSeconds - loopStartSeconds) * 1000.0);
     Logger.recordOutput(
         "System/BatteryVoltage", edu.wpi.first.wpilibj.RobotController.getBatteryVoltage());
