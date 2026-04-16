@@ -54,15 +54,11 @@ public class MARSBenchmark {
    * @param iterations Number of times to run the benchmark
    * @return Average duration in nanoseconds
    */
-  @SuppressWarnings("PMD.DoNotCallGarbageCollectionExplicitly")
   protected long benchmark(Runnable runnable, int iterations) {
     // Warmup JVM optimization
     for (int i = 0; i < DEFAULT_WARMUP_ITERATIONS; i++) {
       runnable.run();
     }
-
-    // Force garbage collection before measurement
-    System.gc();
 
     // Measure
     long startTime = System.nanoTime();
@@ -81,7 +77,6 @@ public class MARSBenchmark {
    * @param iterations Number of times to run the benchmark
    * @return BenchmarkResult with min, max, mean, and std dev
    */
-  @SuppressWarnings("PMD.DoNotCallGarbageCollectionExplicitly")
   protected BenchmarkResult benchmarkDetailed(Runnable runnable, int iterations) {
     long[] durations = new long[iterations];
 
@@ -89,8 +84,6 @@ public class MARSBenchmark {
     for (int i = 0; i < DEFAULT_WARMUP_ITERATIONS; i++) {
       runnable.run();
     }
-
-    System.gc();
 
     // Measure each iteration
     for (int i = 0; i < iterations; i++) {

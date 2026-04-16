@@ -252,14 +252,16 @@ public class MARSSuperstructure extends SubsystemBase {
       // Throttled console print every 1s (50 loops) so we can see in terminal
       simDebugCounter++;
       if (simDebugCounter % 50 == 0) {
-        System.out.printf(
-            "[SIM-SHOOT] shooterVel=%.1f (ok=%b) cowlPos=%.3f/goal=%.3f (ok=%b) pieces=%d%n",
-            shooter.getVelocityRadPerSec(),
-            shooterReady,
-            cowl.getPositionRads(),
-            goalCowlAngle,
-            cowlReady,
-            internalPieceCount);
+        Logger.recordOutput(
+            "Superstructure/SimDebug/DiagnosticString",
+            String.format(
+                "[SIM-SHOOT] shooterVel=%.1f (ok=%b) cowlPos=%.3f/goal=%.3f (ok=%b) pieces=%d",
+                shooter.getVelocityRadPerSec(),
+                shooterReady,
+                cowl.getPositionRads(),
+                goalCowlAngle,
+                cowlReady,
+                internalPieceCount));
       }
 
       if (shooterReady && cowlReady) {
