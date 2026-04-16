@@ -32,3 +32,24 @@ try {
 }
 ```
 Never swallow the `InterruptedException`. You must properly re-assert the interrupt state to gracefully shut down the thread pool.
+
+## 3. Cache References in Constructor (No Hot Path Synchronization)
+Under zero circumstances should a 50Hz periodic loop (`updateInputs()`, `periodic()`, `execute()`) interact with a `synchronized` method or invoke `.getInstance()` of a continuous thread or Singleton. Doing so forces the fast periodic loop to compete for CPU lock availability with the thread's background loop, resulting in Lock Contention jitter.
+
+**Always cache the Thread's exact memory address in the constructor:**
+```java
+public class MySwerveModule {
+    // Hold a persistent hard reference to the memory location
+    private final PhoenixOdometryThread odometryThread;
+
+    public MySwerveModule() {
+        // Cross the synchronized bridge EXACTLY ONCE on boot
+        this.odometryThread = PhoenixOdometryThread.getInstance();
+    }
+
+    public void updateInputs() {
+        // Direct, instantaneous memory poll with zero lock contention
+        var data = this.odometryThread.getLatestData();
+    }
+}
+```
