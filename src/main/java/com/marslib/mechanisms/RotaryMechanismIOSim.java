@@ -35,8 +35,6 @@ public class RotaryMechanismIOSim implements RotaryMechanismIO {
   private double appliedVolts = 0.0;
   private boolean closedLoop = false;
   private double currentFeedforward = 0.0;
-  private double simulatedTorque = 0.0;
-  private int debugCounter = 0;
 
   /**
    * Constructs a physical simulation instance for a 1D rotary arm mechanism.
@@ -131,11 +129,6 @@ public class RotaryMechanismIOSim implements RotaryMechanismIO {
     double currentDrawAmps = gearbox.getCurrent(currentVelocityRadPerSec * gearRatio, appliedVolts);
     // Enforce stator current limit like real TalonFX firmware
     currentDrawAmps = Math.copySign(Math.min(Math.abs(currentDrawAmps), 40.0), currentDrawAmps);
-    double motorTorque = gearbox.getTorque(currentDrawAmps);
-    double mechanismTorque = motorTorque * gearRatio;
-
-    // Store torque for telemetry (no longer applied to dyn4j body)
-    simulatedTorque = mechanismTorque;
 
     // Compute effective motor terminal voltage after current limiting
     double motorSpeedRadPerSec = currentVelocityRadPerSec * gearRatio;

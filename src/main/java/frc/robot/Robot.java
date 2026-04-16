@@ -206,13 +206,24 @@ public class Robot extends LoggedRobot {
 
     // Register full Xbox Controller axis count to prevent unplugged warnings
     edu.wpi.first.wpilibj.simulation.DriverStationSim.setJoystickAxisCount(0, 6);
+    edu.wpi.first.wpilibj.simulation.DriverStationSim.setJoystickAxisCount(1, 6);
 
     edu.wpi.first.wpilibj.simulation.DriverStationSim.notifyNewData();
   }
+
+  private int simTickCounter = 0;
 
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {
     com.marslib.simulation.MARSPhysicsWorld.getInstance().update(ModeConstants.LOOP_PERIOD_SECS);
+
+    simTickCounter++;
+    // After 3 seconds (150 ticks), auto-hold the right trigger to test shooting
+    if (simTickCounter > 150) {
+      // XInput right trigger = axis index 3
+      edu.wpi.first.wpilibj.simulation.DriverStationSim.setJoystickAxis(0, 3, 1.0);
+      edu.wpi.first.wpilibj.simulation.DriverStationSim.notifyNewData();
+    }
   }
 }

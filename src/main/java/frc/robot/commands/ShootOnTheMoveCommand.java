@@ -156,11 +156,10 @@ public class ShootOnTheMoveCommand extends Command {
   public void end(boolean interrupted) {
     org.littletonrobotics.junction.Logger.recordOutput(
         "ShootOnTheMove/State", "ENDED - interrupted=" + interrupted);
-    if (superstructure != null) {
-      superstructure
-          .getStateMachine()
-          .requestTransition(frc.robot.subsystems.MARSSuperstructure.SuperstructureState.STOWED);
-    }
+    // NOTE: Do NOT transition to STOWED here. The continuous SCORE assertion in execute()
+    // means we may be re-scheduled immediately by bindWhileTrue. Moving to STOWED here
+    // creates a SCORE→STOWED→SCORE oscillation that prevents the cowl from settling.
+    // The binding framework handles the STOWED transition when the trigger is truly released.
     swerveDrive.runVelocity(new ChassisSpeeds());
   }
 }
