@@ -39,7 +39,7 @@ public final class SwerveDiagnostics {
                 (edu.wpi.first.units.measure.Voltage volts) -> {
                   for (SwerveModule mod : modules) {
                     mod.setDriveVoltage(volts.in(Volts));
-                    mod.setTurnVoltage(0.0);
+                    mod.setTurnPosition(0.0);
                   }
                 },
                 null, // Log is handled implicitly via AdvantageKit's @AutoLog IO capturing

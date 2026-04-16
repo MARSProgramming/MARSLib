@@ -127,4 +127,9 @@ To save time, **always use selective testing** to run tests only for the specifi
 # E.g., if you modified MARSPhysicsWorld.java, run its respective test class:
 ./gradlew test --tests *MARSPhysicsWorldTest
 ```
-If you change an interface or a deep architecture file, run tests on the handful of core subclasses affected. This keeps iteration cycles fast!
+## 7. ProfiledPIDController & Trajectories under Physics (CRITICAL)
+
+When testing autonomous alignment commands like `MARSAlignmentCommandTest`, be aware that the `dyn4j` environment models friction, momentum, and azimuth-coupling interference natively:
+1. **WPILib Time is Driven by Halo Hooks:** `ProfiledPIDController` naturally relies on FPGA Timestamp to calculate $dt$. If you use `SimHooks.pauseTiming()` or run a `for` loop testing execution without calling `SimHooks.stepTiming(0.02)`, the loop $dt$ will be exactly `0.0`. `ProfiledPIDController` will immediately skip its Trapezoid constraints and output raw P values! **Always step timing** inside loops relying on `ProfiledPIDController`.
+2. **Ping-Ponging / Overshoot is Realistic:** If you use a very high P-gain for translation (e.g. `15.0`) with low D-gain and a high max velocity under pure physics, the `dyn4j` traction limits will cause the robot to overshoot due to simulated inertia, just like the real robot! If tests ping-pong, reduce maximum velocity constraints or add a tiny amount of D-gain.
+3. **IsFinished Constraints:** Physics iterations often take a few seconds strictly to settle around tolerance limits compared to decoupled analytical math simulations. If `isFinished()` tolerances fail within a tight test loop constraint (like $<10s$), rely on validating physical bounds `robotPose.getX() > minimumTravelArea` instead of enforcing absolute micro-level `command.isFinished() == true` asserts.

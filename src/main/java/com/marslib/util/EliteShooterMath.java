@@ -137,7 +137,11 @@ public class EliteShooterMath {
     setpoint.hoodRadians = pitchAngleRads;
     setpoint.hoodFeedforward = hoodFF;
     setpoint.launchSpeedMetersPerSec = adjustedVShot;
-    setpoint.isValid = true;
+
+    // The shot is only valid if the required velocity is reasonably close to our nominal
+    // capability.
+    // If the approximation delta is > 25%, the shot is physically impossible at this speed.
+    setpoint.isValid = adjustedVShot <= (nominalShotSpeedMetersPerSec * 1.25);
 
     return setpoint;
   }

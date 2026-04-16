@@ -24,7 +24,6 @@ public class SwerveModule {
   private final SwerveConfig config;
   private final String logPath;
 
-  private double lastDriveVoltage = 0.0;
   private final SwerveModulePosition[] cachedDeltas = new SwerveModulePosition[20];
   private int cachedDeltaCount = 0;
 
@@ -134,38 +133,42 @@ public class SwerveModule {
     // Optimize to minimize turn rotation (may flip drive direction)
     desiredState.optimize(currentAngle);
 
-    // Turn voltage: proportional controller on angular error
-    double angleErrorRad = desiredState.angle.minus(currentAngle).getRadians();
-
     // Cosine Compensation: Scale drive speed by cosine of error angle
     // This prevents the robot from driving while the wheels are sideways, eliminating drift.
-    double driveVoltage =
-        (desiredState.speedMetersPerSecond * Math.cos(angleErrorRad))
-            * config.nominalVoltage()
-            / config.maxLinearSpeedMps();
+    double angleErrorRad = desiredState.angle.minus(currentAngle).getRadians();
 
-    double turnVoltage = angleErrorRad * config.turnKp();
-    turnVoltage =
-        Math.max(-config.nominalVoltage(), Math.min(config.nominalVoltage(), turnVoltage));
+    // Calculate compensated target floor velocity
+    double compensatedSpeedMps = desiredState.speedMetersPerSecond * Math.cos(angleErrorRad);
 
-    lastDriveVoltage = driveVoltage;
-    io.setDriveVoltage(driveVoltage);
-    io.setTurnVoltage(turnVoltage);
+    // Convert target floor velocity to wheel rotational velocity
+    double targetDriveVelocityRadPerSec = compensatedSpeedMps / config.wheelRadiusMeters();
+
+    // SDS Azimuth Coupling Compensation: Un-couple turn motor interference from drive wheel
+    targetDriveVelocityRadPerSec -= inputs.turnVelocityRadPerSec * config.couplingRatio();
+
+    io.setTurnPosition(desiredState.angle.getRadians());
+    io.setDriveVelocity(targetDriveVelocityRadPerSec);
   }
 
   /**
-   * Routes target voltage demands safely down into the IO execution layer.
-   *
-   * @param volts Target requested feedforward / PID voltage calculated securely.
+   * Routes target velocity demands safely down into the IO execution layer. Useful for SysId
+   * characterization.
+   */
+  public void setDriveVelocity(double velocityRadPerSec) {
+    io.setDriveVelocity(velocityRadPerSec);
+  }
+
+  /**
+   * Routes raw open-loop voltage demands safely down into the IO execution layer. Required for
+   * WPILib SysIdRoutine characterization.
    */
   public void setDriveVoltage(double volts) {
-    lastDriveVoltage = volts;
     io.setDriveVoltage(volts);
   }
 
   /** Used strictly for extracting injected sim forces. */
   public double getSimDriveVoltage() {
-    return lastDriveVoltage;
+    return inputs.driveAppliedVolts;
   }
 
   /**
@@ -186,12 +189,8 @@ public class SwerveModule {
     return lastDesiredState;
   }
 
-  /**
-   * Routes steer voltage demands safely down into the IO execution layer.
-   *
-   * @param volts Target requested feedforward / PID voltage calculated securely.
-   */
-  public void setTurnVoltage(double volts) {
-    io.setTurnVoltage(volts);
+  /** Routes steer position demands safely down into the IO execution layer. */
+  public void setTurnPosition(double positionRad) {
+    io.setTurnPosition(positionRad);
   }
 }

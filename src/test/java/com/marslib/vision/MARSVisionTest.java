@@ -32,10 +32,10 @@ public class MARSVisionTest {
     swerveDrive =
         new SwerveDrive(
             new SwerveModule[] {
-              new SwerveModule(0, new SwerveModuleIOSim(0), config),
-              new SwerveModule(1, new SwerveModuleIOSim(1), config),
-              new SwerveModule(2, new SwerveModuleIOSim(2), config),
-              new SwerveModule(3, new SwerveModuleIOSim(3), config)
+              new SwerveModule(0, new SwerveModuleIOSim(0, config), config),
+              new SwerveModule(1, new SwerveModuleIOSim(1, config), config),
+              new SwerveModule(2, new SwerveModuleIOSim(2, config), config),
+              new SwerveModule(3, new SwerveModuleIOSim(3, config), config)
             },
             new GyroIOSim(),
             powerManager,

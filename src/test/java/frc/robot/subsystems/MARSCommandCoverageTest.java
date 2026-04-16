@@ -81,7 +81,7 @@ public class MARSCommandCoverageTest {
     for (int i = 0; i < 4; i++) {
       modules[i] =
           new com.marslib.swerve.SwerveModule(
-              i, new com.marslib.swerve.SwerveModuleIOSim(i), swerveConfig);
+              i, new com.marslib.swerve.SwerveModuleIOSim(i, swerveConfig), swerveConfig);
     }
     swerveDrive =
         new com.marslib.swerve.SwerveDrive(

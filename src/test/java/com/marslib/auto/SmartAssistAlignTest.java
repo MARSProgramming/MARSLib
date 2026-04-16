@@ -31,10 +31,10 @@ public class SmartAssistAlignTest {
     swerveDrive =
         new SwerveDrive(
             new SwerveModule[] {
-              new SwerveModule(0, new SwerveModuleIOSim(0), config),
-              new SwerveModule(1, new SwerveModuleIOSim(1), config),
-              new SwerveModule(2, new SwerveModuleIOSim(2), config),
-              new SwerveModule(3, new SwerveModuleIOSim(3), config)
+              new SwerveModule(0, new SwerveModuleIOSim(0, config), config),
+              new SwerveModule(1, new SwerveModuleIOSim(1, config), config),
+              new SwerveModule(2, new SwerveModuleIOSim(2, config), config),
+              new SwerveModule(3, new SwerveModuleIOSim(3, config), config)
             },
             new GyroIOSim(),
             powerManager,
@@ -43,11 +43,13 @@ public class SmartAssistAlignTest {
 
   @Test
   public void testSmartAssistAllowsXMovementButAutomatesYAndTheta() {
-    // Current spawn is at 0, 0, 0
+    // Current spawn closer to target to prevent X-vector desaturation against massive Y/Theta
+    // errors
     Pose2d targetNode = new Pose2d(3.0, 3.0, Rotation2d.fromDegrees(90));
+    swerveDrive.resetPose(new Pose2d(0.0, 2.5, Rotation2d.fromDegrees(90)));
 
-    // Driver is pushing forward at 2.0 m/s
-    SmartAssistAlign command = new SmartAssistAlign(swerveDrive, () -> 2.0, targetNode);
+    // Driver is pushing forward at 3.0 m/s
+    SmartAssistAlign command = new SmartAssistAlign(swerveDrive, () -> 3.0, targetNode);
 
     command.initialize();
 

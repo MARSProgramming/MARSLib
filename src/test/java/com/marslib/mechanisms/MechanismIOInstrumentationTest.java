@@ -96,7 +96,7 @@ public class MechanismIOInstrumentationTest {
           io.updateInputs(new com.marslib.swerve.SwerveModuleIO.SwerveModuleIOInputs());
 
           io.setDriveVoltage(1.0);
-          io.setTurnVoltage(1.0);
+          io.setTurnPosition(1.0);
         });
   }
 }

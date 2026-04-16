@@ -41,8 +41,9 @@ public class TractionControlLimiter {
    */
   public void calculate(
       double targetVx, double targetVy, edu.wpi.first.math.kinematics.ChassisSpeeds outputSpeeds) {
-    double currentTime = Logger.getTimestamp();
-    double dt = currentTime - lastTime;
+    double currentTime = (double) Logger.getTimestamp();
+    double dt =
+        (currentTime - lastTime) / 1000000.0; // Convert AdvantageKit microseconds to seconds
     lastTime = currentTime;
 
     // Prevent divide-by-zero on first loop

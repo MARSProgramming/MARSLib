@@ -13,8 +13,11 @@ This skill dictates how to safely clone, parse, translate, and securely integrat
 
 ## MANDATORY GITHUB ACCESS METHODS
 
+> [!NOTE]
+> **Universal AI Fallback Directive:** If your specific AI environment lacks autonomous terminal access (no `git clone`) or lacks an internal URL reading tool (no `webReader`), you MUST output the required `raw.githubusercontent.com` URLs or the exact `git clone` bash commands directly to the user. Instruct the user to manually fetch the file contents or run the command and paste the output back to you before proceeding.
+
 **PRIMARY METHOD: Direct Raw File Access**
-Use `mcp__web_reader__webReader` tool to fetch raw file contents directly from GitHub:
+Use your available web reading tool (e.g., `webReader`, `read_url_content`, `curl`) to fetch raw file contents directly from GitHub:
 ```
 URL Pattern: https://raw.githubusercontent.com/[ORG]/[REPO]/[BRANCH]/[FILE_PATH]
 Example: https://raw.githubusercontent.com/Team254/FRC-2024-Public/main/src/main/java/com/team254/frc2024/subsystems/Swerve.java
@@ -118,10 +121,97 @@ When tasked with "seeing how X team solved Y problem," use the following catalog
     *   2025: `https://github.com/Team973/2025-inseason`
     *   2023: `https://github.com/Team973/2023-inseason`
     *   2022: `https://github.com/Team973/2022-inseason`
+*   **Team 118 (Robonauts):** 4x World Champions with highly optimized control systems & autonomous routines.
+    *   2026: `https://github.com/FRCTeam118/2026-Robot-Code`
+    *   2025: `https://github.com/FRCTeam118/2025-Robot-Code`
+    *   2024: `https://github.com/FRCTeam118/2024-Robot-Code`
+    *   2023: `https://github.com/FRCTeam118/2023-Robot-Code`
+    *   2022: `https://github.com/FRCTeam118/2022-Robot-Code`
+*   **Team 195 (CyberKnights):** Consistently competitive with excellent code structure & documentation.
+    *   2025: `https://github.com/FRCTeam195/2025-robot-code`
+    *   2024: `https://github.com/FRCTeam195/2024-robot-code`
+    *   2023: `https://github.com/FRCTeam195/2023-robot-code`
+    *   2022: `https://github.com/FRCTeam195/2022-robot-code`
+*   **Team 148 (RoboVikes):** Very strong documentation, infrastructure, & clean code organization.
+    *   2025: `https://github.com/Team148/2025-robot-code`
+    *   2024: `https://github.com/Team148/2024-robot-code`
+    *   2023: `https://github.com/Team148/2023-robot-code`
+    *   2022: `https://github.com/Team148/2022-robot-code`
+*   **Team 2471 (meanbycoding):** Modern AdvantageKit implementation & clean abstractions.
+    *   2025: `https://github.com/Team2471/2025-robot-code`
+    *   2024: `https://github.com/Team2471/2024-robot-code`
+    *   2023: `https://github.com/Team2471/2023-robot-code`
+    *   2022: `https://github.com/Team2471/2022-robot-code`
+*   **Team 971 (Spartans):** Historical significance with clean, well-documented code patterns.
+    *   2025: `https://github.com/Team971/Spartans-2025`
+    *   2024: `https://github.com/Team971/Spartans-2024`
+    *   2023: `https://github.com/Team971/Spartans-2023`
+    *   2022: `https://github.com/Team971/Spartans-2022`
+*   **Team 2168 (Aluminum Falcons):** Strong sim/real hybrid patterns & dual-codebase architecture.
+    *   2025: `https://github.com/Team2168/2025-Competition-Robot`
+    *   2024: `https://github.com/Team2168/2024-Competition-Robot`
+    *   2023: `https://github.com/Team2168/2023-Competition-Robot`
+    *   2022: `https://github.com/Team2168/2022-Competition-Robot`
+*   **Team 5013 (Grenading Gearheads):** Growing reputation for quality code & modern practices.
+    *   2025: `https://github.com/Team5013/2025-robot-code`
+    *   2024: `https://github.com/Team5013/2024-robot-code`
+    *   2023: `https://github.com/Team5013/2023-robot-code`
+    *   2022: `https://github.com/Team5013/2022-robot-code`
+*   **Team 624 (CRyptonite):** Strong autonomous routines & path following integration.
+    *   2025: `https://github.com/Team624/2025-robot-code`
+    *   2024: `https://github.com/Team624/2024-robot-code`
+    *   2023: `https://github.com/Team624/2023-robot-code`
+    *   2022: `https://github.com/Team624/2022-robot-code`
+*   **Team 33 (Killer Bees):** Historical elite team with proven architectural patterns.
+    *   2025: `https://github.com/Team33TheKillerBees/2025-robot-code`
+    *   2024: `https://github.com/Team33TheKillerBees/2024-robot-code`
+    *   2023: `https://github.com/Team33TheKillerBees/2023-robot-code`
+    *   2022: `https://github.com/Team33TheKillerBees/2022-robot-code`
+*   **Team 865 (Warbots):** Clean AdvantageKit implementation & modern code organization.
+    *   2025: `https://github.com/Team865/2025-robot-code`
+    *   2024: `https://github.com/Team865/2024-robot-code`
+    *   2023: `https://github.com/Team865/2023-robot-code`
+    *   2022: `https://github.com/Team865/2022-robot-code`
+*   **Team 6040 (Quasics):** Strong documentation & emerging elite team codebase.
+    *   2025: `https://github.com/Team6040/2025-robot-code`
+    *   2024: `https://github.com/Team6040/2024-robot-code`
+    *   2023: `https://github.com/Team6040/2023-robot-code`
+    *   2022: `https://github.com/Team6040/2022-robot-code`
+*   **Team 5818 (MegaHurtz 2.0):** Growing presence with quality control systems.
+    *   2025: `https://github.com/Team5818/2025-robot-code`
+    *   2024: `https://github.com/Team5818/2024-robot-code`
+    *   2023: `https://github.com/Team5818/2023-robot-code`
+    *   2022: `https://github.com/Team5818/2022-robot-code`
+*   **Team 2767 (Stryke Force):** 'ThirdCoast' Custom Swerve Framework & advanced control math.
+    *   ThirdCoast Framework: `https://github.com/strykeforce/thirdcoast`
+    *   2025: `https://github.com/strykeforce/2025-competition`
+    *   2024: `https://github.com/strykeforce/crescendo`
+    *   2023: `https://github.com/strykeforce/chargedup`
+    *   2022: `https://github.com/strykeforce/rapidreact`
+    *   2020: `https://github.com/strykeforce/infiniterecharge`
+*   **Team 4414 (HighTide):** Exceptionally dominant swerve controls and robust architectures.
+    *   2025: `https://github.com/HighTide4414/2025-robot-code`
+    *   2024: `https://github.com/HighTide4414/2024-robot-code`
+    *   2023: `https://github.com/HighTide4414/2023-robot-code`
+*   **Team 3476 (Code Orange):** Clean architecture, advanced vision fusion (CodeOrangePoseEstimator).
+    *   2025: `https://github.com/frc3476/2025-robot-code`
+    *   2024: `https://github.com/frc3476/2024-robot-code`
+    *   2023: `https://github.com/frc3476/2023-robot-code`
+*   **Team 8033 (Highlander Robotics):** High-quality modern AdvantageKit architecture.
+    *   2025: `https://github.com/HighlanderRobotics/2025-robot-code`
+    *   2024: `https://github.com/HighlanderRobotics/2024-robot-code`
+    *   2023: `https://github.com/HighlanderRobotics/2023-robot-code`
+*   **Team 1323 (MadTown Robotics):** Historically dominant subsystem packaging and logic.
+    *   2025: `https://github.com/Team1323/2025-robot-code`
+    *   2024: `https://github.com/Team1323/2024-robot-code`
+    *   2023: `https://github.com/Team1323/2023-robot-code`
 *   **Other Notables (AdvantageKit & Cycles):**
     *   Team 125: `https://github.com/nutrons`
     *   Team 4099: `https://github.com/Team4099`
-    *   Team 1323: `https://github.com/Team1323`
+    *   Team 1540: `https://github.com/Team1540/Flaming-Chickens-2025` (updated)
+    *   Team 1736: `https://github.com/Team1736/RobotCode-2025` (updated)
+    *   Team 9771: `https://github.com/Team9771/2025-competition` (updated)
+    *   Team 852: `https://github.com/Team852/2025-robot-code` (updated)
 
 ## 2. GitHub Access Methodology (DIRECT ACCESS ONLY)
 
@@ -156,10 +246,10 @@ If direct raw file access fails:
 ## 3. Ingestion Rules (Safety First)
 
 Do **NOT** clone external elite code directly into the workspace root.
-*   **Multi-Team Sourcing:** You must ALWAYS attempt to ingest and analyze code from at least TWO DIFFERENT TEAMS (whenever applicable) for any given architectural or implementation question, rather than relying on a single source of truth.
+*   **Multi-Team Sourcing:** You must ALWAYS attempt to ingest and analyze code from at least FIVE DIFFERENT TEAMS (whenever applicable) for any given architectural or implementation question. A wider diversity of implementations is required before synthesizing a response.
 *   **Exhaustive Search & Follow-Up:** If you cannot find a satisfactory answer or implementation within the initially cloned repositories, you MUST execute a follow-up action: autonomously expand your search to additional teams on the static manifest. Do not stop at the first failure.
-*   **Targeting a Specific Year:** FRC teams typically create a new repository for each season (e.g., `Robot-2024`, `ChargedUp`, `Crescendo`). If the user asks to investigate a given year's code, you must use the exact repository URL from the manifest above.
-*   **Isolated Cloning:** Always execute an automated `git clone --depth 1 [EXACT_YEAR_REPO_URL] <appDataDir>\brain\<conversation-id>/scratch/[TEAM_NAME]_[YEAR]` to create an isolated sandbox to read from.
+*   **Strict Recency Bias vs. Specific Years:** By default, you must apply a strict recency bias and preferentially target the most recent season's repository (e.g., 2026 or 2025) across all teams. However, **you must honor user requests for specific years** (e.g., "Look at 2024 code for shooting kinematics" limits your search to the 2024 repositories), as different game kinematics apply across years.
+*   **Isolated Cloning:** Always execute an automated `git clone --depth 1 [EXACT_YEAR_REPO_URL] <appDataDir>\brain\<conversation-id>/scratch/[TEAM_NAME]_[YEAR]` to create an isolated sandbox to read from. (If lacking terminal access, instruct the user to run this clone command in a temporary scratch directory).
 
 ## 4. Elite Code Mining Examples (FOLLOW THESE PATTERNS)
 

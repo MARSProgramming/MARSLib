@@ -11,6 +11,8 @@ import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -35,8 +37,9 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
   private final StatusSignal<Current> driveCurrent;
   private final StatusSignal<Current> turnCurrent;
 
+  private final VelocityVoltage driveVelocityRequest = new VelocityVoltage(0.0).withSlot(0);
   private final VoltageOut driveVoltageRequest = new VoltageOut(0.0);
-  private final VoltageOut turnVoltageRequest = new VoltageOut(0.0);
+  private final PositionVoltage turnPositionRequest = new PositionVoltage(0.0).withSlot(0);
 
   private final int odometryId;
   private final SwerveConfig config;
@@ -52,6 +55,11 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     driveConfig.CurrentLimits.StatorCurrentLimit = config.driveStatorCurrentLimit();
     driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     driveConfig.CurrentLimits.SupplyCurrentLimit = 40.0;
+    driveConfig.Slot0.kP = config.driveKp();
+    driveConfig.Slot0.kD = config.driveKd();
+    driveConfig.Slot0.kS = config.driveKs();
+    driveConfig.Slot0.kV = config.driveKv();
+    driveConfig.Slot0.kA = config.driveKa();
     driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     applyWithRetry(driveMotor, driveConfig, "DriveMotor[" + driveMotorId + "]");
 
@@ -60,6 +68,9 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     turnConfig.CurrentLimits.StatorCurrentLimit = config.turnStatorCurrentLimit();
     turnConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     turnConfig.CurrentLimits.SupplyCurrentLimit = 40.0;
+    turnConfig.Slot0.kP = config.turnKp();
+    turnConfig.Slot0.kD = config.turnKd();
+    turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
     turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     applyWithRetry(turnMotor, turnConfig, "TurnMotor[" + turnMotorId + "]");
 
@@ -104,11 +115,14 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
             driveCurrent, turnCurrent);
 
     inputs.hasHardwareConnected = refreshStatus.isOK();
-    // Convert from motor-domain (rotations) to output-shaft-domain (radians at the wheel)
-    inputs.driveVelocityRadPerSec =
-        Units.rotationsToRadians(driveVelocity.getValueAsDouble()) / config.driveGearRatio();
     inputs.turnVelocityRadPerSec =
         Units.rotationsToRadians(turnVelocity.getValueAsDouble()) / config.turnGearRatio();
+    // Decouple the hardware rotor from the steering gear meshing
+    double uncoupledDriveMotorVelRots =
+        driveVelocity.getValueAsDouble()
+            + (turnVelocity.getValueAsDouble() * config.couplingRatio());
+    inputs.driveVelocityRadPerSec =
+        Units.rotationsToRadians(uncoupledDriveMotorVelRots) / config.driveGearRatio();
     inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
     inputs.turnAppliedVolts = turnAppliedVolts.getValueAsDouble();
     inputs.driveCurrentAmps = driveCurrent.getValueAsDouble();
@@ -128,10 +142,16 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
 
     // Convert from motor rotations to output-shaft radians (post-gearing)
     for (int i = 0; i < count; i++) {
+      double turnPosHardwareRots = data.turnPositions[i];
+      double hardwareDriveMotorRots = data.drivePositions[i];
+      // Decouple the hardware drive rotor from the steering gear meshing
+      double uncoupledDriveMotorRots =
+          hardwareDriveMotorRots + (turnPosHardwareRots * config.couplingRatio());
+
       cachedDrivePositionsRad[i] =
-          Units.rotationsToRadians(data.drivePositions[i]) / config.driveGearRatio();
+          Units.rotationsToRadians(uncoupledDriveMotorRots) / config.driveGearRatio();
       cachedTurnPositionsRad[i] =
-          Units.rotationsToRadians(data.turnPositions[i]) / config.turnGearRatio();
+          Units.rotationsToRadians(turnPosHardwareRots) / config.turnGearRatio();
       cachedTimestamps[i] = data.timestamps[i];
     }
 
@@ -141,13 +161,20 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
   }
 
   @Override
+  public void setDriveVelocity(double velocityRadPerSec) {
+    double rotationsPerSec = Units.radiansToRotations(velocityRadPerSec) * config.driveGearRatio();
+    driveMotor.setControl(driveVelocityRequest.withVelocity(rotationsPerSec));
+  }
+
+  @Override
   public void setDriveVoltage(double volts) {
     driveMotor.setControl(driveVoltageRequest.withOutput(volts));
   }
 
   @Override
-  public void setTurnVoltage(double volts) {
-    turnMotor.setControl(turnVoltageRequest.withOutput(volts));
+  public void setTurnPosition(double positionRad) {
+    double rotations = Units.radiansToRotations(positionRad) * config.turnGearRatio();
+    turnMotor.setControl(turnPositionRequest.withPosition(rotations));
   }
 
   @Override

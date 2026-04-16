@@ -126,7 +126,25 @@ public final class SwerveConstants {
   // ---- Turn PID ----
 
   /** Proportional gain for the module turn voltage controller. */
-  public static final double TURN_KP = 5.0;
+  public static final double TURN_KP = 80.0;
+
+  /** Derivative gain for the module turn controller. */
+  public static final double TURN_KD = 0.0;
+
+  // ---- Drive PID ----
+  public static final double DRIVE_KP = 0.11;
+  public static final double DRIVE_KD = 0.0;
+
+  public static final double DRIVE_KS = 0.1;
+  public static final double DRIVE_KV = 0.12;
+  public static final double DRIVE_KA = 0.01;
+
+  // ---- Coupling ----
+  /**
+   * Ratio of Azimuth influence on the Drive wheel due to bevel gear dragging. Default 50/14 for
+   * standard SDS MAX/MK4i.
+   */
+  public static final double COUPLING_RATIO = 50.0 / 14.0;
 
   // ---- Autonomous PID ----
 

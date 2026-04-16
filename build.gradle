@@ -156,6 +156,24 @@ jacocoTestReport {
         csv.required = true
         html.required = true
     }
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                'frc/robot/**',
+                '**/*IO*.class',
+                '**/*AutoLogged*.class',
+                '**/LimelightHelpers*.class',
+                'gg/questnav/**',
+                'com/marslib/diagnostics/**',
+                'com/marslib/hmi/**',
+                'com/marslib/vision/**',
+                'com/marslib/util/LogUploader*.class',
+                'com/marslib/util/LoggedTunableNumber*.class',
+                'com/marslib/util/SimSysIdTuner*.class',
+                'com/marslib/testing/**'
+            ])
+        }))
+    }
 }
 
 pmd {

@@ -49,7 +49,7 @@ class SwervePerformanceTest extends MARSBenchmark {
 
     modules = new SwerveModule[4];
     for (int i = 0; i < 4; i++) {
-      SwerveModuleIO moduleIO = new SwerveModuleIOSim(i);
+      SwerveModuleIO moduleIO = new SwerveModuleIOSim(i, config);
       modules[i] = new SwerveModule(i, moduleIO, config);
     }
 

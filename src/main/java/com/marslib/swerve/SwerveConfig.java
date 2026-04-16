@@ -14,6 +14,12 @@ public record SwerveConfig(
     double maxAngularSpeedRadPerSec,
     double wheelRadiusMeters,
     double turnKp,
+    double turnKd,
+    double driveKp,
+    double driveKd,
+    double driveKs,
+    double driveKv,
+    double driveKa,
     double nominalVoltage,
     double warningVoltage,
     double criticalVoltage,
@@ -41,4 +47,5 @@ public record SwerveConfig(
     double telemetryHz,
     double odometryHz,
     double turnGearRatio,
-    double turnStatorCurrentLimit) {}
+    double turnStatorCurrentLimit,
+    double couplingRatio) {}

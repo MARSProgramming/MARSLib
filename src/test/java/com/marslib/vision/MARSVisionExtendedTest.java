@@ -29,7 +29,9 @@ public class MARSVisionExtendedTest {
     SwerveConfig swerveConfig = MARSTestHarness.createSwerveConfig();
     SwerveModule[] modules = new SwerveModule[4];
     for (int i = 0; i < 4; i++) {
-      modules[i] = new SwerveModule(i, new com.marslib.swerve.SwerveModuleIOSim(i), swerveConfig);
+      modules[i] =
+          new SwerveModule(
+              i, new com.marslib.swerve.SwerveModuleIOSim(i, swerveConfig), swerveConfig);
     }
     com.marslib.power.MARSPowerManager powerManager =
         new com.marslib.power.MARSPowerManager(
@@ -123,7 +125,7 @@ public class MARSVisionExtendedTest {
     SwerveConfig config = MARSTestHarness.createSwerveConfig();
     SwerveModule[] modules = new SwerveModule[4];
     for (int i = 0; i < 4; i++) {
-      modules[i] = new SwerveModule(i, new com.marslib.swerve.SwerveModuleIOSim(i), config);
+      modules[i] = new SwerveModule(i, new com.marslib.swerve.SwerveModuleIOSim(i, config), config);
     }
     com.marslib.power.MARSPowerManager powerManager =
         new com.marslib.power.MARSPowerManager(

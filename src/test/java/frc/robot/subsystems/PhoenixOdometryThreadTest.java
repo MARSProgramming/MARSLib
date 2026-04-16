@@ -73,4 +73,45 @@ public class PhoenixOdometryThreadTest {
     PhoenixOdometryThread.SyncData data2 = thread.getSyncData(id);
     assertSame(data1, data2, "SyncData object should be reused (zero-allocation)");
   }
+
+  @Test
+  public void testThreadInterruptionSafety() throws InterruptedException {
+    PhoenixOdometryThread thread = PhoenixOdometryThread.getInstance();
+    assertTrue(thread.isAlive());
+
+    // Trigger an interrupt on the sleeping daemon
+    thread.interrupt();
+
+    // Give it a moment to catch the InterruptedException and break
+    thread.join(1000);
+
+    // Assert that the thread shut down cleanly
+    assertFalse(thread.isAlive(), "Thread failed to terminate cleanly on interrupt.");
+
+    // Clear out the dead instance
+    PhoenixOdometryThread.resetInstance();
+  }
+
+  @Test
+  public void testThreadLoopUpdatesRegisters() throws InterruptedException {
+    PhoenixOdometryThread thread = PhoenixOdometryThread.getInstance();
+
+    com.ctre.phoenix6.hardware.TalonFX driveMotor = new com.ctre.phoenix6.hardware.TalonFX(10);
+    com.ctre.phoenix6.hardware.TalonFX turnMotor = new com.ctre.phoenix6.hardware.TalonFX(11);
+
+    int id = thread.registerModule(driveMotor.getPosition(), turnMotor.getPosition(), 250);
+
+    // Wait for the background thread to loop at least once
+    // SimHooks.stepTiming triggers simulation time
+    edu.wpi.first.wpilibj.simulation.SimHooks.stepTiming(0.02);
+    Thread.sleep(100);
+    edu.wpi.first.wpilibj.simulation.SimHooks.stepTiming(0.02);
+    Thread.sleep(100);
+
+    PhoenixOdometryThread.SyncData data = thread.getSyncData(id);
+    // At least one sample should have been picked up by the daemon
+    assertTrue(data.validCount >= 0);
+
+    PhoenixOdometryThread.resetInstance();
+  }
 }

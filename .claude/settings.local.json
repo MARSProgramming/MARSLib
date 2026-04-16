@@ -16,7 +16,8 @@
       "Read(//c/Users/david/AppData/Local/Temp/Team2910_2024/src/main/java/frc/robot/subsystems/swerve/**)",
       "Read(//c/Users/david/AppData/Local/Temp/Team6328_2024/src/main/java/org/littletonrobotics/frc2024/subsystems/drive/**)",
       "Read(//c/Users/david/AppData/Local/Temp/**)",
-      "Bash(grep -i \"\\\\.java$\")"
+      "Bash(grep -i \"\\\\.java$\")",
+      "Bash(curl -s \"https://api.github.com/users/FRCTeam195/repos\")"
     ]
   }
 }

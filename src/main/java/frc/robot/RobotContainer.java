@@ -90,6 +90,12 @@ public class RobotContainer {
             SwerveConstants.MAX_ANGULAR_SPEED_RAD_PER_SEC,
             SwerveConstants.WHEEL_RADIUS_METERS,
             SwerveConstants.TURN_KP,
+            SwerveConstants.TURN_KD,
+            SwerveConstants.DRIVE_KP,
+            SwerveConstants.DRIVE_KD,
+            SwerveConstants.DRIVE_KS,
+            SwerveConstants.DRIVE_KV,
+            SwerveConstants.DRIVE_KA,
             PowerConstants.NOMINAL_VOLTAGE,
             PowerConstants.WARNING_VOLTAGE,
             PowerConstants.CRITICAL_VOLTAGE,
@@ -117,7 +123,8 @@ public class RobotContainer {
             DriveConstants.TELEMETRY_HZ,
             DriveConstants.ODOMETRY_HZ,
             SwerveConstants.TURN_GEAR_RATIO,
-            SwerveConstants.TURN_STATOR_CURRENT_LIMIT);
+            SwerveConstants.TURN_STATOR_CURRENT_LIMIT,
+            SwerveConstants.COUPLING_RATIO);
 
     final VisionConfig visionConfig =
         new VisionConfig(
@@ -153,10 +160,10 @@ public class RobotContainer {
           swerveDrive =
               new SwerveDrive(
                   new SwerveModule[] {
-                    new SwerveModule(0, new SwerveModuleIOSim(0), swerveConfig),
-                    new SwerveModule(1, new SwerveModuleIOSim(1), swerveConfig),
-                    new SwerveModule(2, new SwerveModuleIOSim(2), swerveConfig),
-                    new SwerveModule(3, new SwerveModuleIOSim(3), swerveConfig)
+                    new SwerveModule(0, new SwerveModuleIOSim(0, swerveConfig), swerveConfig),
+                    new SwerveModule(1, new SwerveModuleIOSim(1, swerveConfig), swerveConfig),
+                    new SwerveModule(2, new SwerveModuleIOSim(2, swerveConfig), swerveConfig),
+                    new SwerveModule(3, new SwerveModuleIOSim(3, swerveConfig), swerveConfig)
                   },
                   gyroSim,
                   powerManager,

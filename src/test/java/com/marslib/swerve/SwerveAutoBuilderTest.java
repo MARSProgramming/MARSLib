@@ -36,7 +36,7 @@ public class SwerveAutoBuilderTest {
 
     SwerveConfig config = MARSTestHarness.createSwerveConfig();
     for (int i = 0; i < 4; i++) {
-      simIOs[i] = new SwerveModuleIOSim(i);
+      simIOs[i] = new SwerveModuleIOSim(i, config);
       modules[i] = new SwerveModule(i, simIOs[i], config);
     }
 

@@ -28,7 +28,7 @@ class SwerveDiagnosticsTest {
 
     SwerveModule[] modules = new SwerveModule[4];
     for (int i = 0; i < 4; i++) {
-      modules[i] = new SwerveModule(i, new SwerveModuleIOSim(i), config);
+      modules[i] = new SwerveModule(i, new SwerveModuleIOSim(i, config), config);
     }
 
     drive = new SwerveDrive(modules, gyroIO, powerManager, config);

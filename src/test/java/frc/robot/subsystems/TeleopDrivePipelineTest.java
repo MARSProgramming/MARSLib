@@ -222,6 +222,10 @@ public class TeleopDrivePipelineTest {
 
     // First tick: from 0 to max speed
     double requestedSpeed = SwerveConstants.MAX_LINEAR_SPEED_MPS;
+
+    // Advance simulator time so SlewRateLimiter has a non-zero dt
+    edu.wpi.first.wpilibj.simulation.SimHooks.stepTiming(0.02);
+
     double limitedSpeed = xLimiter.calculate(requestedSpeed);
 
     // The limiter should cap the output to dt * rateLimit (20ms * 15 m/s^2 = 0.3 m/s)
@@ -231,5 +235,27 @@ public class TeleopDrivePipelineTest {
             "Slew limiter should cap acceleration. Requested: %.2f, Got: %.2f",
             requestedSpeed, limitedSpeed));
     assertTrue(limitedSpeed > 0, "Slew limiter should still allow some movement");
+  }
+
+  @Test
+  public void testTractionLimiterFirstLoop() {
+    TractionControlLimiter limiter = new TractionControlLimiter(10.0);
+    ChassisSpeeds speeds = new ChassisSpeeds();
+
+    // dt <= 0.0 coverage (immediately calling it after instantiation)
+    limiter.calculate(5.0, 5.0, speeds);
+    assertEquals(0.0, speeds.vxMetersPerSecond, 0.01);
+  }
+
+  @Test
+  public void testTractionLimiterScaleDown() {
+    TractionControlLimiter limiter = new TractionControlLimiter(1.0); // very small limit
+    ChassisSpeeds speeds = new ChassisSpeeds();
+
+    edu.wpi.first.wpilibj.simulation.SimHooks.stepTiming(0.02);
+    limiter.calculate(5.0, 0.0, speeds);
+
+    // it should cap it at max accel (1.0 * 0.02) = 0.02
+    assertEquals(0.02, speeds.vxMetersPerSecond, 0.01);
   }
 }

@@ -31,7 +31,7 @@ public class MARSAutoTest {
     for (int i = 0; i < 4; i++) {
       modules[i] =
           new com.marslib.swerve.SwerveModule(
-              i, new com.marslib.swerve.SwerveModuleIOSim(i), swerveConfig);
+              i, new com.marslib.swerve.SwerveModuleIOSim(i, swerveConfig), swerveConfig);
     }
 
     swerveDrive =
@@ -69,5 +69,12 @@ public class MARSAutoTest {
       assertTrue(
           e.getMessage() != null, "Exception should have a message from PathPlanner internals.");
     }
+  }
+
+  @Test
+  public void testMarsAutoInstantiation() {
+    // Cover the implicit public constructor for 100% block coverage
+    MARSAuto instance = new MARSAuto();
+    assertNotNull(instance);
   }
 }

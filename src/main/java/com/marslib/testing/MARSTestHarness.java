@@ -53,7 +53,13 @@ public final class MARSTestHarness {
         4.5, // maxLinearSpeedMps
         10.0, // maxAngularSpeedRadPerSec
         0.05, // wheelRadiusMeters
-        12.0, // turnKp
+        5.0, // turnKp
+        0.5, // turnKd
+        0.1, // driveKp
+        0.0, // driveKd
+        0.1, // driveKs
+        0.12, // driveKv
+        0.0, // driveKa
         10.0, // nominalVoltage
         8.0, // warningVoltage
         7.0, // criticalVoltage
@@ -81,7 +87,8 @@ public final class MARSTestHarness {
         50.0, // telemetryHz
         250.0, // odometryHz
         150.0 / 7.0, // turnGearRatio
-        40.0 // turnStatorCurrentLimit
+        40.0, // turnStatorCurrentLimit
+        50.0 / 14.0 // couplingRatio
         );
   }
 

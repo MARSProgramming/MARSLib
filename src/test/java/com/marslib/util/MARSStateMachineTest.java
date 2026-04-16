@@ -80,6 +80,20 @@ public class MARSStateMachineTest {
   }
 
   @Test
+  public void testBidirectionalAndWildcardFromTransitions() {
+    machine.addValidBidirectional(TestState.IDLE, TestState.SCORING);
+    assertTrue(machine.requestTransition(TestState.SCORING));
+    assertTrue(machine.requestTransition(TestState.IDLE)); // Both directions work
+
+    // Test addWildcardFrom
+    machine.addWildcardFrom(TestState.ACTIVE);
+    machine.requestTransition(TestState.ACTIVE); // go to active
+    assertTrue(
+        machine.requestTransition(
+            TestState.EMERGENCY)); // Should be able to go anywhere from active
+  }
+
+  @Test
   public void testChainedTransitions() {
     assertTrue(machine.requestTransition(TestState.ACTIVE));
     assertTrue(machine.requestTransition(TestState.SCORING));

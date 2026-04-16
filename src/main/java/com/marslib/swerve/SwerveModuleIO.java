@@ -38,11 +38,11 @@ public interface SwerveModuleIO {
   /** Updates the set of loggable inputs. */
   public default void updateInputs(SwerveModuleIOInputs inputs) {}
 
-  /** Run the drive motor at the specified voltage. */
+  public default void setDriveVelocity(double velocityRadPerSec) {}
+
   public default void setDriveVoltage(double volts) {}
 
-  /** Run the turn motor at the specified voltage. */
-  public default void setTurnVoltage(double volts) {}
+  public default void setTurnPosition(double positionRad) {}
 
   /** Sets the neutral mode of the drive motor. */
   public default void setDriveBrakeMode(boolean enable) {}

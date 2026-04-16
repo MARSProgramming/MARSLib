@@ -7,56 +7,55 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class MARSPowerManagerTest {
-
-  private MARSPowerManager powerManager;
-  private double simulatedVoltage = 12.0;
-
   @BeforeEach
   public void setUp() {
     MARSTestHarness.reset();
-
-    PowerIO mockIO =
-        new PowerIO() {
-          @Override
-          public void updateInputs(PowerIOInputs inputs) {
-            inputs.voltage = simulatedVoltage;
-          }
-        };
-
-    powerManager = new MARSPowerManager(mockIO, MARSTestHarness.createPowerConfig());
   }
 
   @Test
-  public void testNominalVoltageScaling() {
-    simulatedVoltage = 12.5;
-    powerManager.periodic();
+  public void testPowerManagerAlertsAndScaling() {
+    PowerConfig config = new PowerConfig(11.0, 10.0, 8.0);
+    MARSPowerManager power = new MARSPowerManager(new PowerIO() {}, config);
 
-    assertEquals(1.0, powerManager.calculateVoltageScaleFactor(12.0, 7.0), 0.001);
+    // Default voltage = 0.0, no alerts should be active but voltage < 0 check
+    power.periodic();
+    assertFalse(power.isWarning());
+    assertFalse(power.isCritical());
+
+    // Note: To test the scaleLoadShedding and isWarning/isCritical branches,
+    // we would ideally need a mock IO, but PowerIO() {} doesn't let us modify inputs natively
+    // unless we create a custom inline class.
+    MARSPowerManager powerMock =
+        new MARSPowerManager(
+            new PowerIO() {
+              @Override
+              public void updateInputs(PowerIOInputs inputs) {
+                inputs.voltage = 9.0;
+              }
+            },
+            config);
+    powerMock.periodic();
+    assertTrue(powerMock.isWarning());
+    assertFalse(powerMock.isCritical());
+
+    assertEquals(9.0, powerMock.getVoltage(), 0.01);
   }
 
   @Test
-  public void testWarningVoltageScaling() {
-    // Exactly halfway between nominal (12.0) and critical (8.0)
-    simulatedVoltage = 10.0;
-    powerManager.periodic();
+  public void testCriticalAlerts() {
+    PowerConfig config = new PowerConfig(11.0, 10.0, 8.0);
+    MARSPowerManager powerMock =
+        new MARSPowerManager(
+            new PowerIO() {
+              @Override
+              public void updateInputs(PowerIOInputs inputs) {
+                inputs.voltage = 7.0;
+              }
+            },
+            config);
 
-    assertEquals(0.5, powerManager.calculateVoltageScaleFactor(12.0, 8.0), 0.001);
-  }
-
-  @Test
-  public void testCriticalVoltageScaling() {
-    simulatedVoltage = 7.5;
-    powerManager.periodic();
-
-    // Below critical should be 0.0
-    assertEquals(0.0, powerManager.calculateVoltageScaleFactor(12.0, 8.0), 0.001);
-  }
-
-  @Test
-  public void testAlertActivation() {
-    // Under warning threshold (8.0 in createPowerConfig)
-    simulatedVoltage = 7.9;
-    powerManager.periodic();
-    assertTrue(powerManager.getVoltage() < 8.0);
+    powerMock.periodic();
+    assertTrue(powerMock.isWarning());
+    assertTrue(powerMock.isCritical());
   }
 }

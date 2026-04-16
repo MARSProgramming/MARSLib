@@ -26,17 +26,7 @@ import org.junit.jupiter.api.Test;
 public class SwerveDriveExtendedTest {
 
   private SwerveDrive swerveDrive;
-  private static final GyroIO mockGyro =
-      new GyroIO() {
-        @Override
-        public void updateInputs(GyroIOInputs inputs) {
-          inputs.connected = true;
-          inputs.yawPositionRad = 0;
-          inputs.pitchPositionRad = Math.toRadians(10.0); // 10 degree incline
-          inputs.rollPositionRad = Math.toRadians(5.0); // 5 degree tilt
-        }
-      };
-
+  private GyroIO mockGyro;
   private SwerveConfig swerveConfig;
   private PowerConfig powerConfig;
 
@@ -44,12 +34,23 @@ public class SwerveDriveExtendedTest {
   public void setUp() {
     MARSTestHarness.reset();
 
+    mockGyro =
+        new GyroIO() {
+          @Override
+          public void updateInputs(GyroIOInputs inputs) {
+            inputs.connected = true;
+            inputs.yawPositionRad = 0;
+            inputs.pitchPositionRad = Math.toRadians(10.0); // 10 degree incline
+            inputs.rollPositionRad = Math.toRadians(5.0); // 5 degree tilt
+          }
+        };
+
     swerveConfig = MARSTestHarness.createSwerveConfig();
     powerConfig = MARSTestHarness.createPowerConfig();
 
     SwerveModule[] modules = new SwerveModule[4];
     for (int i = 0; i < 4; i++) {
-      modules[i] = new SwerveModule(i, new SwerveModuleIOSim(i), swerveConfig);
+      modules[i] = new SwerveModule(i, new SwerveModuleIOSim(i, swerveConfig), swerveConfig);
     }
 
     PowerIO spoofedVoltageIO =
