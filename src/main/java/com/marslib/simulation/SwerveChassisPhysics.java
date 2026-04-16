@@ -99,7 +99,7 @@ public class SwerveChassisPhysics {
               .transformBy(
                   new edu.wpi.first.math.geometry.Transform2d(moduleLocations[i], new Rotation2d()))
               .getTranslation();
-      zHeights[i] = MARSPhysicsWorld.getInstance().getTerrainZHeight(fieldPos, "TrenchBump");
+      zHeights[i] = MARSPhysicsWorld.getInstance().getTerrainZHeight(fieldPos, "TerrainBump");
       if (zHeights[i] > 0.001) {
         wheelsOnBump++;
       }

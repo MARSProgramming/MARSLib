@@ -111,47 +111,66 @@ public class SimulatedField2026 {
             UPRIGHT_X_LEN,
             UPRIGHT_Y_LEN));
 
-    // Blue Trench Wall
+    // Blue Trench Wall (Overhead obstacle - robots pass under)
     bodies.add(
         createBumpSensor(
             TRENCH_WALL_OFFSET_FROM_END_WALL,
             TRENCH_WALL_OFFSET_FROM_SIDE_WALL,
             TRENCH_WALL_X_LEN,
             TRENCH_WALL_Y_LEN,
-            "TrenchBump"));
+            "OverheadObstacle"));
     bodies.add(
         createBumpSensor(
             TRENCH_WALL_OFFSET_FROM_END_WALL,
             FIELD_Y_MAX - TRENCH_WALL_OFFSET_FROM_SIDE_WALL,
             TRENCH_WALL_X_LEN,
             TRENCH_WALL_Y_LEN,
-            "TrenchBump"));
+            "OverheadObstacle"));
 
-    // Red Trench Wall
+    // Red Trench Wall (Overhead obstacle)
     bodies.add(
         createBumpSensor(
             FIELD_X_MAX - TRENCH_WALL_OFFSET_FROM_END_WALL,
             TRENCH_WALL_OFFSET_FROM_SIDE_WALL,
             TRENCH_WALL_X_LEN,
             TRENCH_WALL_Y_LEN,
-            "TrenchBump"));
+            "OverheadObstacle"));
     bodies.add(
         createBumpSensor(
             FIELD_X_MAX - TRENCH_WALL_OFFSET_FROM_END_WALL,
             FIELD_Y_MAX - TRENCH_WALL_OFFSET_FROM_SIDE_WALL,
             TRENCH_WALL_X_LEN,
             TRENCH_WALL_Y_LEN,
-            "TrenchBump"));
+            "OverheadObstacle"));
 
     // Hubs
-    if (addRampCollider) {
-      double hubTotalY = HUB_Y_LEN + 2.0 * HUB_RAMP_LENGTH;
-      bodies.add(createWall(HUB_X, HUB_Y, HUB_X_LEN, hubTotalY));
-      bodies.add(createWall(FIELD_X_MAX - HUB_X, HUB_Y, HUB_X_LEN, hubTotalY));
-    } else {
-      bodies.add(createWall(HUB_X, HUB_Y, HUB_X_LEN, HUB_Y_LEN));
-      bodies.add(createWall(FIELD_X_MAX - HUB_X, HUB_Y, HUB_X_LEN, HUB_Y_LEN));
-    }
+    bodies.add(createWall(HUB_X, HUB_Y, HUB_X_LEN, HUB_Y_LEN));
+    bodies.add(createWall(FIELD_X_MAX - HUB_X, HUB_Y, HUB_X_LEN, HUB_Y_LEN));
+
+    // Terrain Bumps (Ramps)
+    double rampCenterOffset = (HUB_Y_LEN / 2.0) + (HUB_RAMP_LENGTH / 2.0);
+    // Blue Bumps
+    bodies.add(
+        createBumpSensor(
+            HUB_X, HUB_Y + rampCenterOffset, HUB_X_LEN, HUB_RAMP_LENGTH, "TerrainBump"));
+    bodies.add(
+        createBumpSensor(
+            HUB_X, HUB_Y - rampCenterOffset, HUB_X_LEN, HUB_RAMP_LENGTH, "TerrainBump"));
+    // Red Bumps
+    bodies.add(
+        createBumpSensor(
+            FIELD_X_MAX - HUB_X,
+            HUB_Y + rampCenterOffset,
+            HUB_X_LEN,
+            HUB_RAMP_LENGTH,
+            "TerrainBump"));
+    bodies.add(
+        createBumpSensor(
+            FIELD_X_MAX - HUB_X,
+            HUB_Y - rampCenterOffset,
+            HUB_X_LEN,
+            HUB_RAMP_LENGTH,
+            "TerrainBump"));
 
     return bodies;
   }
