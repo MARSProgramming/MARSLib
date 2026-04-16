@@ -63,6 +63,7 @@ public class MARSSuperstructure extends SubsystemBase {
   private double goalIntakeAngle = 0.0;
   private int internalPieceCount = edu.wpi.first.wpilibj.RobotBase.isSimulation() ? 40 : 0;
   private int simShooterCooldown = 0;
+  private int simDebugCounter = 0;
 
   private final Supplier<Double> tiltRadiansSupplier;
 
@@ -246,6 +247,20 @@ public class MARSSuperstructure extends SubsystemBase {
           "Superstructure/SimDebug/ShooterVelocity", shooter.getVelocityRadPerSec());
       Logger.recordOutput("Superstructure/SimDebug/CowlPosition", cowl.getPositionRads());
       Logger.recordOutput("Superstructure/SimDebug/GoalCowlAngle", goalCowlAngle);
+      Logger.recordOutput("Superstructure/SimDebug/ShooterTarget", goalCowlAngle);
+
+      // Throttled console print every 1s (50 loops) so we can see in terminal
+      simDebugCounter++;
+      if (simDebugCounter % 50 == 0) {
+        System.out.printf(
+            "[SIM-SHOOT] shooterVel=%.1f (ok=%b) cowlPos=%.3f/goal=%.3f (ok=%b) pieces=%d%n",
+            shooter.getVelocityRadPerSec(),
+            shooterReady,
+            cowl.getPositionRads(),
+            goalCowlAngle,
+            cowlReady,
+            internalPieceCount);
+      }
 
       if (shooterReady && cowlReady) {
         // Triggers exactly when we start feeding the piece into the shooter

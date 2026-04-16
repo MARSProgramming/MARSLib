@@ -36,6 +36,7 @@ public class RotaryMechanismIOSim implements RotaryMechanismIO {
   private boolean closedLoop = false;
   private double currentFeedforward = 0.0;
   private double simulatedTorque = 0.0;
+  private int debugCounter = 0;
 
   /**
    * Constructs a physical simulation instance for a 1D rotary arm mechanism.
@@ -71,6 +72,11 @@ public class RotaryMechanismIOSim implements RotaryMechanismIO {
     armBody.addFixture(
         Geometry.createRectangle(lengthMeters, thickness), density, 0.2, 0.0); // Simple rod
     armBody.setMass(MassType.NORMAL);
+    // CRITICAL: Disable dyn4j auto-sleep. In a zero-gravity world, bodies start at rest
+    // and dyn4j puts them to sleep. applyTorque() does NOT wake sleeping bodies, so
+    // the mechanism would never move. This was the root cause of the cowl being stuck.
+    armBody.setAtRest(false);
+    armBody.setAtRestDetectionEnabled(false);
     // Center mass roughly half way
     armBody.translate(1000.0 + lengthMeters / 2.0, 1000.0);
 
@@ -143,6 +149,19 @@ public class RotaryMechanismIOSim implements RotaryMechanismIO {
 
     // Apply torque to physics engine for next step
     armBody.applyTorque(simulatedTorque);
+
+    // Debug: throttled print to diagnose stuck cowl
+    debugCounter++;
+    if (debugCounter % 250 == 0 && closedLoop) {
+      System.out.printf(
+          "[ROTARY-DBG] angle=%.4f vel=%.4f torque=%.2f volts=%.2f goal=%.4f closedLoop=%b%n",
+          currentAngleRad,
+          currentVelocityRadPerSec,
+          simulatedTorque,
+          appliedVolts,
+          internalController.getGoal().position,
+          closedLoop);
+    }
   }
 
   @Override
