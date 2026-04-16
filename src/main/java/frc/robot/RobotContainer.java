@@ -426,14 +426,10 @@ public class RobotContainer {
     swerveDrive.configurePathPlanner();
 
     if (ModeConstants.CURRENT_MODE == ModeConstants.Mode.SIM) {
-      boolean isRed =
-          edu.wpi.first.wpilibj.DriverStation.getAlliance()
-                  .orElse(edu.wpi.first.wpilibj.DriverStation.Alliance.Blue)
-              == edu.wpi.first.wpilibj.DriverStation.Alliance.Red;
       // Default starting position away from walls to prevent physics collision
       swerveDrive.resetPose(
           new edu.wpi.first.math.geometry.Pose2d(
-              isRed ? 14.54 : 2.0, 2.0, edu.wpi.first.math.geometry.Rotation2d.fromDegrees(0)));
+              4.0, 4.0, new edu.wpi.first.math.geometry.Rotation2d()));
     }
 
     // Initialize the Auto Chooser
