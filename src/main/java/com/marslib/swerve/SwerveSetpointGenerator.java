@@ -50,6 +50,8 @@ public class SwerveSetpointGenerator {
   private final Rotation2d[] overrideSteeringCache =
       new Rotation2d[] {new Rotation2d(), new Rotation2d(), new Rotation2d(), new Rotation2d()};
   private final boolean[] overrideSteeringActive = new boolean[4];
+  private final Rotation2d[] resultAngleCache =
+      new Rotation2d[] {new Rotation2d(), new Rotation2d(), new Rotation2d(), new Rotation2d()};
 
   // Static zero speeds for recursive fallback — avoids allocation
   private static final ChassisSpeeds ZERO_CHASSIS_SPEEDS = new ChassisSpeeds();
@@ -394,7 +396,8 @@ public class SwerveSetpointGenerator {
 
       resultCache.moduleStates[i].speedMetersPerSecond = Math.hypot(vx, vy);
       if (resultCache.moduleStates[i].speedMetersPerSecond > 1e-6) {
-        resultCache.moduleStates[i].angle = new Rotation2d(vx, vy);
+        resultAngleCache[i] = Rotation2d.fromRadians(Math.atan2(vy, vx));
+        resultCache.moduleStates[i].angle = resultAngleCache[i];
       } else {
         resultCache.moduleStates[i].angle = prevSetpoint.moduleStates[i].angle;
       }

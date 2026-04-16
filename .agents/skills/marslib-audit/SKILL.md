@@ -315,8 +315,20 @@ The `"version"` in `marsteam_dashboard.json` must match the installed AdvantageS
 12. Check autonomous safety — fallback commands, timeout wrappers, field boundary clamps.
 13. Audit vendordep versions against latest stable releases.
 14. Verify graceful degradation — `hasHardwareConnected`, NaN firewalls, fault escalation.
-15. **AdvantageScope layout audit** — cross-reference code `recordOutput` keys against layout tabs.
-16. **Dashboard config audit** — verify pitside dashboard covers all critical subsystems and has no orphaned keys.
+15. **AdvantageScope layout audit** (MANDATORY — do NOT skip):
+    a. Locate layout files: `find . -name "*layout*.json" -o -name "*advantagescope*.json"`
+    b. Extract all `logKey` values from layout JSON.
+    c. Extract all `Logger.recordOutput("` keys from Java source: `grep -rn 'Logger.recordOutput(' src/main/java/ --include="*.java"`
+    d. Cross-reference: flag any critical key from Rule 16A that exists in code but NOT in any layout tab.
+    e. Verify `"version"` key exists at top level of each layout JSON.
+    f. Verify `"field"` / `"game"` keys reference the current season (e.g., `FRC:2026 Field`).
+16. **Dashboard config audit** (MANDATORY — do NOT skip):
+    a. Locate dashboard files: `find . -name "*dashboard*.json" -o -name "*marsteam*.json"`
+    b. Extract all `logKey` references from dashboard JSON.
+    c. Cross-reference each key against `Logger.recordOutput` in source code to find orphaned keys.
+    d. Verify all 5 pit-critical categories are covered (3D Field, Swerve, Power, Driver Inputs, Faults).
+    e. Verify dashboard `"version"` matches layout `"version"`.
+    f. If NO layout or dashboard JSON files exist, flag this as a **CRITICAL** defect and generate them.
 17. Validate AI Skill parity — `SKILL.md` and `marketplace.json` correctly reference all directories.
 18. Verify the documentation site for dead links and stale code snippets.
 19. **Reading level audit** — verify all documentation meets middle school reading level standards.

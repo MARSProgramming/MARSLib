@@ -118,7 +118,7 @@ public class MARSPhysicsWorld {
     RoboRioSim.setVInVoltage(loadedVoltage);
 
     Logger.recordOutput("PhysicsWorld/ComputedVoltage", loadedVoltage);
-    Logger.recordOutput("PhysicsWorld/Heartbeat", edu.wpi.first.wpilibj.Timer.getFPGATimestamp());
+    Logger.recordOutput("PhysicsWorld/Heartbeat", Logger.getTimestamp() / 1e6);
 
     frameCurrentDrawAmps = 0.0;
 

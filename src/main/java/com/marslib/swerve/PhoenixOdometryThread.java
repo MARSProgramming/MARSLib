@@ -31,7 +31,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * No heap allocations occur on the hot path.
  */
 public class PhoenixOdometryThread extends Thread {
-  private static PhoenixOdometryThread instance = null;
+  private static volatile PhoenixOdometryThread instance = null;
 
   /** Maximum number of odometry samples buffered between drains (250Hz / 50Hz = 5 typical). */
   public static final int MAX_SAMPLES = 50;

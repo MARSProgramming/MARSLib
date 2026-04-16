@@ -1,14 +1,13 @@
 package frc.robot.commands;
 
 import com.marslib.swerve.SwerveDrive;
+import com.marslib.util.AllianceUtil;
 import com.marslib.util.EliteShooterMath;
 import com.marslib.util.EliteShooterMath.EliteShooterSetpoint;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.MARSCowl;
 import frc.robot.subsystems.MARSShooter;
@@ -80,11 +79,7 @@ public class ShootOnTheMoveCommand extends Command {
         ChassisSpeeds.fromRobotRelativeSpeeds(currentSpeeds, currentPose.getRotation());
 
     // 3. Determine dynamic target based on alliance natively without GC allocation
-    Translation3d targetNode = BLUE_HUB_3D;
-    if (DriverStation.getAlliance().isPresent()
-        && DriverStation.getAlliance().get() == Alliance.Red) {
-      targetNode = RED_HUB_3D;
-    }
+    Translation3d targetNode = AllianceUtil.isRed() ? RED_HUB_3D : BLUE_HUB_3D;
 
     // 4. Exact True-Vector Quadratic Time-Of-Flight Intersection Solver
     EliteShooterSetpoint setpoint =
@@ -129,6 +124,11 @@ public class ShootOnTheMoveCommand extends Command {
       cowl.setTargetPosition(setpoint.hoodRadians);
       shooter.setClosedLoopVelocity(setpoint.launchSpeedMetersPerSec * VELOCITY_TO_RAD_PER_SEC);
     }
+  }
+
+  @Override
+  public boolean isFinished() {
+    return false; // Designed to run until button release; safety timeout applied at binding site
   }
 
   @Override

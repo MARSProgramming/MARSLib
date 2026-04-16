@@ -198,8 +198,6 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
     }
     Logger.recordOutput("Robot/Pose3d", lastPose3dLogCache);
 
-    odometry.updateOdometry(modules, gyroInputs);
-
     measuredStatesCache[0] = modules[0].getLatestState();
     measuredStatesCache[1] = modules[1].getLatestState();
     measuredStatesCache[2] = modules[2].getLatestState();

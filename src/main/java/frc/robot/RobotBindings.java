@@ -3,6 +3,7 @@ package frc.robot;
 import com.marslib.hmi.TelemetryGamepad;
 import com.marslib.swerve.SwerveDrive;
 import com.marslib.swerve.TeleopDriveCommand;
+import com.marslib.util.AllianceUtil;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.MARSDiagnosticCheck;
 import frc.robot.commands.ShootOnTheMoveCommand;
@@ -63,9 +64,7 @@ public final class RobotBindings {
                               edu.wpi.first.math.MathUtil.applyDeadband(controller.getLeftY(), 0.1),
                               3.0)
                           * swerveConfig.maxLinearSpeedMps();
-                  if (edu.wpi.first.wpilibj.DriverStation.getAlliance().isPresent()
-                      && edu.wpi.first.wpilibj.DriverStation.getAlliance().get()
-                          == edu.wpi.first.wpilibj.DriverStation.Alliance.Red) {
+                  if (AllianceUtil.isRed()) {
                     raw = -raw;
                   }
                   return raw;
@@ -76,9 +75,7 @@ public final class RobotBindings {
                               edu.wpi.first.math.MathUtil.applyDeadband(controller.getLeftX(), 0.1),
                               3.0)
                           * swerveConfig.maxLinearSpeedMps();
-                  if (edu.wpi.first.wpilibj.DriverStation.getAlliance().isPresent()
-                      && edu.wpi.first.wpilibj.DriverStation.getAlliance().get()
-                          == edu.wpi.first.wpilibj.DriverStation.Alliance.Red) {
+                  if (AllianceUtil.isRed()) {
                     raw = -raw;
                   }
                   return raw;

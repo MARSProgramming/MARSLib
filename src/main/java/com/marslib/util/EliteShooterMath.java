@@ -78,32 +78,32 @@ public class EliteShooterMath {
     // a = vx^2 + vy^2 - vShot^2
     // b = -2 * (tx * vx + ty * vy)
     // c = tx^2 + ty^2 + tz^2
-    double a = vx * vx + vy * vy - vShot * vShot;
+    double quadraticA = vx * vx + vy * vy - vShot * vShot;
 
-    if (Math.abs(a) < QUADRATIC_EPSILON) {
+    if (Math.abs(quadraticA) < QUADRATIC_EPSILON) {
       // Cheat slightly to avoid division by zero / non-quadratic states
       vShot = VELOCITY_SAFE_BUMP * vShot;
-      a = vx * vx + vy * vy - vShot * vShot;
+      quadraticA = vx * vx + vy * vy - vShot * vShot;
     }
 
-    double b = -2.0 * (tx * vx + ty * vy);
-    double c = tx * tx + ty * ty + tz * tz;
+    double quadraticB = -2.0 * (tx * vx + ty * vy);
+    double quadraticC = tx * tx + ty * ty + tz * tz;
 
-    double discriminant = b * b - 4.0 * a * c;
+    double discriminant = quadraticB * quadraticB - 4.0 * quadraticA * quadraticC;
     if (discriminant < 0.0) {
       discriminant = 0.0;
     }
 
-    // Solve for time of flight (t)
-    double t = (-b - Math.sqrt(discriminant)) / (2.0 * a);
+    // Solve for time of flight
+    double timeOfFlightSeconds = (-quadraticB - Math.sqrt(discriminant)) / (2.0 * quadraticA);
 
-    if (t <= 0) {
+    if (timeOfFlightSeconds <= 0) {
       setpoint.isValid = false;
       return setpoint;
     }
 
-    double virtualShotX = (tx - vx * t) / t;
-    double virtualShotY = (ty - vy * t) / t;
+    double virtualShotX = (tx - vx * timeOfFlightSeconds) / timeOfFlightSeconds;
+    double virtualShotY = (ty - vy * timeOfFlightSeconds) / timeOfFlightSeconds;
 
     double virtualTargetYawRad = Math.atan2(virtualShotY, virtualShotX);
     double xyVel = Math.sqrt(virtualShotX * virtualShotX + virtualShotY * virtualShotY);
@@ -113,12 +113,15 @@ public class EliteShooterMath {
     // Magnus lift on a spinning game piece creates upward acceleration proportional to v²:
     //   a_lift = liftCoefficient * v²  [units: liftCoefficient is 1/m]
     //   Δz_lift = 0.5 * a_lift * t² = 0.5 * liftCoefficient * vShot² * t²
-    double drop = 0.5 * gravity * t * t;
-    drop += 0.5 * liftCoefficient * vShot * vShot * t * t;
+    double drop = 0.5 * gravity * timeOfFlightSeconds * timeOfFlightSeconds;
+    drop += 0.5 * liftCoefficient * vShot * vShot * timeOfFlightSeconds * timeOfFlightSeconds;
 
     double virtualDeltaZ = tz - drop;
-    double pitchAngleRads = Math.atan2(virtualDeltaZ / t, xyVel);
-    double adjustedVShot = Math.sqrt((virtualDeltaZ * virtualDeltaZ) / (t * t) + xyVel * xyVel);
+    double pitchAngleRads = Math.atan2(virtualDeltaZ / timeOfFlightSeconds, xyVel);
+    double adjustedVShot =
+        Math.sqrt(
+            (virtualDeltaZ * virtualDeltaZ) / (timeOfFlightSeconds * timeOfFlightSeconds)
+                + xyVel * xyVel);
 
     // Compute Chassis Aim and Feedforward
     double distanceToTargetSq = tx * tx + ty * ty;
