@@ -8,7 +8,29 @@ You are an expert repository mining engineer for Team MARS. When extracting cust
 # MARSLib Elite Repository Mining Agent
 
 This skill dictates how to safely clone, parse, translate, and securely integrate logic from Elite FRC team implementations into the `.MARSLib` infrastructure without degrading our code style or creating arbitrary hardware couplings.
-**CRITICAL RULE:** Do NOT under any circumstances use `search_web` tools to find repositories. You must rely EXCLUSIVELY on the static manifest of GitHub URLs provided below. Clone or query these URLs directly.
+
+**CRITICAL RULE:** Do NOT under any circumstances use `search_web` tools to find repositories. You must rely EXCLUSIVELY on the methods below to access GitHub directly.
+
+## MANDATORY GITHUB ACCESS METHODS
+
+**PRIMARY METHOD: Direct Raw File Access**
+Use `mcp__web_reader__webReader` tool to fetch raw file contents directly from GitHub:
+```
+URL Pattern: https://raw.githubusercontent.com/[ORG]/[REPO]/[BRANCH]/[FILE_PATH]
+Example: https://raw.githubusercontent.com/Team254/FRC-2024-Public/main/src/main/java/com/team254/frc2024/subsystems/Swerve.java
+```
+
+**SECONDARY METHOD: Repository Cloning**
+When needing multiple files or full repository analysis:
+```bash
+git clone --depth 1 [EXACT_REPO_URL] [TEMP_DIR]
+```
+
+**FORBIDDEN METHODS:**
+- ❌ NO `WebSearch` tool for finding repositories
+- ❌ NO `search_web` tools for any GitHub access
+- ❌ NO web browsing of GitHub UI pages
+- ✅ ONLY direct raw file access or git clone
 
 ## 1. Top Tier Manifest (The Elite Hit List)
 
@@ -101,15 +123,106 @@ When tasked with "seeing how X team solved Y problem," use the following catalog
     *   Team 4099: `https://github.com/Team4099`
     *   Team 1323: `https://github.com/Team1323`
 
-## 2. Ingestion Rules (Safety First)
+## 2. GitHub Access Methodology (DIRECT ACCESS ONLY)
+
+### Step 1: Direct Raw File Access (PRIMARY METHOD)
+When analyzing specific files from elite teams, ALWAYS use direct raw file access:
+
+```
+# CORRECT APPROACH
+webReader("https://raw.githubusercontent.com/Team254/FRC-2024-Public/main/src/main/java/com/team254/frc2024/subsystems/Swerve.java")
+
+# WRONG APPROACH (NEVER DO THIS)
+webSearch("Team 254 swerve drive implementation")
+```
+
+### Step 2: Multi-File Analysis Strategy
+When needing multiple files, use systematic webReader calls:
+1. Start with known file paths from repository structure
+2. Use webReader for each file individually
+3. Fall back to git clone only if needing 10+ files from same repo
+4. NEVER use web searches to discover file paths
+
+### Step 3: Error Handling & File Discovery
+If direct raw file access fails:
+1. **TRY ALTERNATE BRANCHES**: `main`, `master`, `develop`
+2. **TRY ALTERNATE PATHS**: Common FRC structures:
+   - `src/main/java/frc/robot/subsystems/`
+   - `src/main/java/com/team[number]/`
+   - `src/main/java/com/team[organization]/`
+3. **USE GIT CLONE**: As last resort, clone repo locally
+4. **NEVER USE WEB SEARCH** to find files
+
+## 3. Ingestion Rules (Safety First)
 
 Do **NOT** clone external elite code directly into the workspace root.
 *   **Multi-Team Sourcing:** You must ALWAYS attempt to ingest and analyze code from at least TWO DIFFERENT TEAMS (whenever applicable) for any given architectural or implementation question, rather than relying on a single source of truth.
 *   **Exhaustive Search & Follow-Up:** If you cannot find a satisfactory answer or implementation within the initially cloned repositories, you MUST execute a follow-up action: autonomously expand your search to additional teams on the static manifest. Do not stop at the first failure.
-*   **Targeting a Specific Year:** FRC teams typically create a new repository for each season (e.g., `Robot-2024`, `ChargedUp`, `Crescendo`). If the user asks to investigate a given year's code, you must guess or use github tools on the organization URL to find the exact repository URL for that specific year before cloning.
+*   **Targeting a Specific Year:** FRC teams typically create a new repository for each season (e.g., `Robot-2024`, `ChargedUp`, `Crescendo`). If the user asks to investigate a given year's code, you must use the exact repository URL from the manifest above.
 *   **Isolated Cloning:** Always execute an automated `git clone --depth 1 [EXACT_YEAR_REPO_URL] <appDataDir>\brain\<conversation-id>/scratch/[TEAM_NAME]_[YEAR]` to create an isolated sandbox to read from.
 
-## 3. Pattern Matching Heuristics (Astute Grepping)
+## 4. Elite Code Mining Examples (FOLLOW THESE PATTERNS)
+
+### EXAMPLE 1: Swerve Drive Analysis
+**USER ASK**: "How does Team 254 handle swerve kinematics compared to our code?"
+
+**CORRECT APPROACH**:
+```javascript
+// Step 1: Direct raw file access from Team 254
+webReader("https://raw.githubusercontent.com/Team254/FRC-2024-Public/main/src/main/java/com/team254/lib/ctre/swerve/SwerveDriveKinematics.java")
+
+// Step 2: Compare with Team 2910's approach
+webReader("https://raw.githubusercontent.com/FRCTeam2910/2024CompetitionRobot-Public/main/src/main/java/frc/robot/subsystems/DriveSubsystem.java")
+
+// Step 3: Read user's current implementation
+Read("c:\\Users\\david\\dev\\robotics\\frc\\MARSLib\\src\\main\\java\\com\\marslib\\swerve\\SwerveDrive.java")
+
+// Step 4: Provide detailed code comparison with specific line references
+```
+
+**WRONG APPROACH**:
+```javascript
+// NEVER DO THIS
+WebSearch("Team 254 swerve kinematics 2024")
+WebSearch("FRC elite swerve drive implementations")
+```
+
+### EXAMPLE 2: Multi-Team State Machine Analysis
+**USER ASK**: "How do elite teams handle superstructure state machines?"
+
+**CORRECT APPROACH**:
+```javascript
+// Step 1: Access Team 1678 (known for state machines)
+webReader("https://raw.githubusercontent.com/frc1678/C2024-Public/main/src/main/java/com/frc1678/subsystems/Superstructure.java")
+
+// Step 2: Access Team 973 approach
+webReader("https://raw.githubusercontent.com/Team973/2024-inseason/src/main/java/org/usfirst/frc/team973/robot/subsystems/Superstructure.java")
+
+// Step 3: Cross-reference with Team 254
+webReader("https://raw.githubusercontent.com/Team254/FRC-2024-Public/main/src/main/java/com/team254/frc2024/subsystems/Superstructure.java")
+
+// Step 4: Synthesize patterns and provide recommendations
+```
+
+### EXAMPLE 3: Performance Testing Infrastructure
+**USER ASK**: "How do elite teams test performance?"
+
+**CORRECT APPROACH**:
+```javascript
+// Step 1: Look at Team 6328 (AdvantageKit creators)
+webReader("https://raw.githubusercontent.com/Mechanical-Advantage/RobotCode2024Public/src/test/java/com/team1323/")
+
+// Step 2: Check Team 254 testing approach
+webReader("https://raw.githubusercontent.com/Team254/FRC-2024-Public/src/test/java/")
+
+// Step 3: Examine Team 3005 (clean testing)
+webReader("https://raw.githubusercontent.com/FRC3005/Crescendo-2024-Public/src/test/java/")
+
+// Step 4: Compare with user's existing performance tests
+Read("c:\\Users\\david\\dev\\robotics\\frc\\MARSLib\\src\\test\\java\\com\\marslib\\testing\\performance\\PerformanceRegressionTest.java")
+```
+
+## 5. Pattern Matching Heuristics (Astute Grepping)
 
 Top-tier teams have notoriously large repositories. Avoid getting lost by anchoring your grep searches around key API landmarks:
 *   Search for `SwerveModuleState`, `ChassisSpeeds`, or `Phoenix6` logic when auditing drivetrain movement.

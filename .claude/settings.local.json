@@ -3,7 +3,20 @@
     "allow": [
       "Read(//c/Users/david/dev/robotics/frc/**)",
       "Read(//c/Users/david/dev/robotics/**)",
-      "WebSearch"
+      "WebSearch",
+      "Read(//tmp/**)",
+      "Read(//tmp/Team254_2024/src/main/java/com/team254/lib/ctre/swerve/**)",
+      "Read(//c/tmp/Team254_2024/src/main/java/com/team254/lib/ctre/swerve/**)",
+      "Read(//tmp/FRCTeam2910_2024/src/main/java/frc/robot/subsystems/swerve/**)",
+      "Read(//c/tmp/FRCTeam2910_2024/src/main/java/frc/robot/subsystems/swerve/**)",
+      "Read(//tmp/MechanicalAdvantage_2024/src/main/java/org/littletonrobotics/frc2024/subsystems/drive/**)",
+      "Read(//c/tmp/MechanicalAdvantage_2024/src/main/java/org/littletonrobotics/frc2024/subsystems/drive/**)",
+      "Bash(git clone *)",
+      "Read(//c/Users/david/AppData/Local/Temp/Team254_2024/src/main/java/com/team254/lib/ctre/swerve/**)",
+      "Read(//c/Users/david/AppData/Local/Temp/Team2910_2024/src/main/java/frc/robot/subsystems/swerve/**)",
+      "Read(//c/Users/david/AppData/Local/Temp/Team6328_2024/src/main/java/org/littletonrobotics/frc2024/subsystems/drive/**)",
+      "Read(//c/Users/david/AppData/Local/Temp/**)",
+      "Bash(grep -i \"\\\\.java$\")"
     ]
   }
 }

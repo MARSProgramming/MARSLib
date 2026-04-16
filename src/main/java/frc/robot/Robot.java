@@ -90,17 +90,20 @@ public class Robot extends LoggedRobot {
   @Override
   @SuppressWarnings("PMD.SystemPrintln")
   public void robotInit() {
-    System.out.println("-------------------------------------------------------");
-    System.out.println("  __  __          _____   _____ _      _ _     ");
-    System.out.println(" |  \\/  |   /\\   |  __ \\ / ____| |    (_) |    ");
-    System.out.println(" | \\  / |  /  \\  | |__) | (___ | |     _| |__  ");
-    System.out.println(" | |\\/| | / /\\ \\ |  _  / \\___ \\| |    | | '_ \\ ");
-    System.out.println(" | |  | |/ ____ \\| | \\ \\ ____) | |____| | |_) |");
-    System.out.println(" |_|  |_/_/    \\_\\_|  \\_\\_____/|______|_|_.__/ ");
-    System.out.println("                                               ");
-    System.out.println(" MARSLib Core Framework - Initializing Subsystems");
-    System.out.println(" Powered by Mountaineer Area RoboticS - Team 2614");
-    System.out.println("-------------------------------------------------------");
+    String banner =
+        "-------------------------------------------------------\n"
+            + "  __  __          _____   _____ _      _ _     \n"
+            + " |  \\/  |   /\\   |  __ \\ / ____| |    (_) |    \n"
+            + " | \\  / |  /  \\  | |__) | (___ | |     _| |__  \n"
+            + " | |\\/| | / /\\ \\ |  _  / \\___ \\| |    | | '_ \\ \n"
+            + " | |  | |/ ____ \\| | \\ \\ ____) | |____| | |_) |\n"
+            + " |_|  |_/_/    \\_\\_|  \\_\\_____/|______|_|_.__/ \n"
+            + "                                               \n"
+            + " MARSLib Core Framework - Initializing Subsystems\n"
+            + " Powered by Mountaineer Area RoboticS - Team 2614\n"
+            + "-------------------------------------------------------";
+
+    edu.wpi.first.wpilibj.DriverStation.reportWarning(banner, false);
 
     edu.wpi.first.wpilibj.DriverStation.reportWarning(
         "[MARSLib] Framework Initialized - Mountaineer Area RoboticS Team 2614", false);

@@ -10,7 +10,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import java.util.function.DoubleSupplier;
@@ -92,12 +91,8 @@ public class TeleopDriveCommand extends Command {
     double omgVal = MathUtil.applyDeadband(rawOmega, TeleopDriveMath.DEADBAND);
 
     // Mutate translation dynamically to satisfy traction control
-    Translation2d finalTrans =
-        tractionLimiter.calculate(
-            new Translation2d(preSlewSpeeds.vxMetersPerSecond, preSlewSpeeds.vyMetersPerSecond));
-
-    targetSpeeds.vxMetersPerSecond = finalTrans.getX();
-    targetSpeeds.vyMetersPerSecond = finalTrans.getY();
+    tractionLimiter.calculate(
+        preSlewSpeeds.vxMetersPerSecond, preSlewSpeeds.vyMetersPerSecond, targetSpeeds);
 
     if (Math.abs(omgVal) <= 0.01) {
       if (Math.abs(xVal) > 0.01 || Math.abs(yVal) > 0.01) {

@@ -6,7 +6,6 @@
  */
 package com.marslib.swerve;
 
-import edu.wpi.first.math.geometry.Translation2d;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -18,10 +17,10 @@ import org.littletonrobotics.junction.Logger;
  * the FRC carpet (usually ~1.1g or 10.78 m/s^2).
  */
 public class TractionControlLimiter {
-  private static final Translation2d ZERO_VELOCITY = new Translation2d();
 
   private final double maxAccelMetersPerSecSq;
-  private Translation2d lastVelocity = new Translation2d();
+  private double lastVx = 0.0;
+  private double lastVy = 0.0;
   private double lastTime = Logger.getTimestamp();
 
   /**
@@ -36,36 +35,47 @@ public class TractionControlLimiter {
   /**
    * Calculates the max achievable velocity vector without slipping tires.
    *
-   * @param targetVelocity Target requested X/Y velocity vector.
-   * @return Safe velocity vector to apply to the ChassisSpeeds.
+   * @param targetVx Target requested X velocity.
+   * @param targetVy Target requested Y velocity.
+   * @param outputSpeeds The ChassisSpeeds object to mutate with the safe velocities.
    */
-  public Translation2d calculate(Translation2d targetVelocity) {
+  public void calculate(
+      double targetVx, double targetVy, edu.wpi.first.math.kinematics.ChassisSpeeds outputSpeeds) {
     double currentTime = Logger.getTimestamp();
     double dt = currentTime - lastTime;
     lastTime = currentTime;
 
     // Prevent divide-by-zero on first loop
-    if (dt <= 0.0) return lastVelocity;
+    if (dt <= 0.0) {
+      outputSpeeds.vxMetersPerSecond = lastVx;
+      outputSpeeds.vyMetersPerSecond = lastVy;
+      return;
+    }
 
     // Calculate requested velocity change
-    Translation2d deltaV = targetVelocity.minus(lastVelocity);
+    double dVx = targetVx - lastVx;
+    double dVy = targetVy - lastVy;
 
     // Total acceleration required to achieve this change
-    double currentAccel = deltaV.getNorm() / dt;
+    double currentAccel = Math.hypot(dVx, dVy) / dt;
 
     if (currentAccel > maxAccelMetersPerSecSq) {
       // Scale down the change to exactly match peak acceleration
       double scalar = maxAccelMetersPerSecSq / currentAccel;
-      deltaV = deltaV.times(scalar);
+      dVx *= scalar;
+      dVy *= scalar;
     }
 
-    lastVelocity = lastVelocity.plus(deltaV);
+    lastVx += dVx;
+    lastVy += dVy;
 
     // Snap to zero when nearly stopped to avoid floating-point drift
-    if (targetVelocity.getNorm() == 0.0 && lastVelocity.getNorm() < 0.05) {
-      lastVelocity = ZERO_VELOCITY;
+    if (Math.hypot(targetVx, targetVy) == 0.0 && Math.hypot(lastVx, lastVy) < 0.05) {
+      lastVx = 0.0;
+      lastVy = 0.0;
     }
 
-    return lastVelocity;
+    outputSpeeds.vxMetersPerSecond = lastVx;
+    outputSpeeds.vyMetersPerSecond = lastVy;
   }
 }

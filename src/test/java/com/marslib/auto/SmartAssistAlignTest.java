@@ -71,5 +71,16 @@ public class SmartAssistAlignTest {
     assertTrue(
         newPose.getRotation().getRadians() > 0.01,
         "Should automatically rotate positive toward target theta.");
+
+    assertTrue(command.isFinished(), "Should be finished after 4 seconds of alignment");
+    command.end(false);
+  }
+
+  @Test
+  public void testSmartAssistFinishedCondition() {
+    Pose2d targetNode = new Pose2d(1.5, 3.0, Rotation2d.fromDegrees(180));
+    swerveDrive.resetPose(targetNode);
+    SmartAssistAlign command = new SmartAssistAlign(swerveDrive, () -> 0.0, targetNode);
+    assertTrue(command.isFinished(), "Should immediately finish if perfectly aligned");
   }
 }

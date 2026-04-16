@@ -20,7 +20,12 @@ public class ShooterIOReal implements ShooterIO {
 
     var motorConfig = new TalonFXConfiguration();
     motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    // TODO: Configure stator/supply current limits from Constants
+
+    motorConfig.CurrentLimits.StatorCurrentLimit = 40.0;
+    motorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    motorConfig.CurrentLimits.SupplyCurrentLimit = 40.0;
+    motorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+
     motor.getConfigurator().apply(motorConfig);
   }
 

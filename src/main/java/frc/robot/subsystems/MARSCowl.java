@@ -7,7 +7,6 @@ import com.marslib.mechanisms.*;
 import com.marslib.power.MARSPowerManager;
 import com.marslib.util.LoggedTunableNumber;
 import com.marslib.util.OnlineFeedforwardEstimator;
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -30,8 +29,6 @@ public class MARSCowl extends SubsystemBase implements SystemTestable {
   private final LoggedTunableNumber kV = new LoggedTunableNumber("Cowl/kV", 0.0);
   private final LoggedTunableNumber kA = new LoggedTunableNumber("Cowl/kA", 0.0);
 
-  private ArmFeedforward feedforward;
-
   private static final double NOMINAL_VOLTAGE = 12.0;
   private static final double CRITICAL_VOLTAGE = 9.0;
 
@@ -39,11 +36,11 @@ public class MARSCowl extends SubsystemBase implements SystemTestable {
   private final SysIdRoutine sysIdRoutine;
   private final OnlineFeedforwardEstimator estimator;
   private double lastVelocityForSysId = 0.0;
+  private double lastTargetVel = 0.0;
 
   public MARSCowl(RotaryMechanismIO io, MARSPowerManager powerManager) {
     this.io = io;
     this.powerManager = powerManager;
-    feedforward = new ArmFeedforward(kS.get(), kG.get(), kV.get(), kA.get());
 
     this.sysIdRoutine =
         new SysIdRoutine(
@@ -67,17 +64,6 @@ public class MARSCowl extends SubsystemBase implements SystemTestable {
     io.updateInputs(inputs);
     Logger.processInputs("Cowl", inputs);
 
-    // Update Feedforward if TUNING mode constants are changed
-    int id = this.hashCode();
-    boolean sChanged = kS.hasChanged(id);
-    boolean gChanged = kG.hasChanged(id);
-    boolean vChanged = kV.hasChanged(id);
-    boolean aChanged = kA.hasChanged(id);
-
-    if (sChanged || gChanged || vChanged || aChanged) {
-      feedforward = new ArmFeedforward(kS.get(), kG.get(), kV.get(), kA.get());
-    }
-
     // Continuous TeleOp SysId Extraction
     double currentVelocity = inputs.velocityRadPerSec;
     double currentAccel = (currentVelocity - lastVelocityForSysId) / ModeConstants.LOOP_PERIOD_SECS;
@@ -97,12 +83,23 @@ public class MARSCowl extends SubsystemBase implements SystemTestable {
    */
   public void setTargetPosition(double positionRads) {
     this.targetPositionRads = positionRads;
-    // Dynamic FF using actual physical angle and instantaneous profile target velocity from
-    // CTRE Motion Magic
+
+    // Dynamic FF using actual physical angle and instantaneous profile target velocity from CTRE
+    // Motion Magic
     double currentAngleRads = inputs.positionRad;
     double scale = powerManager.calculateVoltageScaleFactor(NOMINAL_VOLTAGE, CRITICAL_VOLTAGE);
+
+    double targetVel = inputs.targetVelocityRadPerSec;
+    double targetAccel = (targetVel - lastTargetVel) / ModeConstants.LOOP_PERIOD_SECS;
+    lastTargetVel = targetVel;
+
     double ffVolts =
-        feedforward.calculate(currentAngleRads, inputs.targetVelocityRadPerSec) * scale;
+        (kS.get() * Math.signum(targetVel)
+                + kG.get() * Math.cos(currentAngleRads)
+                + kV.get() * targetVel
+                + kA.get() * targetAccel)
+            * scale;
+
     io.setClosedLoopPosition(positionRads, ffVolts);
     Logger.recordOutput("Cowl/TargetPositionRads", positionRads);
   }

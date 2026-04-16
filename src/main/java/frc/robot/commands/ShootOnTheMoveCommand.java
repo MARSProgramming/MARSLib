@@ -5,7 +5,6 @@ import com.marslib.util.EliteShooterMath;
 import com.marslib.util.EliteShooterMath.EliteShooterSetpoint;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -41,6 +40,7 @@ public class ShootOnTheMoveCommand extends Command {
       1.0 / frc.robot.constants.ShooterConstants.SHOOTER_WHEEL_RADIUS_METERS;
 
   private final EliteShooterSetpoint shotCache = new EliteShooterSetpoint();
+  private final ChassisSpeeds targetSpeeds = new ChassisSpeeds();
 
   private static final Translation3d BLUE_HUB_3D = frc.robot.constants.FieldConstants.BLUE_HUB_3D;
 
@@ -113,13 +113,14 @@ public class ShootOnTheMoveCommand extends Command {
     double finalOmega = pidOmega + feedforwardOmega;
 
     // 6. Package field-centric commands into kinematics
-    // Note: Translation2d does not have setters, so we simply construct one or bypass if possible.
-    // Given tractionLimiter requires Translation2d, we must allocate it unless modified.
-    Translation2d limitedTrans = tractionLimiter.calculate(new Translation2d(fieldVx, fieldVy));
+    tractionLimiter.calculate(fieldVx, fieldVy, targetSpeeds);
 
     ChassisSpeeds robotSpeeds =
         ChassisSpeeds.fromFieldRelativeSpeeds(
-            limitedTrans.getX(), limitedTrans.getY(), finalOmega, currentPose.getRotation());
+            targetSpeeds.vxMetersPerSecond,
+            targetSpeeds.vyMetersPerSecond,
+            finalOmega,
+            currentPose.getRotation());
 
     swerveDrive.runVelocity(robotSpeeds);
 
