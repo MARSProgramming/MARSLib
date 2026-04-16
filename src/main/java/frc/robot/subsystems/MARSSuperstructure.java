@@ -288,15 +288,20 @@ public class MARSSuperstructure extends SubsystemBase {
         // goalCowlAngle comes from EliteShooterMath which calculates pitch relative to the flat
         // horizontal plane
         double pitch = goalCowlAngle;
+        double yaw = robotPose.getRotation().getRadians();
+        edu.wpi.first.math.kinematics.ChassisSpeeds fieldSpeeds = fieldSpeedsSupplier.get();
 
+        // The projectile inherits the robot's current field-relative momentum.
+        // EliteShooterMath deliberately aims somewhat "backward" to cancel this out. If we don't
+        // add the momentum here in simulation, the ball shoots wildly backward off the field!
         double launchSpeedX =
-            Math.cos(robotPose.getRotation().getRadians())
-                * launchSpeedMetersPerSec
-                * Math.cos(pitch);
+            Math.cos(yaw) * launchSpeedMetersPerSec * Math.cos(pitch)
+                + fieldSpeeds.vxMetersPerSecond;
+
         double launchSpeedY =
-            Math.sin(robotPose.getRotation().getRadians())
-                * launchSpeedMetersPerSec
-                * Math.cos(pitch);
+            Math.sin(yaw) * launchSpeedMetersPerSec * Math.cos(pitch)
+                + fieldSpeeds.vyMetersPerSecond;
+
         double launchSpeedZ = launchSpeedMetersPerSec * Math.sin(pitch);
 
         com.marslib.simulation.SimulationProjectile shot =
