@@ -33,3 +33,11 @@ To add a new Elite Coding Standard check:
 - Build the extension: `npm run compile`
 - Bundle for Production: `npm run package` (uses `esbuild` to eliminate Node modules)
 - Build VSIX: `npx -y @vscode/vsce package --no-dependencies`
+
+## 5. Mandatory Einstein-Tier Linting Rules
+When developing the `ProjectDoctor` engine, ensure that the AST parser natively flags the following anti-patterns:
+1. **Rule 1B (Zero-Allocation Hot Paths):** Detect and flag any usage of dynamic array allocations (e.g., `toArray(new Type[0])`) inside `periodic()` methods or Thread runnables. Raise as `MARS_ERROR_OOM`.
+2. **Rule 2E (NaN Guards):** Ensure all custom mathematical interpolations include a `Double.isFinite()` bounds check. Raise as `MARS_WARN_MATH`.
+3. **Rule 2F (Kinematic Reversals):** Flag kinematics implementations that do not appropriately invert negative velocity demands. Raise as `MARS_WARN_KINEMATICS`.
+4. **Rule 6C (Console Silence):** Reject `e.printStackTrace()` outright. Suggest a QuickFix to `DriverStation.reportError()`. Raise as `MARS_ERROR_TELEMETRY`.
+5. **Rule 16D (AdvantageScope Determinism):** Ensure all `layout.json` files generated for 3D Field views contain the `"game": "FRC:2026 Field"` parameter. Raise as `MARS_ERROR_ASCOPE`.

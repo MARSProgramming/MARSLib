@@ -4,7 +4,7 @@ sidebar:
   order: 12
 ---
 
-MARSLib is designed with a strict zero-allocation abstraction layer. The framework shields deterministic physics processing and automated logging from the hardware implementations to guarantee consistency across physical and simulated robots.
+MARSLib is built using a "Hardware Abstraction Layer" (like a universal remote control) that lets you swap out motors without rewriting your code. We built the framework to reuse memory instead of constantly creating new objects (called "zero-allocation"), which stops the robot from lagging. Because of this, whether you are running a real robot or a simulated one, the math behaves the exact same way.
 
 ## Architecture Diagram
 

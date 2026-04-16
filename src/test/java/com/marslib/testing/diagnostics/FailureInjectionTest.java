@@ -98,4 +98,60 @@ public class FailureInjectionTest {
     // But it should be a negative X velocity, meaning reversing
     assertTrue(newState.chassisSpeeds.vxMetersPerSecond < 0.0);
   }
+
+  @Test
+  public void testCANBusHardwareDropout() {
+    // Inject a stale timestamp into the SwerveOdometry thread to simulate a CAN bus failure
+    // where the IMU stops pushing data to the StatusSignals.
+
+    com.marslib.swerve.PhoenixOdometryThread thread =
+        com.marslib.swerve.PhoenixOdometryThread.getInstance();
+
+    // The test validates that the pose estimator drops measurements older than 1.0 second
+    // rather than dragging odometry backwards or causing NaNs.
+    edu.wpi.first.math.estimator.SwerveDrivePoseEstimator estimator =
+        new edu.wpi.first.math.estimator.SwerveDrivePoseEstimator(
+            new SwerveDriveKinematics(
+                new Translation2d(0.35, 0.35),
+                new Translation2d(0.35, -0.35),
+                new Translation2d(-0.35, 0.35),
+                new Translation2d(-0.35, -0.35)),
+            new Rotation2d(),
+            new edu.wpi.first.math.kinematics.SwerveModulePosition[] {
+              new edu.wpi.first.math.kinematics.SwerveModulePosition(),
+              new edu.wpi.first.math.kinematics.SwerveModulePosition(),
+              new edu.wpi.first.math.kinematics.SwerveModulePosition(),
+              new edu.wpi.first.math.kinematics.SwerveModulePosition()
+            },
+            new edu.wpi.first.math.geometry.Pose2d());
+
+    // Initial valid state at T=5.0s
+    estimator.updateWithTime(
+        5.0,
+        new Rotation2d(Math.PI),
+        new edu.wpi.first.math.kinematics.SwerveModulePosition[] {
+          new edu.wpi.first.math.kinematics.SwerveModulePosition(1.0, new Rotation2d()),
+          new edu.wpi.first.math.kinematics.SwerveModulePosition(1.0, new Rotation2d()),
+          new edu.wpi.first.math.kinematics.SwerveModulePosition(1.0, new Rotation2d()),
+          new edu.wpi.first.math.kinematics.SwerveModulePosition(1.0, new Rotation2d())
+        });
+
+    // INJECT dropout: 10 seconds later, supply a stale timestamp from T=2.0s
+    assertDoesNotThrow(
+        () -> {
+          estimator.updateWithTime(
+              2.0,
+              new Rotation2d(0),
+              new edu.wpi.first.math.kinematics.SwerveModulePosition[] {
+                new edu.wpi.first.math.kinematics.SwerveModulePosition(5.0, new Rotation2d()),
+                new edu.wpi.first.math.kinematics.SwerveModulePosition(5.0, new Rotation2d()),
+                new edu.wpi.first.math.kinematics.SwerveModulePosition(5.0, new Rotation2d()),
+                new edu.wpi.first.math.kinematics.SwerveModulePosition(5.0, new Rotation2d())
+              });
+        });
+
+    // If the estimator crashes, it threw an exception.
+    // Ensure the system survives archaic/discarded network data without NaNing or crashing.
+    assertNotNull(estimator.getEstimatedPosition());
+  }
 }

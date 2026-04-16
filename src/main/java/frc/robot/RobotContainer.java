@@ -467,10 +467,6 @@ public class RobotContainer {
     trajectoryPreloader.start();
 
     // Expose utility commands directly on SmartDashboard for generic access
-    edu.wpi.first.wpilibj.smartdashboard.SmartDashboard.putData(
-        "Dump Tunables", com.marslib.util.LoggedTunableNumber.getDumpCommand());
-    edu.wpi.first.wpilibj.smartdashboard.SmartDashboard.putData(
-        "Offload Logs to USB", com.marslib.util.LogUploader.getUsbOffloadCommand());
     RobotBindings.configureBindings(
         operatorInterface,
         swerveDrive,
@@ -482,123 +478,20 @@ public class RobotContainer {
         feeder,
         floorIntake);
 
-    if (buildDashboards) {
-      configureCompetitionDashboard();
-      configurePracticeDashboard();
-      com.marslib.util.LoggedTunableNumber.buildTuningDashboard();
-    }
+    DashboardRegistry.configure(
+        buildDashboards,
+        autoChooser,
+        swerveDrive,
+        superstructure,
+        powerManager,
+        climber,
+        cowl,
+        shooter,
+        intakePivot);
   }
 
   public Command getAutonomousCommand() {
     return autoChooser.get();
-  }
-
-  /**
-   * Scaffolds an explicitly lightweight WPILib Native Dashboard (Shuffleboard/Glass) specifically
-   * designed for FMS-tethered matches where 3D 60FPS renders drop DriveStation CPU bandwidth.
-   */
-  private void configureCompetitionDashboard() {
-    edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab matchTab =
-        edu.wpi.first.wpilibj.shuffleboard.Shuffleboard.getTab("Match");
-
-    // 1. Prominent Auto Chooser
-    matchTab
-        .add("Auto Routine", autoChooser.getSendableChooser())
-        .withWidget(edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets.kComboBoxChooser)
-        .withSize(3, 1)
-        .withPosition(0, 0);
-
-    // 2. Match Info & System Telemetry
-    matchTab
-        .addString(
-            "Match Time",
-            () -> {
-              int remaining = (int) edu.wpi.first.wpilibj.Timer.getMatchTime();
-              return (remaining < 0 || !edu.wpi.first.wpilibj.DriverStation.isFMSAttached())
-                  ? "N/A"
-                  : remaining + " s";
-            })
-        .withSize(2, 2)
-        .withPosition(0, 1);
-
-    matchTab
-        .addString(
-            "FMS Alliance",
-            () ->
-                edu.wpi.first.wpilibj.DriverStation.getAlliance()
-                    .map(edu.wpi.first.wpilibj.DriverStation.Alliance::toString)
-                    .orElse("UNCALIBRATED"))
-        .withSize(2, 1)
-        .withPosition(3, 0);
-
-    matchTab
-        .addBoolean(
-            "Gyro Connected",
-            () -> {
-              com.marslib.swerve.GyroIOInputsAutoLogged gyro = swerveDrive.getGyroInputs();
-              return gyro.connected;
-            })
-        .withWidget(edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets.kBooleanBox)
-        .withSize(1, 1)
-        .withPosition(3, 1);
-
-    // 3. Superstructure Faults or Status
-    matchTab
-        .addString(
-            "Superstructure State",
-            () -> superstructure != null ? superstructure.getCurrentState().toString() : "BOOTING")
-        .withSize(3, 1)
-        .withPosition(5, 0);
-
-    // 4. Utility Actions
-    matchTab
-        .add("Emergency USB Offload", com.marslib.util.LogUploader.getUsbOffloadCommand())
-        .withSize(2, 1)
-        .withPosition(5, 1);
-  }
-
-  /**
-   * Extends the UI for practice matches and un-tethered development where manual sequence
-   * triggering, module zeroing, and detailed odometry overrides sit alongside the generic Match
-   * widgets.
-   */
-  private void configurePracticeDashboard() {
-    edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab practiceTab =
-        edu.wpi.first.wpilibj.shuffleboard.Shuffleboard.getTab("Practice");
-
-    practiceTab
-        .add("Auto Routine Override", autoChooser.getSendableChooser())
-        .withWidget(edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets.kComboBoxChooser)
-        .withSize(3, 1)
-        .withPosition(0, 0);
-
-    practiceTab
-        .add(
-            "Full System Check",
-            new com.marslib.diagnostics.SystemCheckCommand(
-                powerManager::getVoltage, climber, cowl, shooter, intakePivot, swerveDrive))
-        .withPosition(3, 0)
-        .withSize(2, 1);
-
-    practiceTab
-        .addString(
-            "FMS Alliance",
-            () ->
-                edu.wpi.first.wpilibj.DriverStation.getAlliance()
-                    .map(edu.wpi.first.wpilibj.DriverStation.Alliance::toString)
-                    .orElse("UNCALIBRATED"))
-        .withSize(2, 1)
-        .withPosition(5, 0);
-
-    practiceTab
-        .addBoolean(
-            "Swerve Odometry Synchronized",
-            () -> {
-              com.marslib.swerve.GyroIOInputsAutoLogged gyro = swerveDrive.getGyroInputs();
-              return gyro.connected;
-            })
-        .withSize(2, 1)
-        .withPosition(3, 1);
   }
 
   public MARSVision getVision() {
