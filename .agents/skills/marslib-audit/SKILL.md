@@ -155,9 +155,9 @@ Any field written by one thread and read by another MUST be `volatile`, `Atomic*
 Synchronized blocks at 250Hz cause priority inversion and loop overruns.
 **Audit Action**: `grep -rn "synchronized" src/main/java/com/marslib/` — verify that NO synchronized block exists on the 250Hz odometry hot path. `LoggedTunableNumber` uses synchronized blocks — verify these are only accessed during `disabledPeriodic()` tuning, never during `teleopPeriodic()`.
 
-### Rule C: Singleton Thread Safety
-`PhoenixOdometryThread.getInstance()` uses `synchronized` for lazy init. Verify this is the only access pattern — double-checked locking without volatile is broken in Java.
-**Audit Action**: Confirm `getInstance()` is called only during construction (single-threaded robot init), not during periodic execution.
+### Rule C: Singleton Thread Safety & Lock Contention
+`PhoenixOdometryThread.getInstance()` uses `synchronized` for lazy init. Any call to `getInstance()` inside a `periodic()` loop incurs a synchronization lock that contends with the high-frequency thread.
+**Audit Action**: Confirm `getInstance()` is invoked strictly during **class construction** and cached as a local instance variable. Ensure no `updateInputs()` or `periodic()` methods dynamically fetch the instance.
 
 ## 10. CAN Bus Error Recovery (StatusCode)
 
@@ -267,7 +267,7 @@ When `hasHardwareConnected` is `false`, the subsystem must:
 
 ### Rule C: NaN Propagation Firewall
 If a sensor returns `NaN`, it must be caught before entering kinematics or PID. A single `NaN` in `ChassisSpeeds` propagates to all 4 module outputs, commanding `NaN` voltage and disabling the drivetrain.
-**Audit Action**: `grep -rn "Double.isNaN\|Double.isFinite\|Double.isInfinite" src/main/java/com/marslib/` — verify NaN guards exist at IO layer boundaries. Critical locations: gyro yaw, vision pose, drive encoder velocity.
+**Audit Action**: `grep -rn "Double.isNaN\|Double.isFinite\|Double.isInfinite" src/main/java/com/marslib/` — verify NaN guards exist at IO layer boundaries. Critical locations: gyro yaw, vision pose, drive encoder velocity. Manually verify that calls to `getValueAsDouble()` from CTRE devices on `*IO.java` layers are explicitly wrapped in `Double.isFinite()` ternary checks.
 
 ## 16. AdvantageScope Layout Completeness
 

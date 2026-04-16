@@ -22,6 +22,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
  * telemetry.
  */
 public class GyroIOPigeon2 implements GyroIO {
+  private final PhoenixOdometryThread odometryThread;
   private final Pigeon2 pigeon;
   private final StatusSignal<Angle> yaw;
   private final StatusSignal<Angle> pitch;
@@ -50,7 +51,8 @@ public class GyroIOPigeon2 implements GyroIO {
         config.telemetryHz(), yawVelocity, pitchVelocity, rollVelocity);
     // yaw frequency is managed by the OdometryThread
 
-    PhoenixOdometryThread.getInstance().registerGyro(yaw, config.odometryHz());
+    odometryThread = PhoenixOdometryThread.getInstance();
+    odometryThread.registerGyro(yaw, config.odometryHz());
 
     pigeon.optimizeBusUtilization();
   }
@@ -62,16 +64,26 @@ public class GyroIOPigeon2 implements GyroIO {
   public void updateInputs(GyroIOInputs inputs) {
     BaseStatusSignal.refreshAll(yaw, pitch, roll, yawVelocity, pitchVelocity, rollVelocity);
     inputs.connected = yaw.getStatus().isOK();
-    inputs.yawPositionRad = Units.degreesToRadians(yaw.getValueAsDouble());
-    inputs.pitchPositionRad = Units.degreesToRadians(pitch.getValueAsDouble());
-    inputs.rollPositionRad = Units.degreesToRadians(roll.getValueAsDouble());
-    inputs.yawVelocityRadPerSec = Units.degreesToRadians(yawVelocity.getValueAsDouble());
-    inputs.pitchVelocityRadPerSec = Units.degreesToRadians(pitchVelocity.getValueAsDouble());
-    inputs.rollVelocityRadPerSec = Units.degreesToRadians(rollVelocity.getValueAsDouble());
+
+    double rawYaw = yaw.getValueAsDouble();
+    double rawPitch = pitch.getValueAsDouble();
+    double rawRoll = roll.getValueAsDouble();
+    double rawYawVel = yawVelocity.getValueAsDouble();
+    double rawPitchVel = pitchVelocity.getValueAsDouble();
+    double rawRollVel = rollVelocity.getValueAsDouble();
+
+    inputs.yawPositionRad = Double.isFinite(rawYaw) ? Units.degreesToRadians(rawYaw) : 0.0;
+    inputs.pitchPositionRad = Double.isFinite(rawPitch) ? Units.degreesToRadians(rawPitch) : 0.0;
+    inputs.rollPositionRad = Double.isFinite(rawRoll) ? Units.degreesToRadians(rawRoll) : 0.0;
+    inputs.yawVelocityRadPerSec =
+        Double.isFinite(rawYawVel) ? Units.degreesToRadians(rawYawVel) : 0.0;
+    inputs.pitchVelocityRadPerSec =
+        Double.isFinite(rawPitchVel) ? Units.degreesToRadians(rawPitchVel) : 0.0;
+    inputs.rollVelocityRadPerSec =
+        Double.isFinite(rawRollVel) ? Units.degreesToRadians(rawRollVel) : 0.0;
 
     // Drain pre-allocated high-frequency yaw buffer
-    PhoenixOdometryThread.GyroYawData yawData =
-        PhoenixOdometryThread.getInstance().getGyroYawData();
+    PhoenixOdometryThread.GyroYawData yawData = odometryThread.getGyroYawData();
     int count = yawData.validCount;
 
     // Only reallocate when sample count changes (typically stable at ~5 samples per drain)
@@ -80,7 +92,8 @@ public class GyroIOPigeon2 implements GyroIO {
     }
 
     for (int i = 0; i < count; i++) {
-      cachedOdometryYaw[i] = Units.degreesToRadians(yawData.yawPositions[i]);
+      double rawOdomYaw = yawData.yawPositions[i];
+      cachedOdometryYaw[i] = Double.isFinite(rawOdomYaw) ? Units.degreesToRadians(rawOdomYaw) : 0.0;
     }
     inputs.odometryYawPositions = cachedOdometryYaw;
   }

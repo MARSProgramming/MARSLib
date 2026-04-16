@@ -41,6 +41,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
   private final VoltageOut driveVoltageRequest = new VoltageOut(0.0);
   private final PositionVoltage turnPositionRequest = new PositionVoltage(0.0).withSlot(0);
 
+  private final PhoenixOdometryThread odometryThread;
   private final int odometryId;
   private final SwerveConfig config;
 
@@ -92,9 +93,10 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
         turnCurrent);
 
     // Register position signals to Odometry thread
+    odometryThread = PhoenixOdometryThread.getInstance();
     odometryId =
-        PhoenixOdometryThread.getInstance()
-            .registerModule(driveMotor.getPosition(), turnMotor.getPosition(), config.odometryHz());
+        odometryThread.registerModule(
+            driveMotor.getPosition(), turnMotor.getPosition(), config.odometryHz());
 
     driveMotor.optimizeBusUtilization();
     turnMotor.optimizeBusUtilization();
@@ -129,8 +131,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     inputs.turnCurrentAmps = turnCurrent.getValueAsDouble();
 
     // Drain the high-frequency buffer (returns pre-allocated SyncData)
-    PhoenixOdometryThread.SyncData data =
-        PhoenixOdometryThread.getInstance().getSyncData(odometryId);
+    PhoenixOdometryThread.SyncData data = odometryThread.getSyncData(odometryId);
     int count = data.validCount;
 
     // Only reallocate when sample count changes (typically stable at ~5 samples per drain)
