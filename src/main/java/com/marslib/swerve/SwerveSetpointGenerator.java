@@ -393,7 +393,11 @@ public class SwerveSetpointGenerator {
               + resultCache.chassisSpeeds.omegaRadiansPerSecond * modules[i].getX();
 
       resultCache.moduleStates[i].speedMetersPerSecond = Math.hypot(vx, vy);
-      resultCache.moduleStates[i].angle = new Rotation2d(vx, vy);
+      if (resultCache.moduleStates[i].speedMetersPerSecond > 1e-6) {
+        resultCache.moduleStates[i].angle = new Rotation2d(vx, vy);
+      } else {
+        resultCache.moduleStates[i].angle = prevSetpoint.moduleStates[i].angle;
+      }
 
       if (overrideSteeringActive[i]) {
         var override = overrideSteeringCache[i];
