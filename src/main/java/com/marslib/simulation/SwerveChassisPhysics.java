@@ -36,6 +36,11 @@ public class SwerveChassisPhysics {
 
     body.setMass(MassType.NORMAL);
 
+    // CRITICAL: Disable auto-sleeping so dyn4j never skips this body during world.step().
+    // Without this, the body falls asleep when velocity reaches zero, and subsequent
+    // setLinearVelocity() calls do NOT wake it — causing the robot to appear frozen.
+    body.setAtRestDetectionEnabled(false);
+
     // We actively control the velocity, so we don't want natural damping slowing us down
     body.setLinearDamping(0.0);
     body.setAngularDamping(0.0);
