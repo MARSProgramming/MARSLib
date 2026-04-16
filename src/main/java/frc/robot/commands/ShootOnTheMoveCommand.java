@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.MARSSuperstructure;
 import java.util.function.DoubleSupplier;
 
 /**
@@ -30,6 +31,7 @@ public class ShootOnTheMoveCommand extends Command {
       new com.marslib.swerve.TractionControlLimiter(
           frc.robot.constants.DriveConstants.TELEOP_LINEAR_ACCEL_LIMIT);
 
+  private final MARSSuperstructure superstructure;
   private final EliteShooterSetpoint shotCache = new EliteShooterSetpoint();
   private final ChassisSpeeds targetSpeeds = new ChassisSpeeds();
 
@@ -38,8 +40,12 @@ public class ShootOnTheMoveCommand extends Command {
   private static final Translation3d RED_HUB_3D = frc.robot.constants.FieldConstants.RED_HUB_3D;
 
   public ShootOnTheMoveCommand(
-      SwerveDrive swerveDrive, DoubleSupplier joystickX, DoubleSupplier joystickY) {
+      SwerveDrive swerveDrive,
+      MARSSuperstructure superstructure,
+      DoubleSupplier joystickX,
+      DoubleSupplier joystickY) {
     this.swerveDrive = swerveDrive;
+    this.superstructure = superstructure;
     this.joystickX = joystickX;
     this.joystickY = joystickY;
 
@@ -57,6 +63,11 @@ public class ShootOnTheMoveCommand extends Command {
   @Override
   public void initialize() {
     this.thetaAlignController.reset();
+    if (superstructure != null) {
+      superstructure
+          .getStateMachine()
+          .requestTransition(frc.robot.subsystems.MARSSuperstructure.SuperstructureState.SCORE);
+    }
 
     // Sync limiter timestamp to avoid jumpy time-deltas
     edu.wpi.first.math.kinematics.ChassisSpeeds robotSpeeds = swerveDrive.getChassisSpeeds();
@@ -132,6 +143,11 @@ public class ShootOnTheMoveCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
+    if (superstructure != null) {
+      superstructure
+          .getStateMachine()
+          .requestTransition(frc.robot.subsystems.MARSSuperstructure.SuperstructureState.STOWED);
+    }
     swerveDrive.runVelocity(new ChassisSpeeds());
   }
 }

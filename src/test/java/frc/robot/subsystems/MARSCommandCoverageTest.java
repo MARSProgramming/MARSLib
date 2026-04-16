@@ -119,7 +119,8 @@ public class MARSCommandCoverageTest {
 
     // 2. Test ShootOnTheMoveCommand
     // This command has complex kinematics interpolation
-    ShootOnTheMoveCommand sotm = new ShootOnTheMoveCommand(swerveDrive, () -> 1.0, () -> 1.0);
+    ShootOnTheMoveCommand sotm =
+        new ShootOnTheMoveCommand(swerveDrive, superstructure, () -> 1.0, () -> 1.0);
     sotm.initialize();
     for (int i = 0; i < 50; i++) {
       sotm.execute();

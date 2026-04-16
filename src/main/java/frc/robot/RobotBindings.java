@@ -49,41 +49,39 @@ public final class RobotBindings {
             superstructure.setAbsoluteState(MARSSuperstructure.SuperstructureState.INTAKE_RUNNING))
         .onFalse(superstructure.setAbsoluteState(MARSSuperstructure.SuperstructureState.STOWED));
 
-    controller
-        .bindWhileTrue(
-            controller.rightTrigger(),
-            "RightTrigger",
-            "Aim And Shoot On Move",
-            new ShootOnTheMoveCommand(
-                swerveDrive,
-                () -> {
-                  edu.wpi.first.math.kinematics.ChassisSpeeds s =
-                      new edu.wpi.first.math.kinematics.ChassisSpeeds();
-                  com.marslib.swerve.TeleopDriveMath.computeFieldRelativeSpeeds(
-                      controller.getLeftY(),
-                      controller.getLeftX(),
-                      0.0,
-                      swerveConfig.maxLinearSpeedMps(),
-                      0.0,
-                      AllianceUtil.isRed(),
-                      s);
-                  return s.vxMetersPerSecond;
-                },
-                () -> {
-                  edu.wpi.first.math.kinematics.ChassisSpeeds s =
-                      new edu.wpi.first.math.kinematics.ChassisSpeeds();
-                  com.marslib.swerve.TeleopDriveMath.computeFieldRelativeSpeeds(
-                      controller.getLeftY(),
-                      controller.getLeftX(),
-                      0.0,
-                      swerveConfig.maxLinearSpeedMps(),
-                      0.0,
-                      AllianceUtil.isRed(),
-                      s);
-                  return s.vyMetersPerSecond;
-                }))
-        .onTrue(superstructure.setAbsoluteState(MARSSuperstructure.SuperstructureState.SCORE))
-        .onFalse(superstructure.setAbsoluteState(MARSSuperstructure.SuperstructureState.STOWED));
+    controller.bindWhileTrue(
+        controller.rightTrigger(),
+        "RightTrigger",
+        "Aim And Shoot On Move",
+        new ShootOnTheMoveCommand(
+            swerveDrive,
+            superstructure,
+            () -> {
+              edu.wpi.first.math.kinematics.ChassisSpeeds s =
+                  new edu.wpi.first.math.kinematics.ChassisSpeeds();
+              com.marslib.swerve.TeleopDriveMath.computeFieldRelativeSpeeds(
+                  controller.getLeftY(),
+                  controller.getLeftX(),
+                  0.0,
+                  swerveConfig.maxLinearSpeedMps(),
+                  0.0,
+                  AllianceUtil.isRed(),
+                  s);
+              return s.vxMetersPerSecond;
+            },
+            () -> {
+              edu.wpi.first.math.kinematics.ChassisSpeeds s =
+                  new edu.wpi.first.math.kinematics.ChassisSpeeds();
+              com.marslib.swerve.TeleopDriveMath.computeFieldRelativeSpeeds(
+                  controller.getLeftY(),
+                  controller.getLeftX(),
+                  0.0,
+                  swerveConfig.maxLinearSpeedMps(),
+                  0.0,
+                  AllianceUtil.isRed(),
+                  s);
+              return s.vyMetersPerSecond;
+            }));
 
     controller
         .bindOnTrue(

@@ -120,14 +120,12 @@ public class ShootOnTheMovePhysicsTest {
     ShootOnTheMoveCommand sotmCommand =
         new ShootOnTheMoveCommand(
             swerveDrive,
+            superstructure,
             () -> 2.0, // translationX: Move along X axis at 2 m/s
             () -> 1.0 // translationY: Move along Y axis at 1 m/s
             );
 
     CommandScheduler.getInstance().schedule(sotmCommand);
-    // User must also be actively pulling the trigger to feed pieces!
-    CommandScheduler.getInstance()
-        .schedule(superstructure.setAbsoluteState(MARSSuperstructure.SuperstructureState.SCORE));
 
     int maxTicks = 400; // Run for 8 seconds
 
