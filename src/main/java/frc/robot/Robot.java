@@ -7,6 +7,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.ModeConstants;
@@ -26,6 +29,10 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 public class Robot extends LoggedRobot {
   private RobotContainer robotContainer;
   private Command autonomousCommand;
+
+  /** NT4 flag for tethered log-download tools. True when disabled and not on FMS. */
+  private final BooleanPublisher logsReadyPublisher =
+      NetworkTableInstance.getDefault().getBooleanTopic("System/LogsReadyForDownload").publish();
 
   public Robot() {
     super(ModeConstants.LOOP_PERIOD_SECS);
@@ -126,7 +133,8 @@ public class Robot extends LoggedRobot {
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
-    // Rely on generational GC to reclaim memory
+    // Signal tethered laptops that logs are available for download
+    logsReadyPublisher.set(!DriverStation.isFMSAttached());
   }
 
   /** This function is called periodically when disabled. */
@@ -143,6 +151,9 @@ public class Robot extends LoggedRobot {
   /** This autonomous runs the selected autonomous command. */
   @Override
   public void autonomousInit() {
+    // Clear the download flag when entering any active mode
+    logsReadyPublisher.set(false);
+
     if (robotContainer != null) {
       autonomousCommand = robotContainer.getAutonomousCommand();
       if (autonomousCommand != null) {
@@ -158,6 +169,9 @@ public class Robot extends LoggedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
+    // Clear the download flag when entering any active mode
+    logsReadyPublisher.set(false);
+
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
@@ -180,6 +194,14 @@ public class Robot extends LoggedRobot {
   public void simulationInit() {
     edu.wpi.first.wpilibj.simulation.DriverStationSim.setAllianceStationId(
         edu.wpi.first.hal.AllianceStationID.Blue1);
+
+    // Programmatically enable teleop mode so the robot is drivable immediately
+    edu.wpi.first.wpilibj.simulation.DriverStationSim.setEnabled(true);
+    edu.wpi.first.wpilibj.simulation.DriverStationSim.setAutonomous(false);
+
+    // Register full Xbox Controller axis count to prevent unplugged warnings
+    edu.wpi.first.wpilibj.simulation.DriverStationSim.setJoystickAxisCount(0, 6);
+
     edu.wpi.first.wpilibj.simulation.DriverStationSim.notifyNewData();
   }
 
