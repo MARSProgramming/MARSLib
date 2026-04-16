@@ -9,8 +9,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.MARSCowl;
-import frc.robot.subsystems.MARSShooter;
 import java.util.function.DoubleSupplier;
 
 /**
@@ -24,8 +22,6 @@ import java.util.function.DoubleSupplier;
 public class ShootOnTheMoveCommand extends Command {
 
   private final SwerveDrive swerveDrive;
-  private final MARSCowl cowl;
-  private final MARSShooter shooter;
   private final DoubleSupplier joystickX;
   private final DoubleSupplier joystickY;
 
@@ -46,14 +42,8 @@ public class ShootOnTheMoveCommand extends Command {
   private static final Translation3d RED_HUB_3D = frc.robot.constants.FieldConstants.RED_HUB_3D;
 
   public ShootOnTheMoveCommand(
-      SwerveDrive swerveDrive,
-      MARSCowl cowl,
-      MARSShooter shooter,
-      DoubleSupplier joystickX,
-      DoubleSupplier joystickY) {
+      SwerveDrive swerveDrive, DoubleSupplier joystickX, DoubleSupplier joystickY) {
     this.swerveDrive = swerveDrive;
-    this.cowl = cowl;
-    this.shooter = shooter;
     this.joystickX = joystickX;
     this.joystickY = joystickY;
 
@@ -62,7 +52,7 @@ public class ShootOnTheMoveCommand extends Command {
     this.thetaAlignController.setIZone(Math.toRadians(5.0)); // Task 3
     this.thetaAlignController.enableContinuousInput(-Math.PI, Math.PI);
 
-    addRequirements(swerveDrive, cowl, shooter);
+    addRequirements(swerveDrive);
   }
 
   @Override
@@ -134,12 +124,6 @@ public class ShootOnTheMoveCommand extends Command {
             currentPose.getRotation());
 
     swerveDrive.runVelocity(robotSpeeds);
-
-    // 7. Auto-adjust Cowl and Flywheel on-the-fly!
-    if (setpoint.isValid) {
-      cowl.setTargetPosition(setpoint.hoodRadians);
-      shooter.setClosedLoopVelocity(setpoint.launchSpeedMetersPerSec * VELOCITY_TO_RAD_PER_SEC);
-    }
   }
 
   @Override

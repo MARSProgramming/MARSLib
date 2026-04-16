@@ -104,9 +104,16 @@ public class TeleopDriveCommand extends Command {
 
     if (Math.abs(omgVal) <= 0.01) {
       if (Math.abs(xVal) > 0.01 || Math.abs(yVal) > 0.01) {
-        targetSpeeds.omegaRadiansPerSecond =
-            headingController.calculate(
-                swerveDrive.getPose().getRotation().getRadians(), targetHeading.getRadians());
+        if (Math.abs(swerveDrive.getChassisSpeeds().omegaRadiansPerSecond) > 0.25) {
+          // If robot is still spinning physically, keep sliding the target heading to avoid
+          // snapback
+          targetHeading = swerveDrive.getPose().getRotation();
+          targetSpeeds.omegaRadiansPerSecond = 0.0;
+        } else {
+          targetSpeeds.omegaRadiansPerSecond =
+              headingController.calculate(
+                  swerveDrive.getPose().getRotation().getRadians(), targetHeading.getRadians());
+        }
       } else {
         targetHeading = swerveDrive.getPose().getRotation();
         targetSpeeds.omegaRadiansPerSecond = 0.0;

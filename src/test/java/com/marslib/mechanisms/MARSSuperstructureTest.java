@@ -70,7 +70,8 @@ public class MARSSuperstructureTest {
             feeder,
             poseSupplier,
             () -> java.util.Optional.empty(),
-            () -> 0.0);
+            () -> 0.0,
+            () -> new edu.wpi.first.math.kinematics.ChassisSpeeds());
   }
 
   @AfterEach

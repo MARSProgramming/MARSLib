@@ -100,7 +100,7 @@ public class DynamicFailureSimulationTest {
     powerSim.canStarvationProbability = 0.95; // 95% dropped frames
     powerSim.canStarvationDelayMs = 25; // Introduce 25ms loop delays due to CAN blocking
 
-    long startCpuTime = System.nanoTime();
+    // Drive the robot continuously with full velocity
 
     for (int i = 0; i < 50; i++) {
       DriverStationSim.notifyNewData();
@@ -114,7 +114,7 @@ public class DynamicFailureSimulationTest {
       MARSPhysicsWorld.getInstance().addFrameCurrentDrawAmps(500.0);
     }
 
-    long executionTimeMs = (System.nanoTime() - startCpuTime) / 1_000_000;
+    // Assert that the subsystem successfully clamped current limits
 
     // Assert that the subsystem successfully clamped current limits
     assertDoesNotThrow(() -> powerManager.periodic());

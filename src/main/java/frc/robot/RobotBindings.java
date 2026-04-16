@@ -56,8 +56,6 @@ public final class RobotBindings {
             "Aim And Shoot On Move",
             new ShootOnTheMoveCommand(
                 swerveDrive,
-                cowl,
-                shooter,
                 () -> {
                   double raw =
                       -Math.pow(

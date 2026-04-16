@@ -38,6 +38,8 @@ public class MARSSuperstructure extends SubsystemBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "unused"})
   private final Supplier<Optional<Translation2d>> visionTargetSupplier;
 
+  private final Supplier<ChassisSpeeds> fieldSpeedsSupplier;
+
   /** The set of valid superstructure states. */
   public enum SuperstructureState {
     STOWED,
@@ -75,6 +77,7 @@ public class MARSSuperstructure extends SubsystemBase {
    * @param poseSupplier Supplier for the current robot field pose.
    * @param visionTargetSupplier Supplier for the latest vision target translation.
    * @param tiltRadiansSupplier Supplier for the current robot tilt in radians.
+   * @param fieldSpeedsSupplier Supplier for the current robot field-relative speeds.
    */
   public MARSSuperstructure(
       MARSCowl cowl,
@@ -84,7 +87,8 @@ public class MARSSuperstructure extends SubsystemBase {
       MARSShooter feeder,
       Supplier<Pose2d> poseSupplier,
       Supplier<Optional<Translation2d>> visionTargetSupplier,
-      Supplier<Double> tiltRadiansSupplier) {
+      Supplier<Double> tiltRadiansSupplier,
+      Supplier<ChassisSpeeds> fieldSpeedsSupplier) {
 
     this.cowl = cowl;
     this.intakePivot = intakePivot;
@@ -94,6 +98,7 @@ public class MARSSuperstructure extends SubsystemBase {
     this.poseSupplier = poseSupplier;
     this.visionTargetSupplier = visionTargetSupplier;
     this.tiltRadiansSupplier = tiltRadiansSupplier;
+    this.fieldSpeedsSupplier = fieldSpeedsSupplier;
 
     stateMachine =
         new MARSStateMachine<>(
@@ -179,7 +184,7 @@ public class MARSSuperstructure extends SubsystemBase {
     // Cache shot calculation once per loop to avoid duplicate solver runs
     EliteShooterMath.EliteShooterSetpoint cachedShot = null;
     if (currentState == SuperstructureState.SCORE) {
-      cachedShot = calculateStaticShot();
+      cachedShot = calculateDynamicShot();
     }
 
     // Update mechanism targets based on current state
@@ -356,15 +361,16 @@ public class MARSSuperstructure extends SubsystemBase {
   }
 
   /**
-   * Calculates a static (zero-velocity) shot setpoint to the alliance-appropriate hub using {@link
-   * EliteShooterMath}.
+   * Calculates a dynamic shot setpoint to the alliance-appropriate hub using {@link
+   * EliteShooterMath} and current field velocities. Inherently acts as a static solver when speeds
+   * are zero.
    */
-  private EliteShooterMath.EliteShooterSetpoint calculateStaticShot() {
+  private EliteShooterMath.EliteShooterSetpoint calculateDynamicShot() {
     Translation3d targetHub = AllianceUtil.isRed() ? redHub3dCache : blueHub3dCache;
 
     return EliteShooterMath.calculateShotOnTheMove(
         poseSupplier.get(),
-        zeroSpeedsCache,
+        fieldSpeedsSupplier.get(),
         targetHub,
         FieldConstants.GAME_PIECE_REST_HEIGHT_METERS,
         ShooterConstants.PROJECTILE_SPEED_MPS,

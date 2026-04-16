@@ -427,7 +427,8 @@ public class RobotContainer {
             () -> {
               com.marslib.swerve.GyroIO.GyroIOInputs gyro = swerveDrive.getGyroInputs();
               return Math.acos(Math.cos(gyro.pitchPositionRad) * Math.cos(gyro.rollPositionRad));
-            });
+            },
+            swerveDrive::getChassisSpeeds);
 
     // Configure PathPlanner AutoBuilder AFTER construction — composition root owns
     // this

@@ -80,8 +80,7 @@ public class ShootOnTheMoveCommandTest {
   /** When the robot is stationary, the aim heading should point directly at the target hub. */
   @Test
   public void testStationaryAim() {
-    ShootOnTheMoveCommand command =
-        new ShootOnTheMoveCommand(swerveDrive, cowl, shooter, () -> 0.0, () -> 0.0);
+    ShootOnTheMoveCommand command = new ShootOnTheMoveCommand(swerveDrive, () -> 0.0, () -> 0.0);
 
     CommandScheduler.getInstance().schedule(command);
 
@@ -116,8 +115,7 @@ public class ShootOnTheMoveCommandTest {
   /** When the robot is translating, the aim should lead the target (diverge from static aim). */
   @Test
   public void testMovingAimCalculatesVirtualTarget() {
-    ShootOnTheMoveCommand command =
-        new ShootOnTheMoveCommand(swerveDrive, cowl, shooter, () -> 2.0, () -> 0.0);
+    ShootOnTheMoveCommand command = new ShootOnTheMoveCommand(swerveDrive, () -> 2.0, () -> 0.0);
 
     CommandScheduler.getInstance().schedule(command);
 
@@ -159,7 +157,7 @@ public class ShootOnTheMoveCommandTest {
   public void testPhysicalFallbackOnNegativeDiscriminant() {
     // Robot translating AWAY at an impossible speed (30 m/s > 15 m/s projectile)
     ShootOnTheMoveCommand command =
-        new ShootOnTheMoveCommand(swerveDrive, cowl, shooter, () -> -30.0, () -> -30.0);
+        new ShootOnTheMoveCommand(swerveDrive, () -> -30.0, () -> -30.0);
 
     CommandScheduler.getInstance().schedule(command);
 

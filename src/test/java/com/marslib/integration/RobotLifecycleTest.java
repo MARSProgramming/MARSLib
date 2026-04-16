@@ -88,7 +88,8 @@ public class RobotLifecycleTest {
             feeder,
             swerveDrive::getPose,
             () -> java.util.Optional.empty(),
-            () -> 0.0);
+            () -> 0.0,
+            () -> new edu.wpi.first.math.kinematics.ChassisSpeeds());
   }
 
   @AfterEach

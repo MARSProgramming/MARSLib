@@ -96,7 +96,8 @@ public class MARSCommandCoverageTest {
             feeder,
             () -> new Pose2d(),
             () -> java.util.Optional.empty(),
-            () -> 0.0);
+            () -> 0.0,
+            () -> new edu.wpi.first.math.kinematics.ChassisSpeeds());
   }
 
   @AfterEach
@@ -118,8 +119,7 @@ public class MARSCommandCoverageTest {
 
     // 2. Test ShootOnTheMoveCommand
     // This command has complex kinematics interpolation
-    ShootOnTheMoveCommand sotm =
-        new ShootOnTheMoveCommand(swerveDrive, cowl, shooter, () -> 1.0, () -> 1.0);
+    ShootOnTheMoveCommand sotm = new ShootOnTheMoveCommand(swerveDrive, () -> 1.0, () -> 1.0);
     sotm.initialize();
     for (int i = 0; i < 50; i++) {
       sotm.execute();
