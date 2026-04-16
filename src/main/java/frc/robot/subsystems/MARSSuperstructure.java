@@ -185,6 +185,10 @@ public class MARSSuperstructure extends SubsystemBase {
     EliteShooterMath.EliteShooterSetpoint cachedShot = null;
     if (currentState == SuperstructureState.SCORE) {
       cachedShot = calculateDynamicShot();
+      Logger.recordOutput("Superstructure/SimDebug/ShotIsValid", cachedShot.isValid);
+      Logger.recordOutput(
+          "Superstructure/SimDebug/ShotLaunchSpeed", cachedShot.launchSpeedMetersPerSec);
+      Logger.recordOutput("Superstructure/SimDebug/ShotHoodRads", cachedShot.hoodRadians);
     }
 
     // Update mechanism targets based on current state
@@ -232,48 +236,57 @@ public class MARSSuperstructure extends SubsystemBase {
     // 2. Simulate Shooting
     if (simShooterCooldown > 0) {
       simShooterCooldown--;
-    } else if (currentState == SuperstructureState.SCORE
-        && shooter.isAtTolerance()
-        && cowl.isAtTolerance()
-        && internalPieceCount > 0) {
-      // Triggers exactly when we start feeding the piece into the shooter
-      internalPieceCount--;
-      simShooterCooldown = 15; // 300ms delay between shots
+    } else if (currentState == SuperstructureState.SCORE && internalPieceCount > 0) {
+      // Log exactly why we cannot or can fire — this is the core diagnostic
+      boolean shooterReady = shooter.isAtTolerance();
+      boolean cowlReady = cowl.isAtTolerance();
+      Logger.recordOutput("Superstructure/SimDebug/ShooterAtTolerance", shooterReady);
+      Logger.recordOutput("Superstructure/SimDebug/CowlAtTolerance", cowlReady);
       Logger.recordOutput(
-          "Superstructure/SimEvent", "Fired Shot! Remaining: " + internalPieceCount);
+          "Superstructure/SimDebug/ShooterVelocity", shooter.getVelocityRadPerSec());
+      Logger.recordOutput("Superstructure/SimDebug/CowlPosition", cowl.getPositionRads());
+      Logger.recordOutput("Superstructure/SimDebug/GoalCowlAngle", goalCowlAngle);
 
-      Pose2d robotPose = poseSupplier.get();
-      edu.wpi.first.math.geometry.Pose3d nozzlePose =
-          new edu.wpi.first.math.geometry.Pose3d(robotPose)
-              .plus(
-                  new edu.wpi.first.math.geometry.Transform3d(
-                      0.2,
-                      0,
-                      0.6,
-                      new edu.wpi.first.math.geometry.Rotation3d(0, -goalCowlAngle, 0)));
+      if (shooterReady && cowlReady) {
+        // Triggers exactly when we start feeding the piece into the shooter
+        internalPieceCount--;
+        simShooterCooldown = 15; // 300ms delay between shots
+        Logger.recordOutput(
+            "Superstructure/SimEvent", "Fired Shot! Remaining: " + internalPieceCount);
 
-      double launchSpeedMetersPerSec =
-          shooter.getVelocityRadPerSec()
-              * frc.robot.constants.ShooterConstants.SHOOTER_WHEEL_RADIUS_METERS;
+        Pose2d robotPose = poseSupplier.get();
+        edu.wpi.first.math.geometry.Pose3d nozzlePose =
+            new edu.wpi.first.math.geometry.Pose3d(robotPose)
+                .plus(
+                    new edu.wpi.first.math.geometry.Transform3d(
+                        0.2,
+                        0,
+                        0.6,
+                        new edu.wpi.first.math.geometry.Rotation3d(0, -goalCowlAngle, 0)));
 
-      // goalCowlAngle comes from EliteShooterMath which calculates pitch relative to the flat
-      // horizontal plane
-      double pitch = goalCowlAngle;
+        double launchSpeedMetersPerSec =
+            shooter.getVelocityRadPerSec()
+                * frc.robot.constants.ShooterConstants.SHOOTER_WHEEL_RADIUS_METERS;
 
-      double launchSpeedX =
-          Math.cos(robotPose.getRotation().getRadians())
-              * launchSpeedMetersPerSec
-              * Math.cos(pitch);
-      double launchSpeedY =
-          Math.sin(robotPose.getRotation().getRadians())
-              * launchSpeedMetersPerSec
-              * Math.cos(pitch);
-      double launchSpeedZ = launchSpeedMetersPerSec * Math.sin(pitch);
+        // goalCowlAngle comes from EliteShooterMath which calculates pitch relative to the flat
+        // horizontal plane
+        double pitch = goalCowlAngle;
 
-      com.marslib.simulation.SimulationProjectile shot =
-          new com.marslib.simulation.SimulationProjectile(
-              nozzlePose, launchSpeedX, launchSpeedY, launchSpeedZ);
-      com.marslib.simulation.MARSPhysicsWorld.getInstance().addProjectile(shot);
+        double launchSpeedX =
+            Math.cos(robotPose.getRotation().getRadians())
+                * launchSpeedMetersPerSec
+                * Math.cos(pitch);
+        double launchSpeedY =
+            Math.sin(robotPose.getRotation().getRadians())
+                * launchSpeedMetersPerSec
+                * Math.cos(pitch);
+        double launchSpeedZ = launchSpeedMetersPerSec * Math.sin(pitch);
+
+        com.marslib.simulation.SimulationProjectile shot =
+            new com.marslib.simulation.SimulationProjectile(
+                nozzlePose, launchSpeedX, launchSpeedY, launchSpeedZ);
+        com.marslib.simulation.MARSPhysicsWorld.getInstance().addProjectile(shot);
+      }
     }
   }
 
@@ -367,17 +380,13 @@ public class MARSSuperstructure extends SubsystemBase {
    */
   private EliteShooterMath.EliteShooterSetpoint calculateDynamicShot() {
     Translation3d targetHub = AllianceUtil.isRed() ? redHub3dCache : blueHub3dCache;
-    edu.wpi.first.math.geometry.Pose2d currentPose = poseSupplier.get();
 
-    // The supplier inherently provides robot-relative speeds based on SwerveDrive convention.
-    // Convert to field-relative speeds expected by the mathematical solver.
-    edu.wpi.first.math.kinematics.ChassisSpeeds fieldSpeeds =
-        edu.wpi.first.math.kinematics.ChassisSpeeds.fromRobotRelativeSpeeds(
-            fieldSpeedsSupplier.get(), currentPose.getRotation());
-
+    // The fieldSpeedsSupplier from RobotContainer already provides field-relative speeds
+    // via ChassisSpeeds.fromRobotRelativeSpeeds(). Do NOT convert again — that was a bug
+    // introduced by a previous fix that double-rotated the velocity vector.
     return EliteShooterMath.calculateShotOnTheMove(
-        currentPose,
-        fieldSpeeds,
+        poseSupplier.get(),
+        fieldSpeedsSupplier.get(),
         targetHub,
         FieldConstants.GAME_PIECE_REST_HEIGHT_METERS,
         ShooterConstants.PROJECTILE_SPEED_MPS,

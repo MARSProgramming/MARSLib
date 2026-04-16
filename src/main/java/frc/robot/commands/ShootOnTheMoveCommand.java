@@ -68,6 +68,8 @@ public class ShootOnTheMoveCommand extends Command {
           .getStateMachine()
           .requestTransition(frc.robot.subsystems.MARSSuperstructure.SuperstructureState.SCORE);
     }
+    org.littletonrobotics.junction.Logger.recordOutput(
+        "ShootOnTheMove/State", "INITIALIZED - Requested SCORE");
 
     // Sync limiter timestamp to avoid jumpy time-deltas
     edu.wpi.first.math.kinematics.ChassisSpeeds robotSpeeds = swerveDrive.getChassisSpeeds();
@@ -79,6 +81,15 @@ public class ShootOnTheMoveCommand extends Command {
 
   @Override
   public void execute() {
+    // Continuously assert SCORE state every frame. Self-transitions are accepted as no-ops
+    // by MARSStateMachine, so this is zero-cost when already SCORE. This defends against
+    // other bindings (e.g., leftTrigger.onFalse → STOWED) racing with this command.
+    if (superstructure != null) {
+      superstructure
+          .getStateMachine()
+          .requestTransition(frc.robot.subsystems.MARSSuperstructure.SuperstructureState.SCORE);
+    }
+
     Pose2d currentPose = swerveDrive.getPose();
 
     // 1. Let the driver keep complete X/Y translating freedom
@@ -143,6 +154,8 @@ public class ShootOnTheMoveCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
+    org.littletonrobotics.junction.Logger.recordOutput(
+        "ShootOnTheMove/State", "ENDED - interrupted=" + interrupted);
     if (superstructure != null) {
       superstructure
           .getStateMachine()

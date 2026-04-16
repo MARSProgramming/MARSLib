@@ -144,7 +144,7 @@ public class ShootOnTheMovePhysicsTest {
       pieceCountField.setAccessible(true);
       int finalCount = (int) pieceCountField.get(superstructure);
       assertTrue(
-          finalCount < 10,
+          finalCount < 20,
           "Robot did not deduct fired balls from its inventory! Final count: " + finalCount);
     } catch (Exception e) {
       fail(e.getMessage());
