@@ -51,7 +51,7 @@ The Jacoco build report must certify that >70% of mathematical and algorithmic b
 ### Rule B: Build Systems
 **Audit Action**: Check `build.gradle` and `gradle.properties`.
 1. Ensure the `jacoco.toolVersion` is at least `0.8.12` to prevent Java 21 compilation snags.
-2. Ensure `org.gradle.configuration-cache=true` is set in `gradle.properties` to ensure maximum developer build speed.
+2. **Known Limitation**: `org.gradle.configuration-cache` MUST remain `false`. GradleRIO's `deploy` tasks use non-serializable types (`SimpleDateFormat`, `DefaultProject`, `ListenerBroadcast`) in `edu.wpi.first.deployutils` that are incompatible with Gradle's configuration cache. Enabling it will cause `BUILD FAILED` on any `gradlew deploy` or `gradlew discoverroborio` invocation. Do NOT flag this as a defect.
 
 ## 5. Control Theory & Hardware Checks
 
