@@ -70,8 +70,15 @@ public class SwerveChassisPhysics {
     double currentVx = body.getLinearVelocity().x;
     double currentVy = body.getLinearVelocity().y;
 
-    double dVx = requestedSpeeds.vxMetersPerSecond - currentVx;
-    double dVy = requestedSpeeds.vyMetersPerSecond - currentVy;
+    double cos = Math.cos(body.getTransform().getRotationAngle());
+    double sin = Math.sin(body.getTransform().getRotationAngle());
+    double fieldTargetVx =
+        requestedSpeeds.vxMetersPerSecond * cos - requestedSpeeds.vyMetersPerSecond * sin;
+    double fieldTargetVy =
+        requestedSpeeds.vxMetersPerSecond * sin + requestedSpeeds.vyMetersPerSecond * cos;
+
+    double dVx = fieldTargetVx - currentVx;
+    double dVy = fieldTargetVy - currentVy;
 
     double deltaVTargetMagnitude = Math.hypot(dVx, dVy);
     double maxDeltaV = maxAccelerationMps2 * dtSeconds;

@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * Takes a prior setpoint (ChassisSpeeds), a desired setpoint (from a driver, or from a path
@@ -144,7 +145,21 @@ public class SwerveSetpointGenerator {
       double sGuess = (sLow + sHigh) / 2.0;
       double xGuess = (x1 - x0) * sGuess + x0;
       double yGuess = (y1 - y0) * sGuess + y0;
-      double fGuess = unwrapAngle(f0, Math.atan2(yGuess, xGuess)) - offset;
+
+      // Handle zero-velocity origin case to prevent Math.atan2(0,0) returning 0 and stalling
+      double angleGuess;
+      if (Math.abs(xGuess) < kEpsilon && Math.abs(yGuess) < kEpsilon) {
+        angleGuess = f0; // Assume heading stays same if velocity is effectively zero
+      } else {
+        angleGuess = Math.atan2(yGuess, xGuess);
+      }
+
+      double fGuess = unwrapAngle(f0, angleGuess) - offset;
+
+      if (!Double.isFinite(fGuess)) {
+        sHigh = sGuess;
+        continue;
+      }
 
       if (Math.signum(fLow) == Math.signum(fGuess)) {
         sLow = sGuess;
@@ -197,6 +212,11 @@ public class SwerveSetpointGenerator {
       double xGuess = (x1 - x0) * sGuess + x0;
       double yGuess = (y1 - y0) * sGuess + y0;
       double fGuess = Math.hypot(xGuess, yGuess) - offset;
+
+      if (!Double.isFinite(fGuess)) {
+        sHigh = sGuess;
+        continue;
+      }
 
       if (Math.signum(fLow) == Math.signum(fGuess)) {
         sLow = sGuess;
@@ -394,6 +414,8 @@ public class SwerveSetpointGenerator {
         resultCache.moduleStates[i].speedMetersPerSecond *= -1.0;
       }
     }
+
+    Logger.recordOutput("SwerveDrive/SetpointScaling", minS);
     return resultCache;
   }
 }

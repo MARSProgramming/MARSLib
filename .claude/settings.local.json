@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Read(//c/Users/david/dev/robotics/frc/**)",
-      "Read(//c/Users/david/dev/robotics/**)"
+      "Read(//c/Users/david/dev/robotics/**)",
+      "WebSearch"
     ]
   }
 }

@@ -145,9 +145,6 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
     }
 
     if (simChassis != null) {
-      // Step the global tracking physics loop
-      simChassis.applyKinematicSpeeds(prevSetpoint.chassisSpeeds, config.loopPeriodSecs());
-
       Pose2d simBoundedPose = simChassis.getPose();
       if (simBoundedPose.getX() != lastSimPoseCache.getX()
           || simBoundedPose.getY() != lastSimPoseCache.getY()
@@ -158,6 +155,8 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
       Logger.recordOutput("DriveTrain/SimPose", lastSimPoseCache);
       if (lidarSim != null) lidarSim.updateInputs(lastSimPoseCache);
     }
+
+    odometry.updateOdometry(modules, gyroInputs);
 
     Pose2d currentPose = odometry.getPose();
     if (currentPose.getX() != lastPoseCache.getX()
@@ -263,6 +262,10 @@ public class SwerveDrive extends SubsystemBase implements SystemTestable {
       desiredStatesLogCache[i * 2 + 1] = states[i].speedMetersPerSecond;
     }
     Logger.recordOutput("SwerveDrive/DesiredStates", desiredStatesLogCache);
+
+    if (simChassis != null) {
+      simChassis.applyKinematicSpeeds(prevSetpoint.chassisSpeeds, config.loopPeriodSecs());
+    }
   }
 
   public void setModuleStates(SwerveModuleState... states) {

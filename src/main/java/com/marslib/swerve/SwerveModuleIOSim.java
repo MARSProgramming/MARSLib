@@ -40,9 +40,9 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
 
   @Override
   public void updateInputs(SwerveModuleIOInputs inputs) {
-    // Step the physics sims by the standard 20ms WPILib loop duration
-    driveSim.update(0.02);
-    steerSim.update(0.02);
+    // Step the physics sims by the standard synchronized loop duration
+    driveSim.update(frc.robot.constants.ModeConstants.LOOP_PERIOD_SECS);
+    steerSim.update(frc.robot.constants.ModeConstants.LOOP_PERIOD_SECS);
 
     inputs.hasHardwareConnected = true;
 
