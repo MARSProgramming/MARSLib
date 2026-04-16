@@ -23,7 +23,10 @@ MARSLib's simulation is driven by four core classes in `com.marslib.simulation`:
 
 ## 2. Key Rules
 
-### Rule A: Register All Mechanism Bodies
+### Rule A: Targeted Physics Integration (AdvantageKit Style)
+Only the **Swerve Drivetrain (Chassis)** and **Game Pieces** should be simulated via forces and collisions using the rigid-body `dyn4j` physics engine. Other mechanisms (elevators, cowls, flywheels, arms) MUST be simulated individually via direct state injection (AdvantageKit/WPILib physics style) instead of `applyTorque()` free-body dynamics. This directly mirrors TalonFX Motion Magic behavior and prevents 1D joints from freezing due to dyn4j's auto-sleep optimizations in zero gravity environments.
+
+### Rule B: Register All Mechanism Bodies
 Every `*IOSim` that participates in physics MUST register its dyn4j `Body` objects:
 ```java
 MARSPhysicsWorld.getInstance().getWorld().addBody(body);
@@ -31,14 +34,14 @@ MARSPhysicsWorld.getInstance().registerMechanismBody("Elevator", body);
 ```
 Unregistered bodies won't collide with anything and won't be stepped by the physics engine.
 
-### Rule B: Aggregate Current Draw
+### Rule C: Aggregate Current Draw
 Every `*IOSim` MUST report its simulated current draw every frame:
 ```java
 MARSPhysicsWorld.getInstance().addFrameCurrentDrawAmps(currentAmps);
 ```
 This feeds the `PowerIOSim` voltage sag model. Without it, the sim never brownouts and hides real power issues.
 
-### Rule C: Reset Instance in Every Test
+### Rule D: Reset Instance in Every Test
 The singleton MUST be reset before every test to prevent physics bodies from stacking:
 ```java
 @BeforeEach
@@ -48,7 +51,7 @@ public void setUp() {
 ```
 Without this, chassis instances accumulate at (0,0), creating infinite friction and locking the physics engine.
 
-### Rule D: Use Real Materials, Not Defaults
+### Rule E: Use Real Materials, Not Defaults
 Field perimeter walls: friction `0.8`, restitution `0.1` (high grip, low bounce). Game pieces: friction `0.3`, restitution `0.5`. Default dyn4j values will cause pieces to clip through walls or robots to slide unrealistically.
 
 ## 3. Adding New Field Elements

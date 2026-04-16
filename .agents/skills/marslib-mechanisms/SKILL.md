@@ -19,7 +19,7 @@ MARSLib provides three pre-built IO patterns for common FRC mechanisms:
 
 Each pattern has three implementations:
 - **`*IO.java`** — Interface with `@AutoLog` inputs
-- **`*IOSim.java`** — dyn4j physics simulation (registers body to `MARSPhysicsWorld`)
+- **`*IOSim.java`** — WPILib standard physics simulation using AdvantageKit style direct state injection (registers a kinematic body to `MARSPhysicsWorld` only for collisions/visualization, NOT for free-body dynamics)
 - **`*IOTalonFX.java`** — Real hardware (Phoenix 6 TalonFX)
 
 And one subsystem class that consumes the IO:
@@ -46,6 +46,9 @@ If you skip this, the mechanism will brownout the robot during matches.
 
 ### Rule D: SysId is Built-In
 Every mechanism subsystem exposes `sysIdQuasistatic(direction)` and `sysIdDynamic(direction)` commands. These are pre-wired to the IO layer's `setVoltage()` method for automated feedforward characterization.
+
+### Rule E: Simulate via Direct State Injection
+Mechanism `*IOSim` implementations must NOT use dyn4j `applyTorque()` for rigid-body simulation. Instead, use AdvantageKit-style direct state injection (updating position/velocity directly from the `ProfiledPIDController` or WPILib physics classes). This mirrors TalonFX Motion Magic behavior without succumbing to dyn4j auto-sleep freezing in zero-gravity environments.
 
 ## 3. Creating a New Mechanism
 
