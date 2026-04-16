@@ -1,4 +1,5 @@
 {
+  "version": "26.0.0",
   "hubs": [
     {
       "x": -8,
@@ -406,6 +407,5 @@
       }
     }
   ],
-  "satellites": [],
-  "version": "26.0.0"
+  "satellites": []
 }
