@@ -21,8 +21,6 @@ import com.marslib.swerve.SwerveModuleIOSim;
 import com.marslib.testing.MARSTestHarness;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Properties;
@@ -73,7 +71,9 @@ class PerformanceRegressionTest extends MARSBenchmark {
 
   /** Helper to store baselines with proper try-with-resources to prevent Windows file leaks. */
   private void storeBaselines(String comment) throws IOException {
-    try (FileWriter fw = new FileWriter(baselineFile)) {
+    try (java.io.Writer fw =
+        java.nio.file.Files.newBufferedWriter(
+            baselineFile.toPath(), java.nio.charset.StandardCharsets.UTF_8)) {
       baselines.store(fw, comment);
     }
   }
@@ -81,7 +81,9 @@ class PerformanceRegressionTest extends MARSBenchmark {
   /** Helper to load baselines with proper try-with-resources. */
   private Properties loadBaselines() throws IOException {
     Properties loaded = new Properties();
-    try (FileReader fr = new FileReader(baselineFile)) {
+    try (java.io.Reader fr =
+        java.nio.file.Files.newBufferedReader(
+            baselineFile.toPath(), java.nio.charset.StandardCharsets.UTF_8)) {
       loaded.load(fr);
     }
     return loaded;

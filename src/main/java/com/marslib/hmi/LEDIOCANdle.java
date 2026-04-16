@@ -77,6 +77,8 @@ public class LEDIOCANdle implements LEDIO {
       case DEFAULT:
         candle.setControl(solidColorRequest.withColor(new RGBWColor(0, 0, 255))); // Blue
         break;
+      default:
+        break;
     }
   }
 }

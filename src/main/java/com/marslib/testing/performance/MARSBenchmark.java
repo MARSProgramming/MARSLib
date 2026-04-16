@@ -25,7 +25,7 @@ package com.marslib.testing.performance;
  *
  * <pre>
  * public class SwerveBenchmark extends MARSBenchmark {
- *     @Test
+ *     {@literal @}Test
  *     public void benchmarkSwerveKinematics() {
  *         SwerveDrive drive = createTestSwerveDrive();
  *         ChassisSpeeds speeds = new ChassisSpeeds(1.0, 0.5, 0.3);

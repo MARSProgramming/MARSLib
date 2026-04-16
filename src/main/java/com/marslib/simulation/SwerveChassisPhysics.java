@@ -26,8 +26,8 @@ public class SwerveChassisPhysics {
       double bumperWidthMeters,
       double bumperLengthMeters,
       double staticFrictionCoef,
-      edu.wpi.first.math.geometry.Translation2d[] moduleLocations) {
-    this.moduleLocations = moduleLocations;
+      edu.wpi.first.math.geometry.Translation2d... moduleLocations) {
+    this.moduleLocations = moduleLocations.clone();
     body = new Body();
     // In dyn4j, Geometry.createRectangle centers on (0,0)
     Rectangle rectangle = Geometry.createRectangle(bumperLengthMeters, bumperWidthMeters);

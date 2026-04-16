@@ -26,7 +26,7 @@ public final class AllianceUtil {
    */
   public static boolean isRed() {
     var alliance = DriverStation.getAlliance();
-    return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red;
+    return alliance.isPresent() && alliance.get().equals(DriverStation.Alliance.Red);
   }
 
   /**
@@ -36,6 +36,6 @@ public final class AllianceUtil {
    */
   public static boolean isBlue() {
     var alliance = DriverStation.getAlliance();
-    return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue;
+    return alliance.isPresent() && alliance.get().equals(DriverStation.Alliance.Blue);
   }
 }

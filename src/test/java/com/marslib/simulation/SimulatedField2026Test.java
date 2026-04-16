@@ -12,8 +12,8 @@ public class SimulatedField2026Test {
   @Test
   public void testFieldBoundaries() {
     List<Body> boundariesWithRamps = SimulatedField2026.getFieldBoundaries(true);
-    // 4 walls, 2 blue uprights, 2 red uprights, 2 blue trench, 2 red trench, 2 hubs = 14
-    assertEquals(14, boundariesWithRamps.size());
+    // 4 walls, 2 blue uprights, 2 red uprights, 2 blue trench, 2 red trench, 2 hubs, +4 ramps = 18
+    assertEquals(18, boundariesWithRamps.size());
     for (Body b : boundariesWithRamps) {
       assertEquals(MassType.INFINITE, b.getMass().getType());
     }
