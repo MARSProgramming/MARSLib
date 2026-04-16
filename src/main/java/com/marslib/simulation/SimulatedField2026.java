@@ -111,37 +111,33 @@ public class SimulatedField2026 {
             UPRIGHT_X_LEN,
             UPRIGHT_Y_LEN));
 
-    // Blue Trench Wall (Overhead obstacle - robots pass under)
+    // Blue Trench Wall (Solid wall separating Trench and Bump)
     bodies.add(
-        createBumpSensor(
+        createWall(
             TRENCH_WALL_OFFSET_FROM_END_WALL,
             TRENCH_WALL_OFFSET_FROM_SIDE_WALL,
             TRENCH_WALL_X_LEN,
-            TRENCH_WALL_Y_LEN,
-            "OverheadObstacle"));
+            TRENCH_WALL_Y_LEN));
     bodies.add(
-        createBumpSensor(
+        createWall(
             TRENCH_WALL_OFFSET_FROM_END_WALL,
             FIELD_Y_MAX - TRENCH_WALL_OFFSET_FROM_SIDE_WALL,
             TRENCH_WALL_X_LEN,
-            TRENCH_WALL_Y_LEN,
-            "OverheadObstacle"));
+            TRENCH_WALL_Y_LEN));
 
-    // Red Trench Wall (Overhead obstacle)
+    // Red Trench Wall (Solid wall separating Trench and Bump)
     bodies.add(
-        createBumpSensor(
+        createWall(
             FIELD_X_MAX - TRENCH_WALL_OFFSET_FROM_END_WALL,
             TRENCH_WALL_OFFSET_FROM_SIDE_WALL,
             TRENCH_WALL_X_LEN,
-            TRENCH_WALL_Y_LEN,
-            "OverheadObstacle"));
+            TRENCH_WALL_Y_LEN));
     bodies.add(
-        createBumpSensor(
+        createWall(
             FIELD_X_MAX - TRENCH_WALL_OFFSET_FROM_END_WALL,
             FIELD_Y_MAX - TRENCH_WALL_OFFSET_FROM_SIDE_WALL,
             TRENCH_WALL_X_LEN,
-            TRENCH_WALL_Y_LEN,
-            "OverheadObstacle"));
+            TRENCH_WALL_Y_LEN));
 
     // Hubs
     bodies.add(createWall(HUB_X, HUB_Y, HUB_X_LEN, HUB_Y_LEN));
