@@ -76,6 +76,7 @@ public final class MARSTestHarness {
         15.0, // teleopLinearAccelLimit
         18.84, // teleopOmegaAccelLimit
         5.0, // headingKp
+        0.0, // headingKd
         5.0, // autoTranslationKp
         0.0, // autoTranslationKd
         5.0, // autoRotationKp

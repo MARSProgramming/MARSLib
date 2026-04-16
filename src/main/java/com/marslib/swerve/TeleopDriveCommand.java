@@ -56,7 +56,7 @@ public class TeleopDriveCommand extends Command {
 
     this.tractionLimiter = new TractionControlLimiter(config.teleopLinearAccelLimit());
     this.omegaLimiter = new SlewRateLimiter(config.teleopOmegaAccelLimit());
-    this.headingController = new PIDController(config.headingKp(), 0, 0);
+    this.headingController = new PIDController(config.headingKp(), 0, config.headingKd());
 
     // Task 3: Cap integral windup safely (max ~5 degrees tolerance)
     headingController.setIZone(Math.toRadians(5.0));

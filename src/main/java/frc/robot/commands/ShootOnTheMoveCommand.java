@@ -48,7 +48,10 @@ public class ShootOnTheMoveCommand extends Command {
     this.joystickY = joystickY;
 
     this.thetaAlignController =
-        new PIDController(frc.robot.constants.AutoConstants.ALIGN_THETA_KP, 0, 0);
+        new PIDController(
+            frc.robot.constants.AutoConstants.ALIGN_THETA_KP,
+            0,
+            frc.robot.constants.AutoConstants.ALIGN_THETA_KD);
     this.thetaAlignController.setIZone(Math.toRadians(5.0)); // Task 3
     this.thetaAlignController.enableContinuousInput(-Math.PI, Math.PI);
 

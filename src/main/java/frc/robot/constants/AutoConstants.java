@@ -6,7 +6,8 @@ public final class AutoConstants {
   public static final double MAX_ANGULAR_VELOCITY_RAD_PER_SEC = Math.PI;
   public static final double MAX_ANGULAR_ACCELERATION_RAD_PER_SEC2 = Math.PI / 2.0;
   public static final double ALIGN_TRANSLATION_KP = 5.0;
-  public static final double ALIGN_THETA_KP = 5.0;
+  public static final double ALIGN_THETA_KP = 4.0;
+  public static final double ALIGN_THETA_KD = 0.4;
 
   public static final double ALIGN_TRANSLATION_IZONE_METERS = 0.2;
   public static final double ALIGN_THETA_IZONE_RAD = Math.toRadians(5.0);

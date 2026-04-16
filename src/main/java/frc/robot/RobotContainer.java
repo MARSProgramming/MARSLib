@@ -112,6 +112,7 @@ public class RobotContainer {
             DriveConstants.TELEOP_LINEAR_ACCEL_LIMIT,
             DriveConstants.TELEOP_OMEGA_ACCEL_LIMIT,
             DriveConstants.HEADING_KP,
+            DriveConstants.HEADING_KD,
             SwerveConstants.AUTO_TRANSLATION_KP,
             SwerveConstants.AUTO_TRANSLATION_KD,
             SwerveConstants.AUTO_ROTATION_KP,
@@ -428,7 +429,9 @@ public class RobotContainer {
               com.marslib.swerve.GyroIO.GyroIOInputs gyro = swerveDrive.getGyroInputs();
               return Math.acos(Math.cos(gyro.pitchPositionRad) * Math.cos(gyro.rollPositionRad));
             },
-            swerveDrive::getChassisSpeeds);
+            () ->
+                edu.wpi.first.math.kinematics.ChassisSpeeds.fromRobotRelativeSpeeds(
+                    swerveDrive.getChassisSpeeds(), swerveDrive.getPose().getRotation()));
 
     // Configure PathPlanner AutoBuilder AFTER construction — composition root owns
     // this

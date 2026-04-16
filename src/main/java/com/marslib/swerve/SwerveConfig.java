@@ -36,6 +36,7 @@ public record SwerveConfig(
     double teleopLinearAccelLimit,
     double teleopOmegaAccelLimit,
     double headingKp,
+    double headingKd,
     double autoTranslationKp,
     double autoTranslationKd,
     double autoRotationKp,
