@@ -33,13 +33,16 @@ import DefaultFooter from '@astrojs/starlight/components/Footer.astro';
         </ul>
       </div>
     </div>
-    <div class="footer-mission" style="text-align: center; margin-top: 3rem; padding: 0 20px;">
-      <p style="font-size: 1.1rem; color: var(--sl-color-white); letter-spacing: 0.05em; margin-bottom: 0.5rem;">
-        MARSLib is a platform for <strong>Discovery</strong>, <strong>Innovation</strong>, and <strong>Impact</strong>.
-      </p>
-      <p style="color: var(--sl-color-text-muted); font-size: 0.95rem;">
-        Our culture and software are built on the foundations of <strong><i>FIRST</i>® Core Values</strong>.
-      </p>
+    <div class="footer-values">
+      <p class="footer-values-label">Built on the <i>FIRST</i>® Core Values</p>
+      <div class="footer-values-list">
+        <span style="color:#ef4435">Discovery</span>
+        <span style="color:#3498db">Innovation</span>
+        <span style="color:#2ecc71">Impact</span>
+        <span style="color:#e67e22">Teamwork</span>
+        <span style="color:#9b59b6">Inclusion</span>
+        <span style="color:#f1c40f">Fun</span>
+      </div>
     </div>
     <div class="footer-copyright">
       Copyright © {new Date().getFullYear()} Mountaineer Area RoboticS — FRC Team 2614. Built with Astro & Starlight.<br/>
@@ -109,10 +112,31 @@ import DefaultFooter from '@astrojs/starlight/components/Footer.astro';
   .footer-col a:hover {
     color: var(--sl-color-accent-high);
   }
+  .footer-values {
+    text-align: center;
+    margin-top: 2.5rem;
+  }
+  .footer-values-label {
+    color: var(--sl-color-text-muted);
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .footer-values-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px 14px;
+  }
+  .footer-values-list span {
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
   .footer-copyright {
     text-align: center;
     color: var(--sl-color-text-muted);
-    margin-top: 3rem;
+    margin-top: 1.5rem;
     font-size: 0.9rem;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     padding-top: 1rem;
