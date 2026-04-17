@@ -179,4 +179,13 @@ public class TeleopDriveCommand extends Command {
 
     swerveDrive.runVelocity(robotRelativeSpeeds);
   }
+
+  /**
+   * This command never finishes on its own — it is designed to be the SwerveDrive's default
+   * command, running continuously during teleop until interrupted by another command.
+   */
+  @Override
+  public boolean isFinished() {
+    return false;
+  }
 }

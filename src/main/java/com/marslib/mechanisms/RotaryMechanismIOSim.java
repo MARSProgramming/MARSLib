@@ -29,6 +29,7 @@ public class RotaryMechanismIOSim implements RotaryMechanismIO {
 
   private final DCMotor gearbox;
   private final double gearRatio;
+  private final MARSPhysicsWorld physicsWorld;
 
   private final ProfiledPIDController internalController;
 
@@ -52,6 +53,7 @@ public class RotaryMechanismIOSim implements RotaryMechanismIO {
       String mechanismName, double gearRatio, double jKgMetersSquared, double lengthMeters) {
     this.gearRatio = gearRatio;
     this.gearbox = DCMotor.getKrakenX60Foc(1);
+    this.physicsWorld = MARSPhysicsWorld.getInstance();
 
     // Anchor body (Static)
     anchorBody = new Body();
@@ -86,9 +88,9 @@ public class RotaryMechanismIOSim implements RotaryMechanismIO {
     armBody.getFixture(0).setFilter(new CategoryFilter(4, 4));
 
     // Register into the singleton Physics world
-    MARSPhysicsWorld.getInstance().getWorld().addBody(anchorBody);
-    MARSPhysicsWorld.getInstance().registerMechanismBody(mechanismName, armBody);
-    MARSPhysicsWorld.getInstance().getWorld().addJoint(joint);
+    physicsWorld.getWorld().addBody(anchorBody);
+    physicsWorld.registerMechanismBody(mechanismName, armBody);
+    physicsWorld.getWorld().addJoint(joint);
 
     // Internal profiled PID mimics the TalonFX Motion Magic controller in sim.
     // kP=5.0 provides stiff tracking; constraints model a typical FRC arm profile:
@@ -105,7 +107,7 @@ public class RotaryMechanismIOSim implements RotaryMechanismIO {
     if (closedLoop) {
       double pidVolts = internalController.calculate(currentAngleRad);
       appliedVolts = pidVolts + currentFeedforward;
-      double maxVoltage = Math.max(MARSPhysicsWorld.getInstance().getSimulatedVoltage(), 0.01);
+      double maxVoltage = Math.max(physicsWorld.getSimulatedVoltage(), 0.01);
       appliedVolts = Math.max(-maxVoltage, Math.min(maxVoltage, appliedVolts));
 
       // DIRECT POSITION INJECTION: dyn4j's applyTorque() fails to move constrained
@@ -132,7 +134,7 @@ public class RotaryMechanismIOSim implements RotaryMechanismIO {
 
     // Compute effective motor terminal voltage after current limiting
     double motorSpeedRadPerSec = currentVelocityRadPerSec * gearRatio;
-    double batteryVoltage = Math.max(MARSPhysicsWorld.getInstance().getSimulatedVoltage(), 0.01);
+    double batteryVoltage = Math.max(physicsWorld.getSimulatedVoltage(), 0.01);
 
     double effectiveVoltage =
         currentDrawAmps * gearbox.rOhms + motorSpeedRadPerSec / gearbox.KvRadPerSecPerVolt;
@@ -145,7 +147,7 @@ public class RotaryMechanismIOSim implements RotaryMechanismIO {
     double electricalPowerW = effectiveVoltage * currentDrawAmps;
     double supplyCurrentAmps = electricalPowerW / batteryVoltage;
 
-    MARSPhysicsWorld.getInstance().addFrameCurrentDrawAmps(supplyCurrentAmps);
+    physicsWorld.addFrameCurrentDrawAmps(supplyCurrentAmps);
 
     inputs.hasHardwareConnected = true;
     inputs.positionRad = currentAngleRad;
@@ -160,7 +162,7 @@ public class RotaryMechanismIOSim implements RotaryMechanismIO {
   @Override
   public void setVoltage(double volts) {
     closedLoop = false;
-    double maxVoltage = MARSPhysicsWorld.getInstance().getSimulatedVoltage();
+    double maxVoltage = physicsWorld.getSimulatedVoltage();
     appliedVolts = Math.max(-maxVoltage, Math.min(maxVoltage, volts));
   }
 

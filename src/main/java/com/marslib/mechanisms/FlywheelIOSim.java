@@ -21,6 +21,7 @@ public class FlywheelIOSim implements FlywheelIO {
   private final FlywheelSim sim;
   private final DCMotor gearbox;
   private final PIDController controller;
+  private final MARSPhysicsWorld physicsWorld;
 
   private double appliedVolts = 0.0;
   private double targetVelocityRadPerSec = 0.0;
@@ -40,6 +41,7 @@ public class FlywheelIOSim implements FlywheelIO {
             gearbox,
             gearing);
     this.controller = new PIDController(0.1, 0, 0); // basic simulated PID
+    this.physicsWorld = MARSPhysicsWorld.getInstance();
   }
 
   @Override
@@ -54,7 +56,7 @@ public class FlywheelIOSim implements FlywheelIO {
 
     // Compute effective motor terminal voltage after current limiting
     double statorCurrent = sim.getCurrentDrawAmps();
-    double batteryVoltage = Math.max(MARSPhysicsWorld.getInstance().getSimulatedVoltage(), 0.01);
+    double batteryVoltage = Math.max(physicsWorld.getSimulatedVoltage(), 0.01);
     double currentLimitAmps = 40.0;
     double clampedCurrent =
         Math.copySign(Math.min(Math.abs(statorCurrent), currentLimitAmps), statorCurrent);
@@ -72,7 +74,7 @@ public class FlywheelIOSim implements FlywheelIO {
     double electricalPowerW = effectiveVoltage * clampedCurrent;
     double supplyCurrentAmps = electricalPowerW / batteryVoltage;
 
-    MARSPhysicsWorld.getInstance().addFrameCurrentDrawAmps(supplyCurrentAmps);
+    physicsWorld.addFrameCurrentDrawAmps(supplyCurrentAmps);
 
     inputs.hasHardwareConnected = true;
     inputs.velocityRadPerSec = sim.getAngularVelocityRadPerSec();
@@ -96,7 +98,7 @@ public class FlywheelIOSim implements FlywheelIO {
     // to guarantee settling at tolerance regardless of tuning status, avoiding double-application.
     double idealFF = targetVelocityRadPerSec / gearbox.KvRadPerSecPerVolt;
 
-    double maxVoltage = Math.max(MARSPhysicsWorld.getInstance().getSimulatedVoltage(), 0.01);
+    double maxVoltage = Math.max(physicsWorld.getSimulatedVoltage(), 0.01);
     appliedVolts = Math.max(-maxVoltage, Math.min(maxVoltage, pidVolts + idealFF));
     sim.setInputVoltage(appliedVolts);
   }

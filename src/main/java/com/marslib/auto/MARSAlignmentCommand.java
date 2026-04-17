@@ -108,6 +108,9 @@ public class MARSAlignmentCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    swerveDrive.runVelocity(new ChassisSpeeds(0, 0, 0));
+    fieldRelativeCache.vxMetersPerSecond = 0.0;
+    fieldRelativeCache.vyMetersPerSecond = 0.0;
+    fieldRelativeCache.omegaRadiansPerSecond = 0.0;
+    swerveDrive.runVelocity(fieldRelativeCache);
   }
 }

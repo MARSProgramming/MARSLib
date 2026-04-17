@@ -117,18 +117,27 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
             driveCurrent, turnCurrent);
 
     inputs.hasHardwareConnected = refreshStatus.isOK();
-    inputs.turnVelocityRadPerSec =
-        Units.rotationsToRadians(turnVelocity.getValueAsDouble()) / config.turnGearRatio();
+
+    // NaN firewall — CAN bus glitches can return NaN from getValueAsDouble()
+    double rawTurnVel = turnVelocity.getValueAsDouble();
+    double rawDriveVel = driveVelocity.getValueAsDouble();
+    double safeTurnVel = Double.isFinite(rawTurnVel) ? rawTurnVel : 0.0;
+    double safeDriveVel = Double.isFinite(rawDriveVel) ? rawDriveVel : 0.0;
+
+    inputs.turnVelocityRadPerSec = Units.rotationsToRadians(safeTurnVel) / config.turnGearRatio();
     // Decouple the hardware rotor from the steering gear meshing
-    double uncoupledDriveMotorVelRots =
-        driveVelocity.getValueAsDouble()
-            + (turnVelocity.getValueAsDouble() * config.couplingRatio());
+    double uncoupledDriveMotorVelRots = safeDriveVel + (safeTurnVel * config.couplingRatio());
     inputs.driveVelocityRadPerSec =
         Units.rotationsToRadians(uncoupledDriveMotorVelRots) / config.driveGearRatio();
-    inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
-    inputs.turnAppliedVolts = turnAppliedVolts.getValueAsDouble();
-    inputs.driveCurrentAmps = driveCurrent.getValueAsDouble();
-    inputs.turnCurrentAmps = turnCurrent.getValueAsDouble();
+
+    double rawDriveVolts = driveAppliedVolts.getValueAsDouble();
+    double rawTurnVolts = turnAppliedVolts.getValueAsDouble();
+    double rawDriveCur = driveCurrent.getValueAsDouble();
+    double rawTurnCur = turnCurrent.getValueAsDouble();
+    inputs.driveAppliedVolts = Double.isFinite(rawDriveVolts) ? rawDriveVolts : 0.0;
+    inputs.turnAppliedVolts = Double.isFinite(rawTurnVolts) ? rawTurnVolts : 0.0;
+    inputs.driveCurrentAmps = Double.isFinite(rawDriveCur) ? rawDriveCur : 0.0;
+    inputs.turnCurrentAmps = Double.isFinite(rawTurnCur) ? rawTurnCur : 0.0;
 
     // Drain the high-frequency buffer (returns pre-allocated SyncData)
     PhoenixOdometryThread.SyncData data = odometryThread.getSyncData(odometryId);

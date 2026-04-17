@@ -149,12 +149,19 @@ public class LinearMechanismIOTalonFX implements LinearMechanismIO {
 
     double metersPerMotorRotation = (spoolDiameterMeters * Math.PI) / gearRatio;
 
-    inputs.positionMeters = position.getValueAsDouble() * metersPerMotorRotation;
-    inputs.velocityMetersPerSec = velocity.getValueAsDouble() * metersPerMotorRotation;
+    // NaN firewall — CAN bus glitches can return NaN from getValueAsDouble()
+    double rawPos = position.getValueAsDouble();
+    double rawVel = velocity.getValueAsDouble();
+    double rawSlope = closedLoopReferenceSlope.getValueAsDouble();
+    double rawVolts = appliedVolts.getValueAsDouble();
+    double rawCurrent = statorCurrent.getValueAsDouble();
+
+    inputs.positionMeters = (Double.isFinite(rawPos) ? rawPos : 0.0) * metersPerMotorRotation;
+    inputs.velocityMetersPerSec = (Double.isFinite(rawVel) ? rawVel : 0.0) * metersPerMotorRotation;
     inputs.targetVelocityMetersPerSec =
-        closedLoopReferenceSlope.getValueAsDouble() * metersPerMotorRotation;
-    inputs.appliedVolts = appliedVolts.getValueAsDouble();
-    currentAmpsCache[0] = statorCurrent.getValueAsDouble();
+        (Double.isFinite(rawSlope) ? rawSlope : 0.0) * metersPerMotorRotation;
+    inputs.appliedVolts = Double.isFinite(rawVolts) ? rawVolts : 0.0;
+    currentAmpsCache[0] = Double.isFinite(rawCurrent) ? rawCurrent : 0.0;
     inputs.currentAmps = currentAmpsCache;
 
     // Live Auto-Tuning Check

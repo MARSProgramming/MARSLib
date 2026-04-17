@@ -19,6 +19,9 @@ public class SwerveChassisPhysics {
   private final edu.wpi.first.math.geometry.Translation2d[] moduleLocations;
   private final edu.wpi.first.math.geometry.Transform2d[] moduleTransforms;
 
+  // Pre-allocated pose cache to avoid per-tick Pose2d allocation (D-02)
+  private Pose2d cachedPose = new Pose2d();
+
   private double currentSimPitch = 0.0;
   private double currentSimRoll = 0.0;
 
@@ -69,10 +72,12 @@ public class SwerveChassisPhysics {
   }
 
   public Pose2d getPose() {
-    return new Pose2d(
-        body.getTransform().getTranslationX(),
-        body.getTransform().getTranslationY(),
-        new Rotation2d(body.getTransform().getRotationAngle()));
+    cachedPose =
+        new Pose2d(
+            body.getTransform().getTranslationX(),
+            body.getTransform().getTranslationY(),
+            new Rotation2d(body.getTransform().getRotationAngle()));
+    return cachedPose;
   }
 
   public double getSimPitch() {

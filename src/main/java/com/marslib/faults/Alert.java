@@ -99,6 +99,9 @@ public class Alert {
   private static class SendableAlerts {
     private final List<Alert> alerts = new ArrayList<>();
 
+    /** Pre-allocated empty array to avoid repeated zero-length String[] allocations. */
+    private static final String[] EMPTY_STRINGS = new String[0];
+
     public SendableAlerts() {}
 
     public void updateAlert(Alert alert) {
@@ -132,9 +135,15 @@ public class Alert {
 
       // Use the group name in the log key so different alert groups don't overwrite each other
       String prefix = alerts.isEmpty() ? "Alerts" : alerts.get(0).group;
-      Logger.recordOutput(prefix + "/Info", infoStrings.toArray(new String[0]));
-      Logger.recordOutput(prefix + "/Warning", warningStrings.toArray(new String[0]));
-      Logger.recordOutput(prefix + "/Critical", criticalStrings.toArray(new String[0]));
+      Logger.recordOutput(
+          prefix + "/Info",
+          infoStrings.isEmpty() ? EMPTY_STRINGS : infoStrings.toArray(EMPTY_STRINGS));
+      Logger.recordOutput(
+          prefix + "/Warning",
+          warningStrings.isEmpty() ? EMPTY_STRINGS : warningStrings.toArray(EMPTY_STRINGS));
+      Logger.recordOutput(
+          prefix + "/Critical",
+          criticalStrings.isEmpty() ? EMPTY_STRINGS : criticalStrings.toArray(EMPTY_STRINGS));
     }
   }
 }

@@ -29,6 +29,7 @@ public class LinearMechanismIOSim implements LinearMechanismIO {
   private final DCMotor gearbox;
   private final double gearRatio;
   private final double spoolRadiusMeters;
+  private final MARSPhysicsWorld physicsWorld;
 
   private final ProfiledPIDController internalController;
 
@@ -54,6 +55,7 @@ public class LinearMechanismIOSim implements LinearMechanismIO {
     this.gearRatio = gearRatio;
     this.spoolRadiusMeters = spoolDiameterMeters / 2.0;
     this.gearbox = DCMotor.getKrakenX60Foc(1);
+    this.physicsWorld = MARSPhysicsWorld.getInstance();
 
     // Anchor body (Static base of elevator)
     anchorBody = new Body();
@@ -78,9 +80,9 @@ public class LinearMechanismIOSim implements LinearMechanismIO {
             anchorBody, carriageBody, new Vector2(1000.0, 1000.0), new Vector2(0.0, 1.0));
     joint.setCollisionAllowed(false);
 
-    MARSPhysicsWorld.getInstance().getWorld().addBody(anchorBody);
-    MARSPhysicsWorld.getInstance().registerMechanismBody(mechanismName, carriageBody);
-    MARSPhysicsWorld.getInstance().getWorld().addJoint(joint);
+    physicsWorld.getWorld().addBody(anchorBody);
+    physicsWorld.registerMechanismBody(mechanismName, carriageBody);
+    physicsWorld.getWorld().addJoint(joint);
 
     // Internal profiled PID mimics the TalonFX Motion Magic controller in sim.
     // kP=500.0 provides stiff tracking without ff; constraints model FRC elevator profile:
@@ -98,7 +100,7 @@ public class LinearMechanismIOSim implements LinearMechanismIO {
     if (closedLoop) {
       double pidVolts = internalController.calculate(currentPosMeters);
       appliedVolts = pidVolts + currentFeedforward;
-      double maxVoltage = Math.max(MARSPhysicsWorld.getInstance().getSimulatedVoltage(), 0.01);
+      double maxVoltage = Math.max(physicsWorld.getSimulatedVoltage(), 0.01);
       appliedVolts = Math.max(-maxVoltage, Math.min(maxVoltage, appliedVolts));
     }
 
@@ -117,7 +119,7 @@ public class LinearMechanismIOSim implements LinearMechanismIO {
 
     // Compute effective motor terminal voltage after current limiting
     // V_effective = I·R + ω/Kv (what the motor controller actually applies)
-    double batteryVoltage = Math.max(MARSPhysicsWorld.getInstance().getSimulatedVoltage(), 0.01);
+    double batteryVoltage = Math.max(physicsWorld.getSimulatedVoltage(), 0.01);
 
     double effectiveVoltage =
         currentDrawAmps * gearbox.rOhms + motorSpeedRadsPerSec / gearbox.KvRadPerSecPerVolt;
@@ -130,7 +132,7 @@ public class LinearMechanismIOSim implements LinearMechanismIO {
     double electricalPowerW = effectiveVoltage * currentDrawAmps;
     double supplyCurrentAmps = electricalPowerW / batteryVoltage;
 
-    MARSPhysicsWorld.getInstance().addFrameCurrentDrawAmps(supplyCurrentAmps);
+    physicsWorld.addFrameCurrentDrawAmps(supplyCurrentAmps);
 
     inputs.hasHardwareConnected = true;
     inputs.positionMeters = currentPosMeters;
@@ -149,7 +151,7 @@ public class LinearMechanismIOSim implements LinearMechanismIO {
   @Override
   public void setVoltage(double volts) {
     closedLoop = false;
-    double maxVoltage = MARSPhysicsWorld.getInstance().getSimulatedVoltage();
+    double maxVoltage = physicsWorld.getSimulatedVoltage();
     appliedVolts = Math.max(-maxVoltage, Math.min(maxVoltage, volts));
   }
 

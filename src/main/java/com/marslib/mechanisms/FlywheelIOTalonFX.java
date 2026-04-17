@@ -105,11 +105,16 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     inputs.hasHardwareConnected =
         BaseStatusSignal.refreshAll(velocitySignal, voltageSignal, statorCurrentSignal).isOK();
 
+    // NaN firewall — CAN bus glitches can return NaN from getValueAsDouble()
+    double rawVel = velocitySignal.getValueAsDouble();
+    double rawVolts = voltageSignal.getValueAsDouble();
+    double rawCurrent = statorCurrentSignal.getValueAsDouble();
+
     // CTRE returns rotations, convert to radians
-    inputs.velocityRadPerSec = velocitySignal.getValueAsDouble() * Math.PI * 2.0;
+    inputs.velocityRadPerSec = (Double.isFinite(rawVel) ? rawVel : 0.0) * Math.PI * 2.0;
     inputs.targetVelocityRadPerSec = targetVelocityRadPerSec;
-    inputs.appliedVolts = voltageSignal.getValueAsDouble();
-    currentAmpsCache[0] = statorCurrentSignal.getValueAsDouble();
+    inputs.appliedVolts = Double.isFinite(rawVolts) ? rawVolts : 0.0;
+    currentAmpsCache[0] = Double.isFinite(rawCurrent) ? rawCurrent : 0.0;
     inputs.currentAmps = currentAmpsCache;
   }
 

@@ -11,6 +11,7 @@ import com.marslib.simulation.MARSPhysicsWorld;
 /** Simulated implementation of the power and battery IO interface. */
 public class PowerIOSim implements PowerIO {
   private final PowerConfig config;
+  private final MARSPhysicsWorld physicsWorld;
 
   // Pre-allocated to avoid per-tick heap allocation
   private final double[] channelCurrentsCache = new double[24];
@@ -21,11 +22,12 @@ public class PowerIOSim implements PowerIO {
 
   public PowerIOSim(PowerConfig config) {
     this.config = config;
+    this.physicsWorld = MARSPhysicsWorld.getInstance();
   }
 
   @Override
   public void updateInputs(PowerIOInputs inputs) {
-    inputs.voltage = MARSPhysicsWorld.getInstance().getSimulatedVoltage();
+    inputs.voltage = physicsWorld.getSimulatedVoltage();
     inputs.totalCurrentAmps = 0.0;
     java.util.Arrays.fill(channelCurrentsCache, 0.0);
     inputs.channelCurrentsAmps = channelCurrentsCache;

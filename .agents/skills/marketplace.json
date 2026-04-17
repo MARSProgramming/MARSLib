@@ -121,6 +121,26 @@
     {
       "name": "marslib-web-accessibility",
       "source": "./marslib-web-accessibility"
+    },
+    {
+      "name": "marslib-cultural-legacy",
+      "source": "./marslib-cultural-legacy"
+    },
+    {
+      "name": "marslib-maplesim-mining",
+      "source": "./marslib-maplesim-mining"
+    },
+    {
+      "name": "marslib-mdx-formatting",
+      "source": "./marslib-mdx-formatting"
+    },
+    {
+      "name": "marslib-projectdoctor",
+      "source": "./marslib-projectdoctor"
+    },
+    {
+      "name": "marslib-threading",
+      "source": "./marslib-threading"
     }
   ]
 }

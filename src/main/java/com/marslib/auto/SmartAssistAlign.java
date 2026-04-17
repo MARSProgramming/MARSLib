@@ -86,7 +86,10 @@ public class SmartAssistAlign extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    swerveDrive.runVelocity(new ChassisSpeeds());
+    robotSpeedsCache.vxMetersPerSecond = 0.0;
+    robotSpeedsCache.vyMetersPerSecond = 0.0;
+    robotSpeedsCache.omegaRadiansPerSecond = 0.0;
+    swerveDrive.runVelocity(robotSpeedsCache);
   }
 
   @Override

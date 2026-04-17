@@ -52,10 +52,10 @@
                       "color": "#FFFF00"
                     }
                   }
-                ]
+                ],
+                "game": "FRC:2026 Field"
               },
               "controllerUUID": "gbswwl14zk3grvj0r5yz6mwpkvvyyals",
-              "game": "FRC:2026 Field",
               "renderer": null,
               "controlsHeight": 0
             },

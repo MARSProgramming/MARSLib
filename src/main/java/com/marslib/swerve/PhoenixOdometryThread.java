@@ -268,8 +268,11 @@ public class PhoenixOdometryThread extends Thread {
         // For each module (2 signals per module)
         for (int i = 0; i < drivePositionQueues.size(); i++) {
           // Drive signals are always added sequentially 0,1 then 2,3 etc.
-          double drivePos = currentSignals[i * 2].getValueAsDouble();
-          double turnPos = currentSignals[i * 2 + 1].getValueAsDouble();
+          double rawDrivePos = currentSignals[i * 2].getValueAsDouble();
+          double rawTurnPos = currentSignals[i * 2 + 1].getValueAsDouble();
+          // NaN firewall — CAN bus glitches can return NaN from getValueAsDouble()
+          double drivePos = Double.isFinite(rawDrivePos) ? rawDrivePos : 0.0;
+          double turnPos = Double.isFinite(rawTurnPos) ? rawTurnPos : 0.0;
 
           if (drivePositionQueues.get(i).remainingCapacity() > 0) {
             drivePositionQueues.get(i).offer(drivePos);
@@ -280,7 +283,8 @@ public class PhoenixOdometryThread extends Thread {
 
         // Process gyro if registered
         if (gyroSignalIndex != -1 && gyroSignalIndex < currentSignals.length) {
-          double yawPos = currentSignals[gyroSignalIndex].getValueAsDouble();
+          double rawYaw = currentSignals[gyroSignalIndex].getValueAsDouble();
+          double yawPos = Double.isFinite(rawYaw) ? rawYaw : 0.0;
           if (gyroYawQueue.remainingCapacity() > 0) {
             gyroYawQueue.offer(yawPos);
           }
