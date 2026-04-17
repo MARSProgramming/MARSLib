@@ -1,0 +1,56 @@
+---
+import type { Props } from '@astrojs/starlight/props';
+import { Icon } from '@astrojs/starlight/components';
+
+const { id } = Astro.props;
+
+// Mapping between doc folders and keystatic collections
+const folderToCollection: Record<string, string> = {
+  'getting-started': 'gettingStarted',
+  'framework-architecture': 'frameworkArchitecture',
+  'subsystems': 'subsystems',
+  'advanced': 'advanced',
+  'operations': 'operations',
+  'troubleshooting': 'troubleshooting',
+  'interactive': 'interactive',
+  'visual-diagrams': 'visualDiagrams',
+  'reference': 'reference',
+  'contributing': 'contributing',
+};
+
+// Calculate Keystatic edit URL
+let keystaticUrl = '';
+if (id) {
+  const parts = id.split('/');
+  
+  if (parts.length === 1) {
+    // Root level files belong to 'pages' collection
+    const slug = parts[0].replace(/\.mdx$/, '').replace(/\.md$/, '');
+    keystaticUrl = `/keystatic/branch/master/collection/pages/item/${slug}`;
+  } else {
+    const folder = parts[0];
+    const collection = folderToCollection[folder];
+    
+    if (collection) {
+      // Handle potential nested folders in collections like `interactive`
+      const rawSlug = parts.slice(1).join('/');
+      const slug = rawSlug.replace(/\.mdx$/, '').replace(/\.md$/, '');
+      keystaticUrl = `/keystatic/branch/master/collection/${collection}/item/${slug}`;
+    }
+  }
+}
+---
+
+{
+  keystaticUrl ? (
+    <a href={keystaticUrl} class="sl-flex keystatic-edit-link" style="text-decoration: none; color: var(--sl-color-text-accent); font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem;">
+      <Icon name="pencil" size="1.2em" />
+      Edit in Keystatic CMS
+    </a>
+  ) : Astro.props.editUrl && (
+    <a href={Astro.props.editUrl} class="sl-flex keystatic-edit-link" style="text-decoration: none; color: var(--sl-color-text-accent); font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem;">
+      <Icon name="pencil" size="1.2em" />
+      Edit this page
+    </a>
+  )
+}

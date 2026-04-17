@@ -69,6 +69,9 @@ export default defineConfig({
 				src: './src/assets/mars-logo.png',
 			},
 			favicon: '/img/mars-logo.png',
+			editLink: {
+				baseUrl: 'https://github.com/MARSProgramming/MARSLib/edit/master/website/',
+			},
 			social: [
 				{ icon: 'github', label: 'GitHub', href: 'https://github.com/MARSProgramming/MARSLib' },
 				{ icon: 'comment-alt', label: 'Community', href: 'https://github.com/MARSProgramming/MARSLib/discussions' }
@@ -136,6 +139,7 @@ export default defineConfig({
 				Footer: './src/components/Footer.astro',
 				SiteTitle: './src/components/SiteTitle.astro',
 				PageTitle: './src/components/PageTitle.astro',
+				EditLink: './src/components/EditLink.astro',
 			},
 		}),
 		react(),
