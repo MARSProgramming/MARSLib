@@ -1,0 +1,31 @@
+---
+title: "Teamwork & Hardware Abstraction"
+description: "How MARSLib's architecture empowers programmers of all experience levels to collaborate safely and efficiently."
+sidebar:
+  order: 6
+---
+
+At **MARS 2614**, we believe that **"The robots are the vehicle; the students are the cargo."** Writing code isn't just about deploying a highly competitive FRC robot—it is primarily an avenue for education, **Teamwork**, and **Inclusion**. 
+
+However, FRC codebases can quickly become daunting. If a robot is just one massive, monolithic block of code, newer students may feel intimidated or risk breaking the entire robot with a single typo. This can slow down the entire workflow and inadvertently cause veteran programmers to act as gatekeepers.
+
+MARSLib solves this cultural issue mechanically through **[Hardware Abstraction](/framework-architecture/io-layer/)** (the IO Layer pattern). By strictly separating hardware interaction from logical control, we structurally enforce better teamwork.
+
+## Parallel Development
+In a traditional FRC codebase, nobody can test the shooter or drive base code until the electrical and mechanical subteams finish building the physical robot. 
+
+With MARSLib's abstraction, development happens in parallel:
+- **Student A (Beginner):** Can write the `FlywheelIOSim` class, learning how basic physics models and Java math work.
+- **Student B (Intermediate):** Can write the `FlywheelIOTalonFX` implementation, focusing entirely on learning the hardware API (CTRE or REV) and CAN IDs.
+- **Student C (Advanced):** Can write the complex PID or Feedforward control logic within `FlywheelSubsystem`—testing their tuning entirely via simulation logic.
+
+Nobody is blocked. Multiple students are collaborating on the same subsystem simultaneously. By the time the physical robot is handed to the software team, all three components have already been written, tested, and verified independently.
+
+## Safe Contributions for All Experience Levels
+Because the abstraction layer acts as a strict boundary, it creates a safe "sandbox" for developers to learn and experiment:
+
+1. **Focused Scopes:** A junior programmer tasked with adding a new motor to the intake doesn't have to understand how the entire robot's 50Hz odometry loop operates. They only need to safely edit `IntakeIO.java`.
+2. **"No Robot Left Behind":** True to Phil Tucker's ethos of maximizing accessibility, students do not have to fight for time on the singular, real robot. Because the physical hardware is abstracted away, 10 different students can be testing 10 different subsystem mechanisms simultaneously on their own laptops via `dyn4j` physics simulation.
+3. **Graceful Mentorship:** Veteran programmers can architecture the `IO` interfaces and leave the implementation details to newer students. This effectively creates a "contract" of work that safely guides learning without risking the master codebase's integrity.
+
+By utilizing hardware abstraction, MARSLib ensures that everyone—regardless of experience level—can make positive, meaningful contributions to the team and the competition robot.

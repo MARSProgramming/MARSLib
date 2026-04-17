@@ -47,7 +47,7 @@ export const HomeCoreValues = () => {
     { title: 'Discovery', color: '#ef4435', href: '/contributing/core-values/' },
     { title: 'Innovation', color: '#3498db', href: '/subsystems/simulation/' },
     { title: 'Impact', color: '#2ecc71', href: '/contributing/' },
-    { title: 'Teamwork', color: '#e67e22', href: '/framework-architecture/architecture/' },
+    { title: 'Teamwork', color: '#e67e22', href: '/framework-architecture/teamwork-abstraction/' },
     { title: 'Inclusion', color: '#9b59b6', href: '/contributing/accessibility/' },
     { title: 'Fun', color: '#f1c40f', href: '/subsystems/swerve/' },
   ];
