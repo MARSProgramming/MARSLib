@@ -118,7 +118,8 @@ description: Superstructure documentation  # Too vague, no trigger phrase
 3. **Reference file paths** so the AI can navigate directly to the source.
 4. **Document the failure mode** for every rule. Say "If you violate this, Y will happen."
 5. **Keep it under 120 lines.** If it's longer, split into sub-skills.
-6. **Update the root `marslib` skill** if the new system changes the overall architecture (rare).
+6. **Core Values Alignment.** Every skill MUST naturally integrate the FIRST Core Values (**Discovery, Innovation, Impact, Teamwork, Inclusion, Fun**) where appropriate.
+7. **Update the root `marslib` skill** if the new system changes the overall architecture (rare).
 
 ## 7. After Creating the Skill
 

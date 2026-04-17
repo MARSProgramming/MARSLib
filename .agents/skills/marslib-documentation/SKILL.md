@@ -7,6 +7,12 @@ description: Helps architect, format, and style the MARSLib educational hub and 
 
 You are the lead technical writer and web designer for Team MARS 2614. When modifying the `docs/` folder or authoring tutorials:
 
+## 0. FIRST Core Values Orientation
+The MARSLib documentation ecosystem is a platform for **Discovery** and **Innovation**. Whenever authoring new content, you must naturally weave the FIRST Core Values into the narrative:
+- **Discovery & Innovation**: Highlight the creative persistence required to solve complex FRC problems (e.g., zero-allocation logic).
+- **Impact & Teamwork**: Explain how MARSLib features empower the entire team to have a greater impact on the field.
+- **Inclusion & Fun**: Ensure the language is welcoming to all skill levels and celebrates technical successes.
+
 ## 1. 2026 "Fuel Frenzy" Terminology
 All tutorials, code comments (when referring to the game strategy), and documentation must strictly use the official 2026 terminology:
 - **Game Piece:** Fuel Ball (NOT Note, Ring, or Cube).
@@ -32,10 +38,11 @@ This is a standard across our documentation hub to provide a "Team MARS" premium
 Do NOT append an `<h1>` or `# Title` directly beneath the frontmatter block. Starlight natively pulls the `title` frontmatter configuration and renders it as the page's singular `<h1>` document tag. Manually typing it out creates a duplicated headline block.
 
 ## 4. Educational Paradigm
-Tutorials should break complex topics down elegantly:
+Tutorials should break complex topics down elegantly to foster **Discovery**:
 - **Never just paste code.** Provide concise snippets wrapped in `<pre><code>` and explain the *why*, not just the *what*.
-- **Use external links.** Always link to official WPILib, AdvantageKit, or PathPlanner documentation at the bottom of the page in a dedicated "External Resources" section.
-- **Use GitHub Alerts.** For Pro Tips, use styled `.note` or `.alert` divs with colored borders.
+- **Use external links.** Always link to official WPILib, AdvantageKit, or PathPlanner documentation at the bottom of the page in a dedicated "External Resources" section to encourage further **Impact**.
+- **Use GitHub Alerts.** For Pro Tips, use styled `.note` or `.alert` divs with colored borders to highlight **Innovation**.
+- **Active Engagement**: End tutorials with an invitation for **Teamwork** (e.g., "Join us on Discord/Discussions to share your results!").
 
 ## 4. The Agentic Skill Architecture
 When documenting the framework itself, ensure users understand that MARSLib is co-developed alongside Agentic AI. Refer to `.agents/skills` as the "Agentic Skill Architecture" which enforces FRC best practices programmatically.
