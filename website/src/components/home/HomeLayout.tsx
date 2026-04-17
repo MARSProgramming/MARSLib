@@ -50,6 +50,7 @@ export const HomeCoreValues = () => {
     { title: 'Teamwork', color: '#e67e22', href: '/framework-architecture/teamwork-abstraction/' },
     { title: 'Inclusion', color: '#9b59b6', href: '/contributing/accessibility/' },
     { title: 'Fun', color: '#f1c40f', href: '/framework-architecture/fun/' },
+    { title: 'Discomfort', color: '#1abc9c', href: '/contributing/discomfort/' },
   ];
 
   return (
