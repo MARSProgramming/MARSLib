@@ -16,6 +16,7 @@ The MARSLib documentation ecosystem is a platform for **Discovery** and **Innova
 ## 0.1 Branding & Naming Compliance
 As a registered team, we must respect the official **_FIRST_®** branding guidelines. Whenever you mention the organization or the competition:
 - **Always** write it as `_FIRST_®` (italics, all caps, registered trademark).
+- **Technical Nuance**: If passing the name into a component prop (like `title`) that does not automatically parse Markdown, use JSX `<i>FIRST</i>®` to ensure the italics render correctly on the live site.
 - Refer to the project's [BRANDING.md](file:///c:/Users/david/dev/robotics/frc/MARSLib/BRANDING.md) for full lockup and logo guidelines.
 - Failure to adhere to these standards is a violation of the framework's "Rule 0".
 
