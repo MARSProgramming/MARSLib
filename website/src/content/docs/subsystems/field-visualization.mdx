@@ -14,26 +14,26 @@ MARSLib's interactive 3D field visualizer helps you understand field layouts, Ap
 ## Features
 
 ### 🏟️ Official Field Dimensions
-- **2024 Crescendo**: 54' × 27' field with source and amp zones
-- **2023 Charged Up**: Previous year's field layout
-- **2022 Rapid React**: Historical field layouts
+- **2024 Crescendo**: 54' × 27' field with source and amp zones.
+- **2023 Charged Up**: Previous year's field layout.
+- **2022 Rapid React**: Historical field layouts.
 
 ### 🤖 Robot Visualization
-- Accurate swerve drive robot model
-- Real-time position updates
-- Heading and orientation display
-- Module position indicators
+- Accurate swerve drive robot model.
+- Real-time position updates.
+- Heading and orientation display.
+- Module position indicators.
 
 ### 📍 AprilTag Locations
-- Official tag positions for current game
-- Interactive 3D tag visualization
-- Pose reference for vision testing
+- Official tag positions for current game.
+- Interactive 3D tag visualization.
+- Pose reference for vision testing.
 
 ### 🎮 Interactive Controls
-- **Mouse**: Rotate field view
-- **Scroll**: Zoom in/out
-- **Right-click**: Pan view
-- **Responsive**: Works on all screen sizes
+- **Mouse**: Rotate field view.
+- **Scroll**: Zoom in/out.
+- **Right-click**: Pan view.
+- **Responsive**: Works on all screen sizes.
 
 ## Usage Examples
 
@@ -100,12 +100,12 @@ flowchart TD
 ### AprilTag Positions
 
 **Red Alliance (Tags 1-6):**
-- Tags 1-4: Along red alliance wall
-- Tags 5-6: On source and amp zones
+- Tags 1-4: Along red alliance wall.
+- Tags 5-6: On source and amp zones.
 
 **Blue Alliance (Tags 7-12):**
-- Tags 7-10: Along blue alliance wall
-- Tags 11-12: On source and amp zones
+- Tags 7-10: Along blue alliance wall.
+- Tags 11-12: On source and amp zones.
 
 ## Integration with Robot Code
 
@@ -154,7 +154,7 @@ console.log(pieces); // Array of game piece positions
 - **X-axis**: Length of field (0 to 16.5m)
 - **Y-axis**: Width of field (0 to 8.2m)
 - **Z-axis**: Height (0 = field surface)
-- **Heading**: Radians, 0 = facing +X direction
+- **Heading**: Radians, 0 = facing +X direction.
 
 ### Position Validation
 ```typescript
@@ -166,14 +166,14 @@ console.log(isValid); // true - center of field is valid
 ## Performance Considerations
 
 ### Optimization Tips
-- **Limit game pieces**: Show 10-20 pieces for best performance
-- **Disable robot**: Set `showRobot={false}` when not needed
-- **Field-only**: Use minimal props for field-only visualization
+- **Limit game pieces**: Show 10-20 pieces for best performance.
+- **Disable robot**: Set `showRobot={false}` when not needed.
+- **Field-only**: Use minimal props for field-only visualization.
 
 ### Performance Targets
-- **Rendering**: &lt;50ms per frame
-- **Memory usage**: &lt;50MB for full visualization
-- **Load time**: &lt;1 second for initial render
+- **Rendering**: &lt;50ms per frame.
+- **Memory usage**: &lt;50MB for full visualization.
+- **Load time**: &lt;1 second for initial render.
 
 ## Common Use Cases
 
@@ -260,9 +260,9 @@ Pose2d defenderPos = new Pose2d(8.0, 3.0, Rotation2d.fromDegrees(90));
 
 ## 📖 Further Reading
 
-- [Vision Systems](/subsystems/vision) - AprilTag detection and localization
-- [Autonomous Pathing](/framework-architecture/pathfinding) - Path planning and execution
-- [Simulation Best Practices](/advanced/simulation-best-practices) - Physics simulation techniques
-- [AdvantageScope](https://scopes.rocketjourney.com/) - Telemetry visualization tool
+- [Vision Systems](/subsystems/vision) - AprilTag detection and localization.
+- [Autonomous Pathing](/framework-structure/pathfinding) - Path planning and execution.
+- [Simulation Best Practices](/advanced/simulation-best-practices) - Physics simulation techniques.
+- [AdvantageScope](https://scopes.rocketjourney.com/) - Telemetry visualization tool.
 
 **Ready to visualize?** Use the field visualizer to plan your autonomous routines!

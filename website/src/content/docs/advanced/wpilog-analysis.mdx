@@ -7,7 +7,7 @@ sidebar:
 
 
 
-AdvantageKit WPILog files contain comprehensive robot telemetry data. This guide shows you how to analyze these logs to identify performance issues, debug problems, and optimize your robot code.
+AdvantageKit WPILog files contain complete robot telemetry data. This guide shows you how to analyze these logs to identify performance issues, debug problems, and optimize your robot code.
 
 ## Understanding WPILog Files
 
@@ -47,8 +47,8 @@ public void periodic() {
 
 **Accessing Logs:**
 1. **From Robot**: Connect via USB, copy `/home/lvuser/logs/*.wpilog`
-2. **From AdvantageScope**: File → Export Log → Save as .wpilog
-3. **From Simulation**: Logs saved in `logs/` directory
+2. **From AdvantageScope**: File → Export Log → Save as .wpilog.
+3. **From Simulation**: Logs saved in `logs/` directory.
 
 ### Quick Analysis Workflow
 ```typescript
@@ -120,9 +120,9 @@ console.log(`CPU spikes detected: ${spikes.length} times`);
 ```
 
 **CPU Optimization Targets:**
-- **Normal Operation**: &lt; 50% CPU usage
-- **Heavy Load**: &lt; 80% CPU usage
-- **Critical Spikes**: &lt; 95% CPU usage
+- **Normal Operation**: &lt; 50% CPU usage.
+- **Heavy Load**: &lt; 80% CPU usage.
+- **Critical Spikes**: &lt; 95% CPU usage.
 
 ### Memory Analysis
 
@@ -144,9 +144,9 @@ if (memoryGrowth > 10) {
 ```
 
 **Memory Targets:**
-- **Total Memory**: &lt; 200MB for robot code
-- **Growth Rate**: &lt; 1MB per minute
-- **Per-Iteration**: &lt; 100 bytes per periodic() call
+- **Total Memory**: &lt; 200MB for robot code.
+- **Growth Rate**: &lt; 1MB per minute.
+- **Per-Iteration**: &lt; 100 bytes per periodic() call.
 
 ## Bottleneck Identification
 
@@ -169,17 +169,17 @@ bottlenecks.forEach(b => {
 
 **Common Bottlenecks:**
 
-1. **Excessive Logging**
-   - **Symptom**: High loop time, many "Logger" entries
-   - **Solution**: Reduce logging frequency, log only changed values
+1. **Excessive Logging**.
+   - **Symptom**: High loop time, many "Logger" entries.
+   - **Solution**: Reduce logging frequency, log only changed values.
 
-2. **Expensive Calculations**
-   - **Symptom**: Spikes in loop time for specific subsystem
-   - **Solution**: Move calculations to background thread
+2. **Expensive Calculations**.
+   - **Symptom**: Spikes in loop time for specific subsystem.
+   - **Solution**: Move calculations to background thread.
 
-3. **Memory Allocations**
-   - **Symptom**: Memory growth, high GC overhead
-   - **Solution**: Pre-allocate objects, reuse instances
+3. **Memory Allocations**.
+   - **Symptom**: Memory growth, high GC overhead.
+   - **Solution**: Pre-allocate objects, reuse instances.
 
 ### Real-World Example
 
@@ -286,8 +286,8 @@ spikes.forEach(spike => {
 
 **Solutions:**
 - Move expensive operations out of periodic()
-- Use object pooling to reduce allocations
-- Implement caching for repeated calculations
+- Use object pooling to reduce allocations.
+- Implement caching for repeated calculations.
 
 ### Issue: Memory Growth Over Time
 
@@ -312,9 +312,9 @@ if (growthRate > 5) {
 ```
 
 **Solutions:**
-- Eliminate object allocations in periodic()
-- Clear unused collections
-- Use primitive types instead of boxed types
+- remove object allocations in periodic()
+- Clear unused collections.
+- Use primitive types instead of boxed types.
 
 ### Issue: CPU Usage Too High
 
@@ -338,9 +338,9 @@ subsystems.forEach(subsystem => {
 ```
 
 **Solutions:**
-- Reduce computation frequency
-- Optimize algorithms
-- Use background threads for heavy processing
+- Reduce computation frequency.
+- Optimize algorithms.
+- Use background threads for heavy processing.
 
 ## Integration with Development Workflow
 
@@ -383,9 +383,9 @@ analyzeLogFile(process.argv[2]);
 
 ## 📖 Further Reading
 
-- [Performance Tuning Guide](/advanced/performance-tuning) - Optimization techniques
-- [AdvantageScope Documentation](https://scopes.rocketjourney.com/) - Visualization tool
-- [AdvantageKit Documentation](https://docs.advantagekit.org/) - Logging framework
-- [Testing Guide](/contributing/testing-guide) - Digital Twin testing approach
+- [Performance Tuning Guide](/advanced/performance-tuning) - Optimization techniques.
+- [AdvantageScope Documentation](https://scopes.rocketjourney.com/) - Visualization tool.
+- [AdvantageKit Documentation](https://docs.advantagekit.org/) - Logging framework.
+- [Testing Guide](/contributing/testing-guide) - Digital Twin testing approach.
 
 **Ready to analyze?** Record a WPILog and start optimizing your robot's performance!

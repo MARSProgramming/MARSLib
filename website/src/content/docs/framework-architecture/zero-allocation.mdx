@@ -15,8 +15,8 @@ Zero-Allocation programming is a prime example of **Innovation** meeting elite p
 **In simple terms**: Zero-allocation means reusing objects instead of creating new ones.
 
 **Think of it like this**: 
-- ❌ **With allocation**: Every time you need a cup, you buy a new one
-- ✅ **Zero-allocation**: You wash and reuse the same cup
+- ❌ **With allocation**: Every time you need a cup, you buy a new one.
+- ✅ **Zero-allocation**: You wash and reuse the same cup.
 
 **Why it matters**: Creating objects takes time and memory. Your robot needs to respond quickly - every 20 milliseconds! Creating too many objects makes your robot slow and stuttery.
 
@@ -27,14 +27,14 @@ Zero-Allocation programming is a prime example of **Innovation** meeting elite p
 **Java's Garbage Collector (GC)** is like a trash service that cleans up objects you no longer need.
 
 **The problem**: 
-- When GC runs, it pauses everything else
-- Your robot stops responding during GC
-- This causes missed shots, crashes, and inconsistent performance
+- When GC runs, it pauses everything else.
+- Your robot stops responding during GC.
+- This causes missed shots, crashes, and inconsistent performance.
 
 **Real impact**:
-- Your auto routine might miss the target
-- Robot stutters during matches
-- Unpredictable behavior at critical moments
+- Your auto routine might miss the target.
+- Robot stutters during matches.
+- Unpredictable behavior at critical moments.
 
 ---
 
@@ -45,9 +45,9 @@ Zero-Allocation programming is a prime example of **Innovation** meeting elite p
 - Odometry loop: Every 4ms (250 times per second)
 
 **If GC runs**:
-- Your 20ms loop might take 40ms or longer
-- Robot's position becomes inaccurate
-- Robot might crash or miss critical shots
+- Your 20ms loop might take 40ms or longer.
+- Robot's position becomes inaccurate.
+- Robot might crash or miss critical shots.
 
 ---
 
@@ -140,8 +140,8 @@ statusBuilder.append("Mode: ").append(mode);
 <ZeroAllocationSim client:only="react" />
 
 **What to notice**:
-- Click "ALLOCATE OBJECT" and watch loop time spike
-- Watch GC pause everything when trash piles up
+- Click "ALLOCATE OBJECT" and watch loop time spike.
+- Watch GC pause everything when trash piles up.
 - Compare to "REUSE OBJECT" - smooth and fast!
 
 ---
@@ -174,8 +174,8 @@ public void periodic() {
 ```
 
 **Why this works**:
-- Inputs objects created once at startup
-- You just update the values
+- Inputs objects created once at startup.
+- You just update the values.
 - Zero trash, zero GC, maximum speed!
 
 ---
@@ -183,16 +183,16 @@ public void periodic() {
 ## Why MARSLib Uses This Pattern
 
 **Benefits you get**:
-1. **Faster loop times**: Your code runs quicker
-2. **Smoother operation**: No GC pauses
-3. **Reliable auto**: Auto routines work every time
-4. **Better performance**: Can run more complex code
+1. **Faster loop times**: Your code runs quicker.
+2. **Smoother operation**: No GC pauses.
+3. **Reliable auto**: Auto routines work every time.
+4. **Better performance**: Can run more complex code.
 
 **Real-world results**:
-- Loop times: 5ms instead of 15ms
-- No stuttering or lag
-- Auto accuracy improves dramatically
-- Robot responds predictably
+- Loop times: 5ms instead of 15ms.
+- No stuttering or lag.
+- Auto accuracy improves dramatically.
+- Robot responds predictably.
 
 ---
 
@@ -286,17 +286,17 @@ Look for GC pauses in the output.
 ## Quick Reference Card
 
 **In loops (periodic, execute, etc.)**:
-- ✅ Reuse objects
-- ✅ Update values instead of creating new
-- ✅ Use Logger for output
-- ❌ No `new` keywords
+- ✅ Reuse objects.
+- ✅ Update values instead of creating new.
+- ✅ Use Logger for output.
+- ❌ No `new` keywords.
 - ❌ No lambdas
-- ❌ No string building
+- ❌ No string building.
 
 **Outside loops**:
-- ✅ Create objects once in constructor
-- ✅ Use static final constants
-- ✅ Pre-allocate collections
+- ✅ Create objects once in constructor.
+- ✅ Use static final constants.
+- ✅ Pre-allocate collections.
 
 ---
 
@@ -319,10 +319,10 @@ public class Drivetrain {
 ```
 
 **Problems**: 
-- Creates 3 objects every 20ms
-- 150 objects per second
-- Causes GC pauses
-- Loop time: 12-15ms
+- Creates 3 objects every 20ms.
+- 150 objects per second.
+- Causes GC pauses.
+- Loop time: 12-15ms.
 
 ### After: Fast Code
 
@@ -349,9 +349,9 @@ public class Drivetrain {
 ```
 
 **Benefits**:
-- Zero objects created
+- Zero objects created.
 - No GC pauses
-- Loop time: 3-5ms
+- Loop time: 3-5ms.
 - Robot runs smoothly!
 
 ---
@@ -360,20 +360,20 @@ public class Drivetrain {
 
 **Before competition**:
 1. Profile your code (check loop times)
-2. Look for allocations in loops
-3. Fix any issues you find
+2. Look for allocations in loops.
+3. Fix any issues you find.
 4. Test under load (run for 5+ minutes)
 
 **During competition**:
-- Monitor loop times on dashboard
-- Watch for performance warnings
-- Keep code clean and fast
+- Monitor loop times on dashboard.
+- Watch for performance warnings.
+- Keep code clean and fast.
 
 **Debugging slow code**:
-1. Add timing prints to find slow code
-2. Check for `new` keywords
-3. Look for string building
-4. Profile each subsystem
+1. Add timing prints to find slow code.
+2. Check for `new` keywords.
+3. Look for string building.
+4. Profile each subsystem.
 
 ---
 
@@ -425,25 +425,25 @@ public void periodic() {
 
 **Key points to remember**:
 
-1. **Zero-allocation** = Reuse objects, don't create new ones
-2. **GC pauses** make your robot slow and unpredictable
-3. **MARSLib IO inputs** handle this for you automatically
-4. **Avoid `new`, lambdas, and string building in loops**
-5. **Monitor loop times** to catch performance issues
+1. **Zero-allocation** = Reuse objects, don't create new ones.
+2. **GC pauses** make your robot slow and unpredictable.
+3. **MARSLib IO inputs** handle this for you automatically.
+4. **Avoid `new`, lambdas, and string building in loops**.
+5. **Monitor loop times** to catch performance issues.
 
 **Your robot will**:
-- Run faster and smoother
-- Respond more predictably
-- Perform better in autonomous
-- Be more reliable in competition
+- Run faster and smoother.
+- Respond more predictably.
+- Perform better in autonomous.
+- Be more reliable in competition.
 
 ---
 
 ## Next Steps
 
-- [Performance Guide](/performance/optimization) - More optimization tips
-- [Code Best Practices](/contributing/coding-standards) - How to write fast code
-- [Testing Guide](/contributing/testing-guide) - Test your code performance
+- [Performance Guide](/performance/optimization) - More optimization tips.
+- [Code Best Practices](/contributing/coding-standards) - How to write fast code.
+- [Testing Guide](/contributing/testing-guide) - Test your code performance.
 
 ---
 

@@ -12,11 +12,11 @@ This guide helps you migrate from pure CTRE (Cross The Road Electronics) code to
 ## Why MARSLib with CTRE Hardware?
 
 **Best of Both Worlds:**
-- ✅ **Keep CTRE Hardware** - Talon FX, Pigeon2, CANcoder
-- ✅ **Keep CTRE Features** - Motion Magic, PID, closed-loop control
-- ✅ **Add MARSLib Benefits** - IO abstraction, simulation, zero-allocation
-- ✅ **Better Testing** - Test without hardware
-- ✅ **Competition Proven** - Battle-tested since 2020
+- ✅ **Keep CTRE Hardware** - Talon FX, Pigeon2, CANcoder.
+- ✅ **Keep CTRE Features** - Motion Magic, PID, closed-loop control.
+- ✅ **Add MARSLib Benefits** - IO abstraction, simulation, zero-allocation.
+- ✅ **Better Testing** - Test without hardware.
+- ✅ **Competition Proven** - Battle-tested since 2020.
 
 ## CTRE Hardware Support
 
@@ -26,17 +26,17 @@ This guide helps you migrate from pure CTRE (Cross The Road Electronics) code to
 - ✅ Victor SPX
 - ✅ Pigeon2 IMU
 - ✅ CANcoder
-- ✅ CANdle LED controller
+- ✅ CANdle LED controller.
 
 **Advanced Features Supported:**
-- ✅ Motion Magic
-- ✅ Motion Profile
+- ✅ Motion Magic.
+- ✅ Motion Profile.
 - ✅ PID (Position & Velocity)
 - ✅ Feedforward
-- ✅ Current limiting
-- ✅ Voltage compensation
-- ✅ Hardware limits
-- ✅ Remote sensor fusion
+- ✅ Current limiting.
+- ✅ Voltage compensation.
+- ✅ Hardware limits.
+- ✅ Remote sensor fusion.
 
 ## Key Differences
 
@@ -75,23 +75,23 @@ double velocity = inputs.velocityRadPerSec;
 ### Phase 1: Keep CTRE Hardware (Recommended)
 
 **Benefits:**
-- No hardware changes
-- Keep CTRE's advanced features
-- Gradual migration
+- No hardware changes.
+- Keep CTRE's advanced features.
+- Gradual migration.
 - Lower risk
 
 **Approach:**
-1. Add MARSLib IO abstraction
-2. Keep CTRE motor controllers
-3. Use MARSLib patterns
-4. Add simulation support
+1. Add MARSLib IO abstraction.
+2. Keep CTRE motor controllers.
+3. Use MARSLib patterns.
+4. Add simulation support.
 
 ### Phase 2: Mix CTRE + Other Hardware
 
 **Common Mix:**
-- CTRE: Drive motors, Pigeon2
+- CTRE: Drive motors, Pigeon2.
 - REV: Mechanisms (less expensive)
-- Custom: Sensors, cameras
+- Custom: Sensors, cameras.
 
 **MARSLib Makes This Easy:**
 ```java
@@ -471,29 +471,29 @@ motorIO.configureStatusFrames(
 ## Migration Checklist
 
 ### Hardware
-- [ ] Inventory CTRE hardware
-- [ ] Verify CAN IDs
-- [ ] Check firmware versions
-- [ ] Document existing configurations
+- [ ] Inventory CTRE hardware.
+- [ ] Verify CAN IDs.
+- [ ] Check firmware versions.
+- [ ] Document existing configurations.
 
 ### Software
-- [ ] Add MARSLib dependency
-- [ ] Create IO classes for CTRE hardware
-- [ ] Migrate drive base
-- [ ] Migrate mechanisms
+- [ ] Add MARSLib dependency.
+- [ ] Create IO classes for CTRE hardware.
+- [ ] Migrate drive base.
+- [ ] Migrate mechanisms.
 - [ ] Preserve CTRE features (Motion Magic, PID, etc.)
 
 ### Testing
-- [ ] Write simulation tests
-- [ ] Verify CTRE feature compatibility
-- [ ] Test on real hardware
-- [ ] Performance analysis
+- [ ] Write simulation tests.
+- [ ] Verify CTRE feature compatibility.
+- [ ] Test on real hardware.
+- [ ] Performance analysis.
 
 ### Deployment
-- [ ] Deploy to robot
-- [ ] Verify CTRE functionality
-- [ ] Monitor performance
-- [ ] Tune if needed
+- [ ] Deploy to robot.
+- [ ] Verify CTRE functionality.
+- [ ] Monitor performance.
+- [ ] Tune if needed.
 
 ## Common Issues
 
@@ -525,15 +525,15 @@ motorIO.configureStatusFrames(
 ### Issue: Performance degraded
 
 **Solution:**
-- Use zero-allocation patterns
-- Pre-allocate objects
-- Check performance dashboard
-- Verify CTRE status frame rates
+- Use zero-allocation patterns.
+- Pre-allocate objects.
+- Check performance dashboard.
+- Verify CTRE status frame rates.
 
 ## Further Reading
 
 - [CTRE Hardware Setup](/operations/ctre-setup)
-- [IO Abstraction Guide](/framework-architecture/io-layer)
+- [IO Abstraction Guide](/framework-structure/io-layer)
 - [Performance Analysis](/advanced/performance-analysis)
 - [Migration from WPILib](/getting-started/migration/from-wpilib)
 

@@ -5,7 +5,7 @@ sidebar:
 ---
 
   
-Driving blindly is a thing of the past. In MARSLib, we utilize the power of **Discovery** through data. We use Mechanical Advantage's **[AdvantageKit](https://github.com/Mechanical-Advantage/AdvantageKit)** to create a transparent, deterministic record of every robot action. This ensures that every technical decision is backed by evidence, maximizing our **Impact** on the field while creating a culture of experimental persistence.
+Driving blindly is a thing of the past. In MARSLib, we use the power of **Discovery** through data. We use Mechanical Advantage's **[AdvantageKit](https://github.com/Mechanical-Advantage/AdvantageKit)** to create a transparent, deterministic record of every robot action. This ensures that every technical decision is backed by evidence, maximizing our **Impact** on the field while creating a culture of experimental persistence.
 
 
   ## <span class="mars-num">1</span> AdvantageKit Basics
@@ -21,7 +21,7 @@ When you add a variable like `public double motorCurrentAmps = 0.0;` inside an I
   ## <span class="mars-num">2</span> AdvantageScope vs. Shuffleboard
 
   
-While MARSLib fundamentally relies on **[AdvantageScope](https://github.com/Mechanical-Advantage/AdvantageScope)** for sophisticated 3D visualizations, log replay, and time-series graphing, we still utilize **[Shuffleboard](https://docs.wpilib.org/en/stable/docs/software/dashboards/shuffleboard/index.html)** for certain live operations.
+While MARSLib fundamentally relies on **[AdvantageScope](https://github.com/Mechanical-Advantage/AdvantageScope)** for sophisticated 3D visualizations, log replay, and time-series graphing, we still use **[Shuffleboard](https://docs.wpilib.org/en/stable/docs/software/dashboards/shuffleboard/index.html)** for certain live operations.
 
   
 Shuffleboard is typically reserved for simple boolean toggles (like selecting auto routines from the driver station), sending basic string configurations prior to a match, or when rapid drag-and-drop dashboarding is required without setting up rigid JSON layouts.
@@ -42,7 +42,7 @@ Shuffleboard is typically reserved for simple boolean toggles (like selecting au
   ## <span class="mars-num">3</span> Importing MARS Layout Templates
 
   
-AdvantageScope utilizes `layout.json` files that arrange tabs specifically to enhance driver feedback. To avoid creating views from scratch every time, import our central template!
+AdvantageScope use `layout.json` files that arrange tabs specifically to enhance driver feedback. To avoid creating views from scratch every time, import our central template!
 
 
   :::note
@@ -53,7 +53,7 @@ AdvantageScope utilizes `layout.json` files that arrange tabs specifically to en
 :::
 
   
-    - In AdvantageScope, go to the upper right Layouts icon and select **Import Layout...**
+    - In AdvantageScope, go to the upper right Layouts icon and select **Import Layout...**.
 
     - Locate the `layouts` folder in the root of the MARSLib directory you cloned earlier.
 
@@ -114,7 +114,7 @@ This approach allows engineers to endlessly tweak feedforward loops, vision conf
 
     - [FRC Log Replay and Simulation](https://www.youtube.com/watch?v=yYn9NqJ6kXU) - Mechanical Advantage's definitive 2024 Championship presentation on the why behind the IO-Layer abstraction.
 
-    - [AdvantageKit Architecture](https://github.com/Mechanical-Advantage/AdvantageKit) - The core repository governing deterministic replay loops on the RIO.
+    - [AdvantageKit structure](https://github.com/Mechanical-Advantage/AdvantageKit) - The core repository governing deterministic replay loops on the RIO.
 
     - [AdvantageScope Documentation](https://github.com/Mechanical-Advantage/AdvantageScope) - Visualizing 3D logs natively in real-time.
 

@@ -1,6 +1,6 @@
 ---
 title: "Vision System Integration"
-description: "Comprehensive guide to integrating vision systems with MARSLib. AprilTag detection, MegaTag 2.0 localization, and camera setup for accurate robot positioning."
+description: "complete guide to integrating vision systems with MARSLib. AprilTag detection, MegaTag 2.0 localization, and camera setup for accurate robot positioning."
 sidebar:
   order: 3
 ---
@@ -9,7 +9,7 @@ sidebar:
 
 MARSLib provides advanced vision system integration for accurate robot localization and targeting using AprilTags and computer vision.
 
-## Vision System Architecture
+## Vision System structure
 
 ### 🎯 Core Components
 
@@ -47,9 +47,9 @@ flowchart TD
 ### Camera Configuration
 
 **Recommended Cameras:**
-- **Limelight 3A**: Built-in AprilTag detection
-- **PhotonVision**: Open-source, highly customizable
-- **Microsoft LifeCam**: Budget option with PhotonVision
+- **Limelight 3A**: Built-in AprilTag detection.
+- **PhotonVision**: Open-source, highly customizable.
+- **Microsoft LifeCam**: Budget option with PhotonVision.
 
 **Camera Positioning:**
 ```java
@@ -69,10 +69,10 @@ public class CameraConfig {
 
 ### Lighting Setup
 **Best Practices:**
-- Use **LED ring lights** around camera lens
+- Use **LED ring lights** around camera lens.
 - Ensure **even field lighting** (500+ lux)
-- Position lights to **illuminate tags, not camera**
-- Avoid **direct sunlight** on camera sensor
+- Position lights to **illuminate tags, not camera**.
+- Avoid **direct sunlight** on camera sensor.
 
 ## Software Integration
 
@@ -409,7 +409,7 @@ public void diagnoseDetection() {
 
 **Solutions:**
 1. **Lower camera exposure** (try 5-15 for AprilTags)
-2. **Add LED ring light** around camera
+2. **Add LED ring light** around camera.
 3. **Check camera focus** (should be sharp at 3-5m)
 4. **Verify tag size** (6.5" standard AprilTags)
 
@@ -435,18 +435,18 @@ public void checkAmbiguity() {
 ```
 
 **Solutions:**
-1. **Move closer** to target
-2. **Improve lighting** on tags
-3. **Use higher resolution** camera
+1. **Move closer** to target.
+2. **Improve lighting** on tags.
+3. **Use higher resolution** camera.
 4. **Switch to multi-tag** detection (MegaTag 2.0)
 
 ---
 
 ## 📖 Further Reading
 
-- [Field Visualization](/framework-architecture/field-visualization) - 3D field reference
-- [Performance Tuning](/advanced/performance-tuning) - Optimization techniques
-- [Limelight Documentation](https://limelightvision.io/) - Limelight 3A setup
-- [PhotonVision Documentation](https://docs.photonvision.org/) - PhotonVision configuration
+- [Field Visualization](/framework-structure/field-visualization) - 3D field reference.
+- [Performance Tuning](/advanced/performance-tuning) - Optimization techniques.
+- [Limelight Documentation](https://limelightvision.io/) - Limelight 3A setup.
+- [PhotonVision Documentation](https://docs.photonvision.org/) - PhotonVision configuration.
 
 **Ready for vision?** Set up your cameras and start detecting AprilTags!

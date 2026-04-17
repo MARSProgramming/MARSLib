@@ -6,7 +6,7 @@ sidebar:
 
 
   
-Waiting for a physical robot to be built is the #1 cause of losing FRC competitions. MARSLib leverages simulation as a platform for **Innovation** and **Discovery**. Using **Dyn4j**, we create a high-fidelity virtual world where you can develop 100% of your code before the metal is even cut. This ensures **Inclusion** by allowing every student to contribute and iterate—making the engineering process both productive and **Fun** regardless of hardware availability.
+Waiting for a physical robot to be built is the #1 cause of losing FRC competitions. MARSLib use simulation as a platform for **Innovation** and **Discovery**. Using **Dyn4j**, we create a high-fidelity virtual world where you can develop 100% of your code before the metal is even cut. This ensures **Inclusion** by allowing every student to contribute and iterate—making the engineering process both productive and **Fun** regardless of hardware availability.
 
 
   ## <span class="mars-num">1</span> The Physics World
@@ -172,7 +172,7 @@ Every time you push to GitHub, a GitHub Actions workflow executes `./gradlew tes
 
   ## <span class="mars-num">7</span> Continuous SysId Auto-Tuning
 
-Thanks to MARSLib's tight integration with AdvantageKit's logging architecture, we never have to run traditional SysId Quasistatic/Dynamic sequences on real hardware if we don't want to.
+Thanks to MARSLib's tight integration with AdvantageKit's logging structure, we never have to run traditional SysId Quasistatic/Dynamic sequences on real hardware if we don't want to.
 
 By utilizing the `OnlineFeedforwardEstimator` injected into our core subsystems proactively, you can perform **Continuous SysId Auto-Tuning** under the hood of normal operations. This algorithm acts as a Zero-GC, realtime Feedforward extractor. It continuously monitors mechanism telemetry (Voltage, Velocity, and Acceleration) during normal simulated or teleop driving and computes empirical `kV` and `kA` values on the fly. 
 

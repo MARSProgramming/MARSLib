@@ -20,10 +20,10 @@ Can't test your robot code in simulation? This guide helps you fix common simula
 ```
 
 **What should happen**:
-- Robot simulation window opens
-- SimGUI shows field
-- Robot appears on field
-- No red error messages
+- Robot simulation window opens.
+- SimGUI shows field.
+- Robot appears on field.
+- No red error messages.
 
 **If you see errors**: Follow the troubleshooting steps below.
 
@@ -41,8 +41,8 @@ java -version
 ```
 
 You should see: Java 17 or 21
-- If not, install correct Java version
-- Update JAVA_HOME environment variable
+- If not, install correct Java version.
+- Update JAVA_HOME environment variable.
 
 **2. Clean and rebuild**:
 ```bash
@@ -57,7 +57,7 @@ You should see: Java 17 or 21
 ```
 
 Should show Gradle 8.x or higher
-- If not, reimport Gradle project in VS Code
+- If not, reimport Gradle project in VS Code.
 
 ---
 
@@ -395,9 +395,9 @@ public void periodic() {
 ```
 
 **3. Close unnecessary programs**:
-- Close web browsers
-- Close other IDE windows
-- Check CPU usage in Task Manager
+- Close web browsers.
+- Close other IDE windows.
+- Check CPU usage in Task Manager.
 
 ---
 
@@ -476,18 +476,18 @@ public void testVisionInSimulation() {
 ### Do's and Don'ts
 
 **DO**:
-- ✅ Test everything in simulation first
-- ✅ Use simulation IO classes
-- ✅ Add debug prints
-- ✅ Test edge cases
-- ✅ Write simulation tests
+- ✅ Test everything in simulation first.
+- ✅ Use simulation IO classes.
+- ✅ Add debug prints.
+- ✅ Test edge cases.
+- ✅ Write simulation tests.
 
 **DON'T**:
-- ❌ Assume simulation = real world
-- ❌ Ignore simulation warnings
-- ❌ Skip simulation testing
-- ❌ Test only on real robot
-- ❌ Assume perfect physics
+- ❌ Assume simulation = real world.
+- ❌ Ignore simulation warnings.
+- ❌ Skip simulation testing.
+- ❌ Test only on real robot.
+- ❌ Assume perfect physics.
 
 ---
 
@@ -495,23 +495,23 @@ public void testVisionInSimulation() {
 
 **Before testing in simulation**:
 - [ ] Java version correct (17 or 21)
-- [ ] Project builds successfully
-- [ ] Simulation IO classes implemented
-- [ ] All imports correct
-- [ ] No compilation errors
+- [ ] Project builds successfully.
+- [ ] Simulation IO classes implemented.
+- [ ] All imports correct.
+- [ ] No compilation errors.
 
 **When simulation runs**:
-- [ ] Robot appears on field
-- [ ] Robot responds to joystick
-- [ ] Console shows no errors
-- [ ] Dashboard shows data
-- [ ] Commands execute correctly
+- [ ] Robot appears on field.
+- [ ] Robot responds to joystick.
+- [ ] Console shows no errors.
+- [ ] Dashboard shows data.
+- [ ] Commands execute correctly.
 
 **Before testing on real robot**:
-- [ ] Everything works in simulation
-- [ ] Simulation tests pass
-- [ ] Code reviewed by teammate
-- [ ] Safety check: Can't move unexpectedly
+- [ ] Everything works in simulation.
+- [ ] Simulation tests pass.
+- [ ] Code reviewed by teammate.
+- [ ] Safety check: Can't move unexpectedly.
 
 ---
 
@@ -545,7 +545,7 @@ public void testVisionInSimulation() {
 2. What error message appeared?
 3. What did you expect to happen?
 4. What actually happened?
-5. Your OS and Java version
+5. Your OS and Java version.
 
 **Where to get help**:
 - [FRC Discord #programming](https://discord.gg/frc)

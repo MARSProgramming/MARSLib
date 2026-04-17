@@ -11,11 +11,11 @@ Practice your robot programming skills! These challenges start simple and get pr
 
 ## How to Use These Challenges
 
-1. **Read the problem** carefully
-2. **Think about the solution** before coding
-3. **Write the code** in your robot project
-4. **Test in simulation** to verify it works
-5. **Reveal the solution** to compare your approach
+1. **Read the problem** carefully.
+2. **Think about the solution** before coding.
+3. **Write the code** in your robot project.
+4. **Test in simulation** to verify it works.
+5. **Reveal the solution** to compare your approach.
 
 ---
 
@@ -25,12 +25,12 @@ Practice your robot programming skills! These challenges start simple and get pr
 Make the robot drive in a 2m × 2m square and return to the starting position.
 
 ### 📋 Requirements
-- Drive forward 2 meters
-- Turn 90 degrees right
-- Drive forward 2 meters
-- Turn 90 degrees right
-- Repeat until robot completes square
-- Should work in simulation
+- Drive forward 2 meters.
+- Turn 90 degrees right.
+- Drive forward 2 meters.
+- Turn 90 degrees right.
+- Repeat until robot completes square.
+- Should work in simulation.
 
 ### 💡 Hints
 
@@ -38,9 +38,9 @@ Make the robot drive in a 2m × 2m square and return to the starting position.
 <summary>Hint 1: Think about the sequence</summary>
 
 You need to repeat these actions:
-1. Drive forward 2m
+1. Drive forward 2m.
 2. Turn 90°
-3. Do this 4 times total
+3. Do this 4 times total.
 </details>
 
 <details>
@@ -171,11 +171,11 @@ public Command squareAuto() {
 Make the robot drive to a specific position (3m, 2m) on the field and stop within 10cm.
 
 ### 📋 Requirements
-- Start anywhere on field
+- Start anywhere on field.
 - Drive to position (3, 2)
-- Stop within 10cm of target
-- Face in the direction of movement
-- Work in simulation
+- Stop within 10cm of target.
+- Face in the direction of movement.
+- Work in simulation.
 
 ### 💡 Hints
 
@@ -280,16 +280,16 @@ public Command driveToTarget() {
 
 ### 🎯 Goal
 Create an auto routine that:
-1. Drives to a game piece
-2. Picks it up with intake
-3. Drives to scoring position
-4. Scores the piece
+1. Drives to a game piece.
+2. Picks it up with intake.
+3. Drives to scoring position.
+4. Scores the piece.
 
 ### 📋 Requirements
 - Use at least 2 subsystems (drivetrain + intake/shooter)
-- Sequence commands properly
-- Handle timing for pickup and scoring
-- Work in simulation
+- Sequence commands properly.
+- Handle timing for pickup and scoring.
+- Work in simulation.
 
 ### 💡 Hints
 
@@ -325,8 +325,8 @@ Commands.deadline(
 <summary>Hint 3: Create Intake and Shooter commands</summary>
 
 You need commands for:
-- `IntakeCommand` - runs intake until piece detected
-- `ScoreCommand` - runs shooter until piece scored
+- `IntakeCommand` - runs intake until piece detected.
+- `ScoreCommand` - runs shooter until piece scored.
 
 </details>
 
@@ -429,10 +429,10 @@ public Command pickupAndScore() {
 Make the robot automatically balance on the charging station (or any inclined surface).
 
 ### 📋 Requirements
-- Detect when robot is on incline
-- Adjust position to find balance point
-- Stay balanced once level
-- Work on real charging station or simulation
+- Detect when robot is on incline.
+- Adjust position to find balance point.
+- Stay balanced once level.
+- Work on real charging station or simulation.
 
 ### 💡 Hints
 
@@ -451,8 +451,8 @@ double pitch = drivetrain.getPitch();  // In radians
 
 Use a PID controller to drive based on pitch angle:
 
-- Pitch > 0: Drive forward
-- Pitch < 0: Drive backward
+- Pitch > 0: Drive forward.
+- Pitch < 0: Drive backward.
 - Pitch ≈ 0: Stop (balanced!)
 
 </details>
@@ -532,10 +532,10 @@ public Command autoBalance() {
 Use vision to automatically aim and score at a target.
 
 ### 📋 Requirements
-- Detect target with camera
-- Aim robot at target
-- Drive to correct distance
-- Score when aligned
+- Detect target with camera.
+- Aim robot at target.
+- Drive to correct distance.
+- Score when aligned.
 
 ### 💡 Hints
 
@@ -553,8 +553,8 @@ Your vision system should provide:
 <summary>Hint 2: PID for aiming</summary>
 
 Use PID to control rotation based on target yaw:
-- Yaw > 0: Turn right
-- Yaw < 0: Turn left
+- Yaw > 0: Turn right.
+- Yaw < 0: Turn left.
 - Yaw ≈ 0: Aimed!
 
 </details>
@@ -563,9 +563,9 @@ Use PID to control rotation based on target yaw:
 <summary>Hint 3: Distance control</summary>
 
 Use another PID for distance control:
-- Too far: Drive forward
-- Too close: Drive backward
-- Correct distance: Stop and score
+- Too far: Drive forward.
+- Too close: Drive backward.
+- Correct distance: Stop and score.
 
 </details>
 
@@ -651,16 +651,16 @@ public class VisionAimCommand extends Command {
 These challenges are just the beginning. Keep creating your own challenges:
 
 ### More Challenge Ideas:
-- **Curve Follower**: Follow a curved path precisely
-- **Obstacle Avoidance**: Navigate around obstacles
-- **Multi-Piece Auto**: Pick up and score multiple pieces
-- **Defensive Auto**: Block opponent while scoring
-- **Emergency Recovery**: Recover from tipover or collision
+- **Curve Follower**: Follow a curved path precisely.
+- **Obstacle Avoidance**: Navigate around obstacles.
+- **Multi-Piece Auto**: Pick up and score multiple pieces.
+- **Defensive Auto**: Block opponent while scoring.
+- **Emergency Recovery**: Recover from tipover or collision.
 
 ### Tips for Creating Challenges:
-1. **Start with what you know** - Modify existing examples
-2. **Break it down** - Divide complex tasks into simple ones
-3. **Test often** - Verify each piece works
+1. **Start with what you know** - Modify existing examples.
+2. **Break it down** - Divide complex tasks into simple ones.
+3. **Test often** - Verify each piece works.
 4. **Learn from mistakes** - Debugging is learning!
 
 ---

@@ -1,12 +1,12 @@
 ---
-title: "Core Architecture"
+title: "Core structure"
 sidebar:
   order: 12
 ---
 
 MARSLib is built using a "Hardware Abstraction Layer" (like a universal remote control) that lets you swap out motors without rewriting your code. We built the framework to reuse memory instead of constantly creating new objects (called "zero-allocation"), which stops the robot from lagging. Because of this, whether you are running a real robot or a simulated one, the math behaves the exact same way.
 
-## Architecture Diagram
+## structure Diagram
 
 <Mermaid code={`
 %%{init: {'themeVariables': { 'edgeLabelBackground':'#111111', 'tertiaryTextColor':'#ffffff' } } }%%

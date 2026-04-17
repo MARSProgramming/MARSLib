@@ -11,9 +11,9 @@ Test what you've learned! This quiz covers the basics from the beginner learning
 
 ## Quiz Instructions
 
-- **Answer each question** to the best of your ability
-- **Check your answers** using the reveal buttons
-- **Track your progress** as you go
+- **Answer each question** to the best of your ability.
+- **Check your answers** using the reveal buttons.
+- **Track your progress** as you go.
 - **Don't worry if you miss some** - learning takes time!
 
 ---
@@ -33,9 +33,9 @@ Test what you've learned! This quiz covers the basics from the beginner learning
 **Explanation**: A subsystem is a part of your robot like the drivetrain, shooter, or intake. Each subsystem manages a specific piece of hardware and provides methods to control it.
 
 **Examples**:
-- `Drivetrain` - controls the wheels and movement
-- `Shooter` - controls the shooting mechanism
-- `Intake` - controls picking up game pieces
+- `Drivetrain` - controls the wheels and movement.
+- `Shooter` - controls the shooting mechanism.
+- `Intake` - controls picking up game pieces.
 </details>
 
 ---
@@ -55,9 +55,9 @@ Test what you've learned! This quiz covers the basics from the beginner learning
 **Explanation**: IO Abstraction Layer means your robot code talks to an "interface" instead of directly to hardware. This lets you test with simulated hardware and easily swap real hardware.
 
 **Benefits**:
-- Test code without a robot
-- Change hardware without rewriting code
-- Same code works in simulation and on real robot
+- Test code without a robot.
+- Change hardware without rewriting code.
+- Same code works in simulation and on real robot.
 </details>
 
 ---
@@ -77,10 +77,10 @@ Test what you've learned! This quiz covers the basics from the beginner learning
 **Explanation**: Commands represent actions like "drive forward," "shoot ball," or "move arm." Each command specifies what subsystems it needs and what to do when it runs.
 
 **Command Lifecycle**:
-1. `initialize()` - runs once when command starts
+1. `initialize()` - runs once when command starts.
 2. `execute()` - runs every 20ms (50 times per second!)
-3. `isFinished()` - checks if command should stop
-4. `end()` - runs once when command stops
+3. `isFinished()` - checks if command should stop.
+4. `end()` - runs once when command stops.
 </details>
 
 ---
@@ -177,10 +177,10 @@ drivetrain.setDefaultCommand(new DriveCommand(drivetrain, controller));
 **Explanation**: Odometry (oh-DOM-it-ree) uses wheel sensors to track how far the robot has moved. It's like counting steps to know how far you've walked.
 
 **How It Works**:
-1. Wheel encoders measure rotation
-2. Robot calculates distance from wheel rotations
-3. Robot updates its position estimate
-4. Used for autonomous and field-relative driving
+1. Wheel encoders measure rotation.
+2. Robot calculates distance from wheel rotations.
+3. Robot updates its position estimate.
+4. Used for autonomous and field-relative driving.
 </details>
 
 ---
@@ -222,9 +222,9 @@ drivetrain.setDefaultCommand(new DriveCommand(drivetrain, controller));
 **Explanation**: PID (Proportional-Integral-Derivative) is a control algorithm that adjusts output to reach and maintain a target. It's like a thermostat - constantly checking and adjusting.
 
 **What the Letters Mean**:
-- **P**: Proportional - "We're far from target, apply more power"
-- **I**: Integral - "We've been off for a while, add more power"
-- **D**: Derivative - "We're approaching fast, slow down"
+- **P**: Proportional - "We're far from target, apply more power".
+- **I**: Integral - "We've been off for a while, add more power".
+- **D**: Derivative - "We're approaching fast, slow down".
 
 **Common Uses**: Arm position, elevator height, shooter speed, drivetrain position
 </details>
@@ -246,11 +246,11 @@ drivetrain.setDefaultCommand(new DriveCommand(drivetrain, controller));
 **Explanation**: Simulation lets you test code quickly without needing a robot. You can catch bugs early, test edge cases, and iterate faster. When you do test on the real robot, it should work the first time!
 
 **Benefits**:
-- Test at home without robot
-- Faster development cycle
-- Safer experimentation
-- Test edge cases safely
-- Verify logic before hardware arrives
+- Test at home without robot.
+- Faster development cycle.
+- Safer experimentation.
+- Test edge cases safely.
+- Verify logic before hardware arrives.
 </details>
 
 ---
@@ -271,14 +271,14 @@ drivetrain.setDefaultCommand(new DriveCommand(drivetrain, controller));
 Based on your quiz results:
 
 **If you did well (7+ correct):**
-- ✅ Ready for intermediate topics
-- ✅ Can start working on advanced features
-- ✅ Consider helping teach others
+- ✅ Ready for intermediate topics.
+- ✅ Can start working on advanced features.
+- ✅ Consider helping teach others.
 
 **If you need more practice (6 or fewer correct):**
 - 📚 Review [Beginner Learning Path](/getting-started/01-setup-and-infrastructure/)
 - 📚 Study [Getting Started Guide](/getting-started/01-setup-and-infrastructure/)
-- 📚 Practice with simulation more
+- 📚 Practice with simulation more.
 - 📚 Ask questions on [Discussions](https://github.com/MARSProgramming/MARSLib/discussions)
 
 ---
@@ -288,10 +288,10 @@ Based on your quiz results:
 **Every expert was once a beginner.** The more you practice, the better you'll get. Don't be afraid to make mistakes - that's how you learn!
 
 **Next Steps**:
-1. **Practice**: Write more robot code
-2. **Experiment**: Try new things in simulation
-3. **Ask Questions**: Get help when stuck
-4. **Teach Others**: Teaching reinforces your learning
+1. **Practice**: Write more robot code.
+2. **Experiment**: Try new things in simulation.
+3. **Ask Questions**: Get help when stuck.
+4. **Teach Others**: Teaching reinforces your learning.
 
 ---
 

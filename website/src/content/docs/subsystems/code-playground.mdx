@@ -25,31 +25,31 @@ The Code Playground demonstrates production-ready MARSLib patterns used by FRC T
 
 ### 🏎️ Swerve Drive Basics
 Learn the fundamentals of controlling a swerve drive robot using MARSLib's abstraction layer. This example shows:
-- ChassisSpeeds for robot-relative control
-- Proper Command structure with requirements
-- Real-time velocity control for competitive play
+- ChassisSpeeds for robot-relative control.
+- Proper Command structure with requirements.
+- Real-time velocity control for competitive play.
 
 ### 👁️ Vision Alignment
 Explore automatic AprilTag alignment using MARSLib's vision system. Demonstrates:
-- Vision pose estimation fusion
-- PID controllers for precise positioning
-- Continuous angle handling for rotation
+- Vision pose estimation fusion.
+- PID controllers for precise positioning.
+- Continuous angle handling for rotation.
 
 ### ⚙️ PID Elevator Control
 Master position control with linear mechanisms. Features:
-- LinearMechanismIO abstraction layer
-- PID control with feedforward for gravity compensation
-- Proper periodic() update patterns
+- LinearMechanismIO abstraction layer.
+- PID control with feedforward for gravity compensation.
+- Proper periodic() update patterns.
 
 ### 🤖 State Machine Superstructure
 Coordinate complex mechanisms using MARSLib state machines. Shows:
-- MARSStateMachine for multi-system coordination
-- Safe state transitions and behaviors
-- Emergency stop (E-Stop) implementation
+- MARSStateMachine for multi-system coordination.
+- Safe state transitions and behaviors.
+- Emergency stop (E-Stop) setup.
 
 ## Programming Patterns
 
-### Command-Based Architecture
+### Command-Based structure
 All examples follow WPILib's Command-based programming pattern:
 
 ```java
@@ -95,7 +95,7 @@ All subsystems automatically log state for AdvantageScope:
 ## Best Practices
 
 ✅ **DO** use Command-based programming for autonomous and teleop
-✅ **DO** leverage MARSLib's IO abstractions for hardware independence
+✅ **DO** use MARSLib's IO abstractions for hardware independence
 ✅ **DO** use state machines for complex mechanism coordination
 ✅ **DO** tune PID gains using SysId characterization
 ✅ **DO** implement safety mechanisms (E-Stop, limits)
@@ -109,33 +109,33 @@ All subsystems automatically log state for AdvantageScope:
 ## Next Steps
 
 ### Explore More Examples
-- Check out the [State Machine tutorial](/framework-architecture/state-machines) for advanced coordination
-- Learn about [Vision Systems](/subsystems/vision) for AprilTag integration
-- Study [Swerve Drive](/subsystems/swerve) for autonomous path following
+- Check out the [State Machine tutorial](/framework-structure/state-machines) for advanced coordination.
+- Learn about [Vision Systems](/subsystems/vision) for AprilTag integration.
+- Study [Swerve Drive](/subsystems/swerve) for autonomous path following.
 
 ### Practice on Your Own
-1. **Clone the MARSLib repository** and explore the full codebase
-2. **Run the simulator** to see these patterns in action
-3. **Modify the examples** to learn by experimentation
-4. **Build your own mechanisms** using MARSLib patterns
+1. **Clone the MARSLib repository** and explore the full codebase.
+2. **Run the simulator** to see these patterns in action.
+3. **Modify the examples** to learn by experimentation.
+4. **Build your own mechanisms** using MARSLib patterns.
 
 ### Join the Community
 - **GitHub**: [MARSProgramming/MARSLib](https://github.com/MARSProgramming/MARSLib)
 - **Documentation**: [MARSProgramming.github.io/MARSLib](https://MARSProgramming.github.io/MARSLib/)
-- **Team**: FRC 2614 - Mountaineer Area RoboticS
+- **Team**: FRC 2614 - Mountaineer Area RoboticS.
 
 ## Technical Details
 
 ### Supported Patterns
-- ✅ Command-based programming
-- ✅ State machines with MARSStateMachine
-- ✅ Vision-based alignment using MARSVision
-- ✅ PID control with feedforward
-- ✅ Swerve drive kinematics
-- ✅ Mechanism coordination
+- ✅ Command-based programming.
+- ✅ State machines with MARSStateMachine.
+- ✅ Vision-based alignment using MARSVision.
+- ✅ PID control with feedforward.
+- ✅ Swerve drive kinematics.
+- ✅ Mechanism coordination.
 
-### Architecture Alignment
-All examples follow MARSLib's core architecture:
+### structure Alignment
+All examples follow MARSLib's core structure:
 
 <Mermaid code={`
 flowchart TD
@@ -156,7 +156,7 @@ flowchart TD
 
 ## 📖 Further Reading & External Resources
 
-- [WPILib Command-Based Programming](https://docs.wpilib.org/en/stable/docs/software/commandbased/what-is-command-based.html) - Official WPILib guide to Command-based programming
-- [AdvantageKit Documentation](https://docs.advantagekit.org/) - Learn about the logging framework that powers MARSLib
-- [SysId Characterization](https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-characterization/introduction.html) - Tool for PID tuning and system identification
-- [PhotonVision Documentation](https://docs.photonvision.org/) - AprilTag detection and vision processing
+- [WPILib Command-Based Programming](https://docs.wpilib.org/en/stable/docs/software/commandbased/what-is-command-based.html) - Official WPILib guide to Command-based programming.
+- [AdvantageKit Documentation](https://docs.advantagekit.org/) - Learn about the logging framework that powers MARSLib.
+- [SysId Characterization](https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-characterization/introduction.html) - Tool for PID tuning and system identification.
+- [PhotonVision Documentation](https://docs.photonvision.org/) - AprilTag detection and vision processing.

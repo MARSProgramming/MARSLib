@@ -1,6 +1,6 @@
 ---
 title: "Coding Standards"
-description: "Follow MARSLib coding standards and patterns. Write consistent, maintainable code that matches our architecture."
+description: "Follow MARSLib coding standards and patterns. Write consistent, maintainable code that matches our structure."
 sidebar:
   order: 3
 ---
@@ -151,7 +151,7 @@ public void runIntake(double voltageOut) { ... }
 ```
 
 ### 🚫 The "Never Nester" Protocol
-Code that is deeply nested across multiple `if/else` and `for` blocks is fragile and requires immense cognitive load to debug under competition pressure. All FRC control loops must remain completely "flat". Utilize guard clauses and early `return` expressions immediately.
+Code that is deeply nested across multiple `if/else` and `for` blocks is fragile and requires immense cognitive load to debug under competition pressure. All FRC control loops must remain completely "flat". use guard clauses and early `return` expressions immediately.
 
 ❌ **Avoid:**
 ```java
@@ -177,7 +177,7 @@ public void shoot() {
 }
 ```
 
-## Architecture Patterns
+## structure Patterns
 
 ### IO Abstraction Layer
 Separate logic from hardware using interfaces.
@@ -258,13 +258,13 @@ public class ElevatorSubsystem extends Subsystem {
 - **Vision Processing:** As fast as possible (30Hz+)
 
 ### Memory Management
-- Pre-allocate all objects in constructor
-- Avoid object creation in periodic() methods
-- Use object pools for temporary objects
+- Pre-allocate all objects in constructor.
+- Avoid object creation in periodic() methods.
+- Use object pools for temporary objects.
 
 ### Logging
-- Use AdvantageKit automatic logging
-- Don't manually log in time-critical loops
+- Use AdvantageKit automatic logging.
+- Don't manually log in time-critical loops.
 - Log at appropriate levels (ERROR, WARN, INFO)
 
 ## Safety Standards
@@ -348,9 +348,9 @@ public void testSwerveOdometry() {
 ```
 
 ### Test Coverage
-- Maintain 80%+ test coverage
-- Test both success and failure cases
-- Use realistic physics in tests
+- Maintain 80%+ test coverage.
+- Test both success and failure cases.
+- Use realistic physics in tests.
 
 ## Documentation Standards
 
@@ -374,10 +374,10 @@ public class SwerveDrive extends Subsystem {
 ```
 
 ### Code Comments
-- Comment **why**, not **what**
-- Explain non-obvious algorithms
-- Document performance-critical sections
-- Keep comments up-to-date
+- Comment **why**, not **what**.
+- Explain non-obvious algorithms.
+- Document performance-critical sections.
+- Keep comments up-to-date.
 
 ## Common Patterns
 
@@ -443,13 +443,13 @@ public class VisionAlignment extends Command {
 
 Before submitting code, verify:
 
-- [ ] Code follows naming conventions
-- [ ] No allocations in periodic() methods
-- [ ] Thread-safe shared state
-- [ ] Proper error handling
-- [ ] Tests added and passing
-- [ ] Documentation updated
-- [ ] Spotless formatting applied
+- [ ] Code follows naming conventions.
+- [ ] No allocations in periodic() methods.
+- [ ] Thread-safe shared state.
+- [ ] Proper error handling.
+- [ ] Tests added and passing.
+- [ ] Documentation updated.
+- [ ] Spotless formatting applied.
 - [ ] Performance tested (if applicable)
 
 ## Tools and Automation
@@ -462,15 +462,15 @@ Install git hooks for automatic formatting:
 
 ### CI/CD Checks
 Our CI automatically verifies:
-- Spotless formatting
-- 80% test coverage
-- All tests pass
-- No compilation errors
+- Spotless formatting.
+- 80% test coverage.
+- All tests pass.
+- No compilation errors.
 
 ### VS Code Extensions
-- **Extension Pack for Java** - Language support
-- **Gradle for Java** - Build integration
-- **Spotless** - Format on save
+- **Extension Pack for Java** - Language support.
+- **Gradle for Java** - Build integration.
+- **Spotless** - Format on save.
 
 ---
 

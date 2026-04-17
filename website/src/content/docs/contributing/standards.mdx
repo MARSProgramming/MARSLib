@@ -1,38 +1,37 @@
 ---
 title: The MARSLib Standard
 description: >-
-  The definitive software engineering ruleset governing our World-Champion grade
-  infrastructure.
+  The main rules that guide our championship-grade robot code.
 head: []
 ---
 <StandardHeader />
 
 <SplashContainer>
   <RuleSection num="00" title="[FIRST] Core Values Orientation">
-    Engineered excellence at MARS begins with a commitment to our cultural "North Star." Every architectural decision in MARSLib is rooted in the **_FIRST_® Core Values**. 
+    Doing great work at MARS starts with our core mission. Every choice we make in MARSLib is based on the **_FIRST_® Core Values**. 
 
-    For a deep dive into how we apply **Discovery**, **Innovation**, **Impact**, **Teamwork**, **Inclusion**, and **Fun** to elite robotics software, visit our dedicated [Core Values Page](/contributing/core-values/).
+    To learn how we apply **Discovery**, **Innovation**, **Impact**, **Teamwork**, **Inclusion**, and **Fun** to our coding, visit our dedicated [Core Values Page](/contributing/core-values/).
   </RuleSection>
 
   <RuleSection num="01" title="Championship-Grade Execution">
-    MARSLib is not built to participate; it is built to compete on the Einstein field. Every line of code, architectural decision, and kinematic algorithm in this framework is engineered to eliminate overhead, reduce latency, and maximize the hardware performance ceilings of FRC robots. We do not compromise on execution speed.
+    MARSLib is not built just to play around; it is built to win on the Einstein field. Every line of code, design choice, and piece of robot math in this project is built to run as fast as possible without any delays. We do not accept slow code.
   </RuleSection>
 
   <RuleSection num="02" title="Zero-Allocation Performance">
-    To compete at the highest level, the JVM Garbage Collector cannot be allowed to interrupt a control loop. We enforce a strict **Zero-Allocation Architecture** in all active teleop and autonomous hot-paths. By utilizing statically-allocated Ephemeral Structs and avoiding the `new` keyword during matches, MARSLib ensures deterministic, sub-250µs execution loops.
+    To win at the highest level, the Java Garbage Collector cannot be allowed to pause our robot. We force a strict **Zero-Allocation structure** while the robot is moving. By using memory we already saved and avoiding the `new` keyword during matches, MARSLib ensures the robot runs reliably every single time.
   </RuleSection>
 
-  <RuleSection num="03" title="AI Co-Development & Autonomy">
-    MARSLib is the first FRC framework expressly co-developed with Artificial Intelligence. To instruct Claude Code or Z.ai agents efficiently, we utilize explicit structuration and agentic block comments. Code that is actively governed by an AI skill carries the `@AGENT_ENFORCED` JavaDoc tag, establishing a symbiotic relationship between human engineers and autonomous agents, allowing for rapid iteration and elite code mining.
+  <RuleSection num="03" title="AI Co-Development">
+    MARSLib is the first FRC framework built alongside Artificial Intelligence. To help our AI agents like Claude Code or Z.ai understand our work, we use clear comments and block tags. Any code that is checked by an AI skill is marked with the `@AGENT_ENFORCED` tag. This creates strong teamwork between human coders and AI helpers.
   </RuleSection>
 
   <RuleSection num="04" title="AI-Integrated Mentorship">
-    Beyond raw code generation, MARSLib employs AI as an active educational mentor. The framework features a built-in AI Tutor skill designed specifically to override standard efficiency directives. Instead of just producing code, the AI acts as a Socratic mentor—patiently explaining the architecture, asking leading questions, and breaking down complex physics concepts. This guarantees that students truly learn engineering principles rather than just copying implementations.
+    Beyond just writing code, MARSLib uses AI as a daily teacher. We have a built-in AI Tutor skill. Instead of just giving you the answer, the AI acts like a real mentor—patiently explaining how things work, asking leading questions, and breaking down tough physics concepts. This ensures you actually learn the principles of engineering, instead of just copy-pasting.
   </RuleSection>
 
   <RuleSection num="05" title="Inclusive by Design (WCAG 2.1 AA)">
-    Engineering excellence is meaningless if it cannot be accessed by every student and developer. MARSLib fundamentally requires **WCAG 2.1 AA** compliance for all documentation, dashboards, and associated frontend repositories. We deploy autonomous Pa11y pipelines to enforce strict mechanical standards for screen readers, keyboard navigability, and high-contrast accessibility.
+    Building fast code doesn't matter if some students can't read it. MARSLib follows strict **WCAG 2.1 AA** rules for all our documentation and websites. We use automatic tools to make sure screen readers, keyboards, and high-contrast colors work perfectly.
     
-    Read our full [Accessibility Commitment](/accessibility) to see how we guarantee open access to robotics resources.
+    Read our full [Accessibility Commitment](/accessibility) to see how we keep robotics open for everyone.
   </RuleSection>
 </SplashContainer>

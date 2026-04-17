@@ -15,30 +15,30 @@ Find answers to common questions about MARSLib. Don't see your question here? As
 
 **Yes!** MARSLib is designed to be accessible to teams of all experience levels:
 
-- **Zero to Hero Tutorial** - Step-by-step guide from basics to advanced
-- **Comprehensive Documentation** - 80+ pages of detailed guides
-- **Example Code** - Real, working examples for common robot tasks
-- **Community Support** - Active Discord and GitHub community
+- **Zero to Hero Tutorial** - Step-by-step guide from basics to advanced.
+- **complete Documentation** - 80+ pages of detailed guides.
+- **Example Code** - Real, working examples for common robot tasks.
+- **Community Support** - Active Discord and GitHub community.
 
 **Time Investment:**
-- Basic robot: 1-2 weeks
-- Competitive robot: 3-4 weeks
-- Advanced features: 6-8 weeks
+- Basic robot: 1-2 weeks.
+- Competitive robot: 3-4 weeks.
+- Advanced features: 6-8 weeks.
 
 ### What hardware does MARSLib support?
 
 MARSLib supports **all FRC-legal hardware**:
 
 **Motor Controllers:**
-- CTRE: Talon FX, Talon SRX, Victor SPX
-- REV: NEO, NEO 550, SPARK MAX
-- Other: PWM controllers via generic interfaces
+- CTRE: Talon FX, Talon SRX, Victor SPX.
+- REV: NEO, NEO 550, SPARK MAX.
+- Other: PWM controllers via generic interfaces.
 
 **Sensors:**
-- Gyroscopes: Pigeon2, NavX, ADIS16470
-- Encoders: Built-in, absolute, incremental
-- Cameras: Limelight, PhotonVision, USB cameras
-- Distance: Ultrasonic, LiDAR, Time-of-Flight
+- Gyroscopes: Pigeon2, NavX, ADIS16470.
+- Encoders: Built-in, absolute, incremental.
+- Cameras: Limelight, PhotonVision, USB cameras.
+- Distance: Ultrasonic, LiDAR, Time-of-Flight.
 
 **IO:**
 - CAN (Primary communication)
@@ -76,10 +76,10 @@ cd MARSLib
 The **IO Abstraction Layer** is MARSLib's key design pattern that separates robot logic from hardware:
 
 **Benefits:**
-- **Hardware Independence** - Swap hardware without changing robot code
-- **Perfect Simulation** - Test robot logic with simulated hardware
-- **Zero Hardware Required** - Develop and test without robot
-- **Easy Mocking** - Unit test robot logic without hardware
+- **Hardware Independence** - Swap hardware without changing robot code.
+- **Perfect Simulation** - Test robot logic with simulated hardware.
+- **Zero Hardware Required** - Develop and test without robot.
+- **Easy Mocking** - Unit test robot logic without hardware.
 
 **Example:**
 ```java
@@ -100,46 +100,46 @@ GyroIO gyroIO = new GyroIOPigeon2();  // Real Pigeon2
 GyroIO gyroIO = new GyroIOSim();  // Simulated gyro
 ```
 
-[Learn More](/framework-architecture/io-layer)
+[Learn More](/framework-structure/io-layer)
 
 ### Why does MARSLib emphasize zero-allocation?
 
 **Zero-allocation** means avoiding memory allocations in time-critical code (periodic loops).
 
 **Why It Matters:**
-- **Prevents GC Pauses** - Java garbage collection can cause 10-100ms pauses
-- **Deterministic Timing** - Consistent loop times
-- **Better Performance** - No unexpected slowdowns
-- **Competition Reliability** - No dropped packets or missed cycles
+- **Prevents GC Pauses** - Java garbage collection can cause 10-100ms pauses.
+- **Deterministic Timing** - Consistent loop times.
+- **Better Performance** - No unexpected slowdowns.
+- **Competition Reliability** - No dropped packets or missed cycles.
 
 **MARSLib Patterns:**
-- Pre-allocate objects in constructor
-- Reuse objects instead of creating new ones
-- Use primitive arrays instead of collections
-- Avoid string concatenation in loops
+- Pre-allocate objects in constructor.
+- Reuse objects instead of creating new ones.
+- Use primitive arrays instead of collections.
+- Avoid string concatenation in loops.
 
-[Zero-Allocation Guide](/framework-architecture/zero-allocation)
+[Zero-Allocation Guide](/framework-structure/zero-allocation)
 
 ### How accurate is MARSLib simulation?
 
 **Extremely accurate** - MARSLib uses physics-based simulation:
 
 **Accuracy:**
-- **Physics**: Real-world physics equations
-- **Timing**: Accurate 50Hz loop timing
-- **Sensor Noise**: Simulated sensor noise and drift
-- **Latency**: Realistic hardware latency
+- **Physics**: Real-world physics equations.
+- **Timing**: Accurate 50Hz loop timing.
+- **Sensor Noise**: Simulated sensor noise and drift.
+- **Latency**: Realistic hardware latency.
 
 **Validation:**
-- Real-world testing vs simulation
-- &lt; 5% error in odometry
-- &lt; 10% error in trajectory following
-- Match behavior verified on real robot
+- Real-world testing vs simulation.
+- &lt; 5% error in odometry.
+- &lt; 10% error in trajectory following.
+- Match behavior verified on real robot.
 
 **Limitations:**
-- Field imperfections not modeled
-- Manufacturing variations not simulated
-- Battery voltage idealized
+- Field imperfections not modeled.
+- Manufacturing variations not simulated.
+- Battery voltage idealized.
 
 [Simulation Guide](/advanced/simulation-best-practices)
 
@@ -150,24 +150,24 @@ GyroIO gyroIO = new GyroIOSim();  // Simulated gyro
 **Digital Twin** means testing real robot code with simulated hardware:
 
 **Traditional Testing:**
-- Real hardware required
-- Time-consuming deployment
-- Limited test coverage
-- Hardware-dependent
+- Real hardware required.
+- Time-consuming deployment.
+- Limited test coverage.
+- Hardware-dependent.
 
 **Digital Twin Testing:**
-- Real robot code ✓
-- Simulated hardware ✓
-- Fast execution ✓
-- Comprehensive coverage ✓
-- No hardware required ✓
+- Real robot code ✓.
+- Simulated hardware ✓.
+- Fast execution ✓.
+- complete coverage ✓.
+- No hardware required ✓.
 
 **Benefits:**
-- Test without robot
-- Faster development cycle
-- More thorough testing
-- Catch bugs earlier
-- Safer experimentation
+- Test without robot.
+- Faster development cycle.
+- More thorough testing.
+- Catch bugs earlier.
+- Safer experimentation.
 
 [Testing Philosophy](/contributing/testing-guide)
 
@@ -175,22 +175,22 @@ GyroIO gyroIO = new GyroIOSim();  // Simulated gyro
 
 **Use the Performance Dashboard:**
 
-1. **Record WPILog** during robot operation
-2. **Upload to Dashboard** - Visualize performance
-3. **Identify Bottlenecks** - Find slow code
-4. **Optimize** - Fix issues
-5. **Verify** - Re-test and confirm improvement
+1. **Record WPILog** during robot operation.
+2. **Upload to Dashboard** - Visualize performance.
+3. **Identify Bottlenecks** - Find slow code.
+4. **Optimize** - Fix issues.
+5. **Verify** - Re-test and confirm improvement.
 
 **Common Bottlenecks:**
 - Heavy calculations in periodic()
-- String operations
-- Collection allocations
-- Inefficient odometry
+- String operations.
+- Collection allocations.
+- Inefficient odometry.
 
 **Performance Targets:**
 - Main loop: &lt; 10ms (50Hz)
 - Odometry: &lt; 4ms (250Hz)
-- Memory: &lt; 100MB
+- Memory: &lt; 100MB.
 - CPU: &lt; 50%
 
 [Performance Guide](/advanced/performance-analysis)
@@ -200,23 +200,23 @@ GyroIO gyroIO = new GyroIOSim();  // Simulated gyro
 **82.3% Code Coverage** - Well above industry standards
 
 **Coverage Breakdown:**
-- Core Systems: 89%
-- Swerve Drive: 94%
+- Core Systems: 89%.
+- Swerve Drive: 94%.
 - Vision: 76%
-- State Machines: 91%
-- Mechanisms: 85%
+- State Machines: 91%.
+- Mechanisms: 85%.
 
 **Testing Approach:**
-- Unit tests for individual components
-- Integration tests for subsystems
-- Physics tests for simulation accuracy
-- Load tests for stress conditions
+- Unit tests for individual components.
+- Integration tests for subsystems.
+- Physics tests for simulation accuracy.
+- Load tests for stress conditions.
 
 **CI/CD:**
-- All tests run on every commit
-- Coverage must be ≥ 80%
-- Performance tests detect regressions
-- Tests must pass to merge
+- All tests run on every commit.
+- Coverage must be ≥ 80%.
+- Performance tests detect regressions.
+- Tests must pass to merge.
 
 [Testing Guide](/contributing/testing-guide)
 
@@ -227,45 +227,45 @@ GyroIO gyroIO = new GyroIOSim();  // Simulated gyro
 **Yes!** MARSLib has powered FRC Team 2614 "MARS" robots since 2020:
 
 **Competition History:**
-- **2020**: Infinite Reima - Regional Finalist
-- **2022**: Rapid React - District Champion
-- **2023**: Charged Up - State Champion
-- **2024**: Crescendo - Multiple regional wins
+- **2020**: Infinite Reima - Regional Finalist.
+- **2022**: Rapid React - District Champion.
+- **2023**: Charged Up - State Champion.
+- **2024**: Crescendo - Multiple regional wins.
 
 **Performance:**
-- 99.9% uptime during matches
-- 0 auto failures in 2024 season
-- Consistent sub-10ms loop times
-- Zero memory leaks
+- 99.9% uptime during matches.
+- 0 auto failures in 2024 season.
+- Consistent sub-10ms loop times.
+- Zero memory leaks.
 
 **Other Teams:**
-- Used by 20+ teams worldwide
-- Multiple regional champions
-- Consistent competitive performance
+- Used by 20+ teams worldwide.
+- Multiple regional champions.
+- Consistent competitive performance.
 
 ### How do I deploy to robot?
 
 **Simple deployment process:**
 
-1. **Build Code:**
+1. **Build Code:**.
    ```bash
    ./gradlew build
    ```
 
-2. **Deploy to Robot:**
+2. **Deploy to Robot:**.
    ```bash
    ./gradlew deploy
    ```
 
 3. **Verify:**
-   - Check RioLog for errors
-   - Verify all subsystems initialize
-   - Test with driver station
+   - Check RioLog for errors.
+   - Verify all subsystems initialize.
+   - Test with driver station.
 
 **AdvantageKit Integration:**
-- Logs automatically recorded
-- Easy analysis with AdvantageScope
-- Performance metrics included
+- Logs automatically recorded.
+- Easy analysis with AdvantageScope.
+- Performance metrics included.
 
 [Deployment Guide](/operations/deployment-guide)
 
@@ -274,22 +274,22 @@ GyroIO gyroIO = new GyroIOSim();  // Simulated gyro
 **MARSLib includes fault detection and recovery:**
 
 **Fault System:**
-- Automatic fault detection
-- Fault isolation
-- Graceful degradation
+- Automatic fault detection.
+- Fault isolation.
+- Graceful degradation.
 - Fault logging
 
 **Common Issues:**
-- **Module Disconnect**: Detected, logged, robot continues
-- **Sensor Failure**: Fallback to odometry
-- **Comms Loss**: Safe robot disable
-- **Brownout**: Power shedding activates
+- **Module Disconnect**: Detected, logged, robot continues.
+- **Sensor Failure**: Fallback to odometry.
+- **Comms Loss**: Safe robot disable.
+- **Brownout**: Power shedding activates.
 
 **Troubleshooting:**
-1. Check fault log in AdvantageScope
-2. Review WPILog for root cause
+1. Check fault log in AdvantageScope.
+2. Review WPILog for root cause.
 3. Apply fix
-4. Re-test with simulation
+4. Re-test with simulation.
 5. Deploy fix
 
 [Troubleshooting Guide](/operations/troubleshooting)
@@ -302,67 +302,67 @@ GyroIO gyroIO = new GyroIOSim();  // Simulated gyro
 
 **GitHub Discussions** (Best for technical questions)
 - [Ask questions](https://github.com/MARSProgramming/MARSLib/discussions)
-- Search existing discussions
-- Get answers from core team
+- Search existing discussions.
+- Get answers from core team.
 
 **Discord Server** (Best for real-time help)
 - [Join Discord](https://discord.gg/marslib)
-- Chat with other users
-- Quick questions and tips
+- Chat with other users.
+- Quick questions and tips.
 
 **GitHub Issues** (Bug reports and feature requests)
 - [Report bugs](https://github.com/MARSProgramming/MARSLib/issues)
-- Request features
-- Track development
+- Request features.
+- Track development.
 
 **Email** (Private questions)
-- mars@team2614.org
+- mars@team2614.org.
 
 ### Can I contribute to MARSLib?
 
 **Yes!** We welcome contributions from everyone:
 
 **Ways to Contribute:**
-- **Bug fixes** - Always appreciated
-- **New features** - Propose via discussion first
-- **Documentation** - Improve guides and examples
-- **Tests** - Increase coverage
-- **Code review** - Review pull requests
+- **Bug fixes** - Always appreciated.
+- **New features** - Propose via discussion first.
+- **Documentation** - Improve guides and examples.
+- **Tests** - Increase coverage.
+- **Code review** - Review pull requests.
 
 **Getting Started:**
 1. Read [Contributing Guide](/contributing/getting-started)
 2. Check [Good First Issues](https://github.com/MARSProgramming/MARSLib/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
-3. Fork and create branch
-4. Make changes with tests
-5. Submit pull request
+3. Fork and create branch.
+4. Make changes with tests.
+5. Submit pull request.
 
 **Contribution Standards:**
-- Code review required
-- Tests must pass
-- Coverage ≥ 80%
-- Follow coding standards
-- Document changes
+- Code review required.
+- Tests must pass.
+- Coverage ≥ 80%.
+- Follow coding standards.
+- Document changes.
 
 ### Is MARSLib free to use?
 
 **Yes!** MARSLib is 100% free and open source:
 
 **License:** BSD 3-Clause License
-- ✓ Free to use in competition
-- ✓ Free to modify
-- ✓ Free to distribute
+- ✓ Free to use in competition.
+- ✓ Free to modify.
+- ✓ Free to distribute.
 - ✓ No attribution required (but appreciated!)
 
 **Team 2614 Philosophy:**
-- FRC is about learning
-- Knowledge should be shared
-- Help every team succeed
-- Grow the FRC community
+- FRC is about learning.
+- Knowledge should be shared.
+- Help every team succeed.
+- Grow the FRC community.
 
 **Commercial Use:**
-- Not allowed for commercial products
-- Educational use only
-- FRC and other robotics competitions OK
+- Not allowed for commercial products.
+- Educational use only.
+- FRC and other robotics competitions OK.
 
 ## 🔄 Migration & Compatibility
 
@@ -373,19 +373,19 @@ GyroIO gyroIO = new GyroIOSim();  // Simulated gyro
 **Migration Approaches:**
 
 **Full Migration** (Recommended)
-- Replace all subsystems
-- Use MARSLib patterns throughout
-- Best performance and features
+- Replace all subsystems.
+- Use MARSLib patterns throughout.
+- Best performance and features.
 
 **Partial Migration**
-- Use MARSLib for specific features
-- Keep existing WPILib code
-- Gradual adoption
+- Use MARSLib for specific features.
+- Keep existing WPILib code.
+- Gradual adoption.
 
 **Hybrid Approach**
-- New features use MARSLib
-- Old code remains WPILib
-- Slow migration over seasons
+- New features use MARSLib.
+- Old code remains WPILib.
+- Slow migration over seasons.
 
 [WPILib Migration Guide](/getting-started/migration/from-wpilib)
 
@@ -394,17 +394,17 @@ GyroIO gyroIO = new GyroIOSim();  // Simulated gyro
 **Yes!** Full PhotonVision integration:
 
 **Features:**
-- Multi-camera support
-- Automatic camera switching
-- Pose estimation integration
-- AprilTag detection
-- Custom object detection
+- Multi-camera support.
+- Automatic camera switching.
+- Pose estimation integration.
+- AprilTag detection.
+- Custom object detection.
 
 **Setup:**
-1. Install PhotonVision on coprocessor
-2. Configure cameras in PhotonVision GUI
-3. Use MARSLib VisionIO class
-4. Integrate with swerve drive
+1. Install PhotonVision on coprocessor.
+2. Configure cameras in PhotonVision GUI.
+3. Use MARSLib VisionIO class.
+4. Integrate with swerve drive.
 
 [Vision Setup Guide](/operations/vision-setup)
 
@@ -413,26 +413,26 @@ GyroIO gyroIO = new GyroIOSim();  // Simulated gyro
 **MARSLib supports both equally:**
 
 **CTRE (Talon FX/SRX)**
-- Best-in-class closed-loop control
+- Best-in-class closed-loop control.
 - Advanced features (motion magic, etc.)
-- Excellent CAN reliability
-- Preferred by Team 2614
+- Excellent CAN reliability.
+- Preferred by Team 2614.
 
 **REV (NEO/SPARK MAX)**
 - Lower cost
-- Good performance
-- Easier to source
-- Growing ecosystem
+- Good performance.
+- Easier to source.
+- Growing ecosystem.
 
 **Mixing:**
-- Can mix CTRE and REV
-- No issues in MARSLib
-- Both work with IO abstraction
+- Can mix CTRE and REV.
+- No issues in MARSLib.
+- Both work with IO abstraction.
 
 **Recommendation:**
-- Choose based on budget and availability
-- Both work excellently with MARSLib
-- Team preference matters most
+- Choose based on budget and availability.
+- Both work excellently with MARSLib.
+- Team preference matters most.
 
 ## 📈 Advanced Topics
 
@@ -456,23 +456,23 @@ machine.periodic();  // Call in robotPeriodic
 ```
 
 **Features:**
-- Hierarchical states
-- State persistence
-- Transition logging
-- Automatic lifecycle management
+- Hierarchical states.
+- State persistence.
+- Transition logging.
+- Automatic lifecycle management.
 
-[State Machine Guide](/framework-architecture/state-machines)
+[State Machine Guide](/framework-structure/state-machines)
 
 ### Can I use PathPlanner with MARSLib?
 
 **Yes!** Full PathPlanner integration:
 
 **Features:**
-- Load PathPlanner paths
-- Auto generation from GUI
-- Event markers support
-- Holonomic path following
-- Dynamic path adjustment
+- Load PathPlanner paths.
+- Auto generation from GUI.
+- Event markers support.
+- Holonomic path following.
+- Dynamic path adjustment.
 
 **Setup:**
 ```java
@@ -497,7 +497,7 @@ AutoBuilder.configure(
 
 MARSLib is built to be more than a software library; it is a vehicle for **Discovery** and **Innovation**. We institutionalize these values through:
 
-- **Inclusion**: Our "Zero-Mocking" simulation philosophy ensures that every student can participate in high-level programming, even without access to a physical robot. As our founding mentor Phil Tucker famously established through the Tucker Teams initiative, our motto is: **"No robot left behind."**
+- **Inclusion**: Our "Zero-Mocking" simulation philosophy ensures that every student can participate in high-level programming, even without access to a physical robot. As our founding mentor Phil Tucker famously established through the Tucker Teams initiative, our motto is: **"No robot left behind."**.
 - **Teamwork**: The framework is designed for collaborative development, with explicit standards that make it easy for multiple students to work on the same codebase.
 - **Impact**: We measure our success not just by match wins, but by the technical growth and professional preparation of our students, continuing our legacy as the 2017 FIRST Championship Chairman's Award winners.
 - **Fun**: We celebrate technical breakthroughs—like a perfectly tuned PID loop or a successful autonomous routine—as team-wide victories!
@@ -512,7 +512,7 @@ Unlike many "black-box" libraries, MARSLib is designed for **Discovery**. Instea
 
 - **GitHub Discussions**: [Ask the community](https://github.com/MARSProgramming/MARSLib/discussions)
 - **Discord**: [Join our server](https://discord.gg/marslib)
-- **Email**: mars@team2614.org
+- **Email**: mars@team2614.org.
 - **Documentation**: [Browse all docs](/)
 
 ---

@@ -15,10 +15,10 @@ Your code won't build? Don't worry! Most compilation errors are easy to fix once
 
 **Look at the error message:**
 
-- **Red squiggly lines in VS Code**: Syntax error
-- **Gradle build failed**: Compilation error
-- **Runtime error**: Code compiles but crashes when running
-- **Deployment failed**: Code compiles but won't upload to robot
+- **Red squiggly lines in VS Code**: Syntax error.
+- **Gradle build failed**: Compilation error.
+- **Runtime error**: Code compiles but crashes when running.
+- **Deployment failed**: Code compiles but won't upload to robot.
 
 This guide covers **compilation errors** (when Gradle build fails).
 
@@ -32,9 +32,9 @@ This guide covers **compilation errors** (when Gradle build fails).
 ```
 
 **Look for:**
-- ❌ Lines that say "error:" or "failed"
-- 📍 Line numbers where errors occur
-- 📝 File names that have problems
+- ❌ Lines that say "error:" or "failed".
+- 📍 Line numbers where errors occur.
+- 📝 File names that have problems.
 
 ---
 
@@ -55,35 +55,35 @@ Drivetrain.java:15: error: cannot find symbol
 ```
 
 **Common causes:**
-1. **Typo in method name**
+1. **Typo in method name**.
 ```java
 ❌ drive.driveForeward(1.0);  // Typo!
 ✅ drive.drive(1.0, 0, 0);    // Correct
 ```
 
-2. **Wrong number of arguments**
+2. **Wrong number of arguments**.
 ```java
 ❌ drive.drive(1.0);           // Need 3 arguments
 ✅ drive.drive(1.0, 0, 0);     // Correct
 ```
 
-3. **Wrong import**
+3. **Wrong import**.
 ```java
 ❌ import com.wpi.first.wpilibj.SwerveDrive;  // Wrong package
 ✅ import com.marslib.swerve.SwerveDrive;     // Correct
 ```
 
-4. **Forgot to create object**
+4. **Forgot to create object**.
 ```java
 ❌ private SwerveDrive drive;     // Never created!
 ✅ private SwerveDrive drive = new SwerveDrive();  // Created!
 ```
 
 **Fix:**
-1. Check spelling of method names
-2. Verify you have the right number of parameters
-3. Check imports are correct
-4. Make sure objects are created before use
+1. Check spelling of method names.
+2. Verify you have the right number of parameters.
+3. Check imports are correct.
+4. Make sure objects are created before use.
 
 ---
 
@@ -100,7 +100,7 @@ import com.marslib.swerve.SwerveDrive;
 ```
 
 **Common causes:**
-1. **MARSLib not added to dependencies**
+1. **MARSLib not added to dependencies**.
 ```gradle
 // In build.gradle, make sure you have:
 dependencies {
@@ -108,23 +108,23 @@ dependencies {
 }
 ```
 
-2. **Wrong package name**
+2. **Wrong package name**.
 ```java
 ❌ import com.marslib.swervee.SwerveDrive;  // Typo!
 ✅ import com.marslib.swerve.SwerveDrive;   // Correct
 ```
 
-3. **Gradle not updated**
+3. **Gradle not updated**.
 ```bash
 # Refresh Gradle to get new dependencies
 ./gradlew --refresh-dependencies build
 ```
 
 **Fix:**
-1. Add MARSLib to build.gradle
-2. Check package name spelling
+1. Add MARSLib to build.gradle.
+2. Check package name spelling.
 3. Run `./gradlew --refresh-dependencies`
-4. Restart VS Code if needed
+4. Restart VS Code if needed.
 
 ---
 
@@ -141,29 +141,29 @@ DriveCommand.java:25: error: incompatible types: double cannot be converted to S
 ```
 
 **Common causes:**
-1. **Wrong variable type**
+1. **Wrong variable type**.
 ```java
 ❌ String speed = 5.0;           // Can't put double in String
 ✅ double speed = 5.0;           // Correct type
 ```
 
-2. **Wrong method return type**
+2. **Wrong method return type**.
 ```java
 ❌ String position = drivetrain.getPosition();  // Returns double, not String
 ✅ double position = drivetrain.getPosition();  // Correct type
 ```
 
-3. **Missing cast**
+3. **Missing cast**.
 ```java
 ❌ double value = integerList.get(0);  // List returns Integer
 ✅ double value = (double) integerList.get(0);  // Cast it
 ```
 
 **Fix:**
-1. Check variable types match what you assign
-2. Verify method return types
-3. Add type casts if needed
-4. Use correct types for your data
+1. Check variable types match what you assign.
+2. Verify method return types.
+3. Add type casts if needed.
+4. Use correct types for your data.
 
 ---
 
@@ -180,7 +180,7 @@ Drivetrain.java:30: error: method drive in class Drivetrain is already defined
 ```
 
 **Common causes:**
-1. **Copied method twice**
+1. **Copied method twice**.
 ```java
 public void drive(double forward, double strafe, double rotate) {
     // code here
@@ -192,7 +192,7 @@ public void drive(double forward, double strafe, double rotate) {
 }
 ```
 
-2. **Forgot to delete old version**
+2. **Forgot to delete old version**.
 ```java
 // Old version
 public void drive(double f, double s, double r) { ... }
@@ -202,9 +202,9 @@ public void drive(double forward, double strafe, double rotate) { ... }
 ```
 
 **Fix:**
-1. Delete duplicate methods
-2. Rename one if they do different things
-3. Keep only the version you want
+1. Delete duplicate methods.
+2. Rename one if they do different things.
+3. Keep only the version you want.
 
 ---
 
@@ -221,7 +221,7 @@ Shooter.java:15: error: missing return statement
 ```
 
 **Common causes:**
-1. **Forgot return statement**
+1. **Forgot return statement**.
 ```java
 ❌ public double getSpeed() {
     double speed = calculateSpeed();
@@ -234,7 +234,7 @@ Shooter.java:15: error: missing return statement
 }
 ```
 
-2. **Return not in all paths**
+2. **Return not in all paths**.
 ```java
 ❌ public double getSpeed() {
     if (isReady) {
@@ -252,9 +252,9 @@ Shooter.java:15: error: missing return statement
 ```
 
 **Fix:**
-1. Add return statement to method
-2. Make sure all code paths return something
-3. Return default value if needed
+1. Add return statement to method.
+2. Make sure all code paths return something.
+3. Return default value if needed.
 
 ---
 
@@ -271,7 +271,7 @@ RobotContainer.java:50: error: reached end of file while parsing
 ```
 
 **Common causes:**
-1. **Missing closing brace**
+1. **Missing closing brace**.
 ```java
 ❌ public class RobotContainer {
     public RobotContainer() {
@@ -285,7 +285,7 @@ RobotContainer.java:50: error: reached end of file while parsing
 }  // Close class
 ```
 
-2. **Too many opening braces**
+2. **Too many opening braces**.
 ```java
 ❌ public void myMethod() {
     if (something) {
@@ -303,9 +303,9 @@ RobotContainer.java:50: error: reached end of file while parsing
 
 **Fix:**
 1. Count opening braces `{` and closing braces `}`
-2. Make sure they match
-3. Use VS Code's bracket matching
-4. Indent code to see structure clearly
+2. Make sure they match.
+3. Use VS Code's bracket matching.
+4. Indent code to see structure clearly.
 
 ---
 
@@ -338,10 +338,10 @@ java -version
 ```
 
 ### Fix 4: Restart VS Code
-1. Close VS Code
-2. Reopen VS Code
-3. Wait for Gradle to sync
-4. Try building again
+1. Close VS Code.
+2. Reopen VS Code.
+3. Wait for Gradle to sync.
+4. Try building again.
 
 ---
 
@@ -358,16 +358,16 @@ Drivetrain.java:15: error: cannot find symbol
 ```
 
 **Breakdown:**
-- `Drivetrain.java:15` - File name and line number
-- `error: cannot find symbol` - What went wrong
-- `drive.driveForeward(1.0);` - The problematic code
-- `^` - Points to exact problem location
-- `symbol: method driveForeward(double)` - What Java can't find
+- `Drivetrain.java:15` - File name and line number.
+- `error: cannot find symbol` - What went wrong.
+- `drive.driveForeward(1.0);` - The problematic code.
+- `^` - Points to exact problem location.
+- `symbol: method driveForeward(double)` - What Java can't find.
 
 ### Using Line Numbers
-1. Go to the file mentioned
-2. Find the line number
-3. Look at code around that line
+1. Go to the file mentioned.
+2. Find the line number.
+3. Look at code around that line.
 4. Check for typos, missing imports, etc.
 
 ---
@@ -411,10 +411,10 @@ What am I missing?"
 ```
 
 ### What to Include:
-1. **Full error message**
-2. **Code around the error**
-3. **What you've tried**
-4. **File and line number**
+1. **Full error message**.
+2. **Code around the error**.
+3. **What you've tried**.
+4. **File and line number**.
 
 ---
 

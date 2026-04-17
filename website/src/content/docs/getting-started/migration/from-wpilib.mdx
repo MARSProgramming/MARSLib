@@ -12,12 +12,12 @@ This guide helps you migrate your existing WPILib robot code to MARSLib. We'll c
 ## Why Migrate to MARSLib?
 
 **Key Benefits over Pure WPILib:**
-- ✅ **IO Abstraction** - Test without hardware
-- ✅ **Zero-Allocation Patterns** - No GC pauses
-- ✅ **Battle-Tested** - Competition-proven code
-- ✅ **Better Simulation** - Physics-based testing
-- ✅ **Comprehensive Tools** - Performance analysis, fault detection
-- ✅ **Active Development** - Regular updates and improvements
+- ✅ **IO Abstraction** - Test without hardware.
+- ✅ **Zero-Allocation Patterns** - No GC pauses.
+- ✅ **Battle-Tested** - Competition-proven code.
+- ✅ **Better Simulation** - Physics-based testing.
+- ✅ **complete Tools** - Performance analysis, fault detection.
+- ✅ **Active Development** - Regular updates and improvements.
 
 ## Migration Approaches
 
@@ -25,13 +25,13 @@ This guide helps you migrate your existing WPILib robot code to MARSLib. We'll c
 Replace all subsystems with MARSLib equivalents.
 
 **Pros:**
-- Best performance
-- All MARSLib features
-- Consistent patterns
+- Best performance.
+- All MARSLib features.
+- Consistent patterns.
 
 **Cons:**
-- More upfront work
-- Learning curve
+- More upfront work.
+- Learning curve.
 
 **Timeline:** 1-2 weeks for experienced teams
 
@@ -39,13 +39,13 @@ Replace all subsystems with MARSLib equivalents.
 Use MARSLib for specific features while keeping WPILib for others.
 
 **Pros:**
-- Gradual adoption
+- Gradual adoption.
 - Lower risk
-- Learn at your pace
+- Learn at your pace.
 
 **Cons:**
-- Mixed patterns
-- Some complexity
+- Mixed patterns.
+- Some complexity.
 
 **Timeline:** 2-4 weeks
 
@@ -53,12 +53,12 @@ Use MARSLib for specific features while keeping WPILib for others.
 New features use MARSLib, old code remains WPILib.
 
 **Pros:**
-- Low disruption
-- Flexible timeline
+- Low disruption.
+- Flexible timeline.
 
 **Cons:**
-- Inconsistent codebase
-- Maintenance burden
+- Inconsistent codebase.
+- Maintenance burden.
 
 **Timeline:** Ongoing
 
@@ -434,41 +434,41 @@ MotorIO motorIO = new MotorIOSim();  // ✓ Correct
 **Symptoms:** Loop time increased, GC pauses
 
 **Solution:**
-- Pre-allocate objects in constructor
+- Pre-allocate objects in constructor.
 - Avoid `new` in periodic()
-- Use primitive arrays instead of collections
-- Check performance dashboard
+- Use primitive arrays instead of collections.
+- Check performance dashboard.
 
 ## Migration Checklist
 
 ### Phase 1: Preparation
-- [ ] Read MARSLib documentation
-- [ ] Set up MARSLib dependency
-- [ ] Review IO abstraction patterns
-- [ ] Plan migration approach
+- [ ] Read MARSLib documentation.
+- [ ] Set up MARSLib dependency.
+- [ ] Review IO abstraction patterns.
+- [ ] Plan migration approach.
 
 ### Phase 2: Subsystems
-- [ ] Migrate drive base
-- [ ] Migrate mechanisms
-- [ ] Migrate vision
-- [ ] Migrate sensors
+- [ ] Migrate drive base.
+- [ ] Migrate mechanisms.
+- [ ] Migrate vision.
+- [ ] Migrate sensors.
 
 ### Phase 3: Commands & Auto
-- [ ] Update commands for IO-based subsystems
-- [ ] Migrate autonomous routines
+- [ ] Update commands for IO-based subsystems.
+- [ ] Migrate autonomous routines.
 - [ ] Add PathPlanner integration (optional)
 
 ### Phase 4: Testing
-- [ ] Write simulation tests
-- [ ] Test on real hardware
-- [ ] Verify performance
-- [ ] Check log analysis
+- [ ] Write simulation tests.
+- [ ] Test on real hardware.
+- [ ] Verify performance.
+- [ ] Check log analysis.
 
 ### Phase 5: Deployment
-- [ ] Deploy to robot
-- [ ] Test at competition
-- [ ] Monitor performance
-- [ ] Iterate based on feedback
+- [ ] Deploy to robot.
+- [ ] Test at competition.
+- [ ] Monitor performance.
+- [ ] Iterate based on feedback.
 
 ## Timeline Estimate
 
@@ -482,7 +482,7 @@ MotorIO motorIO = new MotorIOSim();  // ✓ Correct
 
 ## Further Reading
 
-- [IO Abstraction Guide](/framework-architecture/io-layer)
+- [IO Abstraction Guide](/framework-structure/io-layer)
 - [Testing Guide](/contributing/testing-guide)
 - [Simulation Best Practices](/advanced/simulation-best-practices)
 - [Performance Analysis](/advanced/performance-analysis)

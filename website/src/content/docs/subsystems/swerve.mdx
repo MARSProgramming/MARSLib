@@ -19,8 +19,8 @@ Swerve drive is the pinnacle of FRC drivetrain **Innovation**. It offers unmatch
 **In simple terms**: Swerve drive means each wheel can both steer AND drive independently.
 
 **Think of it like this**:
-- ❌ **Regular drivetrain**: Wheels only spin forward/backward
-- ❌ **Tank drive**: Left and right sides spin at different speeds to turn
+- ❌ **Regular drivetrain**: Wheels only spin forward/backward.
+- ❌ **Tank drive**: Left and right sides spin at different speeds to turn.
 - ✅ **Swerve drive**: Each wheel can spin AND point in any direction!
 
 **Real-world analogy**: 
@@ -35,19 +35,19 @@ Swerve drive is the pinnacle of FRC drivetrain **Innovation**. It offers unmatch
 - Move in any direction (including sideways!)
 - Turn while moving (like a car)
 - Rotate in place (spin like a top)
-- Combine movements smoothly
+- Combine movements smoothly.
 
 **Competition advantages**:
-- Navigate around defenders easily
-- Align with game pieces quickly
-- Maintain precise positioning
-- Most agile drivetrain in FRC
+- Navigate around defenders easily.
+- Align with game pieces quickly.
+- Maintain precise positioning.
+- Most agile drivetrain in FRC.
 
 **Real-game benefits**:
-- Strafe around obstacles
-- Drive and aim simultaneously
-- Quick position adjustments
-- Better path following
+- Strafe around obstacles.
+- Drive and aim at the same time.
+- Quick position adjustments.
+- Better path following.
 
 ---
 
@@ -68,9 +68,9 @@ Swerve drive is the pinnacle of FRC drivetrain **Innovation**. It offers unmatch
 ### Four Modules Working Together
 
 **Your robot has 4 swerve modules**:
-- Front-left, front-right, rear-left, rear-right
-- Each can point in different directions
-- Each can spin at different speeds
+- Front-left, front-right, rear-left, rear-right.
+- Each can point in different directions.
+- Each can spin at different speeds.
 
 **The magic**: Software coordinates all 4 modules to make the robot move smoothly
 
@@ -81,13 +81,13 @@ Swerve drive is the pinnacle of FRC drivetrain **Innovation**. It offers unmatch
 ### Why Speed Matters
 
 **Regular robot code runs at 50Hz** (every 20ms)
-- Good enough for simple mechanisms
-- Too slow for precise positioning
+- Good enough for simple mechanisms.
+- Too slow for precise positioning.
 
 **Swerve drive needs 250Hz** (every 4ms)
-- 5x faster than regular code
-- Calculates position more accurately
-- Robot responds more quickly
+- 5x faster than regular code.
+- Calculates position more accurately.
+- Robot responds more quickly.
 
 ### The Problem with 50Hz Updates
 
@@ -100,9 +100,9 @@ Distance between updates: 5 m/s × 0.02s = 0.1m = 10cm
 ```
 
 **Problem**: Robot could drift 10cm between updates!
-- Misses auto line by 10cm
-- Overshoots target by 10cm
-- Accumulates errors over time
+- Misses auto line by 10cm.
+- Overshoots target by 10cm.
+- Accumulates errors over time.
 
 ### The MARSLib Solution: 250Hz Thread
 
@@ -113,22 +113,22 @@ Distance between updates: 5 m/s × 0.004s = 0.02m = 2cm
 ```
 
 **Benefit**: 5x more accurate!
-- Auto routines hit targets precisely
-- Odometry stays accurate
-- Robot responds instantly
+- Auto routines hit targets precisely.
+- Odometry stays accurate.
+- Robot responds instantly.
 
 ### How MARSLib Does This
 
 **Separate thread** dedicated to odometry:
-- Runs at 250Hz continuously
-- Doesn't slow down main robot code
-- Uses CANivore bus for fast communication
+- Runs at 250Hz continuously.
+- Doesn't slow down main robot code.
+- Uses CANivore bus for fast communication.
 - Zero-allocation (no garbage collection pauses)
 
 **Real-world result**:
-- Position accuracy: ±2cm instead of ±10cm
-- Auto success rate: 95%+ instead of 70%
-- Robot responds predictably every time
+- Position accuracy: ±2cm instead of ±10cm.
+- Auto success rate: 95%+ instead of 70%.
+- Robot responds predictably every time.
 
 ---
 
@@ -139,21 +139,21 @@ Distance between updates: 5 m/s × 0.004s = 0.02m = 2cm
 **In simple terms**: Kinematics is the math that calculates how each wheel should move to make the robot move the way you want.
 
 **Think of it like this**:
-- You want robot to move forward at 2 m/s
-- Kinematics calculates: each wheel should spin at X speed
-- You want robot to move sideways at 1 m/s  
-- Kinematics calculates: each wheel should point sideways and spin at Y speed
+- You want robot to move forward at 2 m/s.
+- Kinematics calculates: each wheel should spin at X speed.
+- You want robot to move sideways at 1 m/s  .
+- Kinematics calculates: each wheel should point sideways and spin at Y speed.
 
 ### The Kinematics Equation
 
 **Input**: What you want robot to do
-- `vx` = forward/backward speed
-- `vy` = left/right speed
+- `vx` = forward/backward speed.
+- `vy` = left/right speed.
 - `omega` = rotation speed (turning)
 
 **Output**: What each wheel should do
-- Module speed = how fast to spin
-- Module angle = which direction to point
+- Module speed = how fast to spin.
+- Module angle = which direction to point.
 
 **Example**: Moving diagonally
 ```java
@@ -176,13 +176,13 @@ double omega = 0.0;  // No rotation
 ### Robot vs Field Orientation
 
 **Robot-oriented drive**:
-- Forward = wherever robot is facing
-- Turn robot, "forward" changes
-- Like driving a car in reverse
+- Forward = wherever robot is facing.
+- Turn robot, "forward" changes.
+- Like driving a car in reverse.
 
 **Field-oriented drive**:
-- Forward = always toward opponent's alliance wall
-- Turn robot, "forward" stays same
+- Forward = always toward opponent's alliance wall.
+- Turn robot, "forward" stays same.
 - Much easier for drivers!
 
 ### How It Works
@@ -211,10 +211,10 @@ ChassisSpeeds robotSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
 ```
 
 **What happens**:
-- Driver pushes "forward" on joystick
-- Robot moves toward opponent's wall
+- Driver pushes "forward" on joystick.
+- Robot moves toward opponent's wall.
 - Even if robot is turned sideways!
-- Much more intuitive driving
+- Much more intuitive driving.
 
 ---
 
@@ -223,9 +223,9 @@ ChassisSpeeds robotSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
 ### Vision + Odometry = Super Accurate Positioning
 
 **Odometry alone**:
-- Great for relative position
+- Great for relative position.
 - Drifts over time (small errors add up)
-- Can get confused by wheel slip
+- Can get confused by wheel slip.
 
 **Vision alone**:
 - Absolute position (knows exactly where you are)
@@ -233,8 +233,8 @@ ChassisSpeeds robotSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
 - Can be noisy
 
 **Together**: Perfect!
-- Odometry: Fast, smooth updates
-- Vision: Corrects drift occasionally
+- Odometry: Fast, smooth updates.
+- Vision: Corrects drift occasionally.
 - Result: Accurate positioning all match long!
 
 ### MegaTag 2.0 Integration
@@ -242,15 +242,15 @@ ChassisSpeeds robotSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
 **What it is**: Advanced vision system that uses camera + gyroscope data
 
 **Why it's awesome**:
-- Compensates for camera latency
-- Rejects bad measurements
-- Works while robot is spinning
-- Super accurate localization
+- Compensates for camera latency.
+- Rejects bad measurements.
+- Works while robot is spinning.
+- Super accurate localization.
 
 **MARSLib advantage**:
 - 250Hz gyro updates (smoother than 50Hz)
-- More accurate vision seeding
-- Better pose estimation
+- More accurate vision seeding.
+- Better pose estimation.
 
 **Real-game scenario**:
 ```
@@ -269,8 +269,8 @@ ChassisSpeeds robotSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
 **The problem**: When wheels spin faster than robot moves, you lose traction
 
 **Real-world example**: 
-- Car on ice: Spin wheels fast, car doesn't move
-- Robot on field: Turn too sharply, wheels slip, position becomes inaccurate
+- Car on ice: Spin wheels fast, car doesn't move.
+- Robot on field: Turn too sharply, wheels slip, position becomes inaccurate.
 
 **Traction control**: Prevents wheels from slipping by limiting acceleration
 
@@ -310,10 +310,10 @@ if (isSlipping()) {
 ```
 
 **Benefits**:
-- Wheels maintain grip on field
-- Odometry stays accurate
-- More consistent auto paths
-- Better driving performance
+- Wheels maintain grip on field.
+- Odometry stays accurate.
+- More consistent auto paths.
+- Better driving performance.
 
 ---
 
@@ -324,10 +324,10 @@ if (isSlipping()) {
 <SwerveSim client:only="react" />
 
 **Try this**:
-1. Move joystick to see how modules respond
-2. Watch how each wheel points and spins
-3. Try field-oriented vs robot-oriented
-4. See how rotation affects all modules
+1. Move joystick to see how modules respond.
+2. Watch how each wheel points and spins.
+3. Try field-oriented vs robot-oriented.
+4. See how rotation affects all modules.
 
 ---
 
@@ -336,20 +336,20 @@ if (isSlipping()) {
 ### Accuracy Comparison
 
 **50Hz odometry** (standard FRC):
-- Position drift: ~10cm per second
-- Auto accuracy: ~70%
-- Path following: ±15cm error
+- Position drift: ~10cm per second.
+- Auto accuracy: ~70%.
+- Path following: ±15cm error.
 
 **250Hz MARSLib odometry**:
-- Position drift: ~2cm per second  
-- Auto accuracy: ~95%+
-- Path following: ±3cm error
+- Position drift: ~2cm per second  .
+- Auto accuracy: ~95%+.
+- Path following: ±3cm error.
 
 **Real impact**:
-- Auto scores more consistently
-- Robot positions more accurately
-- Drivers have better control
-- Competition performance improves
+- Auto scores more consistently.
+- Robot positions more accurately.
+- Drivers have better control.
+- Competition performance improves.
 
 ---
 
@@ -358,44 +358,44 @@ if (isSlipping()) {
 ### Before Competition
 
 **Tuning checklist**:
-- [ ] Verify all 4 modules calibrated correctly
-- [ ] Test field-oriented drive
-- [ ] Auto routines work in simulation
-- [ ] Auto routines work on real field
-- [ ] Vision integration tested
-- [ ] Traction control tuned
+- [ ] Verify all 4 modules calibrated correctly.
+- [ ] Test field-oriented drive.
+- [ ] Auto routines work in simulation.
+- [ ] Auto routines work on real field.
+- [ ] Vision integration tested.
+- [ ] Traction control tuned.
 
 ### At Competition
 
 **Pre-match checklist**:
-- [ ] Odometry zeroed correctly
-- [ ] Gyro calibrated
-- [ ] Vision camera working
-- [ ] Auto mode selected
-- [ ] Test drive briefly
+- [ ] Odometry zeroed correctly.
+- [ ] Gyro calibrated.
+- [ ] Vision camera working.
+- [ ] Auto mode selected.
+- [ ] Test drive briefly.
 
 **Monitoring during match**:
-- Watch odometry accuracy
-- Check module temperatures
-- Monitor CAN bus utilization
-- Verify vision updates
+- Watch odometry accuracy.
+- Check module temperatures.
+- Monitor CAN bus utilization.
+- Verify vision updates.
 
 ### Troubleshooting
 
 **Robot not moving straight**:
-- Check module calibration
-- Verify wheel alignment
-- Check for mechanical issues
+- Check module calibration.
+- Verify wheel alignment.
+- Check for mechanical issues.
 
 **Odometry drifting**:
-- Verify gyro working
-- Check wheel encoders
-- Test vision integration
+- Verify gyro working.
+- Check wheel encoders.
+- Test vision integration.
 
 **Auto not working**:
-- Test starting position
-- Check path files load correctly
-- Verify pose estimator
+- Test starting position.
+- Check path files load correctly.
+- Verify pose estimator.
 
 ---
 
@@ -404,9 +404,9 @@ if (isSlipping()) {
 ### Custom Path Following
 
 **For experienced programmers**:
-- Custom path following algorithms
-- Adaptive path following
-- Real-time path replanning
+- Custom path following algorithms.
+- Adaptive path following.
+- Real-time path replanning.
 
 ### Module Health Monitoring
 
@@ -431,9 +431,9 @@ public void checkModuleHealth() {
 ### Advanced Kinematics
 
 **For maximum performance**:
-- Custom kinematics optimization
-- Module-specific tuning
-- Adaptive control strategies
+- Custom kinematics optimization.
+- Module-specific tuning.
+- Adaptive control strategies.
 
 ---
 
@@ -497,37 +497,37 @@ drivetrain.driveToPose(new Pose2d(drivetrain.getPose().getTranslation(), new Rot
 
 ### Swerve Drive Benefits
 
-- ✅ Move in any direction
-- ✅ Turn while moving
-- ✅ Rotate in place
-- ✅ Field-oriented driving
-- ✅ Most accurate positioning
+- ✅ Move in any direction.
+- ✅ Turn while moving.
+- ✅ Rotate in place.
+- ✅ Field-oriented driving.
+- ✅ Most accurate positioning.
 
 ### MARSLib Swerve Features
 
-- ✅ 250Hz odometry updates
-- ✅ MegaTag 2.0 vision integration
-- ✅ Traction control
-- ✅ Field-oriented drive
-- ✅ Zero-allocation architecture
+- ✅ 250Hz odometry updates.
+- ✅ MegaTag 2.0 vision integration.
+- ✅ Traction control.
+- ✅ Field-oriented drive.
+- ✅ Zero-allocation structure.
 
 ### Performance Targets
 
-- **Loop time**: &lt; 5ms
-- **Odometry accuracy**: ±2cm
-- **Auto success rate**: >95%
-- **CAN utilization**: &lt;60%
+- **Loop time**: &lt; 5ms.
+- **Odometry accuracy**: ±2cm.
+- **Auto success rate**: >95%.
+- **CAN utilization**: &lt;60%.
 
 ---
 
 ## Summary
 
 **Key concepts**:
-1. **Swerve drive** = each wheel steers and drives independently
-2. **250Hz updates** = 5x more accurate positioning
-3. **Kinematics** = math that coordinates all 4 wheels
-4. **Field-oriented drive** = easier for drivers
-5. **Vision integration** = corrects odometry drift
+1. **Swerve drive** = each wheel steers and drives independently.
+2. **250Hz updates** = 5x more accurate positioning.
+3. **Kinematics** = math that coordinates all 4 wheels.
+4. **Field-oriented drive** = easier for drivers.
+5. **Vision integration** = corrects odometry drift.
 
 ---
 

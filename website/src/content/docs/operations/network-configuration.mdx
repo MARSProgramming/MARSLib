@@ -9,7 +9,7 @@ sidebar:
 
 Proper network configuration is essential for reliable robot communication and competition compliance. This guide covers the complete MARSLib network setup.
 
-## Network Architecture Overview
+## Network structure Overview
 
 ### 📡 Standard FRC Network
 
@@ -65,12 +65,12 @@ Example for Team 2614:
 ### OM5P Radio Setup
 
 **Initial Radio Configuration:**
-1. **Connect** to radio via Ethernet
+1. **Connect** to radio via Ethernet.
 2. **Access** web interface: `http://192.168.1.1`
-3. **Login**: admin / admin
-4. **Set team number**: Your FRC team number
-5. **Configure channel**: Choose least congested 2.4GHz channel
-6. **Set security**: WPA2-Personal with strong password
+3. **Login**: admin / admin.
+4. **Set team number**: Your FRC team number.
+5. **Configure channel**: Choose least congested 2.4GHz channel.
+6. **Set security**: WPA2-Personal with strong password.
 
 **Competition Settings:**
 ```json
@@ -87,15 +87,15 @@ Example for Team 2614:
 ### roboRIO Network Setup
 
 **Method 1: Web Dashboard**
-1. Connect to roboRIO USB
+1. Connect to roboRIO USB.
 2. Access: `http://roborio-TEAM-FRC.local`
-3. Configure → Network
+3. Configure → Network.
 4. Set static IP: `10.TE.AM.1`
 
 **Method 2: Imaging Tool**
-1. Open roboRIO Imaging Tool
-2. Configure team number
-3. Image to SD card
+1. Open roboRIO Imaging Tool.
+2. Configure team number.
+3. Image to SD card.
 4. Image roboRIO (5-10 minutes)
 
 ## Device Configuration
@@ -103,16 +103,16 @@ Example for Team 2614:
 ### IP Camera Setup
 
 **Limelight Configuration:**
-1. **Connect** to Limelight via USB
+1. **Connect** to Limelight via USB.
 2. **Access**: `http://limelight.local` or `10.TE.AM.11`
 3. **Configure**:
    - Set static IP: `10.TE.AM.11`
-   - Team number: Your team number
+   - Team number: Your team number.
    - Camera exposure: Low (5-15 for AprilTags)
-   - Pipeline: AprilTag pipeline
+   - Pipeline: AprilTag pipeline.
 
 **PhotonVision Configuration:**
-1. **Install** PhotonVision on coprocessor
+1. **Install** PhotonVision on coprocessor.
 2. **Configure** network settings:
    - Static IP: `10.TE.AM.11`
    - Gateway: `10.TE.AM.1`
@@ -231,9 +231,9 @@ ssh admin@10.26.14.1
 
 **Solutions:**
 1. **Verify radio is powered** (solid blue LED)
-2. **Check Ethernet cables** are securely connected
-3. **Restart Driver Station** application
-4. **Reimage radio** if necessary
+2. **Check Ethernet cables** are securely connected.
+3. **Restart Driver Station** application.
+4. **Reimage radio** if necessary.
 
 ### High Latency Issues
 
@@ -264,7 +264,7 @@ public class NetworkMonitor {
 
 **Solutions:**
 1. **Reduce wireless interference** (change radio channel)
-2. **Use wired connection** for development
+2. **Use wired connection** for development.
 3. **Optimize network tables updates** (don't spam updates)
 4. **Check for bandwidth-heavy applications** (vision streaming)
 
@@ -283,21 +283,21 @@ dmesg | grep -i wifi
 ```
 
 **Solutions:**
-1. **Update radio firmware** to latest version
-2. **Check power supply** to radio
-3. **Inspect antenna connections** on radio
-4. **Reduce wireless interference** at venue
+1. **Update radio firmware** to latest version.
+2. **Check power supply** to radio.
+3. **Inspect antenna connections** on radio.
+4. **Reduce wireless interference** at venue.
 
 ## Competition Preparation
 
 ### FMS Connection Testing
 
 **Pre-Competition Checklist:**
-- [ ] **Connect** to practice field
-- [ ] **Test** driver station connection
-- [ ] **Verify** all devices communicate
-- [ ] **Test** robot code deployment
-- [ ] **Check** camera streaming works
+- [ ] **Connect** to practice field.
+- [ ] **Test** driver station connection.
+- [ ] **Verify** all devices communicate.
+- [ ] **Test** robot code deployment.
+- [ ] **Check** camera streaming works.
 
 **Practice Field Test:**
 ```java
@@ -355,10 +355,10 @@ public class BandwidthMonitor {
 ### Wireless Security
 
 **Recommended Settings:**
-- **Security Mode**: WPA2-Personal
+- **Security Mode**: WPA2-Personal.
 - **Password**: Strong password (16+ characters)
-- **Encryption**: AES
-- **Key Rotation**: Change password each season
+- **Encryption**: AES.
+- **Key Rotation**: Change password each season.
 
 **Password Management:**
 ```bash
@@ -455,9 +455,9 @@ passwd admin
 
 ## 📖 Further Reading
 
-- [Deployment Guide](./deployment-guide) - Complete robot deployment
-- [Troubleshooting Guide](./troubleshooting) - Network troubleshooting
-- [FRC Network Rules](https://firstfrc.github.io/robot-network-rules/) - Official network rules
-- [OM5P Documentation](https://docs.openmesh.com/) - Radio configuration
+- [Deployment Guide](./deployment-guide) - Complete robot deployment.
+- [Troubleshooting Guide](./troubleshooting) - Network troubleshooting.
+- [FRC Network Rules](https://firstfrc.github.io/robot-network-rules/) - Official network rules.
+- [OM5P Documentation](https://docs.openmesh.com/) - Radio configuration.
 
 **Ready to configure?** Set up your network and get connected!

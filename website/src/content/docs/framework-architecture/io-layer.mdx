@@ -36,10 +36,10 @@ public interface FlywheelIO {
 }
 ```
 
-  ## <span class="mars-num">2</span> Hardware Implementation
+  ## <span class="mars-num">2</span> Hardware setup
 
   
-The "Real" implementation talks to actual motors. It has no logicÃ¢â‚¬â€it only moves data between the hardware and the Inputs object.
+The "Real" setup talks to actual motors. It has no logicÃ¢â‚¬â€it only moves data between the hardware and the Inputs object.
 
 
   ```java
@@ -63,10 +63,10 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 }
 ```
 
-  ## <span class="mars-num">3</span> Physics Implementation
+  ## <span class="mars-num">3</span> Physics setup
 
   
-The "Sim" implementation uses math to calculate how a motor would behave. MARSLib uses **[WPILib Physics Sims](https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/introduction.html)** (like `DCMotorSim`) and **[MARSPhysicsWorld](https://marsprogramming.github.io/MARSLib/docs/subsystems/simulation)** for high-fidelity physics.
+The "Sim" setup uses math to calculate how a motor would behave. MARSLib uses **[WPILib Physics Sims](https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/introduction.html)** (like `DCMotorSim`) and **[MARSPhysicsWorld](https://marsprogramming.github.io/MARSLib/docs/subsystems/simulation)** for high-fidelity physics.
 
 
   ```java
@@ -115,7 +115,7 @@ subsystem = new FlywheelSubsystem(io);
 
     - [FRC Log Replay and Simulation](https://www.youtube.com/watch?v=yYn9NqJ6kXU) - Mechanical Advantage's definitive 2024 Championship presentation on the why behind the IO-Layer abstraction.
 
-    - [AdvantageKit Architecture](https://github.com/Mechanical-Advantage/AdvantageKit) - The core repository governing deterministic replay loops on the RIO.
+    - [AdvantageKit structure](https://github.com/Mechanical-Advantage/AdvantageKit) - The core repository governing deterministic replay loops on the RIO.
 
     - [AdvantageScope Documentation](https://github.com/Mechanical-Advantage/AdvantageScope) - Visualizing 3D logs natively in real-time.
 

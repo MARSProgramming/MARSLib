@@ -275,7 +275,7 @@ public static void assertPoseEquals(
 
 ### DO ✅
 
-1. **Test Real Scenarios**
+1. **Test Real Scenarios**.
 ```java
 @Test
 public void testAutonomousRoutine() {
@@ -294,7 +294,7 @@ public void testAutonomousRoutine() {
 }
 ```
 
-2. **Use Physics Simulation**
+2. **Use Physics Simulation**.
 ```java
 @Test
 public void testGamePieceInteraction() {
@@ -317,7 +317,7 @@ public void testGamePieceInteraction() {
 }
 ```
 
-3. **Test Edge Cases**
+3. **Test Edge Cases**.
 ```java
 @Test
 public void testBoundaryConditions() {
@@ -342,20 +342,20 @@ public void testBoundaryConditions() {
 
 ### DON'T ❌
 
-1. **Don't Mock Hardware**
+1. **Don't Mock Hardware**.
 ```java
 // BAD: Mocking defeats physics testing
 SwerveModuleIO mockModule = mock(SwerveModuleIO.class);
 ```
 
-2. **Don't Skip Physics**
+2. **Don't Skip Physics**.
 ```java
 // BAD: Doesn't test real physics behavior
 drive.setPose(new Pose2d(1.0, 2.0, new Rotation2d()));
 assertEquals(1.0, drive.getPose().getX());  // Static check
 ```
 
-3. **Don't Test Trivial Code**
+3. **Don't Test Trivial Code**.
 ```java
 // BAD: Testing getters/setters
 assertEquals(drive.getX(), drive.getX());
@@ -377,8 +377,8 @@ We maintain **80% test coverage** across the codebase.
 ### Coverage by Package
 - `com.marslib.swerve` - 90%+ (critical path)
 - `com.marslib.vision` - 85%+ (safety-critical)
-- `com.marslib.mechanisms` - 80%+
-- `com.marslib.util` - 75%+
+- `com.marslib.mechanisms` - 80%+.
+- `com.marslib.util` - 75%+.
 
 ## CI/CD Integration
 

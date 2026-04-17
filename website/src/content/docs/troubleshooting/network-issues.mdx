@@ -14,34 +14,34 @@ Network problems can make your robot uncontrollable or unresponsive. This guide 
 ### <span class="mars-num">1</span> Check Physical Connections
 
 **Look for**:
-- Ethernet cable connected to RoboRIO
-- Ethernet cable connected to radio
+- Ethernet cable connected to RoboRIO.
+- Ethernet cable connected to radio.
 - Radio powered on (solid orange/green lights)
-- Computer connected to robot network
+- Computer connected to robot network.
 
 **What should you see**:
 - ✅ **RoboRIO**: Orange link light (connected)
-- ✅ **Radio**: Solid orange/green lights
-- ✅ **Computer**: Connected to robot-XXXX network
+- ✅ **Radio**: Solid orange/green lights.
+- ✅ **Computer**: Connected to robot-XXXX network.
 
 ### <span class="mars-num">2</span> Check Driver Station
 
 **Look at these indicators**:
 - **Communications**: Green (good), Red (bad), Orange (searching)
 - **Robot Code**: Green (running), Red (not running)
-- **Joysticks**: Shows controller connection status
+- **Joysticks**: Shows controller connection status.
 
 **What you want**:
-- ✅ **Communications**: Green
-- ✅ **Robot Code**: Green
-- ✅ **Joysticks**: Your controller listed
+- ✅ **Communications**: Green.
+- ✅ **Robot Code**: Green.
+- ✅ **Joysticks**: Your controller listed.
 
 ### <span class="mars-num">3</span> Check Team Number
 
 **Verify team number matches**:
-- Driver Station team number: XX-XXX
-- RoboRIO team number: Same as Driver Station
-- Radio team number: Same as Driver Station
+- Driver Station team number: XX-XXX.
+- RoboRIO team number: Same as Driver Station.
+- Radio team number: Same as Driver Station.
 
 **Mismatch causes**: Connection failures, wrong robot controlled
 
@@ -52,10 +52,10 @@ Network problems can make your robot uncontrollable or unresponsive. This guide 
 ### Problem 1: "Communications Lost" (Red)
 
 **Symptoms**:
-- Driver Station shows "Communications: Red"
-- Robot becomes unresponsive
-- Code stops running
-- Can't drive or control robot
+- Driver Station shows "Communications: Red".
+- Robot becomes unresponsive.
+- Code stops running.
+- Can't drive or control robot.
 
 **Causes**:
 
@@ -65,7 +65,7 @@ Fix: Check radio power and connections
 ```
 
 - Check 12V power to radio (from PDP or VRM)
-- Verify ethernet cable from RoboRIO to radio
+- Verify ethernet cable from RoboRIO to radio.
 - Check radio lights (should be solid, not blinking)
 
 **2. Wrong Network**
@@ -74,7 +74,7 @@ Fix: Connect to correct network
 ```
 
 - Computer should be connected to `robot-XXXX-XX-XXX`
-- NOT your home/school WiFi
+- NOT your home/school WiFi.
 - NOT the radio's setup network (`192.168.XX.X`)
 
 **3. Firewall Blocking**
@@ -82,26 +82,26 @@ Fix: Connect to correct network
 Fix: Temporarily disable firewall
 ```
 
-- Windows Firewall can block robot communication
-- Disable firewall during competition
-- Add exceptions for FRC programs
+- Windows Firewall can block robot communication.
+- Disable firewall during competition.
+- Add exceptions for FRC programs.
 
 **4. IP Address Conflicts**
 ```
 Fix: Check for duplicate IP addresses
 ```
 
-- Only one device should have each IP
-- RoboRIO: 10.TE.AM.2
-- Radio: 10.TE.AM.1
-- Computer: DHCP from radio
+- Only one device should have each IP.
+- RoboRIO: 10.TE.AM.2.
+- Radio: 10.TE.AM.1.
+- Computer: DHCP from radio.
 
 ### Problem 2: "Robot Code" Red (Not Running)
 
 **Symptoms**:
-- Driver Station shows "Robot Code: Red"
-- Code deployed but not running
-- Robot does nothing even with comms green
+- Driver Station shows "Robot Code: Red".
+- Code deployed but not running.
+- Robot does nothing even with comms green.
 
 **Causes**:
 
@@ -111,9 +111,9 @@ Fix: Check RioLog for errors
 ```
 
 - Open RioLog
-- Look for red error messages
-- Common crashes: NullPointerException, missing libraries
-- Fix crash and redeploy
+- Look for red error messages.
+- Common crashes: NullPointerException, missing libraries.
+- Fix crash and redeploy.
 
 **2. Wrong Main Class**
 ```
@@ -131,15 +131,15 @@ Fix: Ensure code is deployed to RoboRIO
 ```
 
 - Run `./gradlew deploy`
-- Watch for "BUILD SUCCESSFUL"
-- Check RioLog shows "Robot code starting"
+- Watch for "BUILD SUCCESSFUL".
+- Check RioLog shows "Robot code starting".
 
 ### Problem 3: Intermittent Connection Drops
 
 **Symptoms**:
-- Robot works, then loses connection randomly
-- Driver Station shows orange then red
-- Connection comes back after a few seconds
+- Robot works, then loses connection randomly.
+- Driver Station shows orange then red.
+- Connection comes back after a few seconds.
 
 **Causes**:
 
@@ -148,34 +148,34 @@ Fix: Ensure code is deployed to RoboRIO
 Fix: Replace ethernet cable
 ```
 
-- Try different cable
-- Check for damage
-- Use shielded cable for long runs
+- Try different cable.
+- Check for damage.
+- Use shielded cable for long runs.
 
 **2. Radio Overheating**
 ```
 Fix: Improve radio ventilation
 ```
 
-- Radio can overheat in enclosed spaces
-- Add cooling fan
-- Improve airflow around radio
+- Radio can overheat in enclosed spaces.
+- Add cooling fan.
+- Improve airflow around radio.
 
 **3. Power Issues**
 ```
 Fix: Check power connections
 ```
 
-- Verify 12V power supply is stable
-- Check PDP/VRM connections
+- Verify 12V power supply is stable.
+- Check PDP/VRM connections.
 - Measure voltage at radio (should be ~12V)
 
 ### Problem 4. Joysticks Not Detected
 
 **Symptoms**:
-- Driver Station shows "Joysticks: None"
-- Can't drive robot
-- Controller doesn't work
+- Driver Station shows "Joysticks: None".
+- Can't drive robot.
+- Controller doesn't work.
 
 **Causes**:
 
@@ -184,34 +184,34 @@ Fix: Check power connections
 Fix: Reconnect controller
 ```
 
-- Unplug and replug controller
-- Try different USB port
-- Replace controller if damaged
+- Unplug and replug controller.
+- Try different USB port.
+- Replace controller if damaged.
 
 **2. Driver Station Not Seeing Controller**
 ```
 Fix: Refresh USB devices
 ```
 
-- Click "USB Devices" tab in Driver Station
-- Click "Refresh"
-- Verify controller appears
+- Click "USB Devices" tab in Driver Station.
+- Click "Refresh".
+- Verify controller appears.
 
 **3. Wrong USB Port**
 ```
 Fix: Use different USB port
 ```
 
-- Some USB ports don't work well
-- Try USB 2.0 port, not USB 3.0
-- Try port directly on computer, not hub
+- Some USB ports don't work well.
+- Try USB 2.0 port, not USB 3.0.
+- Try port directly on computer, not hub.
 
 ### Problem 5. Can't Connect to Radio Web Interface
 
 **Symptoms**:
-- Can't access radio configuration page
-- `http://192.168.XX.X` won't load
-- Can't configure radio settings
+- Can't access radio configuration page.
+- `http://192.168.XX.X` won't load.
+- Can't configure radio settings.
 
 **Causes**:
 
@@ -222,7 +222,7 @@ Fix: Connect to robot network
 
 - Must be connected to `robot-XXXX-XX-XXX`
 - NOT `192.168.XX.X` (setup network)
-- NOT your home network
+- NOT your home network.
 
 **2. Wrong IP Address**
 ```
@@ -231,16 +231,16 @@ Fix: Use correct radio IP
 
 - OM5P radio: `http://192.168.XX.X` (XX = team number last 2 digits)
 - Old radio: `http://10.TE.AM.1`
-- Check radio label for actual IP
+- Check radio label for actual IP.
 
 **3. Browser Issues**
 ```
 Fix: Try different browser or clear cache
 ```
 
-- Try Chrome or Firefox
-- Clear browser cache
-- Try incognito/private mode
+- Try Chrome or Firefox.
+- Clear browser cache.
+- Try incognito/private mode.
 
 ---
 
@@ -288,10 +288,10 @@ tracert 10.TE.AM.2
 ### Step 3: Check NetworkTables Connection
 
 **Verify NetworkTables connected**:
-- Open OutlineViewer or SmartDashboard
-- Look for `/SmartDashboard` folder
-- Check that you can add values
-- Verify values appear on both sides
+- Open OutlineViewer or SmartDashboard.
+- Look for `/SmartDashboard` folder.
+- Check that you can add values.
+- Verify values appear on both sides.
 
 ---
 
@@ -306,27 +306,27 @@ tracert 10.TE.AM.2
 Fix: Use provided 5GHz USB WiFi adapter
 ```
 
-- Competition fields provide WiFi adapter
-- Connect it to Driver Station computer
-- It's preconfigured for field network
+- Competition fields provide WiFi adapter.
+- Connect it to Driver Station computer.
+- It's preconfigured for field network.
 
 **2. Wrong Team Number**
 ```
 Fix: Ensure team number matches competition assignment
 ```
 
-- Official FRC event team number
-- Must match what you registered with
-- Check FMS for correct number
+- Official FRC event team number.
+- Must match what you registered with.
+- Check FMS for correct number.
 
 **3. Cable Management**
 ```
 Fix: Secure all network cables
 ```
 
-- Cable management prevents disconnects
-- Use zip ties and strain relief
-- Protect cables from robot movement
+- Cable management prevents disconnects.
+- Use zip ties and strain relief.
+- Protect cables from robot movement.
 
 ### Problem: FMS (Field Management System) Issues
 
@@ -337,30 +337,30 @@ Fix: Secure all network cables
 Fix: Check team number, network settings, radio power
 ```
 
-- Verify team number in Driver Station
-- Check radio is connected and powered
-- Ensure RoboRIO is powered and connected
+- Verify team number in Driver Station.
+- Check radio is connected and powered.
+- Ensure RoboRIO is powered and connected.
 
 **2. DS Errors on FMS**
 ```
 Fix: Check Driver Station logs
 ```
 
-- Look for specific error messages
+- Look for specific error messages.
 - Address common errors:
-  - "Team number mismatch"
-  - "Radio not connected"
-  - "Bandwidth too high"
+  - "Team number mismatch".
+  - "Radio not connected".
+  - "Bandwidth too high".
 
 **3. Robot Radio Not Responding**
 ```
 Fix: Power cycle radio and RoboRIO
 ```
 
-- Turn off robot
-- Unplug radio power
-- Wait 10 seconds
-- Reconnect and power back on
+- Turn off robot.
+- Unplug radio power.
+- Wait 10 seconds.
+- Reconnect and power back on.
 
 ---
 
@@ -369,31 +369,31 @@ Fix: Power cycle radio and RoboRIO
 ### Before Competition
 
 **Setup**:
-- ✅ Use high-quality ethernet cables
-- ✅ Label all network cables
-- ✅ Test connection with radio
-- ✅ Practice reconnection quickly
-- ✅ Document network settings
+- ✅ Use high-quality ethernet cables.
+- ✅ Label all network cables.
+- ✅ Test connection with radio.
+- ✅ Practice reconnection quickly.
+- ✅ Document network settings.
 
 **Testing**:
-- ✅ Test with Driver Station
-- ✅ Verify all joysticks work
-- ✅ Test connection drops
-- ✅ Practice reconnecting under pressure
+- ✅ Test with Driver Station.
+- ✅ Verify all joysticks work.
+- ✅ Test connection drops.
+- ✅ Practice reconnecting under pressure.
 
 ### During Competition
 
 **Monitoring**:
-- ✅ Check Communications status
-- ✅ Watch for red indicators
-- ✅ Monitor CAN bus utilization
-- ✅ Note any network issues
+- ✅ Check Communications status.
+- ✅ Watch for red indicators.
+- ✅ Monitor CAN bus utilization.
+- ✅ Note any network issues.
 
 **Quick Recovery**:
-- ✅ Have spare ethernet cables
-- ✅ Know how to power cycle quickly
-- ✅ Practice reconnection procedures
-- ✅ Stay calm under pressure
+- ✅ Have spare ethernet cables.
+- ✅ Know how to power cycle quickly.
+- ✅ Practice reconnection procedures.
+- ✅ Stay calm under pressure.
 
 ---
 
@@ -401,35 +401,35 @@ Fix: Power cycle radio and RoboRIO
 
 ### Fix 1: Power Cycle Robot
 
-1. Disable robot in Driver Station
-2. Turn off main robot power
-3. Wait 10 seconds
-4. Turn robot back on
-5. Enable in Driver Station
+1. Disable robot in Driver Station.
+2. Turn off main robot power.
+3. Wait 10 seconds.
+4. Turn robot back on.
+5. Enable in Driver Station.
 
 ### Fix 2: Reconnect Network
 
-1. Unplug ethernet from computer
-2. Wait 5 seconds
-3. Reconnect ethernet
-4. Wait for connection to re-establish
-5. Verify Communications green
+1. Unplug ethernet from computer.
+2. Wait 5 seconds.
+3. Reconnect ethernet.
+4. Wait for connection to re-establish.
+5. Verify Communications green.
 
 ### Fix 3: Restart Driver Station
 
-1. Close Driver Station completely
-2. Wait 5 seconds
-3. Reopen Driver Station
-4. Reconnect joysticks
+1. Close Driver Station completely.
+2. Wait 5 seconds.
+3. Reopen Driver Station.
+4. Reconnect joysticks.
 5. Enable robot
 
 ### Fix 4: Check Radio Configuration
 
-1. Connect to robot network
-2. Login to radio at http://192.168.XX.X
-3. Verify team number
-4. Check bridge mode enabled
-5. Save and reboot radio
+1. Connect to robot network.
+2. Login to radio at http://192.168.XX.X.
+3. Verify team number.
+4. Check bridge mode enabled.
+5. Save and reboot radio.
 
 ---
 
@@ -438,27 +438,27 @@ Fix: Power cycle radio and RoboRIO
 ### Network Setup
 
 **Do**:
-- ✅ Use velcro or zip ties for cables
-- ✅ Label both ends of each cable
-- ✅ Route cables away from sharp edges
-- ✅ Use right-angle connectors where needed
-- ✅ Test connection regularly
+- ✅ Use velcro or zip ties for cables.
+- ✅ Label both ends of each cable.
+- ✅ Route cables away from sharp edges.
+- ✅ Use right-angle connectors where needed.
+- ✅ Test connection regularly.
 
 **Don't**:
-- ❌ Run cables near motor power wires
-- ❌ Leave cables loose to vibrate out
-- ❌ Use damaged cables
-- ❌ Ignore intermittent connection issues
-- ❌ Forget to test before competition
+- ❌ Run cables near motor power wires.
+- ❌ Leave cables loose to vibrate out.
+- ❌ Use damaged cables.
+- ❌ Ignore intermittent connection issues.
+- ❌ Forget to test before competition.
 
 ### Competition Preparation
 
 **Essential Items**:
 - Spare ethernet cables (2-3)
 - USB WiFi adapter (provided at event)
-- Network configuration sheet
+- Network configuration sheet.
 - Contact info for FTAs (Field Technical Advisors)
-- Backup plan for network failures
+- Backup plan for network failures.
 
 ---
 
@@ -525,7 +525,7 @@ NetworkTableInstance.getDefault().addEntryListener(event -> {
 **What to look for**:
 - Updates every 20ms = OK (periodic)
 - Updates every 1ms = Too frequent (problem!)
-- No updates = Connection issue
+- No updates = Connection issue.
 
 ---
 
@@ -534,22 +534,22 @@ NetworkTableInstance.getDefault().addEntryListener(event -> {
 ### At Competition
 
 **Field Technical Assistant (FTA)**:
-- Ask FTA for help with field network
-- They can diagnose FMS issues
-- They have tools to check field network
+- Ask FTA for help with field network.
+- They can diagnose FMS issues.
+- They have tools to check field network.
 
 **Robot Inspector**:
-- Can help with basic network setup
-- Can check team number configuration
-- Can verify robot connections
+- Can help with basic network setup.
+- Can check team number configuration.
+- Can verify robot connections.
 
 ### Never Alone
 
 **Network issues are common**:
-- Every team experiences them
-- FTAs are there to help
-- Other teams can assist
-- Don't panic, work systematically
+- Every team experiences them.
+- FTAs are there to help.
+- Other teams can assist.
+- Don't panic, work systematically.
 
 ---
 
@@ -557,22 +557,22 @@ NetworkTableInstance.getDefault().addEntryListener(event -> {
 
 ### Before Leaving for Competition
 
-- [ ] Ethernet cables tested and labeled
-- [ ] Radio configured with correct team number
-- [ ] Driver Station team number set
-- [ ] All joystools tested
-- [ ] Connection tested with robot
-- [ ] Spare cables packed
-- [ ] Network configuration printed
+- [ ] Ethernet cables tested and labeled.
+- [ ] Radio configured with correct team number.
+- [ ] Driver Station team number set.
+- [ ] All joystools tested.
+- [ ] Connection tested with robot.
+- [ ] Spare cables packed.
+- [ ] Network configuration printed.
 
 ### At Competition
 
-- [ ] Connect to field WiFi adapter
-- [ ] Verify team number in Driver Station
-- [ ] Test connection to robot
-- [ ] Test all joysticks
-- [ ] Run through robot inspection
-- [ ] Practice reconnection procedures
+- [ ] Connect to field WiFi adapter.
+- [ ] Verify team number in Driver Station.
+- [ ] Test connection to robot.
+- [ ] Test all joysticks.
+- [ ] Run through robot inspection.
+- [ ] Practice reconnection procedures.
 
 ---
 

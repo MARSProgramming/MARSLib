@@ -15,17 +15,17 @@ Learn how to make your robot mechanisms move accurately and smoothly, just like 
 **In simple terms**: Control theory is about making systems do what you want, automatically.
 
 **Think of it like a thermostat**:
-- You set the temperature to 70°F
-- The thermostat measures the current temperature
-- If it's too cold, it turns on the heat
-- If it's too hot, it turns off the heat
-- It keeps checking and adjusting automatically
+- You set the temperature to 70°F.
+- The thermostat measures the current temperature.
+- If it's too cold, it turns on the heat.
+- If it's too hot, it turns off the heat.
+- It keeps checking and adjusting automatically.
 
 **In robotics**: We use the same idea to control:
 - Arm positions
 - Wheel speeds  
-- Elevator height
-- Shooter velocity
+- Elevator height.
+- Shooter velocity.
 
 ---
 
@@ -49,8 +49,8 @@ Learn how to make your robot mechanisms move accurately and smoothly, just like 
 - **Feedforward**: Look at a map ahead of time, plan your route (predictive)
 
 **Why use both?**
-- PID fixes mistakes after they happen
-- Feedforward prevents mistakes before they happen
+- PID fixes mistakes after they happen.
+- Feedforward prevents mistakes before they happen.
 - Together, they work perfectly!
 
 ---
@@ -70,7 +70,7 @@ Learn how to make your robot mechanisms move accurately and smoothly, just like 
 **How it works**: 
 - Calculate error: `error = target - current`
 - Multiply by P gain: `output = Kp × error`
-- Larger error = larger correction
+- Larger error = larger correction.
 
 **Example**: Arm position control
 ```java
@@ -89,14 +89,14 @@ double motorOutput = Kp × error;  // 0.5 × 15 = 7.5 volts
 **What it does**: Remembers past errors and fixes them
 
 **How it works**:
-- Add up errors over time
-- Multiply by I gain
-- Eliminates steady-state errors
+- Add up errors over time.
+- Multiply by I gain.
+- remove steady-state errors.
 
 **When you need it**: 
-- Mechanism gets stuck close to target
-- Gravity or friction prevents reaching target
-- Small persistent error
+- Mechanism gets stuck close to target.
+- Gravity or friction prevents reaching target.
+- Small persistent error.
 
 **Example**: Elevator can't quite reach top
 ```java
@@ -115,14 +115,14 @@ double output = Ki × integralSum;
 **What it does**: Predicts the future and slows down approach
 
 **How it works**:
-- Calculate rate of change of error
-- Multiply by D gain  
-- Prevents overshooting
+- Calculate rate of change of error.
+- Multiply by D gain  .
+- Prevents overshooting.
 
 **When you need it**:
 - Mechanism oscillates (wobbles)
-- Overshoots target and comes back
-- Needs to approach smoothly
+- Overshoots target and comes back.
+- Needs to approach smoothly.
 
 **Example**: Arm swings past target and oscillates
 ```java
@@ -147,8 +147,8 @@ lastError = error;
 
 **Think of it like this**:
 - A heavy elevator needs power just to hold still (fighting gravity)
-- A flywheel needs power to reach and maintain speed
-- An arm needs different power at different angles
+- A flywheel needs power to reach and maintain speed.
+- An arm needs different power at different angles.
 
 **Feedforward calculates these needs instantly**, rather than waiting for errors to happen.
 
@@ -182,7 +182,7 @@ With feedforward:
 
 **Why this works perfectly**:
 1. **Feedforward** handles the physics (gravity, friction, inertia)
-2. **PID** handles the small errors and disturbances
+2. **PID** handles the small errors and disturbances.
 
 **Real example**: Elevator control
 
@@ -200,9 +200,9 @@ motor.setVoltage(totalVoltage);
 ```
 
 **What happens**:
-1. Feedforward provides exact voltage to fight gravity
-2. PID adds small corrections for accuracy
-3. Elevator moves smoothly and accurately
+1. Feedforward provides exact voltage to fight gravity.
+2. PID adds small corrections for accuracy.
+3. Elevator moves smoothly and accurately.
 
 ---
 
@@ -219,13 +219,13 @@ motor.setVoltage(totalVoltage);
 **Set all gains to zero**: `Kp = 0, Ki = 0, Kd = 0`
 
 **Tune kS (Static Friction)**:
-- Slowly increase kS until mechanism *just barely* starts moving
+- Slowly increase kS until mechanism *just barely* starts moving.
 - This overcomes static friction (stiction)
 
 **Tune kG (Gravity)**:
-- For elevators: Increase kG until elevator holds position without falling
+- For elevators: Increase kG until elevator holds position without falling.
 - For arms: Position arm horizontally (gravity is strongest here)
-- Increase kG until arm holds steady
+- Increase kG until arm holds steady.
 
 **Tune kV (Velocity)**:
 - Run mechanism at constant voltage (e.g., 6V)
@@ -233,7 +233,7 @@ motor.setVoltage(totalVoltage);
 - Calculate: `kV = voltage / speed = 6.0 / 5.0 = 1.2`
 
 **Tune kA (Acceleration)**:
-- Usually not needed for most mechanisms
+- Usually not needed for most mechanisms.
 - Use SysId to calculate automatically (preferred)
 
 ### Step 2: Tune PID
@@ -241,37 +241,37 @@ motor.setVoltage(totalVoltage);
 **Now that feedforward handles physics, tune PID**:
 
 **Tune Kp (Proportional)**:
-- Increase Kp until mechanism responds quickly
+- Increase Kp until mechanism responds quickly.
 - Stop when it starts to oscillate (wobble)
 
 **Tune Kd (Derivative)**:
-- If mechanism overshoots or oscillates
-- Add Kd to dampen the motion
-- Think of Kd as shock absorber
+- If mechanism overshoots or oscillates.
+- Add Kd to dampen the motion.
+- Think of Kd as shock absorber.
 
 **Tune Ki (Integral)**:
-- Only use if mechanism gets stuck close to target
-- Use small Ki values
-- Too much Ki causes instability
+- Only use if mechanism gets stuck close to target.
+- Use small Ki values.
+- Too much Ki causes instability.
 
 ### "No Math" Quick Tuning (10 Minutes)
-1. **Set P to 1.0, wait on I and D**
+1. **Set P to 1.0, wait on I and D**.
 2. **Test**: Does it move?
    - ❌ No: Increase P (try 2.0, 5.0, 10.0)
-   - ✅ Yes: Go to step 3
+   - ✅ Yes: Go to step 3.
 
 3. **Check oscillation**:
-   - ✅ No oscillation: Increase P more
-   - ❌ Too much oscillation: Reduce P by 50%
+   - ✅ No oscillation: Increase P more.
+   - ❌ Too much oscillation: Reduce P by 50%.
 
 4. **Add D if needed**:
-   - Start with D = 0.1
-   - Increase until oscillation stops
+   - Start with D = 0.1.
+   - Increase until oscillation stops.
 
 5. **Add I only if**:
-   - System never reaches exact target
-   - Start with I = 0.001
-   - Increase slowly
+   - System never reaches exact target.
+   - Start with I = 0.001.
+   - Increase slowly.
 
 ### Quick Reference Tuning Table
 | Symptom | Likely Cause | Try This |
@@ -293,10 +293,10 @@ motor.setVoltage(totalVoltage);
 <ElevatorPidSim client:only="react" />
 
 **Try this**:
-1. Set kG until elevator holds position
-2. Add Kp to make it respond faster
-3. Add Kd if it oscillates
-4. Watch how FF + PID work together
+1. Set kG until elevator holds position.
+2. Add Kp to make it respond faster.
+3. Add Kd if it oscillates.
+4. Watch how FF + PID work together.
 
 ### Flywheel Tuning Simulator
 
@@ -305,10 +305,10 @@ motor.setVoltage(totalVoltage);
 <FlywheelKvSim client:only="react" />
 
 **Try this**:
-1. Adjust kV until velocity matches setpoint
-2. Click "INJECT BALL" to simulate shot
-3. Add Kp to recover quickly from shots
-4. Add Kd if it overshoots
+1. Adjust kV until velocity matches setpoint.
+2. Click "INJECT BALL" to simulate shot.
+3. Add Kp to recover quickly from shots.
+4. Add Kd if it overshoots.
 
 ### Arm Feedforward Simulator
 
@@ -330,15 +330,15 @@ motor.setVoltage(totalVoltage);
 **Purpose**: Spin wheel at exact speed for accurate shots
 
 **Key parameters**:
-- **kV**: Maintain target speed
-- **kP**: Recover quickly after shots
-- **kD**: Prevent overshooting after shots
+- **kV**: Maintain target speed.
+- **kP**: Recover quickly after shots.
+- **kD**: Prevent overshooting after shots.
 
 **Tuning process**:
 1. Tune kV first (most important!)
-2. Add kP for faster recovery
-3. Add kD if it oscillates
-4. kI usually not needed
+2. Add kP for faster recovery.
+3. Add kD if it oscillates.
+4. kI usually not needed.
 
 **Real values example**:
 ```
@@ -353,16 +353,16 @@ kD = 0.01
 
 **Key parameters**:
 - **kG**: Fight gravity (most important!)
-- **kS**: Overcome static friction
-- **kV**: Control velocity
-- **kP/kD**: Smooth movement
+- **kS**: Overcome static friction.
+- **kV**: Control velocity.
+- **kP/kD**: Smooth movement.
 
 **Tuning process**:
-1. Tune kG to hold position
-2. Tune kS to break static friction
-3. Tune kV for velocity control
-4. Add kP for quick response
-5. Add kD for smooth stopping
+1. Tune kG to hold position.
+2. Tune kS to break static friction.
+3. Tune kV for velocity control.
+4. Add kP for quick response.
+5. Add kD for smooth stopping.
 
 ### Arm
 
@@ -370,12 +370,12 @@ kD = 0.01
 
 **Key parameters**:
 - **kG**: Varies with angle (cosine compensation!)
-- **kS**: Overcome static friction
-- **kP/kD**: Smooth movement
+- **kS**: Overcome static friction.
+- **kP/kD**: Smooth movement.
 
 **Special consideration**: Gravity pulls differently at different angles!
-- 0° (horizontal): Maximum gravity pull
-- 90° (vertical): No gravity pull
+- 0° (horizontal): Maximum gravity pull.
+- 90° (vertical): No gravity pull.
 - Feedforward automatically calculates this!
 
 ---
@@ -385,20 +385,20 @@ kD = 0.01
 **What is SysId?**: A tool that calculates your feedforward gains automatically
 
 **Why use SysId**:
-- More accurate than manual tuning
-- Faster than trial-and-error
-- Consistent results every time
+- More accurate than manual tuning.
+- Faster than trial-and-error.
+- Consistent results every time.
 
 **How to use SysId**:
-1. Run SysId routine on your mechanism
-2. Upload data to SysId tool
-3. Get calculated kS, kV, kA values
-4. Use these values in your code
+1. Run SysId routine on your mechanism.
+2. Upload data to SysId tool.
+3. Get calculated kS, kV, kA values.
+4. Use these values in your code.
 
 **When to use SysId**:
-- First time tuning a mechanism
-- After major mechanical changes
-- When manual tuning doesn't work well
+- First time tuning a mechanism.
+- After major mechanical changes.
+- When manual tuning doesn't work well.
 
 ---
 
@@ -411,16 +411,16 @@ kD = 0.01
 **Solutions**:
 - Reduce Kp
 - Add Kd (acts as shock absorber)
-- Check for mechanical backlash
+- Check for mechanical backlash.
 
 ### Problem: Mechanism Won't Reach Target
 
 **Symptoms**: Gets close but stops short
 
 **Solutions**:
-- Add small amount of Ki
+- Add small amount of Ki.
 - Check feedforward (kG for gravity)
-- Check for mechanical binding
+- Check for mechanical binding.
 
 ### Problem: Response is Too Slow
 
@@ -428,8 +428,8 @@ kD = 0.01
 
 **Solutions**:
 - Increase Kp
-- Check feedforward values
-- Reduce friction in mechanism
+- Check feedforward values.
+- Reduce friction in mechanism.
 
 ### Problem: Overshoots Target
 
@@ -438,27 +438,27 @@ kD = 0.01
 **Solutions**:
 - Add Kd
 - Reduce Kp
-- Check for mechanical play
+- Check for mechanical play.
 
 ---
 
 ## Competition Tips
 
 **Before competition**:
-- Tune all your mechanisms carefully
-- Test under realistic conditions
-- Document your tuned values
-- Have backup values ready
+- Tune all your mechanisms carefully.
+- Test under realistic conditions.
+- Document your tuned values.
+- Have backup values ready.
 
 **At competition**:
-- Monitor mechanism performance
-- Adjust if environmental conditions change
+- Monitor mechanism performance.
+- Adjust if environmental conditions change.
 - Keep tuning simple (don't over-tune)
 
 **Red flags**:
-- Mechanism works differently than practice
-- Temperature affects performance
-- Battery voltage impacts tuning
+- Mechanism works differently than practice.
+- Temperature affects performance.
+- Battery voltage impacts tuning.
 
 ---
 
@@ -484,27 +484,27 @@ kD = 0.01
 
 ### Common Mistakes
 
-- ❌ Tuning PID before feedforward
-- ❌ Using too much Ki
+- ❌ Tuning PID before feedforward.
+- ❌ Using too much Ki.
 - ❌ Over-tuning (chasing tiny improvements)
-- ❌ Ignoring mechanical issues
+- ❌ Ignoring mechanical issues.
 
 ---
 
 ## Summary
 
 **Key concepts**:
-1. **PID** reacts to errors and fixes them
-2. **Feedforward** predicts needs and prevents errors
-3. **Together they work perfectly**
-4. **Tune feedforward first, then PID**
-5. **Use simulators to practice**
+1. **PID** reacts to errors and fixes them.
+2. **Feedforward** predicts needs and prevents errors.
+3. **Together they work perfectly**.
+4. **Tune feedforward first, then PID**.
+5. **Use simulators to practice**.
 
 **Your mechanisms will**:
-- Move more accurately
-- Respond more quickly
-- Operate more smoothly
-- Perform more reliably
+- Move more accurately.
+- Respond more quickly.
+- Operate more smoothly.
+- Perform more reliably.
 
 ---
 
