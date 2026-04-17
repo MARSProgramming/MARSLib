@@ -43,14 +43,17 @@ export const HomeHallOfFame = () => {
 };
 
 export const HomeCoreValues = () => {
-  const values = [
+  const firstValues = [
     { title: 'Discovery', color: '#ef4435', href: '/contributing/discovery/' },
     { title: 'Innovation', color: '#3498db', href: '/framework-architecture/innovation/' },
     { title: 'Impact', color: '#2ecc71', href: '/contributing/impact/' },
     { title: 'Teamwork', color: '#e67e22', href: '/framework-architecture/teamwork-abstraction/' },
     { title: 'Inclusion', color: '#9b59b6', href: '/contributing/accessibility/' },
     { title: 'Fun', color: '#f1c40f', href: '/framework-architecture/fun/' },
-    { title: 'Discomfort', color: '#1abc9c', href: '/contributing/discomfort/' },
+  ];
+
+  const marsValues = [
+    { title: 'The Mountaineer Mindset', color: '#1abc9c', href: '/contributing/mountaineer-mindset/' },
   ];
 
   return (
@@ -58,8 +61,17 @@ export const HomeCoreValues = () => {
       <p style={{ color: 'var(--sl-color-text-muted)', fontSize: '0.85rem', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '12px' }}>
         Built on the <i>FIRST</i>® Core Values
       </p>
+      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '6px 16px', marginBottom: '24px' }}>
+        {firstValues.map(v => (
+          <a key={v.title} href={v.href} style={{ color: v.color, fontWeight: 600, fontSize: '0.9rem', textDecoration: 'none' }}>{v.title}</a>
+        ))}
+      </div>
+      
+      <p style={{ color: 'var(--sl-color-text-muted)', fontSize: '0.85rem', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '12px' }}>
+        Driven by MARSLib Values
+      </p>
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '6px 16px' }}>
-        {values.map(v => (
+        {marsValues.map(v => (
           <a key={v.title} href={v.href} style={{ color: v.color, fontWeight: 600, fontSize: '0.9rem', textDecoration: 'none' }}>{v.title}</a>
         ))}
       </div>
