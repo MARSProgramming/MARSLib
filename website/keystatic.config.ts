@@ -111,6 +111,10 @@ const starlightSchema = {
 				label: 'Home Hall of Fame',
 				schema: {},
 			}),
+			HomeCoreValues: block({
+				label: 'Home Core Values',
+				schema: {},
+			}),
 			HomeTutorialGrid: block({
 				label: 'Home Tutorial Grid',
 				schema: {},
@@ -118,6 +122,23 @@ const starlightSchema = {
 			SponsorsList: block({
 				label: 'Sponsors List',
 				schema: {},
+			}),
+			CoreValueCallout: wrapper({
+				label: 'Core Value Callout',
+				schema: {
+					value: fields.select({
+						label: 'Value',
+						options: [
+							{ label: 'Discovery', value: 'discovery' },
+							{ label: 'Innovation', value: 'innovation' },
+							{ label: 'Impact', value: 'impact' },
+							{ label: 'Teamwork', value: 'teamwork' },
+							{ label: 'Inclusion', value: 'inclusion' },
+							{ label: 'Fun', value: 'fun' },
+						],
+						defaultValue: 'discovery',
+					}),
+				},
 			}),
 		},
 	}),
@@ -137,8 +158,16 @@ export default config({
 				}),
 		},
 		navigation: {
-			'Getting Started': ['pages', 'setup'],
-			Tutorials: ['zeroToHero', 'framework', 'elite'],
+			'Home & Top-Level': ['pages'],
+			'Getting Started': ['gettingStarted'],
+			'Framework Architecture': ['frameworkArchitecture'],
+			'Robot Subsystems': ['subsystems'],
+			'Advanced Workflows': ['advanced'],
+			'Operations & Deploy': ['operations'],
+			Troubleshooting: ['troubleshooting'],
+			'Interactive Learning': ['interactive', 'visualDiagrams'],
+			Reference: ['reference'],
+			'Community & Culture': ['contributing'],
 		},
 	},
 	storage: {
@@ -147,41 +176,89 @@ export default config({
 	},
 	collections: {
 		pages: collection({
-			label: 'Site Pages',
+			label: 'Top-Level Pages',
 			slugField: 'title',
 			path: 'website/src/content/docs/*',
 			format: contentFormat,
 			schema: starlightSchema,
 		}),
 
-		setup: collection({
-			label: 'Setup & CI',
+		gettingStarted: collection({
+			label: 'Getting Started',
 			slugField: 'title',
-			path: 'website/src/content/docs/tutorials/setup/*',
+			path: 'website/src/content/docs/getting-started/*',
 			format: contentFormat,
 			schema: starlightSchema,
 		}),
 
-		zeroToHero: collection({
-			label: 'Zero → Hero',
+		frameworkArchitecture: collection({
+			label: 'Framework Architecture',
 			slugField: 'title',
-			path: 'website/src/content/docs/tutorials/zero-to-hero/*',
+			path: 'website/src/content/docs/framework-architecture/*',
 			format: contentFormat,
 			schema: starlightSchema,
 		}),
 
-		framework: collection({
-			label: 'Framework Tutorials',
+		subsystems: collection({
+			label: 'Robot Subsystems',
 			slugField: 'title',
-			path: 'website/src/content/docs/tutorials/framework/*',
+			path: 'website/src/content/docs/subsystems/*',
 			format: contentFormat,
 			schema: starlightSchema,
 		}),
 
-		elite: collection({
-			label: 'Elite Techniques',
+		advanced: collection({
+			label: 'Advanced Workflows',
 			slugField: 'title',
-			path: 'website/src/content/docs/tutorials/elite/*',
+			path: 'website/src/content/docs/advanced/*',
+			format: contentFormat,
+			schema: starlightSchema,
+		}),
+
+		operations: collection({
+			label: 'Operations & Deploy',
+			slugField: 'title',
+			path: 'website/src/content/docs/operations/*',
+			format: contentFormat,
+			schema: starlightSchema,
+		}),
+
+		troubleshooting: collection({
+			label: 'Troubleshooting',
+			slugField: 'title',
+			path: 'website/src/content/docs/troubleshooting/*',
+			format: contentFormat,
+			schema: starlightSchema,
+		}),
+
+		interactive: collection({
+			label: 'Interactive Exercises',
+			slugField: 'title',
+			path: 'website/src/content/docs/interactive/**/*',
+			format: contentFormat,
+			schema: starlightSchema,
+		}),
+
+		visualDiagrams: collection({
+			label: 'Visual Diagrams',
+			slugField: 'title',
+			path: 'website/src/content/docs/visual-diagrams/*',
+			format: contentFormat,
+			schema: starlightSchema,
+		}),
+
+		reference: collection({
+			label: 'Reference',
+			slugField: 'title',
+			path: 'website/src/content/docs/reference/*',
+			format: contentFormat,
+			schema: starlightSchema,
+		}),
+
+		contributing: collection({
+			label: 'Community & Culture',
+			slugField: 'title',
+			path: 'website/src/content/docs/contributing/*',
 			format: contentFormat,
 			schema: starlightSchema,
 		}),
