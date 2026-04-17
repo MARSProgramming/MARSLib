@@ -44,64 +44,22 @@ export const HomeHallOfFame = () => {
 
 export const HomeCoreValues = () => {
   const values = [
-    { id: 'discovery', title: 'Discovery', desc: 'Exploring new skills and ideas.', icon: '/img/core-values/discovery.png', color: '#ef4435' },
-    { id: 'innovation', title: 'Innovation', desc: 'Using creativity and persistence to solve problems.', icon: '/img/core-values/innovation.png', color: '#3498db' },
-    { id: 'impact', title: 'Impact', desc: 'Applying what we learn to improve our world.', icon: '/img/core-values/impact.png', color: '#2ecc71' },
-    { id: 'teamwork', title: 'Teamwork', desc: 'We are stronger when we work together.', icon: '/img/core-values/teamwork.png', color: '#e67e22' },
-    { id: 'inclusion', title: 'Inclusion', desc: 'Respecting each other and embracing our differences.', icon: '/img/core-values/inclusion.png', color: '#9b59b6' },
-    { id: 'fun', title: 'Fun', desc: 'We enjoy and celebrate what we do!', icon: '/img/core-values/fun.png', color: '#f1c40f' },
+    { title: 'Discovery', color: '#ef4435' },
+    { title: 'Innovation', color: '#3498db' },
+    { title: 'Impact', color: '#2ecc71' },
+    { title: 'Teamwork', color: '#e67e22' },
+    { title: 'Inclusion', color: '#9b59b6' },
+    { title: 'Fun', color: '#f1c40f' },
   ];
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '80px auto 0 auto', padding: '0 20px' }}>
-      <div style={{ textAlign: 'center', marginBottom: '50px' }}>
-        <h2 style={{ fontSize: '2.5rem', marginBottom: '10px' }}>Our North Star</h2>
-        <p style={{ color: 'var(--sl-color-text-muted)', fontSize: '1.1rem' }}>The <i>FIRST</i>® Core Values are the foundation of MARSLib culture.</p>
-      </div>
-
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
-        gap: '20px' 
-      }}>
+    <div style={{ maxWidth: '800px', margin: '60px auto 0 auto', textAlign: 'center', padding: '0 20px' }}>
+      <p style={{ color: 'var(--sl-color-text-muted)', fontSize: '0.85rem', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '12px' }}>
+        Built on the <i>FIRST</i>® Core Values
+      </p>
+      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '6px 16px' }}>
         {values.map(v => (
-          <div key={v.id} style={{
-            background: 'rgba(255, 255, 255, 0.03)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderRadius: '16px',
-            padding: '30px',
-            textAlign: 'center',
-            transition: 'transform 0.3s ease, border-color 0.3s ease',
-            cursor: 'default',
-            position: 'relative',
-            overflow: 'hidden'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-5px)';
-            e.currentTarget.style.borderColor = v.color;
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-          }}>
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              height: '4px',
-              background: v.color,
-              opacity: 0.8
-            }} />
-            <img src={v.icon} alt="" style={{ 
-              width: '80px', 
-              height: '80px', 
-              margin: '0 auto 20px auto',
-              filter: `drop-shadow(0 0 15px ${v.color}66)`
-            }} />
-            <h3 style={{ margin: '0 0 10px 0', fontSize: '1.4rem' }}>{v.title}</h3>
-            <p style={{ margin: 0, color: 'var(--sl-color-text-muted)', fontSize: '0.95rem', lineHeight: '1.5' }}>{v.desc}</p>
-          </div>
+          <span key={v.title} style={{ color: v.color, fontWeight: 600, fontSize: '0.9rem' }}>{v.title}</span>
         ))}
       </div>
     </div>
