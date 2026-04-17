@@ -24,10 +24,11 @@ export { default as VersionSelector } from './VersionSelector';
 export { default as InteractiveTutorial } from './InteractiveTutorial';
 export { default as CommunityShowcase } from './CommunityShowcase';
 export { default as TroubleshootingWizard } from './TroubleshootingWizard';
+export { CoreValueCallout } from './CoreValueCallout';
 
 export { RuleSection } from './standards/RuleSection';
 export { CodeComparison, CodeViolation, CodeStandard } from './standards/CodeComparison';
 export { StandardHeader, SplashContainer } from './standards/SplashLayout';
 
-export { HomeHero, HomeSimulatorContainer, HomeHallOfFame, HomeTutorialGrid } from './home/HomeLayout';
+export { HomeHero, HomeSimulatorContainer, HomeCoreValues, HomeHallOfFame, HomeTutorialGrid } from './home/HomeLayout';
 export { SponsorsList } from './home/SponsorsList';
