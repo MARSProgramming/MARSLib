@@ -42,6 +42,7 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: 'MARSLib Documentation',
+			description: 'The elite, mission-driven robotics framework for FRC. Built for Discovery, Innovation, and Teamwork by Team MARS 2614.',
 			customCss: [
 				'./src/styles/custom.css',
 				'./src/styles/copy-button.css',
@@ -109,8 +110,13 @@ export default defineConfig({
 					autogenerate: { directory: 'reference' }
 				},
 				{
-					label: 'Community & Standards',
-					autogenerate: { directory: 'contributing' }
+					label: 'Community & Culture',
+					items: [
+						{ label: 'Core Values', link: '/contributing/core-values/' },
+						{ label: 'The MARSLib Standard', link: '/contributing/standards/' },
+						{ label: 'Accessibility', link: '/contributing/accessibility/' },
+						{ label: 'Contributing Guide', link: '/contributing/' },
+					]
 				},
 				{
 					label: 'Project Info',
