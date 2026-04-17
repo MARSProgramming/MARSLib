@@ -44,12 +44,12 @@ export const HomeHallOfFame = () => {
 
 export const HomeCoreValues = () => {
   const values = [
-    { title: 'Discovery', color: '#ef4435', href: '/contributing/core-values/' },
-    { title: 'Innovation', color: '#3498db', href: '/subsystems/simulation/' },
-    { title: 'Impact', color: '#2ecc71', href: '/contributing/' },
+    { title: 'Discovery', color: '#ef4435', href: '/contributing/discovery/' },
+    { title: 'Innovation', color: '#3498db', href: '/framework-architecture/innovation/' },
+    { title: 'Impact', color: '#2ecc71', href: '/contributing/impact/' },
     { title: 'Teamwork', color: '#e67e22', href: '/framework-architecture/teamwork-abstraction/' },
     { title: 'Inclusion', color: '#9b59b6', href: '/contributing/accessibility/' },
-    { title: 'Fun', color: '#f1c40f', href: '/subsystems/swerve/' },
+    { title: 'Fun', color: '#f1c40f', href: '/framework-architecture/fun/' },
   ];
 
   return (

@@ -1,0 +1,23 @@
+---
+title: "Innovation & Continuous Simulation"
+description: "How MARSLib pushes the boundary with Zero-Mocking, 250Hz Odometry, and Advanced Simulation."
+sidebar:
+  order: 7
+---
+
+**Innovation** is the engine of progress. At **MARS 2614**, we define innovation not just by writing new features, but by actively redefining how we develop those features safely and flawlessly.
+
+## The Zero-Mocking Philosophy
+In traditional software development, simulation is often treated as a secondary tool—a "mocked" representation of a robot that merely confirms if code compiles. We rejected this paradigm.
+
+Through relentless innovation, MARSLib adopted a **Zero-Mocking** approach. Our simulated physics engine (`dyn4j`) calculates actual rigid body constraints, static friction, collision restitution, and battery voltage sag. 
+- A simulated swerve module draws "virtual" amps. 
+- That amp draw creates a simulated voltage drop across a virtual battery.
+- That voltage drop accurately degrades the top speed of our autonomous trajectories.
+
+## 250Hz Control & MegaTag 2.0
+We don't settle for "good enough." Innovation requires investigating state-of-the-art developments across the FIRST ecosystem.
+- **High-Frequency Threads:** By extracting our odometry logic from the standard 50Hz TimedRobot loop into dedicated `PhoenixOdometryThread` architectures, we achieve 250Hz position updates, fundamentally changing how precisely we can navigate the field.
+- **Vision Fusion:** Incorporating MegaTag 2.0 IMU-seeded algorithms ensures that even under immense physical defense, our pose estimation rejects noise instantaneously.
+
+These innovations aren't just for winning banners; they exist to continuously inspire our students. Slaying the status quo is what drives us forward!
