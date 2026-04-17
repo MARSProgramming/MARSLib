@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Test;
  */
 public class SwerveOdometryCoverageTest {
 
-  private SwerveDrive swerveDrive;
   private SwerveModule[] modules;
   private SwerveConfig swerveConfig;
 
@@ -35,8 +34,6 @@ public class SwerveOdometryCoverageTest {
     for (int i = 0; i < 4; i++) {
       modules[i] = new SwerveModule(i, new SwerveModuleIOSim(i, swerveConfig), swerveConfig);
     }
-
-    swerveDrive = new SwerveDrive(modules, new GyroIOSim(), powerManager, swerveConfig);
   }
 
   @Test

@@ -38,6 +38,8 @@ public class MARSPhysicsWorld {
 
   private static final int STALE_BODY_THRESHOLD = 20;
 
+  private static final Pose3d[] EMPTY_POSE3D_ARRAY = new Pose3d[0];
+
   public static MARSPhysicsWorld getInstance() {
     if (instance == null) {
       instance = new MARSPhysicsWorld();
@@ -250,6 +252,6 @@ public class MARSPhysicsWorld {
       fuelPoses.add(p.getPose3d());
     }
 
-    Logger.recordOutput("PhysicsWorld/GamePieces", fuelPoses.toArray(new Pose3d[0]));
+    Logger.recordOutput("PhysicsWorld/GamePieces", fuelPoses.toArray(EMPTY_POSE3D_ARRAY));
   }
 }

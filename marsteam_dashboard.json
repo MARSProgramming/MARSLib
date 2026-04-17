@@ -137,7 +137,6 @@
               "controller": [
                 "/RealOutputs/SwerveDrive/LoadShedLimitAmps",
                 "/RealOutputs/Teleop/GyroLockActive",
-                "/RealOutputs/SystemCheck/Active",
                 "/RealOutputs/PhysicsWorld/ComputedVoltage",
                 "/RealOutputs/NT/TunableNumbers/Vision/TAG_STD_BASE"
               ],

@@ -61,6 +61,15 @@
                     }
                   },
                   {
+                    "type": "robot",
+                    "logKey": "/RealOutputs/Robot/Pose3d",
+                    "logType": "Pose3d",
+                    "visible": true,
+                    "options": {
+                      "model": "Robot"
+                    }
+                  },
+                  {
                     "type": "ghost",
                     "logKey": "/RealOutputs/Vision/SlamPoses/0",
                     "logType": "Pose2d",
@@ -115,6 +124,15 @@
                     }
                   },
                   {
+                    "type": "robot",
+                    "logKey": "/RealOutputs/Robot/Pose3d",
+                    "logType": "Pose3d",
+                    "visible": true,
+                    "options": {
+                      "model": "Robot"
+                    }
+                  },
+                  {
                     "type": "gamePiece",
                     "logKey": "/RealOutputs/PhysicsWorld/GamePieces",
                     "logType": "Pose3d[]",
@@ -142,6 +160,18 @@
                 ]
               },
               "controlsHeight": 200
+            },
+            {
+              "type": 8,
+              "title": "Driver Inputs",
+              "controller": [
+                "/RealOutputs/Teleop/RawJoystickX",
+                "/RealOutputs/Teleop/RawJoystickY",
+                "/RealOutputs/Teleop/RawJoystickOmega"
+              ],
+              "controllerUUID": "drvinputs88321a",
+              "renderer": null,
+              "controlsHeight": 0
             },
             {
               "type": 9,
