@@ -20,8 +20,8 @@
 
 Welcome to MARSLib, an aggressively hardened framework that enables pure, deterministic AdvantageKit logging while bridging seamless 2D physics simulations via `dyn4j`.
 
-### 🪐 Our Foundation: FIRST Core Values
-MARSLib is built upon the **FIRST Core Values**. We believe that technical excellence is inseparable from character:
+### 🪐 Our Foundation: _FIRST_® Core Values
+MARSLib is built upon the **_FIRST_® Core Values**. We believe that technical excellence is inseparable from character:
 - **Discovery & Innovation**: We explore new technologies and use creative persistence to solve "impossible" problems.
 - **Impact & Teamwork**: We build together, ensuring our software has a measurable impact on our team's success.
 - **Inclusion & Fun**: We ensure our code and culture are welcoming to all, and we celebrate every breakthrough!
