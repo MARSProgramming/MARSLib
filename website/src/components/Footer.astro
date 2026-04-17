@@ -36,12 +36,12 @@ import DefaultFooter from '@astrojs/starlight/components/Footer.astro';
     <div class="footer-values">
       <p class="footer-values-label">Built on the <i>FIRST</i>® Core Values</p>
       <div class="footer-values-list">
-        <span style="color:#ef4435">Discovery</span>
-        <span style="color:#3498db">Innovation</span>
-        <span style="color:#2ecc71">Impact</span>
-        <span style="color:#e67e22">Teamwork</span>
-        <span style="color:#9b59b6">Inclusion</span>
-        <span style="color:#f1c40f">Fun</span>
+        <a href="/contributing/core-values/" style="color:#ef4435">Discovery</a>
+        <a href="/subsystems/simulation/" style="color:#3498db">Innovation</a>
+        <a href="/contributing/" style="color:#2ecc71">Impact</a>
+        <a href="/framework-architecture/architecture/" style="color:#e67e22">Teamwork</a>
+        <a href="/contributing/accessibility/" style="color:#9b59b6">Inclusion</a>
+        <a href="/subsystems/swerve/" style="color:#f1c40f">Fun</a>
       </div>
     </div>
     <div class="footer-copyright">
@@ -132,6 +132,16 @@ import DefaultFooter from '@astrojs/starlight/components/Footer.astro';
   .footer-values-list span {
     font-weight: 600;
     font-size: 0.85rem;
+  }
+  .footer-values-list a {
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .footer-values-list a:hover {
+    opacity: 0.7;
+    text-decoration: underline;
   }
   .footer-copyright {
     text-align: center;

@@ -44,12 +44,12 @@ export const HomeHallOfFame = () => {
 
 export const HomeCoreValues = () => {
   const values = [
-    { title: 'Discovery', color: '#ef4435' },
-    { title: 'Innovation', color: '#3498db' },
-    { title: 'Impact', color: '#2ecc71' },
-    { title: 'Teamwork', color: '#e67e22' },
-    { title: 'Inclusion', color: '#9b59b6' },
-    { title: 'Fun', color: '#f1c40f' },
+    { title: 'Discovery', color: '#ef4435', href: '/contributing/core-values/' },
+    { title: 'Innovation', color: '#3498db', href: '/subsystems/simulation/' },
+    { title: 'Impact', color: '#2ecc71', href: '/contributing/' },
+    { title: 'Teamwork', color: '#e67e22', href: '/framework-architecture/architecture/' },
+    { title: 'Inclusion', color: '#9b59b6', href: '/contributing/accessibility/' },
+    { title: 'Fun', color: '#f1c40f', href: '/subsystems/swerve/' },
   ];
 
   return (
@@ -59,7 +59,7 @@ export const HomeCoreValues = () => {
       </p>
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '6px 16px' }}>
         {values.map(v => (
-          <span key={v.title} style={{ color: v.color, fontWeight: 600, fontSize: '0.9rem' }}>{v.title}</span>
+          <a key={v.title} href={v.href} style={{ color: v.color, fontWeight: 600, fontSize: '0.9rem', textDecoration: 'none' }}>{v.title}</a>
         ))}
       </div>
     </div>
