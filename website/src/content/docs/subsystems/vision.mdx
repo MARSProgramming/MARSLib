@@ -6,13 +6,13 @@ sidebar:
 
 
   
-In the FRC 2026: **REBUILT** game, absolute field localization is critical. MARSLib's `MARSVision` subsystem combines data from multiple cameras and strictly filters out "hallucinations" using techniques pioneered by elite teams. We utilize **[AprilTags](https://docs.wpilib.org/en/stable/docs/software/vision-processing/apriltag/apriltag-intro.html)** as the primary landmarks for global pose estimation.
+In the FRC 2026: **REBUILT** game, absolute field localization is a journey of **Discovery**. MARSLib's `MARSVision` subsystem represents the peak of technical **Innovation**—combining data from multiple cameras and strictly filtering out "hallucinations" to ensure your robot always knows exactly where it belongs. This level of precision is what enables championship-grade **Impact** during the most chaotic moments of a match.
 
 
   ## <span class="mars-num">1</span> Strict Rejection Filters
 
   
-Vision poses are frequently wrong during high-speed gameplay. Before a measurement reached the Pose Estimator, it must survive five strict boundary checks:
+Vision poses are frequently wrong during high-speed gameplay. Before a measurement reaches the Pose Estimator, it must survive five strict boundary checks:
 
   
     - **Z-Height Hallucinations:** If the pose estimates the robot is flying (Z &gt; 0.5m), it's rejected.
