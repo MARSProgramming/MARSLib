@@ -56,7 +56,7 @@ export const HomeCoreValues = () => {
     <div style={{ maxWidth: '1000px', margin: '80px auto 0 auto', padding: '0 20px' }}>
       <div style={{ textAlign: 'center', marginBottom: '50px' }}>
         <h2 style={{ fontSize: '2.5rem', marginBottom: '10px' }}>Our North Star</h2>
-        <p style={{ color: 'var(--sl-color-text-muted)', fontSize: '1.1rem' }}>The <i>FIRST</i>{"\u00AE"} Core Values are the foundation of MARSLib culture.</p>
+        <p style={{ color: 'var(--sl-color-text-muted)', fontSize: '1.1rem' }}>The <i>FIRST</i>® Core Values are the foundation of MARSLib culture.</p>
       </div>
 
       <div style={{ 
