@@ -20,22 +20,27 @@ const folderToCollection: Record<string, string> = {
 
 // Calculate Keystatic edit URL
 let keystaticUrl = '';
-if (id) {
-  const parts = id.split('/');
+const pathname = Astro.url.pathname; // e.g. "/contributing/discovery/" or "/"
+
+if (pathname) {
+  // Remove leading/trailing slashes and split
+  const pathParts = pathname.replace(/^\/|\/$/g, '').split('/');
   
-  if (parts.length === 1) {
-    // Root level files belong to 'pages' collection
-    const slug = parts[0].replace(/\.mdx$/, '').replace(/\.md$/, '');
-    keystaticUrl = `/keystatic/branch/master/collection/pages/item/${slug}`;
+  if (pathParts.length === 0 || (pathParts.length === 1 && pathParts[0] === '')) {
+    // Root level index
+    keystaticUrl = `/keystatic/branch/master/collection/pages/item/index`;
+  } else if (pathParts.length === 1) {
+    // Root level file (e.g. /faq/)
+    keystaticUrl = `/keystatic/branch/master/collection/pages/item/${pathParts[0]}`;
   } else {
-    const folder = parts[0];
+    // Nested folder
+    const folder = pathParts[0];
     const collection = folderToCollection[folder];
     
     if (collection) {
-      // Handle potential nested folders in collections like `interactive`
-      const rawSlug = parts.slice(1).join('/');
-      const slug = rawSlug.replace(/\.mdx$/, '').replace(/\.md$/, '');
-      keystaticUrl = `/keystatic/branch/master/collection/${collection}/item/${slug}`;
+      // e.g. /interactive/foo/bar/ -> parts[1:] is foo/bar
+      const rawSlug = pathParts.slice(1).join('/');
+      keystaticUrl = `/keystatic/branch/master/collection/${collection}/item/${rawSlug || 'index'}`;
     }
   }
 }
@@ -43,14 +48,18 @@ if (id) {
 
 {
   keystaticUrl ? (
-    <a href={keystaticUrl} class="sl-flex keystatic-edit-link" style="text-decoration: none; color: var(--sl-color-text-accent); font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem;">
-      <Icon name="pencil" size="1.2em" />
-      Edit in Keystatic CMS
-    </a>
-  ) : Astro.props.editUrl && (
-    <a href={Astro.props.editUrl} class="sl-flex keystatic-edit-link" style="text-decoration: none; color: var(--sl-color-text-accent); font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem;">
-      <Icon name="pencil" size="1.2em" />
-      Edit this page
-    </a>
+    <div style="margin-top: 2rem; border-top: 1px solid var(--sl-color-hairline); padding-top: 1rem; display: flex; justify-content: flex-end;">
+      <a href={keystaticUrl} class="sl-flex keystatic-edit-link" style="text-decoration: none; color: var(--sl-color-text-accent); font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; padding: 8px 16px; background: rgba(0,0,0,0.2); border: 1px solid var(--sl-color-hairline); border-radius: 8px;">
+        <Icon name="pencil" size="1.2em" />
+        Edit in Keystatic CMS
+      </a>
+    </div>
+  ) : (
+    <div style="margin-top: 2rem; border-top: 1px solid var(--sl-color-hairline); padding-top: 1rem; display: flex; justify-content: flex-end;">
+      <a href={`https://github.com/MARSProgramming/MARSLib/edit/master/website/src/content/docs${pathname === '/' ? '/index' : pathname}.mdx`} class="sl-flex keystatic-edit-link" style="text-decoration: none; color: var(--sl-color-text-accent); font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem;">
+        <Icon name="pencil" size="1.2em" />
+        Edit this page (Raw)
+      </a>
+    </div>
   )
 }
