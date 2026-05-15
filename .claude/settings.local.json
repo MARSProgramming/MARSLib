@@ -17,7 +17,11 @@
       "Read(//c/Users/david/AppData/Local/Temp/Team6328_2024/src/main/java/org/littletonrobotics/frc2024/subsystems/drive/**)",
       "Read(//c/Users/david/AppData/Local/Temp/**)",
       "Bash(grep -i \"\\\\.java$\")",
-      "Bash(curl -s \"https://api.github.com/users/FRCTeam195/repos\")"
+      "Bash(curl -s \"https://api.github.com/users/FRCTeam195/repos\")",
+      "Bash(rm -rf \"c:/Users/david/dev/robotics/frc/MARSLib/.agents/skills/marslib-hmi/marslib-hmi\" && ls \"c:/Users/david/dev/robotics/frc/MARSLib/.agents/kills/marslib-hmi/\" 2>/dev/null && mv \"c:/Users/david/dev/robotics/frc/MARSLib/.agents/kills/\"* \"c:/Users/david/dev/robotics/frc/MARSLib/.agents/skills/marslib-hmi/\" 2>/dev/null || true)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\david\\dev\\robotics\\frc\\MARSLib\\.agents\\kills"
     ]
   }
 }

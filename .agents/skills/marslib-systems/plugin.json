@@ -1,0 +1,18 @@
+{
+  "name": "marslib-systems",
+  "version": "1.0.0",
+  "description": "MARSLib systems — control theory, power management, threading",
+  "author": {
+    "name": "Team MARS 2614",
+    "url": "https://github.com/MARSLib"
+  },
+  "repository": "https://github.com/MARSLib/MARSLib",
+  "license": "MIT",
+  "keywords": [
+    "frc",
+    "marslib",
+    "control",
+    "power",
+    "threading"
+  ]
+}

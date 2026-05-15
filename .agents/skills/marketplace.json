@@ -7,39 +7,31 @@
       "source": "./marslib"
     },
     {
-      "name": "marslib-audit",
-      "source": "./marslib-audit"
-    },
-    {
       "name": "marslib-autonomous",
       "source": "./marslib-autonomous"
-    },
-    {
-      "name": "marslib-ci",
-      "source": "./marslib-ci"
     },
     {
       "name": "marslib-control-theory",
       "source": "./marslib-control-theory"
     },
     {
+      "name": "marslib-data",
+      "source": "./marslib-data"
+    },
+    {
       "name": "marslib-diagnostics",
       "source": "./marslib-diagnostics"
     },
     {
-      "name": "marslib-documentation",
-      "source": "./marslib-documentation"
+      "name": "marslib-hmi",
+      "source": "./marslib-hmi"
     },
     {
       "name": "marslib-javadoc",
       "source": "./marslib-javadoc"
     },
     {
-      "name": "marslib-led",
-      "source": "./marslib-led"
-    },
-    {
-      "name": "marslib-math",
+      "name": "marslib-marslib-math",
       "source": "./marslib-math"
     },
     {
@@ -47,20 +39,16 @@
       "source": "./marslib-mechanisms"
     },
     {
+      "name": "marslib-meta",
+      "source": "./marslib-meta"
+    },
+    {
       "name": "marslib-mining",
       "source": "./marslib-mining"
     },
     {
-      "name": "marslib-network",
-      "source": "./marslib-network"
-    },
-    {
-      "name": "marslib-operator",
-      "source": "./marslib-operator"
-    },
-    {
-      "name": "marslib-power",
-      "source": "./marslib-power"
+      "name": "marslib-quality",
+      "source": "./marslib-quality"
     },
     {
       "name": "marslib-shotsetup",
@@ -69,10 +57,6 @@
     {
       "name": "marslib-simulation",
       "source": "./marslib-simulation"
-    },
-    {
-      "name": "marslib-skill-authoring",
-      "source": "./marslib-skill-authoring"
     },
     {
       "name": "marslib-statemachine",
@@ -87,12 +71,20 @@
       "source": "./marslib-swerve"
     },
     {
-      "name": "marslib-telemetry",
-      "source": "./marslib-telemetry"
+      "name": "marslib-systems",
+      "source": "./marslib-systems"
     },
     {
       "name": "marslib-testing",
       "source": "./marslib-testing"
+    },
+    {
+      "name": "marslib-tools",
+      "source": "./marslib-tools"
+    },
+    {
+      "name": "marslib-verification",
+      "source": "./marslib-verification"
     },
     {
       "name": "marslib-vision",
@@ -101,30 +93,6 @@
     {
       "name": "advantagescope-layouts",
       "source": "./advantagescope-layouts"
-    },
-    {
-      "name": "marslib-cloudflare",
-      "source": "./marslib-cloudflare"
-    },
-    {
-      "name": "marslib-cultural-legacy",
-      "source": "./marslib-cultural-legacy"
-    },
-    {
-      "name": "marslib-threading",
-      "source": "./marslib-threading"
-    },
-    {
-      "name": "marslib-tutor",
-      "source": "./marslib-tutor"
-    },
-    {
-      "name": "marslib-vscode-extension",
-      "source": "./marslib-vscode-extension"
-    },
-    {
-      "name": "marslib-web-accessibility",
-      "source": "./marslib-web-accessibility"
     }
   ]
 }
