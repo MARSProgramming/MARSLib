@@ -139,7 +139,7 @@ public class PhoenixOdometryThread extends Thread {
       // Configure frequencies
       CANUtil.setUpdateFrequencyWithRetry(threadOdometryHz, drivePosition, turnPosition);
 
-      cachedSignalsArray = signals.toArray(new BaseStatusSignal[0]);
+      cachedSignalsArray = signals.toArray(new BaseStatusSignal[signals.size()]);
       return id;
     } finally {
       signalsLock.unlock();
@@ -193,7 +193,7 @@ public class PhoenixOdometryThread extends Thread {
       CANUtil.setUpdateFrequencyWithRetry(threadOdometryHz, yawPos);
       signals.add(yawPos);
       gyroSignalIndex = signals.size() - 1;
-      cachedSignalsArray = signals.toArray(new BaseStatusSignal[0]);
+      cachedSignalsArray = signals.toArray(new BaseStatusSignal[signals.size()]);
     } finally {
       signalsLock.unlock();
     }

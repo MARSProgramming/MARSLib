@@ -1,0 +1,17 @@
+{
+  "name": "marslib-mining",
+  "version": "1.0.0",
+  "description": "MARSLib code mining - FRC elite teams and maple-sim ingestion",
+  "author": {
+    "name": "Team MARS 2614",
+    "url": "https://github.com/MARSLib"
+  },
+  "repository": "https://github.com/MARSLib/MARSLib",
+  "license": "MIT",
+  "keywords": [
+    "frc",
+    "marslib",
+    "mining",
+    "maple-sim"
+  ]
+}

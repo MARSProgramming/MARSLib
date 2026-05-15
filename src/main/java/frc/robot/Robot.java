@@ -30,6 +30,10 @@ public class Robot extends LoggedRobot {
   private RobotContainer robotContainer;
   private Command autonomousCommand;
 
+  private final CommandScheduler commandScheduler = CommandScheduler.getInstance();
+  private final com.marslib.simulation.MARSPhysicsWorld physicsWorld =
+      com.marslib.simulation.MARSPhysicsWorld.getInstance();
+
   /** NT4 flag for tethered log-download tools. True when disabled and not on FMS. */
   private final BooleanPublisher logsReadyPublisher =
       NetworkTableInstance.getDefault().getBooleanTopic("System/LogsReadyForDownload").publish();
@@ -115,7 +119,7 @@ public class Robot extends LoggedRobot {
   public void robotPeriodic() {
     double loopStartSeconds = System.nanoTime() / 1e9;
 
-    CommandScheduler.getInstance().run();
+    commandScheduler.run();
 
     double loopEndSeconds = System.nanoTime() / 1e9;
     Logger.recordOutput("System/LoopRunTime_ms", (loopEndSeconds - loopStartSeconds) * 1000.0);
@@ -162,7 +166,7 @@ public class Robot extends LoggedRobot {
     if (robotContainer != null) {
       autonomousCommand = robotContainer.getAutonomousCommand();
       if (autonomousCommand != null) {
-        CommandScheduler.getInstance().schedule(autonomousCommand);
+        commandScheduler.schedule(autonomousCommand);
       }
     }
   }
@@ -216,7 +220,7 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {
-    com.marslib.simulation.MARSPhysicsWorld.getInstance().update(ModeConstants.LOOP_PERIOD_SECS);
+    physicsWorld.update(ModeConstants.LOOP_PERIOD_SECS);
 
     simTickCounter++;
     // After 3 seconds (150 ticks), auto-hold the right trigger to test shooting

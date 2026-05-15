@@ -32,6 +32,7 @@ public class MARSAlignmentCommand extends Command {
 
   // Pre-allocated cache to avoid ChassisSpeeds.fromFieldRelativeSpeeds() heap allocation
   private final ChassisSpeeds fieldRelativeCache = new ChassisSpeeds();
+  private final edu.wpi.first.wpilibj.Timer safetyTimer = new edu.wpi.first.wpilibj.Timer();
 
   /** Constructs an alignment command with parameterized constants. */
   public MARSAlignmentCommand(
@@ -71,6 +72,7 @@ public class MARSAlignmentCommand extends Command {
     xController.reset(currentPose.getX());
     yController.reset(currentPose.getY());
     thetaController.reset(currentPose.getRotation().getRadians());
+    safetyTimer.restart();
   }
 
   @Override
@@ -103,7 +105,8 @@ public class MARSAlignmentCommand extends Command {
     double rotationError =
         Math.abs(currentPos.getRotation().minus(target.getRotation()).getRadians());
 
-    return error.getNorm() < translationTolerance && rotationError < rotationTolerance;
+    return safetyTimer.hasElapsed(5.0)
+        || (error.getNorm() < translationTolerance && rotationError < rotationTolerance);
   }
 
   @Override

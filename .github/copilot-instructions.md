@@ -23,4 +23,4 @@ Before writing code for any major robotic subsystem or utility, you **MUST** aut
 ### Core Principles
 1. NEVER use the `new` keyword inside `periodic()`, `execute()`, or any loop structure. MARSLib prohibits dynamic allocations during runtime.
 2. All hardware must be abstracted via the `IO` (e.g., `IOReal`, `IOSim`) interface to maintain AdvantageKit deterministic replay capability.
-3. Obey the rules from `.agents/skills/marslib-core-standards/SKILL.md` unconditionally.
+3. Obey the rules from `.agents/skills/marslib/SKILL.md` unconditionally.

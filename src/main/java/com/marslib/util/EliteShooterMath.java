@@ -97,7 +97,10 @@ public class EliteShooterMath {
     // Solve for time of flight
     double timeOfFlightSeconds = (-quadraticB - Math.sqrt(discriminant)) / (2.0 * quadraticA);
 
-    if (timeOfFlightSeconds <= 0) {
+    // E-02 Guard: Reject shots where time-of-flight is <= 0 or numerically unstable.
+    // A very small positive value (e.g., 1e-15) would produce near-infinity when used as
+    // a divisor on lines 105-106 and 120, corrupting all downstream shot parameters.
+    if (timeOfFlightSeconds < 1e-4) {
       setpoint.isValid = false;
       return setpoint;
     }
@@ -125,6 +128,13 @@ public class EliteShooterMath {
 
     // Compute Chassis Aim and Feedforward
     double distanceToTargetSq = tx * tx + ty * ty;
+
+    // E-01 Guard: If robot is co-located with target, distance² is zero and division
+    // would produce NaN (0/0). Reject the shot as physically meaningless.
+    if (distanceToTargetSq < 1e-6) {
+      setpoint.isValid = false;
+      return setpoint;
+    }
 
     double chassisAngularFF = (ty * vx - tx * vy) / distanceToTargetSq;
 

@@ -5,31 +5,67 @@ description: Helps write FRC robot code using the MARSLib Advanced Simulation an
 
 # MARSLib Framework Skill
 
-You are an expert FRC Software Engineer for Team MARS 2614. This is the **root skill** — it defines the core architectural rules that apply to ALL MARSLib code. For domain-specific guidance, see the dedicated skills listed below.
+You are an expert FRC Software Engineer for Team MARS 2614. This is the **root skill** defining core architectural rules that apply to ALL MARSLib code.
 
 ## 0. Skill Maintenance
 
-**CRITICAL RULE:** Whenever you make architectural or significant code changes to the library (e.g., adding a new pattern, changing a physics method, refactoring how a subsystem is structured), you **MUST** identify and update the relevant `SKILL.md` files in `.agents/skills/` to reflect the new truth. Keeping skills in sync with the repository is mandatory.
+**CRITICAL:** Whenever you make architectural or significant code changes to the library, you **MUST** identify and update the relevant `SKILL.md` files to reflect the new truth.
 
 ## 1. IO Abstraction (AdvantageKit Rule)
 
-Every subsystem MUST have its hardware interaction abstracted behind an IO interface. You must NEVER instantiate hardware directly in the subsystem class. Generate exactly four files:
-1. **`[Name]IO.java`**: Interface with an `@AutoLog` inner class `[Name]IOInputs`.
-2. **`[Name]IOSim.java`**: Physics sim using `MARSPhysicsWorld` and dyn4j.
-3. **`[Name]IOTalonFX.java`**: Real hardware via Phoenix 6 API.
-4. **`[Name].java`**: Subsystem that accepts `[Name]IO` via dependency injection.
+Every subsystem MUST abstract hardware behind an IO interface. Generate exactly four files:
+1. **`[Name]IO.java`** — Interface with `@AutoLog` inner class `[Name]IOInputs` (struct MUST end with `Inputs`)
+2. **`[Name]IOSim.java`** — Physics sim using `MARSPhysicsWorld` and dyn4j
+3. **`[Name]IOTalonFX.java`** — Real hardware via Phoenix 6
+4. **`[Name].java`** — Subsystem accepting `[Name]IO` via dependency injection
 
 In `periodic()`: call `io.updateInputs(inputs)` then `Logger.processInputs("[Name]", inputs)`.
 
-> For detailed mechanism patterns, see `marslib-mechanisms`.
+## 2. Core Standards (Apply to ALL Code)
 
-## 2. Core Constraints
+### Unit Nomenclature
+- Physical units MUST be explicit: `double velocityMetersPerSecond`, `double wheelRadiusInches`, `double delaySeconds`
+- Use `edu.wpi.first.units` for public interfaces; suffix internal doubles with SI units
+- **BAD:** `double velocity;`, `int x;` — **GOOD:** `double velocityMetersPerSecond;`, `int xIndex;`
 
-These rules are **non-negotiable** across all MARSLib code:
+### No Hungarian Notation
+- **BAD:** `double m_velocity;`, `final int k_maxSpeed;`, `boolean bIsActive;`
+- **GOOD:** `double velocity;`, `final int MAX_SPEED;`, `boolean isActive;`
+
+### Never Nester
+Use guard clauses and early returns:
+```java
+// BAD - nested
+if (item != null) {
+    if (item.isValid()) {
+        item.process();
+    }
+}
+// GOOD - guard clauses
+if (item == null) return;
+if (!item.isValid()) return;
+item.process();
+```
+
+### Math References
+Include comment blocks referencing underlying physics (Wiki, whitepaper, textbook) when implementing equations.
+
+### Zero-Allocation Hot Paths
+Never use `new` in `periodic()` or 250Hz loops. Pre-allocate `static final` caches. Mutable proxies must be completely overwritten each tick, never `+=` or `*=`.
+
+### AdvantageKit Logging
+Never `System.out.println()`. Always use `Logger.recordOutput("Category/Subsystem", value)` for deterministic replay.
+
+### @AutoLog Boundary
+- Struct handling data MUST end with `Inputs` (e.g., `ElevatorIOInputs`)
+- Hardware implementation files (`*IOTalonFX.java`) do NOT need `@AutoLog`
+- Never put fake `// @AutoLog` comments to suppress warnings
+
+## 3. Core Constraints
 
 | Rule | Details | Skill |
 |---|---|---|
-| No SmartDashboard for telemetry | Use `Logger.recordOutput()` and `LoggedTunableNumber` for data. `SmartDashboard.putData()` is allowed for interactive command widgets and `SendableChooser` only. | `marslib-telemetry` |
+| No SmartDashboard for telemetry | Use `Logger.recordOutput()` and `LoggedTunableNumber`. `SmartDashboard.putData()` only for interactive widgets. | `marslib-telemetry` |
 | No Mockito in tests | Use `*IOSim` with dyn4j physics instead | `marslib-testing` |
 | Phoenix 6 only | No Phoenix 5 APIs (`WPI_TalonFX`, `TalonFXControlMode`) | `marslib-power` |
 | Dual current limits | Always set both Stator and Supply limits on TalonFX | `marslib-power` |
@@ -37,30 +73,67 @@ These rules are **non-negotiable** across all MARSLib code:
 | Collision routing | Multi-mechanism moves go through `MARSSuperstructure` | `marslib-superstructure` |
 | Faults through manager | All hardware errors go via `MARSFaultManager` | `marslib-diagnostics` |
 
-## 3. Domain Skills Index
+## 4. Threading Standards
+
+When creating background loops (`PhoenixOdometryThread`, coprocessor listeners):
+
+### No Infinite Loops
+Always check interruption:
+```java
+while (!Thread.currentThread().isInterrupted()) {
+    // ... logic
+}
+```
+
+### No Raw Thread Sleeps
+Use `TimeUnit` with proper interrupt handling:
+```java
+try {
+    TimeUnit.MILLISECONDS.sleep(20);
+} catch (InterruptedException e) {
+    Thread.currentThread().interrupt(); // Restore status
+    break; // Exit gracefully
+}
+```
+
+### Cache Thread References
+Never call `.getInstance()` in 50Hz periodic loops. Cache in constructor:
+```java
+private final PhoenixOdometryThread odometryThread;
+
+public MySubsystem() {
+    this.odometryThread = PhoenixOdometryThread.getInstance(); // Once
+}
+
+public void updateInputs() {
+    var data = this.odometryThread.getLatestData(); // Direct access
+}
+```
+
+## 5. Domain Skills Index
 
 | Domain | Skill | Covers |
 |---|---|---|
-| Core Standards | `marslib-core-standards` | Formatting, Never Nester rules, specific unit naming, mathematics formatting |
-| Drivetrain | `marslib-swerve` | SwerveDrive, odometry, PathPlanner, modules |
-| Mechanisms | `marslib-mechanisms` | Elevator, arm, intake, shooter IO patterns |
-| Superstructure | `marslib-superstructure` | Collision safety, state machine coordination |
-| State Machines | `marslib-statemachine` | Generic FSM framework (`MARSStateMachine<S>`) |
+| Drivetrain | `marslib-swerve` | SwerveDrive, odometry, PathPlanner |
+| Mechanisms | `marslib-mechanisms` | Elevator, arm, intake, shooter IO |
+| Superstructure | `marslib-superstructure` | Collision safety, state coordination |
+| State Machines | `marslib-statemachine` | Generic FSM framework |
 | Autonomous | `marslib-autonomous` | PathPlanner, Choreo, alignment |
-| Shot Setup | `marslib-shotsetup` | EliteShooterMath SOTM solver, time-of-flight |
-| Vision | `marslib-vision` | AprilTag fusion, VIO SLAM, camera simulation |
-| Simulation | `marslib-simulation` | dyn4j physics, field boundaries, game pieces |
-| Controls | `marslib-control-theory` | PID, feedforward, SysId, slew rate limiting |
-| Power | `marslib-power` | Current limits, CAN bus, brownout protection |
-| Telemetry | `marslib-telemetry` | AdvantageKit logging, replay determinism |
-| Diagnostics | `marslib-diagnostics` | Faults, alerts, pre-match system checks |
-| Operator | `marslib-operator` | Controller bindings, haptics, LEDs, dashboard |
-| Math | `marslib-math` | Interpolation, filtering, vector transforms |
-| Network | `marslib-network` | NT4, coprocessor streams, bandwidth |
-| Testing | `marslib-testing` | JUnit 5, singleton resets, physics loops |
-| Elite Mining | `marslib-elite-mining` | Cross-team code mining & architectural analysis |
+| Shot Setup | `marslib-shotsetup` | EliteShooterMath SOTM solver |
+| Vision | `marslib-vision` | AprilTag fusion, VIO SLAM |
+| Simulation | `marslib-simulation` | dyn4j physics, field boundaries |
+| Controls | `marslib-control-theory` | PID, feedforward, SysId |
+| Power | `marslib-power` | Current limits, CAN bus, brownout |
+| Telemetry | `marslib-telemetry` | AdvantageKit logging, replay |
+| Diagnostics | `marslib-diagnostics` | Faults, alerts, pre-match checks |
+| Operator | `marslib-operator` | Controller bindings, haptics, LEDs |
+| Math | `marslib-math` | Interpolation, filtering, transforms |
+| Network | `marslib-network` | NT4, coprocessor streams |
+| Testing | `marslib-testing` | JUnit 5, singleton resets, physics |
+| Mining | `marslib-mining` | Elite team code ingestion (FRC + maple-sim) |
 | CI/CD | `marslib-ci` | Gradle, Spotless, GitHub Actions |
-| Skill Authoring | `marslib-skill-authoring` | How to create new skills |
+| Documentation | `marslib-documentation` | Astro/Starlight/Keystatic, accessibility |
 
-## 4. Telemetry
-See each domain skill's **Telemetry** section for exhaustive log key listings. The root skill does not emit its own telemetry.
+## 6. File Limits
+
+Restrict logic classes to ~600 lines max. Refactor large loops into helper libraries.

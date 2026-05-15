@@ -23,20 +23,12 @@
       "source": "./marslib-control-theory"
     },
     {
-      "name": "marslib-core-standards",
-      "source": "./marslib-core-standards"
-    },
-    {
       "name": "marslib-diagnostics",
       "source": "./marslib-diagnostics"
     },
     {
       "name": "marslib-documentation",
       "source": "./marslib-documentation"
-    },
-    {
-      "name": "marslib-elite-mining",
-      "source": "./marslib-elite-mining"
     },
     {
       "name": "marslib-javadoc",
@@ -53,6 +45,10 @@
     {
       "name": "marslib-mechanisms",
       "source": "./marslib-mechanisms"
+    },
+    {
+      "name": "marslib-mining",
+      "source": "./marslib-mining"
     },
     {
       "name": "marslib-network",
@@ -103,12 +99,20 @@
       "source": "./marslib-vision"
     },
     {
+      "name": "advantagescope-layouts",
+      "source": "./advantagescope-layouts"
+    },
+    {
       "name": "marslib-cloudflare",
       "source": "./marslib-cloudflare"
     },
     {
-      "name": "advantagescope-layouts",
-      "source": "./advantagescope-layouts"
+      "name": "marslib-cultural-legacy",
+      "source": "./marslib-cultural-legacy"
+    },
+    {
+      "name": "marslib-threading",
+      "source": "./marslib-threading"
     },
     {
       "name": "marslib-tutor",
@@ -121,26 +125,6 @@
     {
       "name": "marslib-web-accessibility",
       "source": "./marslib-web-accessibility"
-    },
-    {
-      "name": "marslib-cultural-legacy",
-      "source": "./marslib-cultural-legacy"
-    },
-    {
-      "name": "marslib-maplesim-mining",
-      "source": "./marslib-maplesim-mining"
-    },
-    {
-      "name": "marslib-mdx-formatting",
-      "source": "./marslib-mdx-formatting"
-    },
-    {
-      "name": "marslib-projectdoctor",
-      "source": "./marslib-projectdoctor"
-    },
-    {
-      "name": "marslib-threading",
-      "source": "./marslib-threading"
     }
   ]
 }

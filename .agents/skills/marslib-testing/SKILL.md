@@ -1,24 +1,22 @@
 ---
 name: marslib-testing
-description: Helps write and maintain tests for MARSLib. Use this skill when writing JUnit 5 tests for WPILib commands, subsystems, or autonomous behaviors to ensure high-fidelity physical testing with dyn4j over mocked tests.
+description: Helps write JUnit 5 tests for MARSLib with physics-backed simulation. Use when writing tests for WPILib commands, subsystems, or autonomous behaviors.
 ---
 
-# MARSLib Integrated Testing Skill
+# MARSLib Integrated Testing
 
-You are a test engineer for Team MARS 2614. When writing tests for subsystems, commands, or autonomous paths:
+**Digital Twin Testing** — real subsystems with simulated IO, NOT mocked objects.
 
 ## 1. Architecture
 
-MARSLib uses **Digital Twin** testing — real subsystems with simulated IO, not mocked objects:
-
 | Component | Purpose |
-|---|---|
-| `*IOSim` classes | Physics-backed simulation of each hardware layer |
-| `MARSPhysicsWorld` | Shared dyn4j physics engine for all IOSim instances |
-| `CommandScheduler` | WPILib's real scheduler — same as on the robot |
-| `SimHooks.stepTiming()` | Advances HAL clock for deterministic timing |
-| `DriverStationSim` | Simulates DS heartbeat and mode (auto/teleop/test) |
-| `MARSTestHarness` | Centralized reset utility for all static singletons |
+|---|---|---|
+| `*IOSim` classes | Physics-backed simulation |
+| `MARSPhysicsWorld` | Shared dyn4j engine |
+| `CommandScheduler` | Real WPILib scheduler |
+| `SimHooks.stepTiming()` | Advances HAL clock |
+| `DriverStationSim` | Simulates DS heartbeat |
+| `MARSTestHarness` | Centralized singleton reset |
 
 ### Test Execution Loop
 ```java
@@ -32,18 +30,28 @@ for (int i = 0; i < 150; i++) {
 
 ## 2. Key Rules
 
-### Rule A: Never Mock Hardware
-Do NOT use Mockito to mock IO layers. Instantiate real subsystems with `*IOSim` implementations. Mocks hide physics bugs that only appear under real dynamics (wheel slip, gravity, inertia). The `mockito-core` dependency is intentionally excluded from `build.gradle`.
+| Rule | Why | How |
+|---|---|---|
+| **Never mock hardware** | Mocks hide physics bugs | Use `*IOSim` implementations |
+| **Use MARSTestHarness.reset()** | Prevents cross-test contamination | Call in `@BeforeEach` |
+| **Beat DS heartbeat** | Robot disables if not called every ~0.5s | Call `notifyNewData()` EVERY loop iteration |
+| **Inject config records** | IO layers are decoupled from `frc.robot` | Use `MARSTestHarness.createSwerveConfig()` |
 
-### Rule B: Use MARSTestHarness for Singleton Resets
-The `MARSTestHarness` class (`com.marslib.testing`) centralizes all 7 singleton resets into one call. EVERY test class MUST use it:
+### MARSTestHarness.reset() Handles:
+1. `HAL.initialize()`
+2. `CommandScheduler` (cancel all, unregister subsystems)
+3. `MARSPhysicsWorld.resetInstance()`
+4. `AprilTagVisionIOSim.resetSimulation()`
+5. `MARSFaultManager.clear()`
+6. `Alert.resetAll()`
+7. `DriverStationSim` (Blue1 alliance, enable, beat heartbeat)
+
+### Test Pattern
 ```java
-import com.marslib.testing.MARSTestHarness;
-
 @BeforeEach
 public void setUp() {
     MARSTestHarness.reset();
-    // ... construct your subsystems here
+    // construct subsystems with *IOSim
 }
 
 @AfterEach
@@ -52,84 +60,77 @@ public void tearDown() {
 }
 ```
 
-`MARSTestHarness.reset()` handles:
-1. `HAL.initialize()` — WPILib Hardware Abstraction Layer
-2. `CommandScheduler` — cancel all commands, unregister all subsystems
-3. `MARSPhysicsWorld.resetInstance()` — destroy dyn4j world and bodies
-4. `AprilTagVisionIOSim.resetSimulation()` — destroy shared VisionSystemSim
-5. `MARSFaultManager.clear()` — clear fault state
-6. `Alert.resetAll()` — clear alert groups
-7. `DriverStationSim` — set Blue1 alliance, enable, beat heartbeat
+## 3. Selective Testing (CRITICAL)
 
-Skipping ANY of these causes cross-test contamination: stacked physics bodies, stale alerts, leaked commands.
+When modifying code, **NEVER** run full test suite blindly. Run only affected tests:
 
-### Rule C: Beat the DS Heartbeat Continuously
-WPILib silently disables the robot if `DriverStationSim.notifyNewData()` isn't called every ~0.5s. In any loop stepping the scheduler, call it EVERY iteration. If you only call it once before the loop, the robot will disable mid-test at tick ~25.
+```bash
+# Run specific test class
+./gradlew test --tests *MARSPhysicsWorldTest
 
-### Rule D: Use @AfterEach for Cleanup
-Always call `MARSTestHarness.cleanup()` in `@AfterEach` to prevent WPILib from leaking subsystem references between tests.
+# Run specific test method
+./gradlew test --tests *MARSPhysicsWorldTest.testGravity
+```
 
-## 3. Adding New Tests
+## 4. Configuration Injection
 
-1. Create the test in the matching test package (e.g., `com.marslib.mechanisms.MARSClimberTest`).
-2. In `@BeforeEach`: call `MARSTestHarness.reset()`, then construct subsystems with `*IOSim`.
-3. In `@AfterEach`: call `MARSTestHarness.cleanup()`.
-4. For physics tests: use the standard execution loop (Section 1 Architecture).
-5. Assert against physical positions, not command states — test what the mechanism actually did.
-6. For integration tests spanning multiple subsystems, see `RobotLifecycleTest` as the reference.
+All IO layers require config records:
 
-### Rule E: Always Inject Configuration Records
-All IO layers are now **fully decoupled** from `frc.robot` application constants. When constructing subsystems in tests:
-- Use `MARSTestHarness.createSwerveConfig()` for swerve components
-- Use `MARSTestHarness.createPowerConfig()` for power manager
-- Use `MARSTestHarness.createVisionConfig()` for vision pipeline
-- `PowerIOSim` **requires** a `PowerConfig` parameter: `new PowerIOSim(MARSTestHarness.createPowerConfig())`
-- `SwerveModuleIOTalonFX` **requires** a `SwerveConfig` parameter
-- `GyroIOPigeon2` **requires** a `SwerveConfig` parameter
+| IO Layer | Required Config |
+|---|---|
+| `PowerIOSim` | `MARSTestHarness.createPowerConfig()` |
+| `SwerveModuleIOTalonFX` | `MARSTestHarness.createSwerveConfig()` |
+| `GyroIOPigeon2` | `MARSTestHarness.createSwerveConfig()` |
 
-**Never** reference `frc.robot.*` constants from within `com.marslib.*` test classes.
+**NEVER** reference `frc.robot.*` constants from `com.marslib.*` test classes.
 
-## 4. Test Categories
+## 5. ProfiledPIDController & Physics
+
+**CRITICAL:** `ProfiledPIDController` relies on FPGA timestamp for $dt$.
+
+- Without `SimHooks.stepTiming()`, $dt = 0.0$ → Trapezoid constraints skipped → raw P output
+- **Always step timing** in loops using ProfiledPIDController
+- Physics inertia causes realistic overshoot with high P/low D — reduce max velocity or add D gain
+- `isFinished()` may take seconds to settle under physics — validate physical bounds instead of absolute convergence
+
+## 6. Test Categories
 
 | Type | Example | What It Catches |
 |---|---|---|
-| Unit | `MARSElevatorTest` | Single-mechanism physics and control |
-| Integration | `RobotLifecycleTest` | Multi-subsystem coordination bugs |
+| Unit | `MARSElevatorTest` | Single-mechanism physics |
+| Integration | `RobotLifecycleTest` | Multi-subsystem coordination |
 | Diagnostics | `MARSDiagnosticCheckTest` | Pre-match sweep validation |
-| Math | `KinematicAimingTest`, `ShotSetupTest` | Pure algorithm correctness |
-| State Machine | `MARSStateMachineTest` | Transition validation logic |
+| Math | `KinematicAimingTest`, `ShotSetupTest` | Algorithm correctness |
+| State Machine | `MARSStateMachineTest` | Transition validation |
 | Pipeline | `TeleopDrivePipelineTest` | Joystick→ChassisSpeeds math |
 
-## 5. Telemetry
-Tests don't emit AdvantageKit telemetry, but you can assert against Logger output keys:
+## 7. Reference Implementations
+
+- `MARSSuperstructureTest` — Physics-backed state transitions
+- `RobotLifecycleTest` — Full auto→teleop→score→stow lifecycle
+- `MARSStateMachineTest` — FSM transition validation
+- `MARSAlignmentCommandTest` — PID convergence under physics
+- `TeleopDrivePipelineTest` — Input pipeline regression
+
+## 8. Testing Commands
+
 ```java
-// The state machine logs transitions — verify the key was set
+// Test command termination
+assertTrue(command.isFinished());
+
+// Test state machine transitions
 assertEquals(SuperstructureState.SCORE, superstructure.getCurrentState());
 assertEquals(1, superstructure.getStateMachine().getTotalTransitionCount());
 ```
 
-## Reference Implementations
-- `MARSSuperstructureTest` — Physics-backed state transition and scoring verification
-- `RobotLifecycleTest` — Full auto→teleop→score→stow lifecycle
-- `MARSStateMachineTest` — FSM transition validation and rejection
-- `MARSAlignmentCommandTest` — PID convergence under physics simulation
-- `TeleopDrivePipelineTest` — Joystick→ChassisSpeeds pipeline regression test
+## 9. Assert Against Physics, Not State
 
----
+Test what the mechanism **actually did**, not what command state claims:
 
-## 6. AI Execution Workflow: Selective Testing (CRITICAL)
+```java
+// GOOD - assert physical result
+assertEquals(targetPosition, elevator.getPositionMeters(), 0.01);
 
-When you (the AI) are modifying code and want to compile/validate your changes:
-**Never run the full test suite (`./gradlew build` or `./gradlew test`) blindly unless doing a final distribution audit.**
-
-To save time, **always use selective testing** to run tests only for the specific classes you modified:
-```bash
-# E.g., if you modified MARSPhysicsWorld.java, run its respective test class:
-./gradlew test --tests *MARSPhysicsWorldTest
+// BAD - assert internal state
+assertTrue(elevator.isAtTarget()); // May be wrong due to bugs
 ```
-## 7. ProfiledPIDController & Trajectories under Physics (CRITICAL)
-
-When testing autonomous alignment commands like `MARSAlignmentCommandTest`, be aware that the `dyn4j` environment models friction, momentum, and azimuth-coupling interference natively:
-1. **WPILib Time is Driven by Halo Hooks:** `ProfiledPIDController` naturally relies on FPGA Timestamp to calculate $dt$. If you use `SimHooks.pauseTiming()` or run a `for` loop testing execution without calling `SimHooks.stepTiming(0.02)`, the loop $dt$ will be exactly `0.0`. `ProfiledPIDController` will immediately skip its Trapezoid constraints and output raw P values! **Always step timing** inside loops relying on `ProfiledPIDController`.
-2. **Ping-Ponging / Overshoot is Realistic:** If you use a very high P-gain for translation (e.g. `15.0`) with low D-gain and a high max velocity under pure physics, the `dyn4j` traction limits will cause the robot to overshoot due to simulated inertia, just like the real robot! If tests ping-pong, reduce maximum velocity constraints or add a tiny amount of D-gain.
-3. **IsFinished Constraints:** Physics iterations often take a few seconds strictly to settle around tolerance limits compared to decoupled analytical math simulations. If `isFinished()` tolerances fail within a tight test loop constraint (like $<10s$), rely on validating physical bounds `robotPose.getX() > minimumTravelArea` instead of enforcing absolute micro-level `command.isFinished() == true` asserts.

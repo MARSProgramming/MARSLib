@@ -29,6 +29,7 @@ public class SmartAssistAlign extends Command {
 
   // Pre-allocated cache to avoid ChassisSpeeds.fromFieldRelativeSpeeds() heap allocation
   private final ChassisSpeeds robotSpeedsCache = new ChassisSpeeds();
+  private final edu.wpi.first.wpilibj.Timer safetyTimer = new edu.wpi.first.wpilibj.Timer();
 
   /**
    * Overrides the driver's lateral (Y) and rotational (Theta) control to perfectly track a specific
@@ -56,6 +57,11 @@ public class SmartAssistAlign extends Command {
     this.thetaAlignController.enableContinuousInput(-Math.PI, Math.PI);
 
     addRequirements(swerveDrive);
+  }
+
+  @Override
+  public void initialize() {
+    safetyTimer.restart();
   }
 
   @Override
@@ -100,7 +106,7 @@ public class SmartAssistAlign extends Command {
         Math.abs(
             edu.wpi.first.math.MathUtil.angleModulus(
                 currentPose.getRotation().getRadians() - targetNode.getRotation().getRadians()));
-    // Converged when within 2cm laterally and 2° rotationally
-    return yError < 0.02 && thetaError < Math.toRadians(2.0);
+    // Converged when within 2cm laterally and 2° rotationally, or fallback safety timeout
+    return safetyTimer.hasElapsed(5.0) || (yError < 0.02 && thetaError < Math.toRadians(2.0));
   }
 }

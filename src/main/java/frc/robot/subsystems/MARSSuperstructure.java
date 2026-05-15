@@ -66,6 +66,7 @@ public class MARSSuperstructure extends SubsystemBase {
   private int simDebugCounter = 0;
 
   private final Supplier<Double> tiltRadiansSupplier;
+  private final com.marslib.simulation.MARSPhysicsWorld physicsWorld;
 
   /**
    * Constructs the superstructure orchestrator.
@@ -100,6 +101,7 @@ public class MARSSuperstructure extends SubsystemBase {
     this.visionTargetSupplier = visionTargetSupplier;
     this.tiltRadiansSupplier = tiltRadiansSupplier;
     this.fieldSpeedsSupplier = fieldSpeedsSupplier;
+    this.physicsWorld = com.marslib.simulation.MARSPhysicsWorld.getInstance();
 
     stateMachine =
         new MARSStateMachine<>(
@@ -223,10 +225,9 @@ public class MARSSuperstructure extends SubsystemBase {
                         .rotateBy(robotPose.getRotation()));
 
         org.dyn4j.dynamics.Body overlappingFuel =
-            com.marslib.simulation.MARSPhysicsWorld.getInstance()
-                .getOverlappingFuel(intakeCenter, 0.4);
+            physicsWorld.getOverlappingFuel(intakeCenter, 0.4);
         if (overlappingFuel != null) {
-          com.marslib.simulation.MARSPhysicsWorld.getInstance().removeFuel(overlappingFuel);
+          physicsWorld.removeFuel(overlappingFuel);
           internalPieceCount++;
           Logger.recordOutput(
               "Superstructure/SimEvent", "Gathered Game Piece. Total: " + internalPieceCount);
@@ -307,7 +308,7 @@ public class MARSSuperstructure extends SubsystemBase {
         com.marslib.simulation.SimulationProjectile shot =
             new com.marslib.simulation.SimulationProjectile(
                 nozzlePose, launchSpeedX, launchSpeedY, launchSpeedZ);
-        com.marslib.simulation.MARSPhysicsWorld.getInstance().addProjectile(shot);
+        physicsWorld.addProjectile(shot);
       }
     }
   }

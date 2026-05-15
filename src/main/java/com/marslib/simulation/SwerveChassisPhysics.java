@@ -17,6 +17,7 @@ public class SwerveChassisPhysics {
   private final Body body;
   private final double maxAccelerationMps2;
   private final edu.wpi.first.math.geometry.Translation2d[] moduleLocations;
+  private final MARSPhysicsWorld physicsWorldRef;
   private final edu.wpi.first.math.geometry.Transform2d[] moduleTransforms;
 
   // Pre-allocated pose cache to avoid per-tick Pose2d allocation (D-02)
@@ -62,6 +63,9 @@ public class SwerveChassisPhysics {
 
     // a = mu * g
     maxAccelerationMps2 = staticFrictionCoef * 9.81;
+
+    // E-04: Cache physics world reference to avoid getInstance() in the 50Hz hot path
+    this.physicsWorldRef = MARSPhysicsWorld.getInstance();
   }
 
   public void setPose(Pose2d pose) {
@@ -107,7 +111,7 @@ public class SwerveChassisPhysics {
     for (int i = 0; i < 4; i++) {
       edu.wpi.first.math.geometry.Translation2d fieldPos =
           currentPose.transformBy(moduleTransforms[i]).getTranslation();
-      zHeights[i] = MARSPhysicsWorld.getInstance().getTerrainZHeight(fieldPos, "TerrainBump");
+      zHeights[i] = physicsWorldRef.getTerrainZHeight(fieldPos, "TerrainBump");
       if (zHeights[i] > 0.001) {
         wheelsOnBump++;
       }

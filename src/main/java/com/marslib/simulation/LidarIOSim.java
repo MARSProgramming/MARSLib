@@ -8,8 +8,6 @@ package com.marslib.simulation;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation3d;
-import java.util.ArrayList;
-import java.util.List;
 import org.dyn4j.geometry.Ray;
 import org.dyn4j.geometry.Vector2;
 import org.dyn4j.world.DetectFilter;
@@ -28,47 +26,69 @@ public class LidarIOSim {
   private static final DetectFilter<org.dyn4j.dynamics.Body, org.dyn4j.dynamics.BodyFixture>
       DETECT_FILTER = new DetectFilter<>(true, true, null);
 
+  // E-03 Fix: Pre-allocated arrays to eliminate per-tick heap allocations
+  private final MARSPhysicsWorld physicsWorld;
+  private final Vector2 origin = new Vector2();
+  private final Vector2[] directions = new Vector2[NUM_RAYS];
+  private final Ray[] rays = new Ray[NUM_RAYS];
+  private final Translation3d[] hitBuffer = new Translation3d[NUM_RAYS];
+  private static final double RENDER_HEIGHT_METERS = 0.2;
+
+  public LidarIOSim() {
+    this.physicsWorld = MARSPhysicsWorld.getInstance();
+
+    // Pre-allocate all ray geometry objects once
+    for (int i = 0; i < NUM_RAYS; i++) {
+      directions[i] = new Vector2(1, 0);
+      rays[i] = new Ray(origin, directions[i]);
+      hitBuffer[i] = new Translation3d();
+    }
+  }
+
   /**
    * Performs the raycast sweep around the robot and logs the hits as a 3D Point Cloud.
    *
    * @param robotPose The current field-relative pose of the robot.
    */
   public void updateInputs(Pose2d robotPose) {
-    World<org.dyn4j.dynamics.Body> world = MARSPhysicsWorld.getInstance().getDyn4jWorld();
+    World<org.dyn4j.dynamics.Body> world = physicsWorld.getDyn4jWorld();
 
     // Safety check if the user hasn't successfully initialized a world.
     if (world == null) return;
 
-    Vector2 origin = new Vector2(robotPose.getX(), robotPose.getY());
-    List<Translation3d> pointCloud = new ArrayList<>();
+    origin.x = robotPose.getX();
+    origin.y = robotPose.getY();
 
-    // We only want to raycast against obstacles/game pieces, not the chassis itself
-    // Filtering mechanism: we will just skip intersections if distance is precisely 0
-    // (which usually happens if querying from inside the chassis body).
+    int hitCount = 0;
 
     for (int i = 0; i < NUM_RAYS; i++) {
       double angleRad = robotPose.getRotation().getRadians() + (i * ((2 * Math.PI) / NUM_RAYS));
-      Vector2 direction = new Vector2(Math.cos(angleRad), Math.sin(angleRad));
+      directions[i].x = Math.cos(angleRad);
+      directions[i].y = Math.sin(angleRad);
 
-      Ray ray = new Ray(origin, direction);
+      // Update the pre-allocated Ray's origin and direction in place
+      rays[i].setStart(origin);
+      rays[i].setDirection(directions[i]);
 
       // Perform broad-phase raycast finding the closest object
       RaycastResult<org.dyn4j.dynamics.Body, org.dyn4j.dynamics.BodyFixture> result =
-          world.raycastClosest(ray, MAX_RAY_DISTANCE_METERS, DETECT_FILTER);
+          world.raycastClosest(rays[i], MAX_RAY_DISTANCE_METERS, DETECT_FILTER);
 
       if (result != null && result.getRaycast().getDistance() > 0.01) {
         // We hit something! Convert the distance back to an absolute field Point3d
         double distance = result.getRaycast().getDistance();
-        double hitX = origin.x + (direction.x * distance);
-        double hitY = origin.y + (direction.y * distance);
+        double hitX = origin.x + (directions[i].x * distance);
+        double hitY = origin.y + (directions[i].y * distance);
 
-        pointCloud.add(new Translation3d(hitX, hitY, 0.2)); // Render hits at standard bumper height
+        hitBuffer[hitCount] =
+            new Translation3d(hitX, hitY, RENDER_HEIGHT_METERS); // Render hits at bumper height
+        hitCount++;
       }
     }
 
-    // Convert list to native array
-    Translation3d[] pointCloudArray = new Translation3d[pointCloud.size()];
-    pointCloud.toArray(pointCloudArray);
+    // Build correctly-sized output array from pre-allocated buffer
+    Translation3d[] pointCloudArray = new Translation3d[hitCount];
+    System.arraycopy(hitBuffer, 0, pointCloudArray, 0, hitCount);
 
     // Log directly to AdvantageKit for 3D View rendering
     Logger.recordOutput("PhysicsSim/LidarPointCloud", pointCloudArray);
